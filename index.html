@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechDraw CAD — 2D Engineering</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg-base: #0d0f14;
+    --bg-panel: #13161e;
+    --bg-toolbar: #0f1118;
+    --bg-hover: #1e2330;
+    --bg-active: #1a2540;
+    --accent: #3b82f6;
+    --accent-glow: #3b82f640;
+    --accent2: #06b6d4;
+    --success: #10b981;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --text-primary: #e2e8f0;
+    --text-secondary: #64748b;
+    --text-muted: #334155;
+    --border: #1e2535;
+    --border-active: #3b82f6;
+    --grid-color: #1a1f2e;
+    --grid-major: #1e2538;
+    --snap-color: #10b981;
+    --dim-color: #f59e0b;
+    --cursor-color: #3b82f6;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--mono);
+    background: var(--bg-base);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+
+  /* ─── TITLE BAR ─── */
+  #titlebar {
+    height: 38px;
+    background: var(--bg-toolbar);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 100;
+  }
+  #titlebar .logo {
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  #titlebar .logo span { color: var(--accent2); }
+  #titlebar .sep { width: 1px; height: 18px; background: var(--border); margin: 0 8px; }
+  #titlebar .filename {
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex: 1;
+  }
+  #titlebar .coords-display {
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--bg-active);
+    padding: 3px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    letter-spacing: 0.05em;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  /* ─── MENU BAR ─── */
+  #menubar {
+    height: 28px;
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    flex-shrink: 0;
+    z-index: 99;
+    position: relative;
+  }
+  .menu-item {
+    padding: 0 10px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.1s;
+    position: relative;
+  }
+  .menu-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .menu-item.active { background: var(--bg-hover); color: var(--text-primary); }
+  .dropdown {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-active);
+    border-radius: 4px;
+    min-width: 180px;
+    z-index: 1000;
+    box-shadow: 0 8px 32px #00000080;
+    display: none;
+  }
+  .dropdown.show { display: block; }
+  .dd-item {
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.1s;
+  }
+  .dd-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .dd-sep { height: 1px; background: var(--border); margin: 3px 0; }
+  .dd-item .shortcut { color: var(--text-muted); font-size: 10px; }
+
+  /* ─── MAIN LAYOUT ─── */
+  #main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ─── LEFT TOOLBAR ─── */
+  #toolbar {
+    width: 44px;
+    background: var(--bg-toolbar);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 6px 0;
+    gap: 2px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  #toolbar::-webkit-scrollbar { display: none; }
+  .tool-group-label {
+    font-size: 8px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 0 3px;
+    width: 100%;
+    text-align: center;
+  }
+  .tool-sep { width: 28px; height: 1px; background: var(--border); margin: 3px 0; }
+  .tool-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 5px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    transition: all 0.15s;
+    position: relative;
+    border: 1px solid transparent;
+    background: transparent;
+    flex-shrink: 0;
+  }
+  .tool-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border);
+  }
+  .tool-btn.active {
+    background: var(--bg-active);
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+  }
+  .tool-btn:hover .tooltip {
+    display: flex;
+  }
+  .tooltip {
+    display: none;
+    position: absolute;
+    left: 44px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-panel);
+    border: 1px solid var(--border-active);
+    padding: 4px 10px;
+    font-size: 10px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    border-radius: 3px;
+    z-index: 200;
+    pointer-events: none;
+    box-shadow: 2px 2px 8px #00000060;
+  }
+  .tooltip::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid var(--border-active);
+  }
+
+  /* ─── CANVAS AREA ─── */
+  #canvas-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #080a0f;
+    cursor: crosshair;
+  }
+  #canvas-bg, #canvas-main, #canvas-ui {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+  #canvas-bg { z-index: 1; cursor: default; }
+  #canvas-main { z-index: 2; }
+  #canvas-ui { z-index: 3; pointer-events: none; }
+
+  /* ─── RIGHT PANEL ─── */
+  #right-panel {
+    width: 220px;
+    background: var(--bg-panel);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .panel-section {
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .panel-header {
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: var(--bg-toolbar);
+  }
+  .panel-header:hover { color: var(--text-secondary); }
+  .panel-body { padding: 8px; }
+
+  /* Layer panel */
+  #layers-list {
+    max-height: 200px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .layer-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 10px;
+    color: var(--text-secondary);
+    transition: all 0.1s;
+  }
+  .layer-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+  .layer-item.active-layer { background: var(--bg-active); color: var(--accent); }
+  .layer-color { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .layer-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .layer-icons { display: flex; gap: 3px; }
+  .layer-icon-btn {
+    width: 16px; height: 16px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0.5; font-size: 10px;
+    transition: opacity 0.1s;
+  }
+  .layer-icon-btn:hover { opacity: 1; }
+  .layer-icon-btn.off { opacity: 0.2; }
+  .btn-small {
+    padding: 4px 10px;
+    font-size: 10px;
+    font-family: var(--mono);
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.1s;
+  }
+  .btn-small:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-small.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-small.primary:hover { background: #2563eb; }
+
+  /* Properties */
+  .prop-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 10px;
+  }
+  .prop-label { color: var(--text-muted); }
+  .prop-val { color: var(--text-secondary); }
+  .prop-select, .prop-input {
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    width: 100px;
+    outline: none;
+  }
+  .prop-select:focus, .prop-input:focus { border-color: var(--accent); }
+  .color-swatch {
+    width: 20px; height: 14px;
+    border-radius: 2px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  /* Snap + Mode toggles */
+  .toggle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 8px;
+  }
+  .toggle-btn {
+    padding: 5px;
+    font-size: 9px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 3px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+  .toggle-btn.on { background: var(--bg-active); border-color: var(--accent); color: var(--accent); }
+  .toggle-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+
+  /* ─── BOTTOM COMMAND LINE ─── */
+  #bottom-bar {
+    height: 80px;
+    background: var(--bg-toolbar);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  #cmd-output {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 10px;
+    font-size: 10px;
+    line-height: 1.6;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .cmd-line { color: var(--text-secondary); }
+  .cmd-line.prompt { color: var(--accent); }
+  .cmd-line.info { color: var(--accent2); }
+  .cmd-line.error { color: var(--danger); }
+  .cmd-line.success { color: var(--success); }
+  #cmd-input-row {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-top: 1px solid var(--border);
+    gap: 8px;
+  }
+  #cmd-prompt-label {
+    font-size: 11px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  #cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-primary);
+    caret-color: var(--accent);
+  }
+  #cmd-input::placeholder { color: var(--text-muted); }
+
+  /* ─── STATUS BAR ─── */
+  #statusbar {
+    height: 22px;
+    background: var(--bg-panel);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 16px;
+    font-size: 9px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .status-item { display: flex; align-items: center; gap: 4px; }
+  .status-item .val { color: var(--text-secondary); }
+  .status-mode {
+    background: var(--accent);
+    color: #fff;
+    padding: 1px 8px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 600;
+  }
+
+  /* ─── MODALS ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #00000090;
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-active);
+    border-radius: 6px;
+    padding: 20px;
+    min-width: 340px;
+    box-shadow: 0 20px 60px #00000090;
+  }
+  .modal h3 {
+    font-family: var(--sans);
+    font-size: 14px;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  .modal label { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 3px; }
+  .modal input, .modal select {
+    width: 100%;
+    padding: 6px 10px;
+    background: var(--bg-hover);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--mono);
+    font-size: 11px;
+    border-radius: 3px;
+    outline: none;
+    margin-bottom: 10px;
+  }
+  .modal input:focus, .modal select:focus { border-color: var(--accent); }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+  .snap-indicator {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    width: 14px; height: 14px;
+    border: 2px solid var(--snap-color);
+    border-radius: 0;
+  }
+  .snap-indicator.circle-snap { border-radius: 50%; }
+  .snap-indicator.midpoint-snap { transform: translate(-50%, -50%) rotate(45deg); }
+</style>
+</head>
+<body>
+
+<!-- TITLE BAR -->
+<div id="titlebar">
+  <div class="logo">Tech<span>Draw</span> CAD</div>
+  <div class="sep"></div>
+  <div class="filename" id="filename">Sem título — Novo projeto</div>
+  <div class="coords-display" id="coords-display">X: 0.000   Y: 0.000</div>
+</div>
+
+<!-- MENU BAR -->
+<div id="menubar">
+  <div class="menu-item" id="menu-file" onclick="toggleMenu('file')">Arquivo
+    <div class="dropdown" id="dd-file">
+      <div class="dd-item" onclick="newProject()"><span>Novo</span><span class="shortcut">Ctrl+N</span></div>
+      <div class="dd-item" onclick="saveProject()"><span>Salvar JSON</span><span class="shortcut">Ctrl+S</span></div>
+      <div class="dd-item" onclick="loadProject()"><span>Abrir...</span><span class="shortcut">Ctrl+O</span></div>
+      <div class="dd-sep"></div>
+      <div class="dd-item" onclick="exportSVG()"><span>Exportar SVG</span></div>
+      <div class="dd-item" onclick="exportPNG()"><span>Exportar PNG</span></div>
+      <div class="dd-item" onclick="exportDXF()"><span>Exportar DXF</span></div>
+    </div>
+  </div>
+  <div class="menu-item" onclick="toggleMenu('edit')">Editar
+    <div class="dropdown" id="dd-edit">
+      <div class="dd-item" onclick="cad.undo()"><span>Desfazer</span><span class="shortcut">Ctrl+Z</span></div>
+      <div class="dd-item" onclick="cad.redo()"><span>Refazer</span><span class="shortcut">Ctrl+Y</span></div>
+      <div class="dd-sep"></div>
+      <div class="dd-item" onclick="cad.selectAll()"><span>Selecionar Tudo</span><span class="shortcut">Ctrl+A</span></div>
+      <div class="dd-item" onclick="cad.deleteSelected()"><span>Deletar</span><span class="shortcut">Del</span></div>
+    </div>
+  </div>
+  <div class="menu-item" onclick="toggleMenu('view')">Visualizar
+    <div class="dropdown" id="dd-view">
+      <div class="dd-item" onclick="cad.zoomFit()"><span>Zoom Geral</span><span class="shortcut">Z+E</span></div>
+      <div class="dd-item" onclick="cad.zoom(1.5)"><span>Zoom +</span><span class="shortcut">+</span></div>
+      <div class="dd-item" onclick="cad.zoom(0.667)"><span>Zoom -</span><span class="shortcut">-</span></div>
+      <div class="dd-sep"></div>
+      <div class="dd-item" onclick="toggleDidactic()"><span>Modo Didático</span></div>
+      <div class="dd-item" onclick="showLayerModal()"><span>Gerenciar Layers</span></div>
+    </div>
+  </div>
+  <div class="menu-item" onclick="toggleMenu('draw')">Desenhar
+    <div class="dropdown" id="dd-draw">
+      <div class="dd-item" onclick="setTool('line')">Linha <span class="shortcut">L</span></div>
+      <div class="dd-item" onclick="setTool('polyline')">Polilinha <span class="shortcut">PL</span></div>
+      <div class="dd-item" onclick="setTool('rectangle')">Retângulo <span class="shortcut">R</span></div>
+      <div class="dd-item" onclick="setTool('circle')">Círculo <span class="shortcut">C</span></div>
+      <div class="dd-item" onclick="setTool('arc')">Arco <span class="shortcut">A</span></div>
+      <div class="dd-item" onclick="setTool('dimension')">Cota <span class="shortcut">D</span></div>
+    </div>
+  </div>
+  <div class="menu-item" onclick="showTemplateModal()">Templates</div>
+  <div class="menu-item" onclick="showAbout()">Ajuda</div>
+</div>
+
+<!-- MAIN AREA -->
+<div id="main">
+
+  <!-- LEFT TOOLBAR -->
+  <div id="toolbar">
+    <div class="tool-group-label">Nav</div>
+    <div class="tool-btn" id="tool-select" onclick="setTool('select')" title="select">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M4 0l16 12-7 1-4 8L4 0z"/></svg>
+      <div class="tooltip">Selecionar [Esc/S]</div>
+    </div>
+    <div class="tool-btn" id="tool-pan" onclick="setTool('pan')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M12 12v0"/></svg>
+      <div class="tooltip">Pan [P / Roda do mouse]</div>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group-label">Draw</div>
+    <div class="tool-btn" id="tool-line" onclick="setTool('line')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="21" x2="21" y2="3"/></svg>
+      <div class="tooltip">Linha [L]</div>
+    </div>
+    <div class="tool-btn" id="tool-polyline" onclick="setTool('polyline')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3,18 8,8 14,14 21,4"/></svg>
+      <div class="tooltip">Polilinha [PL]</div>
+    </div>
+    <div class="tool-btn" id="tool-rectangle" onclick="setTool('rectangle')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>
+      <div class="tooltip">Retângulo [R]</div>
+    </div>
+    <div class="tool-btn" id="tool-circle" onclick="setTool('circle')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+      <div class="tooltip">Círculo [C]</div>
+    </div>
+    <div class="tool-btn" id="tool-arc" onclick="setTool('arc')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 20 Q12 4 20 20"/></svg>
+      <div class="tooltip">Arco [A]</div>
+    </div>
+    <div class="tool-btn" id="tool-ellipse" onclick="setTool('ellipse')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>
+      <div class="tooltip">Elipse [E]</div>
+    </div>
+    <div class="tool-btn" id="tool-text" onclick="setTool('text')">
+      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><text x="4" y="18" font-size="16" font-family="monospace">T</text></svg>
+      <div class="tooltip">Texto [T]</div>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group-label">Dim</div>
+    <div class="tool-btn" id="tool-dimension" onclick="setTool('dimension')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><line x1="12" y1="12" x2="12" y2="17"/><text x="8" y="11" font-size="6" fill="currentColor">10.0</text></svg>
+      <div class="tooltip">Cota Linear [D]</div>
+    </div>
+    <div class="tool-btn" id="tool-dim-angular" onclick="setTool('dim-angular')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 20 L4 4 M4 20 L20 20"/><path d="M4 4 A16 16 0 0 1 20 20" stroke-dasharray="2"/></svg>
+      <div class="tooltip">Cota Angular</div>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-group-label">Edit</div>
+    <div class="tool-btn" id="tool-move" onclick="setTool('move')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M12 12h0"/><line x1="12" y1="12" x2="12" y2="12"/></svg>
+      <div class="tooltip">Mover [M]</div>
+    </div>
+    <div class="tool-btn" id="tool-rotate" onclick="setTool('rotate')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38"/></svg>
+      <div class="tooltip">Rotacionar [RO]</div>
+    </div>
+    <div class="tool-btn" id="tool-scale" onclick="setTool('scale')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+      <div class="tooltip">Escalar [SC]</div>
+    </div>
+    <div class="tool-btn" id="tool-mirror" onclick="setTool('mirror')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2"/><path d="M6 6 L12 12 L6 18"/><path d="M18 6 L12 12 L18 18"/></svg>
+      <div class="tooltip">Espelhar [MI]</div>
+    </div>
+    <div class="tool-btn" id="tool-offset" onclick="setTool('offset')">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="12" height="10" rx="1"/><rect x="9" y="9" width="12" height="10" rx="1" opacity="0.5"/></svg>
+      <div class="tooltip">Offset [O]</div>
+    </div>
+    <div class="tool-sep"></div>
+    <div class="tool-btn" onclick="cad.deleteSelected()" style="color:var(--danger)">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      <div class="tooltip">Deletar [Del]</div>
+    </div>
+  </div>
+
+  <!-- CANVAS AREA -->
+  <div id="canvas-container">
+    <canvas id="canvas-bg"></canvas>
+    <canvas id="canvas-main"></canvas>
+    <canvas id="canvas-ui"></canvas>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="right-panel">
+    <div class="panel-section">
+      <div class="panel-header" onclick="togglePanel('layers')">
+        <span>⬜ LAYERS</span>
+        <span id="layer-count">0</span>
+      </div>
+      <div class="panel-body" id="panel-layers">
+        <div id="layers-list"></div>
+        <div style="display:flex;gap:4px;margin-top:6px;">
+          <button class="btn-small" onclick="addLayer()" style="flex:1">+ Layer</button>
+          <button class="btn-small" onclick="deleteLayer()">✕</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-header">⚙ PROPRIEDADES</div>
+      <div class="panel-body">
+        <div class="prop-row">
+          <span class="prop-label">Layer:</span>
+          <select class="prop-select" id="prop-layer" onchange="cad.setCurrentLayer(this.value)"></select>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Cor:</span>
+          <input type="color" id="prop-color" value="#3b82f6" class="color-swatch" onchange="cad.setCurrentColor(this.value)" style="width:60px;height:22px;padding:0;border:1px solid var(--border);background:transparent;cursor:pointer;">
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Espessura:</span>
+          <select class="prop-select" id="prop-lw" onchange="cad.setCurrentLineWidth(parseFloat(this.value))">
+            <option value="0.5">0.5 px</option>
+            <option value="1" selected>1 px</option>
+            <option value="1.5">1.5 px</option>
+            <option value="2">2 px</option>
+            <option value="3">3 px</option>
+          </select>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Tipo linha:</span>
+          <select class="prop-select" id="prop-lt" onchange="cad.setCurrentLineDash(this.value)">
+            <option value="solid">Contínua</option>
+            <option value="dashed">Tracejada</option>
+            <option value="dotted">Pontilhada</option>
+            <option value="center">Centro</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-header">◈ SNAP & MODO</div>
+      <div class="toggle-grid">
+        <div class="toggle-btn on" id="tog-grid" onclick="toggleSnap('grid')">GRID</div>
+        <div class="toggle-btn on" id="tog-snap" onclick="toggleSnap('snap')">SNAP</div>
+        <div class="toggle-btn" id="tog-ortho" onclick="toggleSnap('ortho')">ORTHO</div>
+        <div class="toggle-btn on" id="tog-didactic" onclick="toggleDidactic()">DIDÁTICO</div>
+        <div class="toggle-btn on" id="tog-endpt" onclick="toggleSnap('endpoint')">ENDPT</div>
+        <div class="toggle-btn on" id="tog-midpt" onclick="toggleSnap('midpoint')">MIDPT</div>
+        <div class="toggle-btn" id="tog-inter" onclick="toggleSnap('intersection')">INTER</div>
+        <div class="toggle-btn on" id="tog-center" onclick="toggleSnap('center')">CENTER</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-header">📐 GRADE</div>
+      <div class="panel-body">
+        <div class="prop-row">
+          <span class="prop-label">Espaço:</span>
+          <select class="prop-select" id="grid-size" onchange="cad.setGridSize(parseInt(this.value))">
+            <option value="5">5 mm</option>
+            <option value="10" selected>10 mm</option>
+            <option value="20">20 mm</option>
+            <option value="50">50 mm</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section" style="flex:1;overflow:hidden;">
+      <div class="panel-header">ℹ SELEÇÃO</div>
+      <div class="panel-body" id="selection-info" style="font-size:10px;color:var(--text-muted);">
+        Nenhum objeto selecionado
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM COMMAND LINE -->
+<div id="bottom-bar">
+  <div id="cmd-output"></div>
+  <div id="cmd-input-row">
+    <span id="cmd-prompt-label">Command:</span>
+    <input id="cmd-input" placeholder="Digite um comando ou use as ferramentas acima..." autocomplete="off" spellcheck="false">
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+  <div class="status-item"><span class="status-mode" id="status-tool">SELECT</span></div>
+  <div class="status-item"><span>Zoom:</span><span class="val" id="status-zoom">100%</span></div>
+  <div class="status-item"><span>Objetos:</span><span class="val" id="status-count">0</span></div>
+  <div class="status-item"><span>Layer:</span><span class="val" id="status-layer">0</span></div>
+  <div class="status-item"><span>Snap:</span><span class="val" id="status-snap">Grid</span></div>
+  <div class="status-item" style="margin-left:auto;"><span>TechDraw CAD v1.0 — © 2025</span></div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-layer">
+  <div class="modal">
+    <h3>Novo Layer</h3>
+    <label>Nome:</label>
+    <input id="layer-name-input" value="Layer 1">
+    <label>Cor:</label>
+    <input type="color" id="layer-color-input" value="#3b82f6" style="width:100%;height:30px;margin-bottom:10px;">
+    <div class="modal-actions">
+      <button class="btn-small" onclick="closeModal('modal-layer')">Cancelar</button>
+      <button class="btn-small primary" onclick="confirmAddLayer()">Criar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-template">
+  <div class="modal">
+    <h3>Templates de Folha</h3>
+    <label>Formato:</label>
+    <select id="template-select" style="width:100%;padding:6px;background:var(--bg-hover);border:1px solid var(--border);color:var(--text-primary);font-family:var(--mono);margin-bottom:10px;border-radius:3px;">
+      <option value="a4">A4 (210×297mm)</option>
+      <option value="a3">A3 (297×420mm)</option>
+      <option value="a2">A2 (420×594mm)</option>
+    </select>
+    <label>Orientação:</label>
+    <select id="template-orient" style="width:100%;padding:6px;background:var(--bg-hover);border:1px solid var(--border);color:var(--text-primary);font-family:var(--mono);margin-bottom:10px;border-radius:3px;">
+      <option value="portrait">Retrato</option>
+      <option value="landscape">Paisagem</option>
+    </select>
+    <div class="modal-actions">
+      <button class="btn-small" onclick="closeModal('modal-template')">Cancelar</button>
+      <button class="btn-small primary" onclick="applyTemplate()">Aplicar</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="file-open" accept=".json" style="display:none" onchange="handleFileOpen(event)">
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  TECHDRAW CAD ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+const CAD = {
+  // ─── STATE ───────────────────────────────────────────────────
+  entities: [],
+  layers: [
+    { id: 0, name: '0', color: '#e2e8f0', visible: true, locked: false, lineType: 'solid' },
+    { id: 1, name: 'Construção', color: '#64748b', visible: true, locked: false, lineType: 'dashed' },
+    { id: 2, name: 'Dimensão', color: '#f59e0b', visible: true, locked: false, lineType: 'solid' },
+  ],
+  currentLayer: 0,
+  currentColor: '#3b82f6',
+  currentLineWidth: 1,
+  currentLineDash: 'solid',
+  currentTool: 'select',
+  selected: new Set(),
+  undoStack: [],
+  redoStack: [],
+  
+  // ─── VIEWPORT ─────────────────────────────────────────────────
+  viewport: { x: 0, y: 0, scale: 1 },
+  
+  // ─── DRAWING STATE ────────────────────────────────────────────
+  drawingState: null,
+  hoverPoint: null,
+  snapPoint: null,
+  snapType: null,
+  
+  // ─── MODES ────────────────────────────────────────────────────
+  modes: {
+    grid: true,
+    snap: true,
+    ortho: false,
+    didactic: true,
+    gridSize: 10,
+    snapTypes: { endpoint: true, midpoint: true, intersection: false, center: true }
+  },
+  
+  // ─── INTERACTION STATE ────────────────────────────────────────
+  isPanning: false,
+  panStart: null,
+  isWindowSelecting: false,
+  windowStart: null,
+  
+  // ─── INIT ─────────────────────────────────────────────────────
+  init() {
+    this.canvasBg = document.getElementById('canvas-bg');
+    this.canvasMain = document.getElementById('canvas-main');
+    this.canvasUi = document.getElementById('canvas-ui');
+    this.ctxBg = this.canvasBg.getContext('2d');
+    this.ctxMain = this.canvasMain.getContext('2d');
+    this.ctxUi = this.canvasUi.getContext('2d');
+    
+    this.resize();
+    window.addEventListener('resize', () => this.resize());
+    
+    // Center viewport
+    this.viewport.x = this.canvasMain.width / 2;
+    this.viewport.y = this.canvasMain.height / 2;
+    
+    this.bindEvents();
+    this.renderAll();
+    this.updateLayerPanel();
+    this.updatePropLayerSelect();
+    this.cmdLog('TechDraw CAD inicializado. Digite um comando ou use as ferramentas.', 'info');
+    this.cmdLog('Comandos: LINE, CIRCLE, RECT, ARC, PL, DIM, UNDO, REDO, ZOOM, PAN, SELECT', 'info');
+    this.saveSnapshot();
+  },
+  
+  resize() {
+    const container = document.getElementById('canvas-container');
+    const w = container.clientWidth;
+    const h = container.clientHeight;
+    [this.canvasBg, this.canvasMain, this.canvasUi].forEach(c => {
+      c.width = w; c.height = h;
+    });
+    this.renderAll();
+  },
+
+  // ─── COORDINATE TRANSFORMS ────────────────────────────────────
+  toScreen(wx, wy) {
+    return {
+      x: wx * this.viewport.scale + this.viewport.x,
+      y: -wy * this.viewport.scale + this.viewport.y
+    };
+  },
+  toWorld(sx, sy) {
+    return {
+      x: (sx - this.viewport.x) / this.viewport.scale,
+      y: -(sy - this.viewport.y) / this.viewport.scale
+    };
+  },
+  
+  // ─── SNAP ENGINE ──────────────────────────────────────────────
+  getSnap(mx, my) {
+    if (!this.modes.snap) {
+      const w = this.toWorld(mx, my);
+      if (this.modes.ortho && this.drawingState && this.drawingState.points.length > 0) {
+        return this.applyOrtho(w, this.drawingState.points[this.drawingState.points.length - 1]);
+      }
+      return { ...w, snapType: null };
+    }
+    
+    const worldPos = this.toWorld(mx, my);
+    const snapDist = 12 / this.viewport.scale; // screen pixels to world
+    
+    let best = null, bestDist = snapDist;
+    
+    // Grid snap
+    if (this.modes.grid) {
+      const gs = this.modes.gridSize;
+      const gx = Math.round(worldPos.x / gs) * gs;
+      const gy = Math.round(worldPos.y / gs) * gs;
+      const d = Math.hypot(gx - worldPos.x, gy - worldPos.y);
+      if (d < bestDist) { bestDist = d; best = { x: gx, y: gy, snapType: 'grid' }; }
+    }
+    
+    // Object snaps
+    for (const ent of this.entities) {
+      const layer = this.layers.find(l => l.id === ent.layer);
+      if (layer && !layer.visible) continue;
+      
+      const pts = this.getSnapPoints(ent);
+      for (const sp of pts) {
+        const d = Math.hypot(sp.x - worldPos.x, sp.y - worldPos.y);
+        if (d < bestDist && this.modes.snapTypes[sp.type]) {
+          bestDist = d; best = { ...sp };
+        }
+      }
+    }
+    
+    if (!best) best = { ...worldPos, snapType: null };
+    
+    if (this.modes.ortho && this.drawingState && this.drawingState.points.length > 0) {
+      best = this.applyOrtho(best, this.drawingState.points[this.drawingState.points.length - 1]);
+    }
+    
+    return best;
+  },
+  
+  applyOrtho(pt, ref) {
+    const dx = Math.abs(pt.x - ref.x), dy = Math.abs(pt.y - ref.y);
+    if (dx > dy) return { x: pt.x, y: ref.y, snapType: 'ortho' };
+    return { x: ref.x, y: pt.y, snapType: 'ortho' };
+  },
+  
+  getSnapPoints(ent) {
+    const pts = [];
+    switch (ent.type) {
+      case 'line':
+        pts.push({ x: ent.x1, y: ent.y1, type: 'endpoint' });
+        pts.push({ x: ent.x2, y: ent.y2, type: 'endpoint' });
+        pts.push({ x: (ent.x1+ent.x2)/2, y: (ent.y1+ent.y2)/2, type: 'midpoint' });
+        break;
+      case 'circle':
+        pts.push({ x: ent.cx, y: ent.cy, type: 'center' });
+        pts.push({ x: ent.cx + ent.r, y: ent.cy, type: 'endpoint' });
+        pts.push({ x: ent.cx - ent.r, y: ent.cy, type: 'endpoint' });
+        pts.push({ x: ent.cx, y: ent.cy + ent.r, type: 'endpoint' });
+        pts.push({ x: ent.cx, y: ent.cy - ent.r, type: 'endpoint' });
+        break;
+      case 'rectangle':
+        const { x, y, w, h } = ent;
+        pts.push({ x, y, type: 'endpoint' });
+        pts.push({ x: x+w, y, type: 'endpoint' });
+        pts.push({ x, y: y+h, type: 'endpoint' });
+        pts.push({ x: x+w, y: y+h, type: 'endpoint' });
+        pts.push({ x: x+w/2, y, type: 'midpoint' });
+        pts.push({ x: x+w/2, y: y+h, type: 'midpoint' });
+        pts.push({ x, y: y+h/2, type: 'midpoint' });
+        pts.push({ x: x+w, y: y+h/2, type: 'midpoint' });
+        pts.push({ x: x+w/2, y: y+h/2, type: 'center' });
+        break;
+      case 'polyline':
+        for (let i = 0; i < ent.points.length; i++) {
+          pts.push({ ...ent.points[i], type: 'endpoint' });
+          if (i > 0) {
+            pts.push({
+              x: (ent.points[i].x + ent.points[i-1].x)/2,
+              y: (ent.points[i].y + ent.points[i-1].y)/2,
+              type: 'midpoint'
+            });
+          }
+        }
+        break;
+    }
+    return pts;
+  },
+  
+  // ─── TOOL HANDLING ────────────────────────────────────────────
+  startTool(pt) {
+    switch (this.currentTool) {
+      case 'line':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'line', points: [pt] };
+          this.cmdLog('Selecione o segundo ponto:', 'prompt');
+        } else {
+          this.finishLine(pt);
+        }
+        break;
+      case 'polyline':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'polyline', points: [pt] };
+          this.cmdLog('Próximo ponto (Enter para finalizar):', 'prompt');
+        } else {
+          this.drawingState.points.push(pt);
+          this.cmdLog(`Ponto ${this.drawingState.points.length} adicionado. Próximo ponto:`, 'prompt');
+        }
+        break;
+      case 'rectangle':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'rectangle', points: [pt] };
+          this.cmdLog('Selecione canto oposto:', 'prompt');
+        } else {
+          this.finishRectangle(pt);
+        }
+        break;
+      case 'circle':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'circle', points: [pt] };
+          this.cmdLog('Selecione ponto no raio:', 'prompt');
+        } else {
+          this.finishCircle(pt);
+        }
+        break;
+      case 'arc':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'arc', points: [pt] };
+          this.cmdLog('Selecione ponto final do arco:', 'prompt');
+        } else if (this.drawingState.points.length === 1) {
+          this.drawingState.points.push(pt);
+          this.cmdLog('Selecione ponto de passagem:', 'prompt');
+        } else {
+          this.finishArc(pt);
+        }
+        break;
+      case 'ellipse':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'ellipse', points: [pt] };
+          this.cmdLog('Selecione ponto do eixo:', 'prompt');
+        } else if (this.drawingState.points.length === 1) {
+          this.drawingState.points.push(pt);
+          this.cmdLog('Selecione semi-eixo menor:', 'prompt');
+        } else {
+          this.finishEllipse(pt);
+        }
+        break;
+      case 'dimension':
+        if (!this.drawingState) {
+          this.drawingState = { type: 'dimension', points: [pt] };
+          this.cmdLog('Selecione segundo ponto:', 'prompt');
+        } else if (this.drawingState.points.length === 1) {
+          this.drawingState.points.push(pt);
+          this.cmdLog('Selecione posição da cota:', 'prompt');
+        } else {
+          this.finishDimension(pt);
+        }
+        break;
+      case 'text':
+        const txt = prompt('Digite o texto:');
+        if (txt) {
+          this.addEntity({ type: 'text', x: pt.x, y: pt.y, text: txt,
+            fontSize: 14, color: this.currentColor, layer: this.currentLayer,
+            style: this.getStyle() });
+          this.cmdLog(`Texto adicionado: "${txt}"`, 'success');
+        }
+        break;
+      case 'move':
+        if (!this.drawingState && this.selected.size > 0) {
+          this.drawingState = { type: 'move', base: pt };
+          this.cmdLog('Selecione ponto de destino:', 'prompt');
+        } else if (this.drawingState && this.drawingState.type === 'move') {
+          this.finishMove(pt);
+        }
+        break;
+      case 'rotate':
+        if (!this.drawingState && this.selected.size > 0) {
+          this.drawingState = { type: 'rotate', center: pt };
+          this.cmdLog('Selecione ponto de referência:', 'prompt');
+        } else if (this.drawingState && this.drawingState.type === 'rotate') {
+          const angle = prompt('Ângulo de rotação (graus):');
+          if (angle !== null) this.finishRotate(parseFloat(angle));
+        }
+        break;
+      case 'mirror':
+        if (!this.drawingState && this.selected.size > 0) {
+          this.drawingState = { type: 'mirror', points: [pt] };
+          this.cmdLog('Selecione segundo ponto do eixo de espelhamento:', 'prompt');
+        } else if (this.drawingState && this.drawingState.type === 'mirror') {
+          this.finishMirror(pt);
+        }
+        break;
+      case 'offset':
+        if (this.selected.size === 1) {
+          const dist = parseFloat(prompt('Distância do offset:'));
+          if (!isNaN(dist)) this.finishOffset(dist);
+        } else {
+          this.cmdLog('Selecione um objeto primeiro para offset.', 'error');
+        }
+        break;
+      case 'scale':
+        if (this.selected.size > 0) {
+          const factor = parseFloat(prompt('Fator de escala (ex: 2 = dobrar):'));
+          if (!isNaN(factor) && factor > 0) this.finishScale(pt, factor);
+        }
+        break;
+    }
+  },
+
+  // ─── FINISH ACTIONS ───────────────────────────────────────────
+  finishLine(p2) {
+    const p1 = this.drawingState.points[0];
+    this.addEntity({ type: 'line', x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y,
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle() });
+    const len = Math.hypot(p2.x-p1.x, p2.y-p1.y).toFixed(3);
+    const ang = (Math.atan2(p2.y-p1.y, p2.x-p1.x) * 180/Math.PI).toFixed(1);
+    this.cmdLog(`Linha criada. Comprimento: ${len}mm  Ângulo: ${ang}°`, 'success');
+    this.drawingState = null;
+    this.cmdLog('Selecione primeiro ponto:', 'prompt');
+  },
+  finishRectangle(p2) {
+    const p1 = this.drawingState.points[0];
+    const x = Math.min(p1.x, p2.x), y = Math.min(p1.y, p2.y);
+    const w = Math.abs(p2.x-p1.x), h = Math.abs(p2.y-p1.y);
+    this.addEntity({ type: 'rectangle', x, y, w, h,
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle() });
+    this.cmdLog(`Retângulo ${w.toFixed(1)}×${h.toFixed(1)}mm criado.`, 'success');
+    this.drawingState = null;
+    this.cmdLog('Selecione primeiro canto:', 'prompt');
+  },
+  finishCircle(p2) {
+    const c = this.drawingState.points[0];
+    const r = Math.hypot(p2.x-c.x, p2.y-c.y);
+    this.addEntity({ type: 'circle', cx: c.x, cy: c.y, r,
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle() });
+    this.cmdLog(`Círculo r=${r.toFixed(3)}mm criado.`, 'success');
+    this.drawingState = null;
+    this.cmdLog('Selecione centro:', 'prompt');
+  },
+  finishArc(p3) {
+    const pts = this.drawingState.points;
+    const p1 = pts[0], p2 = pts[1];
+    const angle1 = Math.atan2(p1.y - p1.y, p1.x - p1.x);
+    const cx = (p1.x + p2.x) / 2, cy = (p1.y + p2.y) / 2;
+    const r = Math.hypot(p2.x-p1.x, p2.y-p1.y)/2;
+    const sa = Math.atan2(p1.y - cy, p1.x - cx);
+    const ea = Math.atan2(p2.y - cy, p2.x - cx);
+    this.addEntity({ type: 'arc', cx, cy, r, startAngle: sa, endAngle: ea,
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle() });
+    this.cmdLog(`Arco criado.`, 'success');
+    this.drawingState = null;
+  },
+  finishEllipse(p3) {
+    const pts = this.drawingState.points;
+    const cx = pts[0].x, cy = pts[0].y;
+    const rx = Math.abs(pts[1].x - cx);
+    const ry = Math.abs(p3.y - cy);
+    this.addEntity({ type: 'ellipse', cx, cy, rx, ry, rotation: 0,
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle() });
+    this.cmdLog(`Elipse ${rx.toFixed(1)}×${ry.toFixed(1)}mm criada.`, 'success');
+    this.drawingState = null;
+  },
+  finishPolyline() {
+    if (!this.drawingState || this.drawingState.points.length < 2) {
+      this.drawingState = null;
+      return;
+    }
+    this.addEntity({ type: 'polyline', points: [...this.drawingState.points],
+      color: this.currentColor, lineWidth: this.currentLineWidth,
+      lineDash: this.currentLineDash, layer: this.currentLayer, style: this.getStyle(), closed: false });
+    this.cmdLog(`Polilinha com ${this.drawingState.points.length} pontos criada.`, 'success');
+    this.drawingState = null;
+  },
+  finishDimension(p3) {
+    const pts = this.drawingState.points;
+    const p1 = pts[0], p2 = pts[1];
+    const dist = Math.hypot(p2.x-p1.x, p2.y-p1.y);
+    this.addEntity({ type: 'dimension', x1: p1.x, y1: p1.y, x2: p2.x, y2: p2.y,
+      offsetY: p3.y, value: dist.toFixed(2), unit: 'mm',
+      color: '#f59e0b', lineWidth: 0.5, layer: this.currentLayer, style: this.getStyle() });
+    this.cmdLog(`Cota ${dist.toFixed(2)}mm inserida.`, 'success');
+    this.drawingState = null;
+  },
+  finishMove(dest) {
+    const src = this.drawingState.base;
+    const dx = dest.x - src.x, dy = dest.y - src.y;
+    this.saveSnapshot();
+    for (const id of this.selected) {
+      const e = this.entities.find(e => e.id === id);
+      if (!e) continue;
+      this.translateEntity(e, dx, dy);
+    }
+    this.drawingState = null;
+    this.cmdLog(`Objetos movidos por (${dx.toFixed(2)}, ${dy.toFixed(2)})mm.`, 'success');
+    this.renderAll();
+  },
+  finishRotate(angleDeg) {
+    const center = this.drawingState.center;
+    const rad = angleDeg * Math.PI / 180;
+    this.saveSnapshot();
+    for (const id of this.selected) {
+      const e = this.entities.find(e => e.id === id);
+      if (!e) continue;
+      this.rotateEntity(e, center, rad);
+    }
+    this.drawingState = null;
+    this.cmdLog(`Objetos rotacionados ${angleDeg}°.`, 'success');
+    this.renderAll();
+  },
+  finishMirror(p2) {
+    const p1 = this.drawingState.points[0];
+    this.saveSnapshot();
+    const newEnts = [];
+    for (const id of this.selected) {
+      const e = this.entities.find(e => e.id === id);
+      if (!e) continue;
+      const copy = JSON.parse(JSON.stringify(e));
+      copy.id = this.genId();
+      this.mirrorEntity(copy, p1, p2);
+      newEnts.push(copy);
+    }
+    newEnts.forEach(e => this.entities.push(e));
+    this.drawingState = null;
+    this.cmdLog(`${newEnts.length} objeto(s) espelhado(s).`, 'success');
+    this.renderAll(); this.updateStatus();
+  },
+  finishOffset(dist) {
+    const id = [...this.selected][0];
+    const e = this.entities.find(e => e.id === id);
+    if (!e) return;
+    this.saveSnapshot();
+    const copy = JSON.parse(JSON.stringify(e));
+    copy.id = this.genId();
+    if (e.type === 'line') {
+      const dx = e.x2-e.x1, dy = e.y2-e.y1;
+      const len = Math.hypot(dx,dy);
+      const nx = -dy/len * dist, ny = dx/len * dist;
+      copy.x1 += nx; copy.y1 += ny; copy.x2 += nx; copy.y2 += ny;
+    } else if (e.type === 'circle') {
+      copy.r += dist;
+    } else if (e.type === 'rectangle') {
+      copy.x -= dist; copy.y -= dist;
+      copy.w += dist*2; copy.h += dist*2;
+    }
+    this.entities.push(copy);
+    this.cmdLog(`Offset de ${dist}mm aplicado.`, 'success');
+    this.renderAll(); this.updateStatus();
+  },
+  finishScale(center, factor) {
+    this.saveSnapshot();
+    for (const id of this.selected) {
+      const e = this.entities.find(e => e.id === id);
+      if (!e) continue;
+      this.scaleEntity(e, center, factor);
+    }
+    this.drawingState = null;
+    this.cmdLog(`Escala ×${factor} aplicada.`, 'success');
+    this.renderAll();
+  },
+
+  // ─── ENTITY TRANSFORMS ────────────────────────────────────────
+  translateEntity(e, dx, dy) {
+    switch(e.type) {
+      case 'line': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy; break;
+      case 'circle': e.cx+=dx;e.cy+=dy; break;
+      case 'arc': e.cx+=dx;e.cy+=dy; break;
+      case 'rectangle': e.x+=dx;e.y+=dy; break;
+      case 'ellipse': e.cx+=dx;e.cy+=dy; break;
+      case 'polyline': e.points.forEach(p=>{p.x+=dx;p.y+=dy}); break;
+      case 'text': e.x+=dx;e.y+=dy; break;
+      case 'dimension': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy;e.offsetY+=dy; break;
+    }
+  },
+  rotateEntity(e, c, rad) {
+    const rot = (x,y) => {
+      const dx=x-c.x, dy=y-c.y;
+      return { x: c.x+dx*Math.cos(rad)-dy*Math.sin(rad), y: c.y+dx*Math.sin(rad)+dy*Math.cos(rad) };
+    };
+    switch(e.type) {
+      case 'line': {let a=rot(e.x1,e.y1),b=rot(e.x2,e.y2);e.x1=a.x;e.y1=a.y;e.x2=b.x;e.y2=b.y;} break;
+      case 'circle': {let a=rot(e.cx,e.cy);e.cx=a.x;e.cy=a.y;} break;
+      case 'rectangle': {let a=rot(e.x,e.y);e.x=a.x;e.y=a.y;} break;
+      case 'polyline': e.points=e.points.map(p=>rot(p.x,p.y)); break;
+    }
+  },
+  mirrorEntity(e, p1, p2) {
+    const mirrorPt = (x,y) => {
+      const dx=p2.x-p1.x, dy=p2.y-p1.y;
+      const t=((x-p1.x)*dx+(y-p1.y)*dy)/(dx*dx+dy*dy);
+      return { x: 2*(p1.x+t*dx)-x, y: 2*(p1.y+t*dy)-y };
+    };
+    switch(e.type) {
+      case 'line': {let a=mirrorPt(e.x1,e.y1),b=mirrorPt(e.x2,e.y2);e.x1=a.x;e.y1=a.y;e.x2=b.x;e.y2=b.y;} break;
+      case 'circle': {let a=mirrorPt(e.cx,e.cy);e.cx=a.x;e.cy=a.y;} break;
+      case 'rectangle': {let a=mirrorPt(e.x,e.y);e.x=a.x;e.y=a.y;} break;
+      case 'polyline': e.points=e.points.map(p=>{let a=mirrorPt(p.x,p.y);return a;}); break;
+    }
+  },
+  scaleEntity(e, c, f) {
+    const sc = (x,y) => ({ x: c.x+(x-c.x)*f, y: c.y+(y-c.y)*f });
+    switch(e.type) {
+      case 'line': {let a=sc(e.x1,e.y1),b=sc(e.x2,e.y2);e.x1=a.x;e.y1=a.y;e.x2=b.x;e.y2=b.y;} break;
+      case 'circle': {let a=sc(e.cx,e.cy);e.cx=a.x;e.cy=a.y;e.r*=f;} break;
+      case 'rectangle': {let a=sc(e.x,e.y);e.x=a.x;e.y=a.y;e.w*=f;e.h*=f;} break;
+      case 'ellipse': {let a=sc(e.cx,e.cy);e.cx=a.x;e.cy=a.y;e.rx*=f;e.ry*=f;} break;
+      case 'polyline': e.points=e.points.map(p=>{return sc(p.x,p.y);}); break;
+    }
+  },
+
+  // ─── ENTITY MANAGEMENT ────────────────────────────────────────
+  genId: () => 'e' + Date.now() + Math.random().toString(36).substr(2,5),
+  getStyle() {
+    return { color: this.currentColor, lineWidth: this.currentLineWidth, lineDash: this.currentLineDash };
+  },
+  addEntity(ent) {
+    ent.id = this.genId();
+    this.saveSnapshot();
+    this.entities.push(ent);
+    this.renderAll();
+    this.updateStatus();
+  },
+  deleteSelected() {
+    if (this.selected.size === 0) return;
+    this.saveSnapshot();
+    this.entities = this.entities.filter(e => !this.selected.has(e.id));
+    this.selected.clear();
+    this.cmdLog(`Objeto(s) deletado(s).`, 'success');
+    this.renderAll(); this.updateStatus(); this.updateSelectionInfo();
+  },
+  selectAll() {
+    this.selected = new Set(this.entities.map(e=>e.id));
+    this.renderAll(); this.updateSelectionInfo();
+  },
+  
+  // ─── UNDO/REDO ────────────────────────────────────────────────
+  saveSnapshot() {
+    this.undoStack.push(JSON.stringify(this.entities));
+    if (this.undoStack.length > 50) this.undoStack.shift();
+    this.redoStack = [];
+  },
+  undo() {
+    if (this.undoStack.length <= 1) { this.cmdLog('Nada para desfazer.','error'); return; }
+    this.redoStack.push(this.undoStack.pop());
+    this.entities = JSON.parse(this.undoStack[this.undoStack.length - 1] || '[]');
+    this.selected.clear();
+    this.cmdLog('Desfeito.','info');
+    this.renderAll(); this.updateStatus();
+  },
+  redo() {
+    if (this.redoStack.length === 0) { this.cmdLog('Nada para refazer.','error'); return; }
+    const snap = this.redoStack.pop();
+    this.undoStack.push(snap);
+    this.entities = JSON.parse(snap);
+    this.selected.clear();
+    this.cmdLog('Refeito.','info');
+    this.renderAll(); this.updateStatus();
+  },
+  
+  // ─── VIEWPORT ─────────────────────────────────────────────────
+  zoom(factor, cx, cy) {
+    cx = cx || this.canvasMain.width/2;
+    cy = cy || this.canvasMain.height/2;
+    const before = this.toWorld(cx, cy);
+    this.viewport.scale = Math.min(50, Math.max(0.05, this.viewport.scale * factor));
+    const after = this.toScreen(before.x, before.y);
+    this.viewport.x += cx - after.x;
+    this.viewport.y += cy - after.y;
+    this.renderAll();
+    document.getElementById('status-zoom').textContent = (this.viewport.scale * 100).toFixed(0) + '%';
+  },
+  zoomFit() {
+    if (this.entities.length === 0) {
+      this.viewport = { x: this.canvasMain.width/2, y: this.canvasMain.height/2, scale: 1 };
+    } else {
+      let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+      for (const e of this.entities) {
+        const bb = this.getBBox(e);
+        if (bb) {
+          minX=Math.min(minX,bb.x);minY=Math.min(minY,bb.y);
+          maxX=Math.max(maxX,bb.x+bb.w);maxY=Math.max(maxY,bb.y+bb.h);
+        }
+      }
+      const pw=this.canvasMain.width, ph=this.canvasMain.height;
+      const ew=maxX-minX||100, eh=maxY-minY||100;
+      this.viewport.scale = Math.min(pw/ew, ph/eh) * 0.8;
+      this.viewport.x = pw/2 - (minX+ew/2)*this.viewport.scale;
+      this.viewport.y = ph/2 + (minY+eh/2)*this.viewport.scale;
+    }
+    this.renderAll();
+  },
+  getBBox(e) {
+    switch(e.type) {
+      case 'line': return {x:Math.min(e.x1,e.x2),y:Math.min(e.y1,e.y2),w:Math.abs(e.x2-e.x1),h:Math.abs(e.y2-e.y1)};
+      case 'circle': return {x:e.cx-e.r,y:e.cy-e.r,w:e.r*2,h:e.r*2};
+      case 'rectangle': return {x:e.x,y:e.y,w:e.w,h:e.h};
+      case 'ellipse': return {x:e.cx-e.rx,y:e.cy-e.ry,w:e.rx*2,h:e.ry*2};
+      default: return null;
+    }
+  },
+  
+  // ─── HIT TEST ─────────────────────────────────────────────────
+  hitTest(wx, wy) {
+    const tol = 6 / this.viewport.scale;
+    for (let i = this.entities.length - 1; i >= 0; i--) {
+      const e = this.entities[i];
+      const layer = this.layers.find(l => l.id === e.layer);
+      if (layer && (!layer.visible || layer.locked)) continue;
+      if (this.hitEntity(e, wx, wy, tol)) return e;
+    }
+    return null;
+  },
+  hitEntity(e, x, y, tol) {
+    switch(e.type) {
+      case 'line': return this.ptToSegDist(x,y,e.x1,e.y1,e.x2,e.y2) < tol;
+      case 'circle': return Math.abs(Math.hypot(x-e.cx,y-e.cy)-e.r) < tol;
+      case 'rectangle': {
+        const inX=x>=e.x&&x<=e.x+e.w, inY=y>=e.y&&y<=e.y+e.h;
+        return (inX && (Math.abs(y-e.y)<tol||Math.abs(y-e.y-e.h)<tol)) ||
+               (inY && (Math.abs(x-e.x)<tol||Math.abs(x-e.x-e.w)<tol));
+      }
+      case 'ellipse': {
+        const nx=(x-e.cx)/e.rx, ny=(y-e.cy)/e.ry;
+        return Math.abs(nx*nx+ny*ny - 1) < 0.3;
+      }
+      case 'text': return x>=e.x&&x<=e.x+100&&y>=e.y-20&&y<=e.y;
+      case 'polyline': {
+        for (let i=0;i<e.points.length-1;i++) {
+          if (this.ptToSegDist(x,y,e.points[i].x,e.points[i].y,e.points[i+1].x,e.points[i+1].y)<tol) return true;
+        }
+        return false;
+      }
+      case 'dimension': return this.ptToSegDist(x,y,e.x1,e.offsetY,e.x2,e.offsetY)<tol;
+      default: return false;
+    }
+  },
+  ptToSegDist(px,py,ax,ay,bx,by) {
+    const dx=bx-ax, dy=by-ay, l2=dx*dx+dy*dy;
+    if (l2===0) return Math.hypot(px-ax,py-ay);
+    const t=Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/l2));
+    return Math.hypot(px-(ax+t*dx), py-(ay+t*dy));
+  },
+
+  // ─── RENDER ───────────────────────────────────────────────────
+  renderAll() {
+    this.renderBg();
+    this.renderMain();
+    this.renderUi();
+  },
+  
+  renderBg() {
+    const ctx = this.ctxBg;
+    const w = this.canvasBg.width, h = this.canvasBg.height;
+    ctx.fillStyle = '#080a0f';
+    ctx.fillRect(0,0,w,h);
+    
+    if (!this.modes.grid) return;
+    
+    const gs = this.modes.gridSize * this.viewport.scale;
+    if (gs < 4) return;
+    
+    const ox = ((this.viewport.x % gs) + gs) % gs;
+    const oy = ((this.viewport.y % gs) + gs) % gs;
+    
+    ctx.strokeStyle = '#1a1f2e';
+    ctx.lineWidth = 0.5;
+    
+    // Minor grid
+    for (let x = ox; x < w; x += gs) {
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+    }
+    for (let y = oy; y < h; y += gs) {
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+    }
+    
+    // Major grid (every 10 cells)
+    const gs5 = gs * 10;
+    if (gs5 > 20) {
+      const ox5 = ((this.viewport.x % gs5) + gs5) % gs5;
+      const oy5 = ((this.viewport.y % gs5) + gs5) % gs5;
+      ctx.strokeStyle = '#1e2538';
+      ctx.lineWidth = 1;
+      for (let x = ox5; x < w; x += gs5) {
+        ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke();
+      }
+      for (let y = oy5; y < h; y += gs5) {
+        ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke();
+      }
+    }
+    
+    // Origin cross
+    const ox0 = this.viewport.x, oy0 = this.viewport.y;
+    ctx.strokeStyle = '#2e3d5e';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(ox0,0); ctx.lineTo(ox0,h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,oy0); ctx.lineTo(w,oy0); ctx.stroke();
+    ctx.setLineDash([]);
+  },
+  
+  renderMain() {
+    const ctx = this.ctxMain;
+    ctx.clearRect(0,0,this.canvasMain.width,this.canvasMain.height);
+    
+    for (const e of this.entities) {
+      const layer = this.layers.find(l => l.id === e.layer);
+      if (layer && !layer.visible) continue;
+      
+      const isSelected = this.selected.has(e.id);
+      this.drawEntity(ctx, e, isSelected);
+      
+      // Didactic overlays
+      if (this.modes.didactic) this.drawDidactic(ctx, e);
+    }
+    
+    // Preview while drawing
+    if (this.drawingState && this.hoverPoint) this.drawPreview(ctx);
+    
+    // Selection window
+    if (this.isWindowSelecting && this.windowStart && this.hoverPoint) {
+      this.drawSelectionWindow(ctx);
+    }
+  },
+  
+  setLineDash(ctx, type) {
+    switch(type) {
+      case 'dashed': ctx.setLineDash([8,4]); break;
+      case 'dotted': ctx.setLineDash([2,4]); break;
+      case 'center': ctx.setLineDash([16,4,4,4]); break;
+      default: ctx.setLineDash([]);
+    }
+  },
+  
+  drawEntity(ctx, e, selected) {
+    ctx.save();
+    const color = selected ? '#60a5fa' : (e.color || e.style?.color || '#e2e8f0');
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = (e.lineWidth || e.style?.lineWidth || 1);
+    this.setLineDash(ctx, e.lineDash || e.style?.lineDash || 'solid');
+    
+    if (selected) {
+      ctx.shadowColor = '#3b82f6';
+      ctx.shadowBlur = 8;
+    }
+    
+    switch(e.type) {
+      case 'line': {
+        const a = this.toScreen(e.x1,e.y1), b = this.toScreen(e.x2,e.y2);
+        ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+        break;
+      }
+      case 'circle': {
+        const c = this.toScreen(e.cx,e.cy);
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, e.r * this.viewport.scale, 0, Math.PI*2);
+        ctx.stroke();
+        break;
+      }
+      case 'arc': {
+        const c = this.toScreen(e.cx,e.cy);
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, e.r * this.viewport.scale, -e.startAngle, -e.endAngle, true);
+        ctx.stroke();
+        break;
+      }
+      case 'rectangle': {
+        const a = this.toScreen(e.x, e.y);
+        const w = e.w * this.viewport.scale, h = e.h * this.viewport.scale;
+        ctx.beginPath(); ctx.rect(a.x, a.y - h, w, h); ctx.stroke();
+        break;
+      }
+      case 'ellipse': {
+        const c = this.toScreen(e.cx,e.cy);
+        ctx.beginPath();
+        ctx.ellipse(c.x, c.y, e.rx*this.viewport.scale, e.ry*this.viewport.scale, 0, 0, Math.PI*2);
+        ctx.stroke();
+        break;
+      }
+      case 'polyline': {
+        if (e.points.length < 2) break;
+        ctx.beginPath();
+        const p0 = this.toScreen(e.points[0].x, e.points[0].y);
+        ctx.moveTo(p0.x, p0.y);
+        for (let i=1; i<e.points.length; i++) {
+          const p = this.toScreen(e.points[i].x, e.points[i].y);
+          ctx.lineTo(p.x, p.y);
+        }
+        if (e.closed) ctx.closePath();
+        ctx.stroke();
+        break;
+      }
+      case 'text': {
+        const p = this.toScreen(e.x, e.y);
+        ctx.font = `${(e.fontSize||12)*this.viewport.scale}px JetBrains Mono, monospace`;
+        ctx.fillText(e.text, p.x, p.y);
+        break;
+      }
+      case 'dimension': this.drawDimension(ctx, e); break;
+    }
+    
+    // Draw selection handles
+    if (selected) {
+      ctx.setLineDash([]);
+      ctx.shadowBlur = 0;
+      this.drawHandles(ctx, e);
+    }
+    ctx.restore();
+  },
+  
+  drawHandles(ctx, e) {
+    const handles = this.getSnapPoints(e).filter(p => p.type === 'endpoint');
+    ctx.fillStyle = '#3b82f6';
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    for (const h of handles) {
+      const s = this.toScreen(h.x, h.y);
+      ctx.fillRect(s.x-4, s.y-4, 8, 8);
+      ctx.strokeRect(s.x-4, s.y-4, 8, 8);
+    }
+  },
+  
+  drawDimension(ctx, e) {
+    ctx.strokeStyle = e.color || '#f59e0b';
+    ctx.fillStyle = e.color || '#f59e0b';
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([]);
+    
+    const p1s = this.toScreen(e.x1, e.y1);
+    const p2s = this.toScreen(e.x2, e.y2);
+    const py = this.toScreen(e.x1, e.offsetY).y;
+    
+    // Extension lines
+    ctx.beginPath();
+    ctx.moveTo(p1s.x, p1s.y); ctx.lineTo(p1s.x, py);
+    ctx.moveTo(p2s.x, p2s.y); ctx.lineTo(p2s.x, py);
+    ctx.stroke();
+    
+    // Dimension line
+    ctx.beginPath();
+    ctx.moveTo(p1s.x, py); ctx.lineTo(p2s.x, py);
+    ctx.stroke();
+    
+    // Arrows
+    const ah = 8, aw = 4;
+    ctx.beginPath();
+    ctx.moveTo(p1s.x, py);
+    ctx.lineTo(p1s.x+ah, py-aw);
+    ctx.lineTo(p1s.x+ah, py+aw);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(p2s.x, py);
+    ctx.lineTo(p2s.x-ah, py-aw);
+    ctx.lineTo(p2s.x-ah, py+aw);
+    ctx.fill();
+    
+    // Text
+    const midX = (p1s.x+p2s.x)/2;
+    ctx.font = `${10}px JetBrains Mono, monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(`${e.value}${e.unit}`, midX, py-6);
+    ctx.textAlign = 'left';
+  },
+  
+  drawDidactic(ctx, e) {
+    if (!this.modes.didactic) return;
+    ctx.save();
+    ctx.font = '9px JetBrains Mono, monospace';
+    ctx.fillStyle = '#64748b';
+    
+    switch(e.type) {
+      case 'line': {
+        const mx = (e.x1+e.x2)/2, my = (e.y1+e.y2)/2;
+        const len = Math.hypot(e.x2-e.x1,e.y2-e.y1);
+        const ms = this.toScreen(mx, my);
+        ctx.fillText(`${len.toFixed(1)}`, ms.x+4, ms.y-4);
+        break;
+      }
+      case 'circle': {
+        const cs = this.toScreen(e.cx, e.cy);
+        ctx.fillText(`r=${e.r.toFixed(1)}`, cs.x+4, cs.y-4);
+        break;
+      }
+      case 'rectangle': {
+        const ms = this.toScreen(e.x+e.w/2, e.y+e.h/2);
+        ctx.fillText(`${e.w.toFixed(1)}×${e.h.toFixed(1)}`, ms.x+4, ms.y-4);
+        break;
+      }
+    }
+    ctx.restore();
+  },
+  
+  drawPreview(ctx) {
+    const s = this.drawingState;
+    const hp = this.hoverPoint;
+    ctx.save();
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5,5]);
+    ctx.globalAlpha = 0.7;
+    
+    switch(s.type) {
+      case 'line':
+      case 'dimension': {
+        if (s.points.length >= 1) {
+          const p1 = this.toScreen(s.points[0].x, s.points[0].y);
+          const p2 = this.toScreen(hp.x, hp.y);
+          ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+          const len = Math.hypot(hp.x-s.points[0].x, hp.y-s.points[0].y).toFixed(2);
+          ctx.setLineDash([]); ctx.font='10px JetBrains Mono';
+          ctx.fillStyle='#3b82f6'; ctx.globalAlpha=1;
+          ctx.fillText(`${len}mm`, p2.x+8, p2.y-8);
+        }
+        if (s.type==='dimension' && s.points.length===2) {
+          const p1=this.toScreen(s.points[0].x,s.points[0].y);
+          const p2=this.toScreen(s.points[1].x,s.points[1].y);
+          const py=this.toScreen(0,hp.y).y;
+          ctx.strokeStyle='#f59e0b';
+          ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p1.x,py); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(p2.x,p2.y); ctx.lineTo(p2.x,py); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(p1.x,py); ctx.lineTo(p2.x,py); ctx.stroke();
+        }
+        break;
+      }
+      case 'rectangle': {
+        const p1 = this.toScreen(s.points[0].x, s.points[0].y);
+        const p2 = this.toScreen(hp.x, hp.y);
+        const x=Math.min(p1.x,p2.x), y=Math.min(p1.y,p2.y);
+        const w=Math.abs(p2.x-p1.x), h=Math.abs(p2.y-p1.y);
+        ctx.beginPath(); ctx.rect(x,y,w,h); ctx.stroke();
+        ctx.setLineDash([]); ctx.font='10px JetBrains Mono';
+        ctx.fillStyle='#3b82f6'; ctx.globalAlpha=1;
+        const ww=Math.abs(hp.x-s.points[0].x).toFixed(1), hh=Math.abs(hp.y-s.points[0].y).toFixed(1);
+        ctx.fillText(`${ww}×${hh}`, p2.x+8, p2.y-8);
+        break;
+      }
+      case 'circle': {
+        const c = this.toScreen(s.points[0].x, s.points[0].y);
+        const r = Math.hypot(hp.x-s.points[0].x, hp.y-s.points[0].y) * this.viewport.scale;
+        ctx.beginPath(); ctx.arc(c.x, c.y, r, 0, Math.PI*2); ctx.stroke();
+        ctx.setLineDash([]); ctx.font='10px JetBrains Mono';
+        ctx.fillStyle='#3b82f6'; ctx.globalAlpha=1;
+        const rr = Math.hypot(hp.x-s.points[0].x, hp.y-s.points[0].y).toFixed(2);
+        ctx.fillText(`r=${rr}`, this.toScreen(hp.x,hp.y).x+8, this.toScreen(hp.x,hp.y).y-8);
+        break;
+      }
+      case 'polyline': {
+        if (s.points.length >= 1) {
+          ctx.beginPath();
+          const p0=this.toScreen(s.points[0].x, s.points[0].y);
+          ctx.moveTo(p0.x,p0.y);
+          for(let i=1;i<s.points.length;i++){const p=this.toScreen(s.points[i].x,s.points[i].y);ctx.lineTo(p.x,p.y);}
+          const pe=this.toScreen(hp.x,hp.y);
+          ctx.lineTo(pe.x,pe.y); ctx.stroke();
+        }
+        break;
+      }
+      case 'arc': {
+        if (s.points.length >= 1) {
+          const p1=this.toScreen(s.points[0].x,s.points[0].y);
+          const p2=this.toScreen(hp.x,hp.y);
+          ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+        }
+        break;
+      }
+      case 'ellipse': {
+        if (s.points.length >= 2) {
+          const c=this.toScreen(s.points[0].x,s.points[0].y);
+          const rx=Math.abs(s.points[1].x-s.points[0].x)*this.viewport.scale;
+          const ry=Math.abs(hp.y-s.points[0].y)*this.viewport.scale;
+          ctx.beginPath(); ctx.ellipse(c.x,c.y,rx,ry,0,0,Math.PI*2); ctx.stroke();
+        }
+        break;
+      }
+      case 'move': {
+        const dx = hp.x - s.base.x, dy = hp.y - s.base.y;
+        for (const id of this.selected) {
+          const e = this.entities.find(e=>e.id===id);
+          if (!e) continue;
+          const copy = JSON.parse(JSON.stringify(e));
+          this.translateEntity(copy, dx, dy);
+          this.drawEntity(ctx, copy, false);
+        }
+        break;
+      }
+      case 'mirror': {
+        if (s.points.length >= 1) {
+          const p1=this.toScreen(s.points[0].x,s.points[0].y);
+          const p2=this.toScreen(hp.x,hp.y);
+          ctx.strokeStyle='#06b6d4';
+          ctx.beginPath(); ctx.moveTo(p1.x,0); ctx.lineTo(p1.x,this.canvasMain.height);
+          ctx.beginPath(); ctx.moveTo(p1.x,p1.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
+        }
+        break;
+      }
+    }
+    ctx.restore();
+  },
+  
+  drawSelectionWindow(ctx) {
+    const ws = this.toScreen(this.windowStart.x, this.windowStart.y);
+    const we = this.toScreen(this.hoverPoint.x, this.hoverPoint.y);
+    const x=Math.min(ws.x,we.x), y=Math.min(ws.y,we.y);
+    const w=Math.abs(we.x-ws.x), h=Math.abs(we.y-ws.y);
+    const isRight = we.x > ws.x;
+    ctx.save();
+    ctx.fillStyle = isRight ? '#3b82f615' : '#10b98115';
+    ctx.strokeStyle = isRight ? '#3b82f6' : '#10b981';
+    ctx.lineWidth = 1;
+    ctx.setLineDash(isRight ? [] : [4,4]);
+    ctx.beginPath(); ctx.rect(x,y,w,h);
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
+  },
+  
+  renderUi() {
+    const ctx = this.ctxUi;
+    ctx.clearRect(0,0,this.canvasUi.width,this.canvasUi.height);
+    
+    // Crosshair cursor
+    if (this.hoverPoint && this.currentTool !== 'select' && this.currentTool !== 'pan') {
+      const s = this.snapPoint ? this.toScreen(this.snapPoint.x, this.snapPoint.y) : null;
+      const sp = s || this.rawMouseScreen;
+      if (sp) {
+        ctx.save();
+        ctx.strokeStyle = '#3b82f640';
+        ctx.lineWidth = 0.5;
+        ctx.setLineDash([]);
+        ctx.beginPath(); ctx.moveTo(sp.x,0); ctx.lineTo(sp.x,this.canvasUi.height);
+        ctx.beginPath(); ctx.moveTo(0,sp.y); ctx.lineTo(this.canvasUi.width,sp.y);
+        ctx.stroke();
+        
+        // Snap indicator
+        if (this.snapPoint && this.snapPoint.snapType && this.snapPoint.snapType !== 'grid') {
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = 1.5;
+          const st = this.snapPoint.snapType;
+          if (st === 'endpoint') {
+            ctx.strokeRect(sp.x-6, sp.y-6, 12, 12);
+          } else if (st === 'midpoint') {
+            ctx.beginPath();
+            ctx.moveTo(sp.x-7, sp.y+5); ctx.lineTo(sp.x, sp.y-7); ctx.lineTo(sp.x+7, sp.y+5);
+            ctx.closePath(); ctx.stroke();
+          } else if (st === 'center') {
+            ctx.beginPath(); ctx.arc(sp.x, sp.y, 6, 0, Math.PI*2); ctx.stroke();
+          }
+          ctx.font = '9px JetBrains Mono';
+          ctx.fillStyle = '#10b981';
+          ctx.fillText(st, sp.x+10, sp.y-10);
+        }
+        ctx.restore();
+      }
+    }
+  },
+  
+  // ─── EVENT BINDING ────────────────────────────────────────────
+  bindEvents() {
+    const cont = document.getElementById('canvas-container');
+    
+    cont.addEventListener('mousemove', e => this.onMouseMove(e));
+    cont.addEventListener('mousedown', e => this.onMouseDown(e));
+    cont.addEventListener('mouseup', e => this.onMouseUp(e));
+    cont.addEventListener('dblclick', e => this.onDblClick(e));
+    cont.addEventListener('wheel', e => { e.preventDefault(); this.zoom(e.deltaY < 0 ? 1.15 : 0.87, e.clientX - cont.getBoundingClientRect().left, e.clientY - cont.getBoundingClientRect().top); });
+    cont.addEventListener('contextmenu', e => { e.preventDefault(); this.cancelTool(); });
+    
+    document.addEventListener('keydown', e => this.onKeyDown(e));
+    
+    const cmdInput = document.getElementById('cmd-input');
+    cmdInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { this.processCommand(cmdInput.value); cmdInput.value = ''; }
+    });
+  },
+  
+  getCanvasXY(e) {
+    const rect = document.getElementById('canvas-container').getBoundingClientRect();
+    return { sx: e.clientX - rect.left, sy: e.clientY - rect.top };
+  },
+  
+  onMouseMove(e) {
+    const {sx, sy} = this.getCanvasXY(e);
+    this.rawMouseScreen = { x: sx, y: sy };
+    
+    if (this.isPanning) {
+      this.viewport.x += sx - this.panStart.x;
+      this.viewport.y += sy - this.panStart.y;
+      this.panStart = { x: sx, y: sy };
+      this.renderAll(); return;
+    }
+    
+    const snapped = this.getSnap(sx, sy);
+    this.snapPoint = snapped;
+    this.hoverPoint = snapped;
+    
+    // Update coords display
+    document.getElementById('coords-display').textContent = `X: ${snapped.x.toFixed(3)}   Y: ${snapped.y.toFixed(3)}`;
+    
+    if (this.isWindowSelecting) { this.renderAll(); return; }
+    
+    this.renderMain();
+    this.renderUi();
+  },
+  
+  onMouseDown(e) {
+    const {sx, sy} = this.getCanvasXY(e);
+    
+    if (e.button === 1 || (e.button === 0 && this.currentTool === 'pan')) {
+      this.isPanning = true; this.panStart = { x: sx, y: sy };
+      document.getElementById('canvas-container').style.cursor = 'grabbing';
+      return;
+    }
+    if (e.button !== 0) return;
+    
+    const snapped = this.getSnap(sx, sy);
+    
+    if (this.currentTool === 'select') {
+      const hit = this.hitTest(snapped.x, snapped.y);
+      if (hit) {
+        if (!e.shiftKey) this.selected.clear();
+        this.selected.add(hit.id);
+        this.cmdLog(`Objeto selecionado: [${hit.type}] id=${hit.id}`, 'info');
+      } else {
+        if (!e.shiftKey) this.selected.clear();
+        this.isWindowSelecting = true;
+        this.windowStart = snapped;
+      }
+      this.renderAll(); this.updateSelectionInfo(); return;
+    }
+    
+    this.startTool(snapped);
+  },
+  
+  onMouseUp(e) {
+    if (this.isPanning) {
+      this.isPanning = false;
+      document.getElementById('canvas-container').style.cursor = this.currentTool === 'pan' ? 'grab' : 'crosshair';
+      return;
+    }
+    if (this.isWindowSelecting && this.hoverPoint) {
+      this.finishWindowSelect();
+    }
+  },
+  
+  onDblClick(e) {
+    if (this.currentTool === 'polyline' && this.drawingState) {
+      this.finishPolyline();
+    }
+  },
+  
+  finishWindowSelect() {
+    const ws = this.windowStart, we = this.hoverPoint;
+    const isRight = we.x > ws.x;
+    const minX=Math.min(ws.x,we.x), maxX=Math.max(ws.x,we.x);
+    const minY=Math.min(ws.y,we.y), maxY=Math.max(ws.y,we.y);
+    
+    for (const e of this.entities) {
+      const layer = this.layers.find(l => l.id === e.layer);
+      if (layer && !layer.visible) continue;
+      
+      if (isRight) {
+        // Crossing window: fully inside
+        if (this.entityInBounds(e, minX, minY, maxX, maxY)) this.selected.add(e.id);
+      } else {
+        // Crossing: touches
+        if (this.entityTouchesBounds(e, minX, minY, maxX, maxY)) this.selected.add(e.id);
+      }
+    }
+    this.isWindowSelecting = false;
+    this.windowStart = null;
+    this.cmdLog(`Seleção por janela: ${this.selected.size} objeto(s).`, 'info');
+    this.renderAll(); this.updateSelectionInfo();
+  },
+  entityInBounds(e, minX, minY, maxX, maxY) {
+    const bb = this.getBBox(e);
+    if (!bb) return false;
+    return bb.x>=minX && bb.y>=minY && (bb.x+bb.w)<=maxX && (bb.y+bb.h)<=maxY;
+  },
+  entityTouchesBounds(e, minX, minY, maxX, maxY) {
+    const bb = this.getBBox(e);
+    if (!bb) return false;
+    return !(bb.x>maxX || (bb.x+bb.w)<minX || bb.y>maxY || (bb.y+bb.h)<minY);
+  },
+  
+  onKeyDown(e) {
+    if (document.activeElement === document.getElementById('cmd-input')) return;
+    
+    const k = e.key;
+    if (k === 'Escape') { this.cancelTool(); return; }
+    if (k === 'Delete' || k === 'Backspace') { this.deleteSelected(); return; }
+    if (e.ctrlKey && k === 'z') { this.undo(); return; }
+    if (e.ctrlKey && (k === 'y' || k === 'Y')) { this.redo(); return; }
+    if (e.ctrlKey && k === 'a') { this.selectAll(); return; }
+    if (e.ctrlKey && k === 's') { saveProject(); return; }
+    if (k === '+' || k === '=') { this.zoom(1.2); return; }
+    if (k === '-') { this.zoom(0.83); return; }
+    if (k === 'Enter') { if (this.currentTool==='polyline'&&this.drawingState) this.finishPolyline(); return; }
+    
+    const shortcuts = { l:'line', L:'line', r:'rectangle', R:'rectangle', c:'circle', C:'circle',
+      a:'arc', A:'arc', d:'dimension', D:'dimension', t:'text', T:'text',
+      m:'move', M:'move', p:'pan', P:'pan', s:'select', S:'select', e:'ellipse', E:'ellipse' };
+    if (shortcuts[k] && !e.ctrlKey) { setTool(shortcuts[k]); }
+  },
+  
+  cancelTool() {
+    this.drawingState = null;
+    this.selected.clear();
+    this.cmdLog('Comando cancelado.', 'info');
+    this.renderAll(); this.updateSelectionInfo();
+  },
+  
+  // ─── COMMAND LINE ─────────────────────────────────────────────
+  cmdLog(msg, type='') {
+    const out = document.getElementById('cmd-output');
+    const div = document.createElement('div');
+    div.className = `cmd-line ${type}`;
+    div.textContent = msg;
+    out.appendChild(div);
+    out.scrollTop = out.scrollHeight;
+    if (out.children.length > 50) out.removeChild(out.firstChild);
+  },
+  
+  processCommand(input) {
+    const raw = input.trim();
+    if (!raw) return;
+    this.cmdLog(`> ${raw}`);
+    
+    const parts = raw.toUpperCase().split(' ');
+    const cmd = parts[0];
+    
+    // Coordinate input
+    if (raw.match(/^@?-?\d+(\.\d+)?,@?-?\d+(\.\d+)?$/) || raw.match(/^@?\d+<\d+/)) {
+      const pt = this.parseCoord(raw);
+      if (pt) { this.startTool(pt); return; }
+    }
+    
+    switch(cmd) {
+      case 'LINE': case 'L': setTool('line'); this.cmdLog('Selecione primeiro ponto:','prompt'); break;
+      case 'CIRCLE': case 'C': setTool('circle'); this.cmdLog('Selecione centro:','prompt'); break;
+      case 'RECT': case 'R': case 'RECTANGLE': setTool('rectangle'); this.cmdLog('Selecione primeiro canto:','prompt'); break;
+      case 'ARC': case 'A': setTool('arc'); this.cmdLog('Selecione início do arco:','prompt'); break;
+      case 'PL': case 'POLYLINE': setTool('polyline'); this.cmdLog('Selecione primeiro ponto:','prompt'); break;
+      case 'DIM': case 'D': case 'DIMENSION': setTool('dimension'); this.cmdLog('Selecione primeiro ponto:','prompt'); break;
+      case 'TEXT': case 'T': setTool('text'); this.cmdLog('Selecione posição:','prompt'); break;
+      case 'MOVE': case 'M': setTool('move'); this.cmdLog('Selecione objetos e ponto base:','prompt'); break;
+      case 'SELECT': case 'S': setTool('select'); break;
+      case 'PAN': case 'P': setTool('pan'); break;
+      case 'UNDO': case 'U': this.undo(); break;
+      case 'REDO': this.redo(); break;
+      case 'ZOOM': {
+        const zv = parts[1];
+        if (zv === 'E' || zv === 'EXTENT') this.zoomFit();
+        else if (zv === 'IN') this.zoom(1.5);
+        else if (zv === 'OUT') this.zoom(0.67);
+        else if (!isNaN(parseFloat(zv))) this.viewport.scale = parseFloat(zv)/100;
+        this.renderAll();
+        break;
+      }
+      case 'ERASE': case 'E': case 'DEL': this.deleteSelected(); break;
+      case 'OOPS': this.undo(); break;
+      case 'NEW': newProject(); break;
+      case 'SAVE': saveProject(); break;
+      case 'LAYER': showLayerModal(); break;
+      case 'GRID': this.modes.grid = !this.modes.grid; this.renderAll(); this.cmdLog(`Grade: ${this.modes.grid?'ON':'OFF'}`,'info'); break;
+      case 'ORTHO': this.modes.ortho = !this.modes.ortho; this.cmdLog(`Ortho: ${this.modes.ortho?'ON':'OFF'}`,'info'); break;
+      case 'SNAP': this.modes.snap = !this.modes.snap; this.cmdLog(`Snap: ${this.modes.snap?'ON':'OFF'}`,'info'); break;
+      case 'HELP': this.cmdLog('Comandos: LINE CIRCLE RECT ARC PL DIM TEXT MOVE UNDO REDO ZOOM ERASE LAYER GRID ORTHO SNAP NEW SAVE', 'info'); break;
+      default: this.cmdLog(`Comando desconhecido: ${cmd}. Digite HELP.`, 'error');
+    }
+  },
+  
+  parseCoord(raw) {
+    let base = this.hoverPoint || {x:0, y:0};
+    if (this.drawingState && this.drawingState.points.length > 0)
+      base = this.drawingState.points[this.drawingState.points.length-1];
+    
+    if (raw.includes('<')) {
+      const rel = raw.startsWith('@');
+      const clean = raw.replace('@','');
+      const [dist, ang] = clean.split('<').map(Number);
+      const angRad = ang * Math.PI / 180;
+      if (rel) return { x: base.x + dist*Math.cos(angRad), y: base.y + dist*Math.sin(angRad), snapType: null };
+      return { x: dist*Math.cos(angRad), y: dist*Math.sin(angRad), snapType: null };
+    }
+    if (raw.includes(',')) {
+      const rel = raw.startsWith('@');
+      const clean = raw.replace('@','');
+      const [x, y] = clean.split(',').map(Number);
+      if (rel) return { x: base.x + x, y: base.y + y, snapType: null };
+      return { x, y, snapType: null };
+    }
+    return null;
+  },
+  
+  // ─── LAYER MANAGEMENT ─────────────────────────────────────────
+  setCurrentLayer(id) { this.currentLayer = parseInt(id); this.updateStatus(); },
+  setCurrentColor(c) { this.currentColor = c; },
+  setCurrentLineWidth(w) { this.currentLineWidth = w; },
+  setCurrentLineDash(d) { this.currentLineDash = d; },
+  
+  updateLayerPanel() {
+    const list = document.getElementById('layers-list');
+    list.innerHTML = '';
+    document.getElementById('layer-count').textContent = this.layers.length;
+    
+    for (const layer of this.layers) {
+      const div = document.createElement('div');
+      div.className = 'layer-item' + (layer.id === this.currentLayer ? ' active-layer' : '');
+      div.onclick = () => { this.setCurrentLayer(layer.id); this.updateLayerPanel(); this.updatePropLayerSelect(); };
+      div.innerHTML = `
+        <div class="layer-color" style="background:${layer.color}"></div>
+        <div class="layer-name">${layer.name}</div>
+        <div class="layer-icons">
+          <div class="layer-icon-btn ${layer.visible?'':'off'}" onclick="event.stopPropagation();cad.toggleLayerVisible(${layer.id})">${layer.visible?'👁':'🚫'}</div>
+          <div class="layer-icon-btn ${layer.locked?'':'off'}" onclick="event.stopPropagation();cad.toggleLayerLock(${layer.id})">${layer.locked?'🔒':'🔓'}</div>
+        </div>
+      `;
+      list.appendChild(div);
+    }
+  },
+  updatePropLayerSelect() {
+    const sel = document.getElementById('prop-layer');
+    sel.innerHTML = this.layers.map(l => `<option value="${l.id}" ${l.id===this.currentLayer?'selected':''}>${l.name}</option>`).join('');
+  },
+  toggleLayerVisible(id) {
+    const l = this.layers.find(l=>l.id===id);
+    if (l) { l.visible = !l.visible; this.renderAll(); this.updateLayerPanel(); }
+  },
+  toggleLayerLock(id) {
+    const l = this.layers.find(l=>l.id===id);
+    if (l) { l.locked = !l.locked; this.updateLayerPanel(); }
+  },
+  
+  updateStatus() {
+    document.getElementById('status-count').textContent = this.entities.length;
+    const cl = this.layers.find(l=>l.id===this.currentLayer);
+    document.getElementById('status-layer').textContent = cl ? cl.name : '0';
+  },
+  updateSelectionInfo() {
+    const info = document.getElementById('selection-info');
+    if (this.selected.size === 0) {
+      info.textContent = 'Nenhum objeto selecionado';
+      return;
+    }
+    const types = {};
+    for (const id of this.selected) {
+      const e = this.entities.find(e=>e.id===id);
+      if (e) types[e.type] = (types[e.type]||0)+1;
+    }
+    info.innerHTML = `<b style="color:var(--accent)">${this.selected.size} objeto(s)</b><br>` +
+      Object.entries(types).map(([t,n])=>`${t}: ${n}`).join('<br>');
+  },
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  GLOBAL FUNCTIONS
+// ═══════════════════════════════════════════════════════════════
+const cad = CAD;
+
+function setTool(tool) {
+  if (cad.currentTool !== tool) {
+    cad.drawingState = null;
+    cad.selected.clear();
+  }
+  cad.currentTool = tool;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('tool-' + tool);
+  if (btn) btn.classList.add('active');
+  document.getElementById('status-tool').textContent = tool.toUpperCase();
+  const container = document.getElementById('canvas-container');
+  container.style.cursor = tool === 'pan' ? 'grab' : tool === 'select' ? 'default' : 'crosshair';
+  cad.cmdLog(`Ferramenta: ${tool.toUpperCase()}`, 'prompt');
+  if (['line','polyline','rectangle','circle','arc','ellipse','dimension','text'].includes(tool))
+    cad.cmdLog('Selecione primeiro ponto:', 'prompt');
+}
+
+function toggleMenu(id) {
+  document.querySelectorAll('.dropdown').forEach(d => {
+    if (d.id !== 'dd-' + id) d.classList.remove('show');
+  });
+  const dd = document.getElementById('dd-' + id);
+  if (dd) dd.classList.toggle('show');
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.menu-item')) {
+    document.querySelectorAll('.dropdown').forEach(d => d.classList.remove('show'));
+  }
+});
+
+function toggleSnap(type) {
+  if (type === 'grid') cad.modes.grid = !cad.modes.grid;
+  else if (type === 'snap') cad.modes.snap = !cad.modes.snap;
+  else if (type === 'ortho') cad.modes.ortho = !cad.modes.ortho;
+  else if (cad.modes.snapTypes[type] !== undefined) cad.modes.snapTypes[type] = !cad.modes.snapTypes[type];
+  
+  const togMap = { grid:'tog-grid', snap:'tog-snap', ortho:'tog-ortho', endpoint:'tog-endpt', midpoint:'tog-midpt', intersection:'tog-inter', center:'tog-center' };
+  const el = document.getElementById(togMap[type]);
+  if (el) {
+    const state = type==='grid'?cad.modes.grid : type==='snap'?cad.modes.snap : type==='ortho'?cad.modes.ortho : cad.modes.snapTypes[type];
+    el.classList.toggle('on', state);
+  }
+  
+  // Update status snap
+  const snaps = [];
+  if (cad.modes.grid) snaps.push('Grid');
+  if (cad.modes.ortho) snaps.push('Ortho');
+  if (cad.modes.snapTypes.endpoint) snaps.push('End');
+  if (cad.modes.snapTypes.midpoint) snaps.push('Mid');
+  document.getElementById('status-snap').textContent = snaps.join('+') || 'Off';
+  cad.renderAll();
+}
+
+function toggleDidactic() {
+  cad.modes.didactic = !cad.modes.didactic;
+  document.getElementById('tog-didactic').classList.toggle('on', cad.modes.didactic);
+  cad.renderAll();
+  cad.cmdLog(`Modo didático: ${cad.modes.didactic?'ON':'OFF'}`, 'info');
+}
+
+function togglePanel(id) {
+  const el = document.getElementById('panel-' + id);
+  if (el) el.style.display = el.style.display === 'none' ? '' : 'none';
+}
+
+function addLayer() {
+  const count = cad.layers.length + 1;
+  document.getElementById('layer-name-input').value = `Layer ${count}`;
+  document.getElementById('layer-color-input').value = ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899'][count % 7];
+  document.getElementById('modal-layer').classList.add('show');
+}
+
+function confirmAddLayer() {
+  const name = document.getElementById('layer-name-input').value;
+  const color = document.getElementById('layer-color-input').value;
+  const id = Date.now();
+  cad.layers.push({ id, name, color, visible: true, locked: false, lineType: 'solid' });
+  cad.updateLayerPanel();
+  cad.updatePropLayerSelect();
+  closeModal('modal-layer');
+  cad.cmdLog(`Layer "${name}" criado.`, 'success');
+}
+
+function deleteLayer() {
+  if (cad.currentLayer === 0) { cad.cmdLog('Não é possível deletar o layer 0.','error'); return; }
+  cad.entities = cad.entities.filter(e => e.layer !== cad.currentLayer);
+  cad.layers = cad.layers.filter(l => l.id !== cad.currentLayer);
+  cad.currentLayer = 0;
+  cad.updateLayerPanel(); cad.updatePropLayerSelect(); cad.renderAll(); cad.updateStatus();
+  cad.cmdLog('Layer deletado.','success');
+}
+
+function showLayerModal() { document.getElementById('modal-layer').classList.add('show'); }
+function showTemplateModal() { document.getElementById('modal-template').classList.add('show'); }
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function applyTemplate() {
+  const fmt = document.getElementById('template-select').value;
+  const ori = document.getElementById('template-orient').value;
+  const sizes = { a4:[210,297], a3:[297,420], a2:[420,594] };
+  let [w,h] = sizes[fmt];
+  if (ori === 'landscape') [w,h] = [h,w];
+  
+  // Draw border
+  cad.saveSnapshot();
+  cad.entities = cad.entities.filter(e => e.type !== '_template');
+  cad.entities.push({
+    id: cad.genId(), type: 'rectangle',
+    x: -w/2, y: -h/2, w, h,
+    color: '#e2e8f0', lineWidth: 1.5, lineDash: 'solid', layer: 0, style: {}
+  });
+  // ABNT margin (25mm left, 5mm others)
+  cad.entities.push({
+    id: cad.genId(), type: 'rectangle',
+    x: -w/2+25, y: -h/2+5, w: w-30, h: h-10,
+    color: '#3b82f6', lineWidth: 0.5, lineDash: 'solid', layer: 0, style: {}
+  });
+  // Title block
+  cad.entities.push({
+    id: cad.genId(), type: 'line',
+    x1: -w/2+25, y1: -h/2+5+30, x2: w/2-5, y2: -h/2+5+30,
+    color: '#3b82f6', lineWidth: 0.5, lineDash: 'solid', layer: 0, style: {}
+  });
+  cad.entities.push({
+    id: cad.genId(), type: 'text',
+    x: -w/2+30, y: -h/2+5+15, text: `TechDraw CAD — ${fmt.toUpperCase()} ${ori === 'landscape' ? 'Paisagem' : 'Retrato'} — ABNT NBR 10068`,
+    fontSize: 6, color: '#64748b', layer: 0, style: {}
+  });
+  cad.zoomFit();
+  closeModal('modal-template');
+  cad.cmdLog(`Template ${fmt.toUpperCase()} ${w}×${h}mm aplicado.`, 'success');
+}
+
+function newProject() {
+  if (cad.entities.length > 0 && !confirm('Criar novo projeto? Alterações não salvas serão perdidas.')) return;
+  cad.entities = []; cad.selected.clear(); cad.undoStack = []; cad.redoStack = [];
+  cad.viewport = { x: cad.canvasMain.width/2, y: cad.canvasMain.height/2, scale: 1 };
+  document.getElementById('filename').textContent = 'Sem título — Novo projeto';
+  cad.renderAll(); cad.updateStatus();
+  cad.saveSnapshot();
+  cad.cmdLog('Novo projeto criado.','success');
+}
+
+function saveProject() {
+  const data = {
+    version: '1.0',
+    created: new Date().toISOString(),
+    entities: cad.entities,
+    layers: cad.layers,
+    viewport: cad.viewport
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'techdraw_project.json';
+  a.click();
+  cad.cmdLog('Projeto salvo como techdraw_project.json', 'success');
+}
+
+function loadProject() { document.getElementById('file-open').click(); }
+
+function handleFileOpen(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      cad.entities = data.entities || [];
+      if (data.layers) cad.layers = data.layers;
+      if (data.viewport) cad.viewport = data.viewport;
+      cad.selected.clear();
+      cad.updateLayerPanel(); cad.updatePropLayerSelect();
+      cad.zoomFit(); cad.updateStatus();
+      document.getElementById('filename').textContent = file.name;
+      cad.cmdLog(`Projeto "${file.name}" carregado. ${cad.entities.length} objetos.`, 'success');
+    } catch (err) {
+      cad.cmdLog('Erro ao abrir arquivo: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function exportSVG() {
+  const ents = cad.entities.filter(e => {
+    const l = cad.layers.find(l=>l.id===e.layer);
+    return !l || l.visible;
+  });
+  let svgContent = '';
+  const toS = (x, y) => `${x.toFixed(3)},${-y.toFixed(3)}`;
+  for (const e of ents) {
+    const col = e.color || '#e2e8f0';
+    const lw = e.lineWidth || 1;
+    const da = e.lineDash === 'dashed' ? 'stroke-dasharray="8,4"' : e.lineDash === 'dotted' ? 'stroke-dasharray="2,4"' : '';
+    const common = `stroke="${col}" stroke-width="${lw}" fill="none" ${da}`;
+    switch(e.type) {
+      case 'line': svgContent += `<line x1="${e.x1.toFixed(3)}" y1="${(-e.y1).toFixed(3)}" x2="${e.x2.toFixed(3)}" y2="${(-e.y2).toFixed(3)}" ${common}/>\n`; break;
+      case 'circle': svgContent += `<circle cx="${e.cx.toFixed(3)}" cy="${(-e.cy).toFixed(3)}" r="${e.r.toFixed(3)}" ${common}/>\n`; break;
+      case 'rectangle': svgContent += `<rect x="${e.x.toFixed(3)}" y="${(-e.y-e.h).toFixed(3)}" width="${e.w.toFixed(3)}" height="${e.h.toFixed(3)}" ${common}/>\n`; break;
+      case 'ellipse': svgContent += `<ellipse cx="${e.cx.toFixed(3)}" cy="${(-e.cy).toFixed(3)}" rx="${e.rx.toFixed(3)}" ry="${e.ry.toFixed(3)}" ${common}/>\n`; break;
+      case 'polyline': {
+        const pts = e.points.map(p=>`${p.x.toFixed(3)},${(-p.y).toFixed(3)}`).join(' ');
+        svgContent += `<polyline points="${pts}" ${common}/>\n`; break;
+      }
+      case 'text': svgContent += `<text x="${e.x.toFixed(3)}" y="${(-e.y).toFixed(3)}" fill="${col}" font-size="${e.fontSize||12}" font-family="monospace">${e.text}</text>\n`; break;
+    }
+  }
+  const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="-400 -300 800 600">\n<rect width="800" height="600" x="-400" y="-300" fill="#080a0f"/>\n${svgContent}</svg>`], { type: 'image/svg+xml' });
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='techdraw_export.svg'; a.click();
+  cad.cmdLog('SVG exportado.','success');
+}
+
+function exportPNG() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1600; canvas.height = 1200;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#080a0f'; ctx.fillRect(0,0,1600,1200);
+  
+  // Save viewport, scale up
+  const saved = { ...cad.viewport };
+  const savedScale = cad.viewport.scale;
+  cad.viewport.scale = savedScale * 2;
+  cad.viewport.x = 800; cad.viewport.y = 600;
+  
+  for (const e of cad.entities) {
+    const layer = cad.layers.find(l=>l.id===e.layer);
+    if (layer && !layer.visible) continue;
+    // Use temporary canvas ctx hack
+    const origCtx = cad.ctxMain;
+    cad.ctxMain = ctx;
+    cad.drawEntity(ctx, e, false);
+    cad.ctxMain = origCtx;
+  }
+  
+  cad.viewport = saved;
+  
+  const a = document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='techdraw_export.png'; a.click();
+  cad.cmdLog('PNG exportado (1600×1200px).','success');
+}
+
+function exportDXF() {
+  let dxf = '0\nSECTION\n2\nHEADER\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';
+  for (const e of cad.entities) {
+    switch(e.type) {
+      case 'line': dxf+=`0\nLINE\n8\n${e.layer}\n10\n${e.x1}\n20\n${e.y1}\n30\n0\n11\n${e.x2}\n21\n${e.y2}\n31\n0\n`; break;
+      case 'circle': dxf+=`0\nCIRCLE\n8\n${e.layer}\n10\n${e.cx}\n20\n${e.cy}\n30\n0\n40\n${e.r}\n`; break;
+      case 'rectangle': {
+        const pts=[[e.x,e.y],[e.x+e.w,e.y],[e.x+e.w,e.y+e.h],[e.x,e.y+e.h],[e.x,e.y]];
+        for(let i=0;i<pts.length-1;i++) dxf+=`0\nLINE\n8\n${e.layer}\n10\n${pts[i][0]}\n20\n${pts[i][1]}\n30\n0\n11\n${pts[i+1][0]}\n21\n${pts[i+1][1]}\n31\n0\n`;
+        break;
+      }
+      case 'text': dxf+=`0\nTEXT\n8\n${e.layer}\n10\n${e.x}\n20\n${e.y}\n30\n0\n40\n${e.fontSize||12}\n1\n${e.text}\n`; break;
+    }
+  }
+  dxf += '0\nENDSEC\n0\nEOF\n';
+  const blob = new Blob([dxf], { type: 'application/dxf' });
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='techdraw_export.dxf'; a.click();
+  cad.cmdLog('DXF exportado.','success');
+}
+
+function showAbout() {
+  cad.cmdLog('═══════════════════════════════════════════════', 'info');
+  cad.cmdLog('TechDraw CAD v1.0 — Motor Geométrico 2D', 'info');
+  cad.cmdLog('Entidades: Line, Circle, Arc, Rectangle, Ellipse, Polyline, Text, Dimension', 'info');
+  cad.cmdLog('Snap: Endpoint, Midpoint, Center, Grid, Ortho', 'info');
+  cad.cmdLog('Exportação: JSON, SVG, PNG, DXF', 'info');
+  cad.cmdLog('Atalhos: L=Linha C=Círculo R=Ret A=Arco D=Dim M=Mover P=Pan S=Select', 'info');
+  cad.cmdLog('Coordenadas: 10,20  @5,3  @10<45', 'info');
+  cad.cmdLog('═══════════════════════════════════════════════', 'info');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  CAD.init();
+  setTool('line');
+  // Demo entities
+  CAD.entities = [
+    { id:'demo1', type:'rectangle', x:-50, y:-35, w:100, h:70, color:'#3b82f6', lineWidth:1, lineDash:'solid', layer:0, style:{} },
+    { id:'demo2', type:'circle', cx:0, cy:0, r:25, color:'#10b981', lineWidth:1, lineDash:'solid', layer:0, style:{} },
+    { id:'demo3', type:'line', x1:-60, y1:0, x2:60, y2:0, color:'#64748b', lineWidth:0.5, lineDash:'center', layer:1, style:{} },
+    { id:'demo4', type:'line', x1:0, y1:-45, x2:0, y2:45, color:'#64748b', lineWidth:0.5, lineDash:'center', layer:1, style:{} },
+    { id:'demo5', type:'dimension', x1:-50, y1:-35, x2:50, y2:-35, offsetY:-50, value:'100.00', unit:'mm', color:'#f59e0b', lineWidth:0.5, layer:2, style:{} },
+    { id:'demo6', type:'text', x:-18, y:50, text:'TechDraw CAD', fontSize:8, color:'#64748b', layer:0, style:{} },
+  ];
+  CAD.saveSnapshot();
+  CAD.zoomFit();
+  CAD.updateStatus();
+  CAD.cmdLog('Projeto de demonstração carregado. Use as ferramentas ou digite comandos.', 'success');
+});
+</script>
+</body>
+</html>

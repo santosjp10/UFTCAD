@@ -3,22 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v3</title>
+<title>EduCAD 2D v6.0</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg0:#181c28;--bg1:#1e2233;--bg2:#252a3a;--bg3:#2c3248;
-  --bdr:#333d57;--acc:#4d9ef7;--acc2:#f0c040;--grn:#4ec87a;--red:#e85050;
-  --t0:#dce4f5;--t1:#8b97b8;--t2:#4a5370;
+  --bg0:#1a1a2e;--bg1:#16213e;--bg2:#0f3460;--bg3:#1a1a40;
+  --bdr:#2a3a5c;--acc:#00d4ff;--acc2:#f5a623;--grn:#00e676;--red:#ff3d3d;
+  --t0:#e8eaf6;--t1:#90a4ae;--t2:#546e7a;
   --mono:'Consolas','Courier New',monospace;
 }
 body{font-family:system-ui,sans-serif;background:var(--bg0);color:var(--t0);height:100vh;overflow:hidden;display:flex;flex-direction:column;user-select:none}
 /* TITLE */
-#titlebar{height:30px;background:#141720;border-bottom:1px solid #0d1018;display:flex;align-items:center;padding:0 10px;gap:8px;flex-shrink:0}
+#titlebar{height:32px;background:linear-gradient(180deg,#0a0e1a,#060a14);border-bottom:1px solid #00d4ff40;display:flex;align-items:center;padding:0 10px;gap:8px;flex-shrink:0}
 .logo{font-size:13px;font-weight:700;color:var(--acc)}.logo b{color:var(--acc2)}
 .ftitle{font-size:11px;color:var(--t1);flex:1;text-align:center}
 /* RIBBON */
-#ribbon{background:var(--bg2);border-bottom:2px solid var(--acc);flex-shrink:0}
+#ribbon{background:linear-gradient(180deg,#0f1a30,#0a1225);border-bottom:2px solid var(--acc);flex-shrink:0}
 .rtabs{display:flex;background:var(--bg1)}
 .rtab{padding:4px 12px;font-size:11px;color:var(--t1);cursor:pointer;border-right:1px solid #151820;transition:.1s}
 .rtab.on{background:var(--bg2);color:var(--t0);border-bottom:2px solid var(--acc);margin-bottom:-2px}
@@ -35,9 +35,9 @@ body{font-family:system-ui,sans-serif;background:var(--bg0);color:var(--t0);heig
 .rb.on{background:#1e3a5f;color:var(--acc);border-color:var(--acc)}
 .rb.red{color:var(--red)}.rb.red:hover{background:#3f1e1e;border-color:var(--red)}
 /* LAYOUT */
-#ws{flex:1;display:flex;overflow:hidden}
+#ws{flex:1;display:flex;overflow:hidden;position:relative}
 /* CANVAS AREA */
-#cw{flex:1;position:relative;overflow:hidden;background:#181c28;cursor:crosshair}
+#cw{flex:1;position:relative;overflow:hidden;background:#0a0a1a;cursor:crosshair}
 #cw.pan-mode{cursor:grab}.#cw.pan-active{cursor:grabbing}
 canvas{position:absolute;top:0;left:0;display:block}
 #cGrid{z-index:1}#cDraw{z-index:2}#cOver{z-index:3}
@@ -45,7 +45,7 @@ canvas{position:absolute;top:0;left:0;display:block}
 #snapmark{position:absolute;z-index:10;pointer-events:none;transform:translate(-50%,-50%);display:none}
 #snaplbl{position:absolute;z-index:11;pointer-events:none;background:#0f111acc;border:1px solid var(--acc);padding:2px 7px;font:10px var(--mono);color:var(--acc);border-radius:2px;display:none;white-space:nowrap}
 /* RIGHT PANEL */
-#rp{width:198px;background:var(--bg1);border-left:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;font-size:11px}
+#rp{width:210px;background:linear-gradient(180deg,#0d1525,#0a1020);border-left:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;font-size:11px}
 .rph{padding:5px 10px;font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;background:var(--bg2);border-bottom:1px solid var(--bdr)}
 #coordbox{padding:5px 10px;font:11px var(--mono);color:var(--acc);background:var(--bg2);border-bottom:1px solid var(--bdr)}
 #lylist{max-height:160px;overflow-y:auto}
@@ -73,8 +73,30 @@ input[type=color].cp{width:26px;height:18px;border:1px solid var(--bdr);border-r
 #cmdlbl{font:11px var(--mono);color:var(--acc);flex-shrink:0}
 #cmdinput{flex:1;background:transparent;border:none;outline:none;font:11px var(--mono);color:var(--t0);caret-color:var(--acc)}
 #cmdinput::placeholder{color:var(--t2)}
+/* DYNAMIC INPUT */
+#dynInput{
+  position:absolute;z-index:50;pointer-events:auto;
+  display:none;flex-direction:column;gap:3px;
+  padding:6px 8px;min-width:160px;
+  background:rgba(8,12,26,0.93);
+  border:1px solid var(--acc);border-radius:4px;
+  box-shadow:0 4px 20px #000a;
+  font:11px var(--mono);
+}
+#dynInput.show{display:flex}
+.di-row{display:flex;align-items:center;gap:5px}
+.di-lbl{color:var(--t2);font-size:9px;width:14px;text-align:right;flex-shrink:0}
+.di-inp{
+  flex:1;background:var(--bg3);border:1px solid var(--bdr);
+  color:var(--t0);font:11px var(--mono);padding:2px 6px;
+  border-radius:2px;outline:none;width:90px;
+}
+.di-inp:focus{border-color:var(--acc);background:#0d1830;color:#fff}
+.di-inp.active{border-color:var(--acc);color:#fff}
+.di-sep{height:1px;background:var(--bdr);margin:2px 0}
+.di-hint{font-size:9px;color:var(--t2);text-align:center;padding-top:1px}
 /* STATUS */
-#sbar{height:20px;background:#0d0f18;border-top:1px solid #0a0c12;display:flex;align-items:center;padding:0 8px;gap:12px;font-size:9px;color:var(--t2);flex-shrink:0}
+#sbar{height:22px;background:linear-gradient(180deg,#080c18,#050810);border-top:1px solid #00d4ff30;display:flex;align-items:center;padding:0 8px;gap:12px;font-size:9px;color:var(--t2);flex-shrink:0}
 .sv{color:var(--t1)}.stool{background:var(--acc);color:#fff;padding:1px 7px;border-radius:2px;font-weight:700;font-size:9px}
 .ssep{width:1px;height:12px;background:var(--bdr)}
 /* MODALS */
@@ -91,13 +113,84 @@ input[type=color].cp{width:26px;height:18px;border:1px solid var(--bdr);border-r
 .btn.p{background:var(--acc);color:#fff}.btn.p:hover{background:#3a8de0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
 input[type=file]{display:none}
+
+/* ── MODEL / LAYOUT TABS ── */
+#tabbar{
+  height:26px;background:linear-gradient(180deg,#090d1c,#060910);
+  border-top:1px solid var(--bdr);display:flex;align-items:flex-end;
+  padding:0 8px;gap:2px;flex-shrink:0;z-index:20;position:relative;
+}
+.tbtab{
+  padding:3px 14px 0;font-size:10px;font-family:var(--mono);
+  color:var(--t2);cursor:pointer;border:1px solid transparent;
+  border-bottom:none;border-radius:3px 3px 0 0;
+  background:var(--bg3);transition:.12s;position:relative;top:1px;
+  display:flex;align-items:center;gap:5px;
+}
+.tbtab:hover{color:var(--t0);background:var(--bg2);}
+.tbtab.active{
+  background:var(--bg2);color:var(--t0);
+  border-color:var(--acc);border-bottom:1px solid var(--bg2);
+}
+.tbtab.layout-tab.active{border-color:#f5a623;color:#f5a623;}
+.tbtab .tb-dot{width:7px;height:7px;border-radius:50%;background:var(--acc);flex-shrink:0;}
+.tbtab.layout-tab .tb-dot{background:#f5a623;}
+.tb-add{padding:2px 7px;font-size:12px;color:var(--t2);cursor:pointer;background:none;border:none;line-height:1;}
+.tb-add:hover{color:var(--acc);}
+
+/* ── LAYOUT PANEL ── */
+#layoutPanel{
+  display:none;position:absolute;inset:0;background:#1a1a26;z-index:15;
+  flex-direction:column;overflow:hidden;
+}
+#layoutPanel.show{display:flex;}
+#layoutBg{
+  flex:1;position:relative;overflow:auto;
+  background:repeating-linear-gradient(45deg,#12121e 0,#12121e 10px,#131320 10px,#131320 20px);
+  display:flex;align-items:center;justify-content:center;padding:40px;
+}
+#layoutSheet{
+  background:#fff;position:relative;box-shadow:0 8px 40px #000c;
+  flex-shrink:0;
+}
+#layoutCanvas{position:absolute;top:0;left:0;}
+#layoutControls{
+  height:48px;background:linear-gradient(180deg,#0d1020,#090c18);
+  border-top:1px solid var(--bdr);display:flex;align-items:center;
+  gap:12px;padding:0 14px;flex-shrink:0;font-size:10px;
+}
+.lc-grp{display:flex;align-items:center;gap:6px;}
+.lc-lbl{color:var(--t2);font-size:9px;white-space:nowrap;}
+select.lc-sel,input.lc-inp{
+  background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);
+  font:10px var(--mono);padding:2px 6px;border-radius:2px;outline:none;
+}
+select.lc-sel:focus,input.lc-inp:focus{border-color:var(--acc);}
+input.lc-inp{width:52px;}
+.lc-sep{width:1px;height:20px;background:var(--bdr);}
+.lc-btn{
+  padding:3px 10px;font:10px system-ui;border-radius:2px;cursor:pointer;
+  border:1px solid var(--bdr);background:var(--bg3);color:var(--t1);transition:.1s;
+}
+.lc-btn:hover{color:var(--t0);border-color:var(--acc);}
+.lc-btn.primary{background:var(--acc);color:#fff;border-color:var(--acc);}
+.lc-btn.primary:hover{background:#3a8de0;}
+/* viewport rect no layout */
+#vpRect{
+  position:absolute;border:1px dashed #4d9ef7aa;
+  cursor:move;box-sizing:border-box;
+}
+#vpRect .vp-handle{
+  position:absolute;width:8px;height:8px;background:#4d9ef7;
+  border:1px solid #fff;border-radius:1px;cursor:nwse-resize;
+}
 </style>
 </head>
 <body>
 
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
-  <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v3</div>
+  <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
 </div>
 
 <div id="ribbon">
@@ -139,7 +232,8 @@ input[type=file]{display:none}
         <div class="rb" id="rb-arc"       onclick="setTool('arc')"       title="Arco A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20 Q12 2 21 20"/></svg>Arco</div>
         <div class="rb" id="rb-ellipse"   onclick="setTool('ellipse')"   title="Elipse E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>Elipse</div>
         <div class="rb" id="rb-text"      onclick="setTool('text')"      title="Texto T"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Texto</div>
-        <div class="rb" id="rb-hatch"     onclick="setTool('hatch')"     title="Hachura"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
+        <div class="rb" id="rb-polygon" onclick="startPolygon()" title="Polígono POL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,8 17,20 7,20 4,8"/></svg>Polígono</div>
+        <div class="rb" id="rb-hatch"       onclick="setTool('hatch')"     title="Hachura"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
       </div><div class="rglbl">Desenhar</div>
     </div>
     <div class="rg">
@@ -150,6 +244,11 @@ input[type=file]{display:none}
         <div class="rb" id="rb-mirror" onclick="setTool('mirror')" title="Espelhar MI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2,2"/><path d="M7 7L3 12l4 5M17 7l4 5-4 5"/></svg>Espelhar</div>
         <div class="rb" id="rb-scale"  onclick="setTool('scale')"  title="Escalar SC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Escalar</div>
         <div class="rb" id="rb-offset" onclick="setTool('offset')" title="Offset O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="11" height="9" rx="1"/><rect x="10" y="10" width="11" height="9" rx="1" opacity=".6"/></svg>Offset</div>
+        <div class="rb" id="rb-trim"   onclick="setTool('trim')"   title="Trim TR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="20" y2="20" stroke-dasharray="4,3"/><line x1="4" y1="20" x2="20" y2="4"/><line x1="14" y1="14" x2="20" y2="20" stroke="var(--red)" stroke-width="2.5"/></svg>Trim</div>
+        <div class="rb" id="rb-extend" onclick="setTool('extend')" title="Extend EX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="16" y2="12"/><polyline points="13,9 16,12 13,15"/><line x1="18" y1="5" x2="18" y2="19" stroke-dasharray="3,2"/></svg>Extend</div>
+        <div class="rb" id="rb-fillet" onclick="setTool('fillet')" title="Fillet F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><path d="M3 8 Q3 3 8 3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Fillet</div>
+        <div class="rb" id="rb-chamfer" onclick="setTool('chamfer')" title="Chamfer CHA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><line x1="3" y1="8" x2="8" y2="3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Chamfer</div>
+        <div class="rb" id="rb-array"  onclick="showArrayDlg()"   title="Array AR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="10" y="3" width="5" height="5" rx=".5"/><rect x="17" y="3" width="4" height="5" rx=".5"/><rect x="3" y="10" width="5" height="5" rx=".5"/><rect x="10" y="10" width="5" height="5" rx=".5"/><rect x="17" y="10" width="4" height="5" rx=".5"/></svg>Array</div>
       </div><div class="rglbl">Modificar</div>
     </div>
     <div class="rg">
@@ -192,7 +291,86 @@ input[type=file]{display:none}
     <canvas id="cOver"></canvas>
     <div id="snapmark"></div>
     <div id="snaplbl"></div>
+    <div id="dynInput">
+      <div class="di-row">
+        <span class="di-lbl">X</span>
+        <input class="di-inp" id="di-x" type="text" autocomplete="off" spellcheck="false" placeholder="0.000">
+      </div>
+      <div class="di-row">
+        <span class="di-lbl">Y</span>
+        <input class="di-inp" id="di-y" type="text" autocomplete="off" spellcheck="false" placeholder="0.000">
+      </div>
+      <div class="di-sep"></div>
+      <div class="di-row">
+        <span class="di-lbl" style="color:var(--grn)">L</span>
+        <input class="di-inp" id="di-d" type="text" autocomplete="off" spellcheck="false" placeholder="dist">
+      </div>
+      <div class="di-row">
+        <span class="di-lbl" style="color:var(--acc2)">&#8736;</span>
+        <input class="di-inp" id="di-a" type="text" autocomplete="off" spellcheck="false" placeholder="angulo">
+      </div>
+      <div class="di-hint" id="di-hint">Tab=campo | Enter=confirmar</div>
+    </div>
   </div>
+<!-- LAYOUT PANEL (sobrepõe o canvas quando ativo) -->
+<div id="layoutPanel">
+  <div id="layoutBg">
+    <div id="layoutSheet">
+      <canvas id="layoutCanvas"></canvas>
+      <div id="vpRect">
+        <div class="vp-handle" style="bottom:-4px;right:-4px;" id="vpHandle"></div>
+      </div>
+    </div>
+  </div>
+  <div id="layoutControls">
+    <div class="lc-grp">
+      <span class="lc-lbl">FOLHA</span>
+      <select class="lc-sel" id="lc-paper" onchange="layoutApply()">
+        <option value="297,210">A4 Paisagem 297×210</option>
+        <option value="210,297">A4 Retrato 210×297</option>
+        <option value="420,297">A3 Paisagem 420×297</option>
+        <option value="594,420">A2 Paisagem 594×420</option>
+        <option value="841,594">A1 Paisagem 841×594</option>
+        <option value="1189,841">A0 Paisagem 1189×841</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">ESCALA</span>
+      <select class="lc-sel" id="lc-scale" onchange="layoutApply()">
+        <option value="1">1:1</option>
+        <option value="0.5">1:2</option>
+        <option value="0.2">1:5</option>
+        <option value="0.1" selected>1:10</option>
+        <option value="0.05">1:20</option>
+        <option value="0.02">1:50</option>
+        <option value="0.01">1:100</option>
+        <option value="0">Ajustar</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">MARGENS mm</span>
+      <input class="lc-inp" id="lc-mt" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Superior">
+      <input class="lc-inp" id="lc-mr" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Direita">
+      <input class="lc-inp" id="lc-mb" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Inferior">
+      <input class="lc-inp" id="lc-ml" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Esquerda">
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">ORIENTAÇÃO</span>
+      <select class="lc-sel" id="lc-orient" onchange="layoutOrient()">
+        <option value="land">Paisagem</option>
+        <option value="port">Retrato</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <button class="lc-btn" onclick="layoutFit()">⊡ Ajustar</button>
+    <button class="lc-btn primary" onclick="layoutPrint()">🖨 Imprimir</button>
+    <span style="margin-left:auto;font-size:9px;color:var(--t2)" id="lc-info">A4 Paisagem · 1:10</span>
+  </div>
+</div>
+
   <!-- RIGHT PANEL -->
   <div id="rp">
     <div id="coordbox">X: 0.000 &nbsp; Y: 0.000</div>
@@ -253,6 +431,18 @@ input[type=file]{display:none}
   </div>
 </div>
 
+<!-- MODEL / LAYOUT TAB BAR -->
+<div id="tabbar">
+  <div class="tbtab active" id="tab-model" onclick="switchSpace('model')">
+    <div class="tb-dot"></div>Model
+  </div>
+  <div class="tbtab layout-tab" id="tab-layout1" onclick="switchSpace('layout')">
+    <div class="tb-dot"></div>Layout
+  </div>
+  <button class="tb-add" title="Adicionar layout" onclick="switchSpace('layout')">＋</button>
+</div>
+
+
 <!-- STATUS -->
 <div id="sbar">
   <span class="stool" id="stool">LINE</span>
@@ -289,7 +479,11 @@ input[type=file]{display:none}
 <div class="ov" id="ov-export"><div class="modal">
   <h3>Exportar</h3>
   <label>Formato:</label>
-  <select id="ef"><option value="json">JSON (EduCAD)</option><option value="svg">SVG (Vetorial)</option><option value="dxf">DXF (AutoCAD)</option><option value="png">PNG</option></select>
+  <select id="ef" onchange="document.getElementById('dwgn').style.display=this.value==='dwg'?'block':'none'">
+    <option value="json">JSON (EduCAD)</option><option value="svg">SVG</option>
+    <option value="dxf">DXF R14</option><option value="dxf2k">DXF 2007+</option>
+    <option value="dwg">DWG (via DXF)</option><option value="png">PNG</option></select>
+  <div id="dwgn" style="display:none;margin:6px 0;padding:6px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:3px;font-size:9px;color:var(--acc2)"><b>Nota:</b> DWG é proprietário. O DXF abre em AutoCAD/ZWCAD/BricsCAD.</div>
   <div class="mact"><button class="btn s" onclick="closeOv('ov-export')">Cancelar</button><button class="btn p" onclick="doExport()">Exportar</button></div>
 </div></div>
 
@@ -298,6 +492,78 @@ input[type=file]{display:none}
   <label>Conteúdo:</label><input id="tv" value="Texto">
   <label>Altura (mm):</label><input id="th" type="number" value="10" min="1">
   <div class="mact"><button class="btn s" onclick="closeOv('ov-text')">Cancelar</button><button class="btn p" onclick="confirmText()">OK</button></div>
+</div></div>
+
+<!-- ARRAY DIALOG -->
+<div class="ov" id="ov-array"><div class="modal" style="min-width:320px">
+  <h3>Array — Cópia em Matriz</h3>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="rect" id="ar-rect" checked onchange="arTypeChange()"> Retangular</label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="polar" id="ar-polar" onchange="arTypeChange()"> Polar</label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="path" id="ar-path" onchange="arTypeChange()"> Caminho</label>
+  </div>
+  <div id="ar-rect-form">
+    <label>Linhas (rows):</label><input id="ar-rows" type="number" value="3" min="1" max="100">
+    <label>Colunas (cols):</label><input id="ar-cols" type="number" value="3" min="1" max="100">
+    <label>Espaçamento entre linhas (mm):</label><input id="ar-rsp" type="number" value="20" step="0.1">
+    <label>Espaçamento entre colunas (mm):</label><input id="ar-csp" type="number" value="20" step="0.1">
+    <label>Ângulo de rotação do array (°):</label><input id="ar-ang" type="number" value="0" step="1">
+  </div>
+  <div id="ar-polar-form" style="display:none">
+    <label>Número de itens:</label><input id="ar-pcount" type="number" value="6" min="2" max="360">
+    <label>Ângulo total (°):</label><input id="ar-ptotal" type="number" value="360" step="1">
+    <label>Preencher ângulo total:</label>
+    <select id="ar-pfill" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+    <label>Rotacionar itens:</label>
+    <select id="ar-prot" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+  </div>
+  <div id="ar-path-form" style="display:none">
+    <label>Número de itens:</label><input id="ar-pathcount" type="number" value="5" min="2" max="200">
+    <label>Espaçamento (mm, 0=uniforme):</label><input id="ar-pathsp" type="number" value="0" step="0.1">
+    <label>Alinhar itens ao caminho:</label>
+    <select id="ar-pathalign" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+    <p style="font-size:9px;color:var(--t2);margin-bottom:8px">Selecione os objetos de origem, depois execute Array. Clique em um objeto de caminho (linha/polilinha/arco/círculo) no canvas quando solicitado.</p>
+  </div>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-array')">Cancelar</button><button class="btn p" onclick="confirmArray()">OK</button></div>
+</div></div>
+
+<!-- POLYGON DIALOG -->
+<div class="ov" id="ov-polygon"><div class="modal" style="min-width:300px">
+  <h3>Polígono Regular</h3>
+  <label>Número de lados (3–1024):</label>
+  <input id="pol-sides" type="number" value="6" min="3" max="1024">
+  <label>Método:</label>
+  <select id="pol-method" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+    <option value="ic">Inscrito no círculo (I) — raio = vértice ao centro</option>
+    <option value="cc">Circunscrito ao círculo (C) — raio = meio do lado ao centro</option>
+    <option value="edge">Por aresta (E) — definir dois vértices de um lado</option>
+  </select>
+  <div id="pol-radius-row">
+    <label id="pol-radius-lbl">Raio (mm):</label>
+    <input id="pol-radius" type="number" value="25" min="0.1" step="0.1">
+  </div>
+  <p style="font-size:9px;color:var(--t2);margin-bottom:8px" id="pol-hint">
+    Após OK, clique no centro do polígono. O raio final pode ser ajustado pelo cursor.
+  </p>
+  <div class="mact">
+    <button class="btn s" onclick="closeOv('ov-polygon')">Cancelar</button>
+    <button class="btn p" onclick="confirmPolygon()">OK</button>
+  </div>
+</div></div>
+
+<!-- FILLET DIALOG -->
+<div class="ov" id="ov-fillet"><div class="modal">
+  <h3 id="fillet-title">Fillet — Arredondamento</h3>
+  <label id="fillet-lbl">Raio (mm, 0=canto vivo):</label>
+  <input id="fillet-r" type="number" value="5" min="0" step="0.5">
+  <p id="fillet-note" style="font-size:9px;color:var(--t2);margin-bottom:8px">Após OK, clique na primeira linha/arco, depois na segunda.</p>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-fillet')">Cancelar</button><button class="btn p" onclick="confirmFillet()">OK</button></div>
 </div></div>
 
 <input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
@@ -327,6 +593,7 @@ var S = {
   hover: null,     // snapped world point + snap type
   isPan: false, panFrom: null,
   isWin: false, winFrom: null,
+  hoverId: null,
   modes: {
     grid:true, snap:true, ortho:false, polar:true,
     gridSz:10, snapSz:5,
@@ -340,6 +607,7 @@ var S = {
 };
 
 // ── INIT ─────────────────────────────────────────────────────
+document.addEventListener('keydown',function(e){if(e.key==='Enter')e.stopPropagation();},false);
 window.addEventListener('load', function() {
   S.wrap = document.getElementById('cw');
   S.cG   = document.getElementById('cGrid');
@@ -353,13 +621,15 @@ window.addEventListener('load', function() {
   S.vp.x = S.cD.width/2;
   S.vp.y = S.cD.height/2;
   bindEv();
+  diInit();
   snapshot();
   loadDemo();
   updLayerUI();
   updLayerSel();
-  log('EduCAD 2D v3 iniciado. Digite HELP para ver comandos.','inf');
-  log('Atalhos: L C R A E PL T D M CO RO MI SC O  |  F7=Grade F8=Ortho F9=Snap','inf');
-  setTool('line');
+  log('EduCAD 2D v6 — Modo SELECT ativo. Clique para selecionar. HELP=comandos.','inf');
+  log('Novos: TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  AR=Array','inf');
+  log('Atalhos: L C R A E PL T D M CO RO MI SC O TR EX F CHA AR  |  F7=Grade F8=Ortho F9=Snap','inf');
+  setTool('select');
 });
 
 function resize() {
@@ -390,13 +660,13 @@ function doSnap(sx,sy) {
   }
   if(!best) best={x:raw.x,y:raw.y,st:null};
   // ortho constraint
-  if(S.modes.ortho && S.ds && S.ds.pts.length>0) {
+  if(S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0) {
     var ref=S.ds.pts[S.ds.pts.length-1];
     var dx=Math.abs(best.x-ref.x), dy=Math.abs(best.y-ref.y);
     if(dx>dy) best={x:best.x,y:ref.y,st:'ortho'}; else best={x:ref.x,y:best.y,st:'ortho'};
   }
   // polar 15°
-  if(S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts.length>0) {
+  if(S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0) {
     var ref2=S.ds.pts[S.ds.pts.length-1];
     var ang=Math.atan2(best.y-ref2.y,best.x-ref2.x)*180/Math.PI;
     var snp=Math.round(ang/15)*15;
@@ -440,6 +710,57 @@ function hitEnt(e,wx,wy) {
     case 'dimr': return segD(wx,wy,e.cx,e.cy,e.ex,e.ey)<t;
     case 'dimd': return segD(wx,wy,2*e.cx-e.ex,2*e.cy-e.ey,e.ex,e.ey)<t;
     case 'dima': return segD(wx,wy,e.vx,e.vy,e.x2,e.y2)<t;
+    case 'polygon':
+      if(!ds){
+        // Não deve chegar aqui normalmente (o modal faz o setup)
+        startPolygon(); break;
+      }
+      if(ds.method==='edge'){
+        if(!ds.p1){
+          ds.p1={x:pt.x,y:pt.y};
+          logp('POL: 2º vértice da aresta:');
+        } else {
+          // Gerar polígono a partir dos dois pontos da aresta
+          var sides=ds.sides;
+          var ex=pt.x-ds.p1.x, ey=pt.y-ds.p1.y;
+          var edgeLen=Math.hypot(ex,ey);
+          // Centro está perpendicular ao meio da aresta
+          var mx=(ds.p1.x+pt.x)/2, my=(ds.p1.y+pt.y)/2;
+          // ângulo da aresta e ângulo para o centro
+          var edgeAng=Math.atan2(ey,ex);
+          // Para polígono regular: distância do centro ao meio da aresta
+          var r=edgeLen/(2*Math.tan(Math.PI/sides)); // apótema
+          // o centro fica perpendicular à aresta, 90° à esquerda
+          var cx2=mx-r*Math.sin(edgeAng), cy2=my+r*Math.cos(edgeAng);
+          // raio para vértices = circunraio
+          var R=edgeLen/(2*Math.sin(Math.PI/sides));
+          // ângulo do 1º vértice (p1)
+          var startAng=Math.atan2(ds.p1.y-cy2,ds.p1.x-cx2);
+          var pts2=[];
+          for(var i=0;i<sides;i++){
+            var a=startAng+i*(2*Math.PI/sides);
+            pts2.push({x:cx2+R*Math.cos(a),y:cy2+R*Math.sin(a)});
+          }
+          pts2.push({x:pts2[0].x,y:pts2[0].y}); // fechar
+          addE({tp:'pl',pts:pts2,closed:true});
+          log('Polígono '+sides+' lados (aresta='+edgeLen.toFixed(2)+'mm).','ok');
+          S.ds=null; logp('POL: 1º vértice da aresta:');
+        }
+      } else {
+        // Centro definido → usar distância do cursor como raio
+        if(!ds.center){
+          ds.center={x:pt.x,y:pt.y};
+          logp('POL: raio (clique ou digite valor):');
+        } else {
+          var r2=Math.hypot(pt.x-ds.center.x,pt.y-ds.center.y);
+          if(r2<0.001) break;
+          polyBuild(ds.center,r2,ds.sides,ds.method,
+                    Math.atan2(pt.y-ds.center.y,pt.x-ds.center.x));
+          S.ds=null; logp('POL: centro:');
+        }
+      }
+      break;
+
     case 'hatch':return wx>=e.x&&wx<=e.x+e.w&&wy>=e.y&&wy<=e.y+e.h;
     default: return false;
   }
@@ -454,13 +775,25 @@ function handleClick(pt) {
 
     /* ─── DRAW TOOLS ─────────────────────── */
     case 'line':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Segundo ponto:');}
-      else{
-        var p1=ds.pts[0];
-        addE({tp:'line',x1:p1.x,y1:p1.y,x2:pt.x,y2:pt.y});
-        var len=Math.hypot(pt.x-p1.x,pt.y-p1.y);
-        log('Linha L='+len.toFixed(3)+'mm  α='+((Math.atan2(pt.y-p1.y,pt.x-p1.x)*180/Math.PI).toFixed(1))+'°','ok');
-        S.ds=null; logp('Primeiro ponto:');
+      if(!ds){
+        // Primeiro ponto: iniciar cadeia
+        S.ds={pts:[{x:pt.x,y:pt.y}],segs:0,firstPt:{x:pt.x,y:pt.y}};
+        log('LINE: P1=('+pt.x.toFixed(2)+','+pt.y.toFixed(2)+')  Próximo ponto, dist ou @dx,dy:','ok');
+        logp('Especifique o próximo ponto:');
+      } else {
+        // Próximos pontos: encadear a partir do ÚLTIMO ponto
+        var lp=ds.pts[ds.pts.length-1];
+        var ld=Math.hypot(pt.x-lp.x,pt.y-lp.y);
+        if(ld<0.001) break;
+        addE({tp:'line',x1:lp.x,y1:lp.y,x2:pt.x,y2:pt.y});
+        ds.segs=(ds.segs||0)+1;
+        var ang=((Math.atan2(pt.y-lp.y,pt.x-lp.x)*180/Math.PI)+360)%360;
+        log('L='+ld.toFixed(2)+'mm  ∠'+ang.toFixed(1)+'°  ('+pt.x.toFixed(2)+','+pt.y.toFixed(2)+')','ok');
+        // Manter firstPt para permitir fechar com C
+        var fp=ds.firstPt;
+        ds.pts=[{x:pt.x,y:pt.y}];
+        ds.firstPt=fp;
+        logp('Próximo ponto ('+ds.segs+' seg) | U=desfazer | C=fechar | Enter=fim:');
       }
       break;
 
@@ -531,6 +864,17 @@ function handleClick(pt) {
       }
       break;
 
+    /* ─── ARRAY POLAR/PATH CLICK ─────────────────────────────── */
+    case '_arrayPolar':
+      doArrayPolar(pt);
+      break;
+    case '_arrayPath':
+      // click on path entity
+      var pathHit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if(['line','pl','arc','circ'].indexOf(e.tp)>=0&&S.ds.sel.indexOf(e.id)<0&&hitEnt(e,pt.x,pt.y)){pathHit=e;break;}}
+      if(pathHit){doArrayPath(pathHit);}
+      else log('Clique em um objeto de caminho (linha/polilinha/arco/círculo).','inf');
+      break;
+
     /* ─── DIM TOOLS ──────────────────────── */
     case 'dim':
       if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Segundo ponto:');}
@@ -581,14 +925,47 @@ function handleClick(pt) {
       break;
     case 'copy':
       if(!ds){
-        if(!S.sel.length){log('Selecione objetos antes de copiar.','er');break;}
-        S.ds={pts:[{x:pt.x,y:pt.y}]}; logp('Ponto de destino:');
-      } else {
-        snapshot(); var dx=pt.x-ds.pts[0].x,dy=pt.y-ds.pts[0].y;
+        // Sem estado: primeiro clique define seleção OU ponto base
+        if(!S.sel.length){
+          // Sem seleção: clicar num objeto para selecioná-lo
+          var hit=null;
+          for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
+          if(hit){
+            S.sel=[hit.id];
+            S.ds={phase:'pickbase',copies:0};
+            log('COPY: 1 objeto selecionado. Clique no ponto base:','ok');
+            logp('COPY: ponto base:');
+          } else {
+            log('COPY: clique em um objeto para selecioná-lo.','inf');
+          }
+        } else {
+          // Com seleção prévia: este clique é o ponto base
+          S.ds={phase:'pickbase',copies:0};
+          log('COPY: '+S.sel.length+' obj. Clique no ponto base:','ok');
+          logp('COPY: ponto base:');
+        }
+      } else if(ds.phase==='pickbase'){
+        // Aguardando ponto base
+        S.ds.phase='dest';
+        S.ds.base={x:pt.x,y:pt.y};
+        log('COPY: base=('+pt.x.toFixed(2)+','+pt.y.toFixed(2)+')','ok');
+        logp('COPY: ponto de destino (múltiplos cliques=várias cópias | Enter=fim):');
+      } else if(ds.phase==='dest'){
+        // Cada clique gera uma cópia mantendo o mesmo ponto base
+        snapshot();
+        var dx=pt.x-ds.base.x, dy=pt.y-ds.base.y;
+        var dist=Math.hypot(dx,dy);
+        var ang=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
         var copies=[];
-        for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e){var c=clon(e);transl(c,dx,dy);copies.push(c);}}
+        for(var i=0;i<S.sel.length;i++){
+          var e=findE(S.sel[i]);
+          if(e){var c=clon(e);transl(c,dx,dy);copies.push(c);}
+        }
         for(var i=0;i<copies.length;i++) S.ents.push(copies[i]);
-        log('Copiado '+copies.length+' obj.','ok'); S.ds=null; renderAll();
+        ds.copies=(ds.copies||0)+1;
+        log('Cópia '+ds.copies+': L='+dist.toFixed(2)+'mm  ∠'+ang.toFixed(1)+'°','ok');
+        logp('COPY: próximo destino ('+ds.copies+' cópia(s)) | Enter=fim:');
+        renderAll();
       }
       break;
     case 'rotate':
@@ -613,9 +990,150 @@ function handleClick(pt) {
       if(!isNaN(f)&&f>0){snapshot();for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e)scalE(e,pt,f);}log('Escala ×'+f,'ok');renderAll();}
       break;
     case 'offset':
-      if(!S.sel.length){log('Selecione um objeto primeiro.','er');break;}
-      var d=parseFloat(prompt('Distância de offset (mm):','10'));
-      if(!isNaN(d)){snapshot();for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e){var c=clon(e);offsE(c,d);S.ents.push(c);}}log('Offset '+d+'mm','ok');renderAll();}
+      if(!S.ds){
+        log('OFFSET: informe a distância na linha de comando e pressione Enter.','inf');
+      } else if(S.ds.phase==='pick'){
+        // Fase 2: selecionar o objeto base
+        var hit=null;
+        for(var i=S.ents.length-1;i>=0;i--){
+          if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}
+        }
+        if(!hit){log('Nenhum objeto no ponto clicado. Tente novamente.','inf');break;}
+        S.ds.phase='side';
+        S.ds.base=hit;
+        log('[OFFSET] Objeto: '+hit.tp+' selecionado.','ok');
+        logp('OFFSET: clique no lado para deslocar (Esc=cancelar objeto):');
+      } else if(S.ds.phase==='side'){
+        // Fase 3: clique define o lado → gera o offset
+        var hit=S.ds.base;
+        var d=S.ds.dist;
+        var dSigned=offsetSide(hit,pt.x,pt.y,d);
+        snapshot();
+        var c=clon(hit);
+        offsE(c,dSigned);
+        S.ents.push(c);
+        renderAll();
+        log('Offset '+d.toFixed(2)+'mm criado.','ok');
+        // voltar para fase pick (selecionar próximo objeto)
+        S.ds.phase='pick';
+        S.ds.base=null;
+        logp('OFFSET d='+d.toFixed(2)+'mm: selecione o próximo objeto (Enter=nova dist, Esc=sair):');
+      }
+      break;
+
+    /* ─── TRIM ───────────────────────────────────────────────── */
+    case 'trim':
+      if(!S.ds){
+        // Sem ds: clique inicia seleção de borda
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
+        if(hit){
+          S.ds={phase:'cut',cutters:[hit.id]};
+          S.sel=[hit.id];
+          log('[TRIM] Borda: '+hit.tp,'ok');
+          logp('TRIM: selecione mais bordas ou Enter para confirmar:');
+        } else {
+          log('Clique em uma borda de corte, ou pressione Enter para usar todos os objetos.','inf');
+        }
+      } else if(S.ds.phase==='cut'){
+        // Adicionar mais bordas de corte
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)&&S.ds.cutters.indexOf(S.ents[i].id)<0){hit=S.ents[i];break;}}
+        if(hit){S.ds.cutters.push(hit.id);S.sel.push(hit.id);log('[TRIM] +Borda: '+hit.tp,'ok');}
+      } else if(S.ds.phase==='trim'){
+        // Executar o corte no objeto clicado
+        // No modo rápido (allMode) qualquer objeto pode ser alvo — inclusive os que são borda
+        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
+          var e=S.ents[i];
+          var isTargetType=(e.tp==='line'||e.tp==='arc'||e.tp==='circ'||e.tp==='pl');
+          var notCutter=!S.ds.allMode&&S.ds.cutters.indexOf(e.id)<0;
+          var isCutterAllMode=S.ds.allMode;
+          if(isTargetType&&(notCutter||isCutterAllMode)&&hitEnt(e,pt.x,pt.y)){tgt=e;break;}
+        }
+        if(tgt){
+          // No modo rápido, as bordas são todos exceto o próprio alvo
+          var cutters=S.ds.allMode
+            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
+            : S.ds.cutters;
+          var result=doTrim(tgt,pt,cutters);
+          if(!result) log('Sem interseção com as bordas definidas.','inf');
+        } else {
+          log('Clique sobre o trecho que deseja remover.','inf');
+        }
+      }
+      break;
+
+    /* ─── EXTEND ─────────────────────────────────────────────── */
+    case 'extend':
+      if(!S.ds){
+        // Primeiro clique: iniciar seleção de limites
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
+        if(hit){
+          S.ds={phase:'bnd',bounds:[hit.id],allMode:false};S.sel=[hit.id];
+          log('[EXTEND] Limite: '+hit.tp,'ok');
+          logp('EXTEND: selecione mais limites ou Enter para confirmar:');
+        } else {
+          log('Clique em um limite ou pressione Enter para usar todos os objetos.','inf');
+        }
+      } else if(S.ds.phase==='bnd'){
+        // Adicionar mais limites
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)&&S.ds.bounds.indexOf(S.ents[i].id)<0){hit=S.ents[i];break;}}
+        if(hit){S.ds.bounds.push(hit.id);S.sel.push(hit.id);log('[EXTEND] +Limite: '+hit.tp,'ok');}
+      } else if(S.ds.phase==='ext'){
+        // Executar extensão no objeto clicado
+        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
+          var e=S.ents[i];
+          var isTargetType=(e.tp==='line'||e.tp==='arc'||e.tp==='pl');
+          var notBound=!S.ds.allMode&&S.ds.bounds.indexOf(e.id)<0;
+          var isBoundAllMode=S.ds.allMode;
+          if(isTargetType&&(notBound||isBoundAllMode)&&hitEnt(e,pt.x,pt.y)){tgt=e;break;}
+        }
+        if(tgt){
+          var bounds=S.ds.allMode
+            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
+            : S.ds.bounds;
+          var result=doExtend(tgt,pt,bounds);
+          if(!result) log('Sem interseção para estender.','inf');
+        } else {
+          log('Clique próximo à extremidade do objeto a estender.','inf');
+        }
+      }
+      break;
+
+    /* ─── FILLET ─────────────────────────────────────────────── */
+    case 'fillet':
+      if(!S.ds){
+        S.ds={phase:'l1',r:S.filletR||5};
+        document.getElementById('fillet-title').textContent='Fillet — Raio atual: '+S.ds.r+'mm';
+        document.getElementById('fillet-lbl').textContent='Raio (mm, 0=canto vivo):';
+        document.getElementById('fillet-note').textContent='Após OK, clique na primeira linha, depois na segunda.';
+        document.getElementById('ov-fillet').classList.add('show');
+      } else if(S.ds.phase==='l1'){
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if((e.tp==='line'||e.tp==='arc'||e.tp==='circ')&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
+        if(hit){S.ds.e1=hit;S.ds.pt1={x:pt.x,y:pt.y};S.ds.phase='l2';log('[FILLET] 1ª linha: '+hit.id,'ok');logp('FILLET: clique na 2ª linha:');}
+        else log('Clique em uma linha/arco.','inf');
+      } else if(S.ds.phase==='l2'){
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if((e.tp==='line'||e.tp==='arc'||e.tp==='circ')&&e.id!==S.ds.e1.id&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
+        if(hit){doFillet(S.ds.e1,hit,S.ds.r,S.ds.pt1,{x:pt.x,y:pt.y});S.ds=null;logp('FILLET: 1ª linha:');}
+        else log('Clique em uma 2ª linha/arco diferente.','inf');
+      }
+      break;
+
+    /* ─── CHAMFER ────────────────────────────────────────────── */
+    case 'chamfer':
+      if(!S.ds){
+        S.ds={phase:'l1',d1:S.chamferD1||5,d2:S.chamferD2||5};
+        document.getElementById('fillet-title').textContent='Chamfer — d1='+S.ds.d1+' d2='+S.ds.d2+'mm';
+        document.getElementById('fillet-lbl').textContent='Distância 1 (mm):';
+        document.getElementById('fillet-note').textContent='Após OK, clique na 1ª linha depois na 2ª.';
+        document.getElementById('ov-fillet').classList.add('show');
+      } else if(S.ds.phase==='l1'){
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if(e.tp==='line'&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
+        if(hit){S.ds.e1=hit;S.ds.pt1={x:pt.x,y:pt.y};S.ds.phase='l2';log('[CHAMFER] 1ª linha: '+hit.id,'ok');logp('CHAMFER: clique na 2ª linha:');}
+        else log('Clique em uma linha.','inf');
+      } else if(S.ds.phase==='l2'){
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if(e.tp==='line'&&e.id!==S.ds.e1.id&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
+        if(hit){doChamfer(S.ds.e1,hit,S.ds.d1,S.ds.d2,S.ds.pt1,{x:pt.x,y:pt.y});S.ds=null;logp('CHAMFER: 1ª linha:');}
+        else log('Clique em uma 2ª linha diferente.','inf');
+      }
       break;
   }
   renderAll();
@@ -688,8 +1206,37 @@ function offsE(e,d){
   switch(e.tp){
     case 'line':{var dx=e.x2-e.x1,dy=e.y2-e.y1,l=Math.hypot(dx,dy);var nx=-dy/l*d,ny=dx/l*d;e.x1+=nx;e.y1+=ny;e.x2+=nx;e.y2+=ny;}break;
     case 'circ': e.r+=d; break;
+    case 'arc':  e.r+=d; break;
     case 'rect': e.x-=d;e.y-=d;e.w+=2*d;e.h+=2*d; break;
     case 'ell': e.rx+=d;e.ry+=d; break;
+  }
+}
+
+// Retorna a distância com sinal correto para o offset ficar do mesmo lado do cursor
+function offsetSide(e,mx,my,d){
+  switch(e.tp){
+    case 'line':{
+      // normal à direita da linha (do p1→p2)
+      var dx=e.x2-e.x1,dy=e.y2-e.y1,l=Math.hypot(dx,dy);
+      if(l<1e-9)return d;
+      var nx=-dy/l,ny=dx/l; // normal apontando para a direita de p1→p2
+      // dot product: se cursor está do lado positivo da normal → d positivo
+      var dot=(mx-e.x1)*nx+(my-e.y1)*ny;
+      return dot>=0?d:-d;
+    }
+    case 'circ':case 'arc':{
+      // se cursor está fora do círculo → offset para fora (+d); dentro → -d
+      var dist=Math.hypot(mx-e.cx,my-e.cy);
+      return dist>=e.r?d:-d;
+    }
+    case 'rect':{
+      // centro do retângulo
+      var cxr=e.x+e.w/2,cyr=e.y+e.h/2;
+      // se cursor está fora → +d, dentro → -d
+      var inside=(mx>e.x&&mx<e.x+e.w&&my>e.y&&my<e.y+e.h);
+      return inside?-d:d;
+    }
+    default: return d;
   }
 }
 function clon(e){var c=JSON.parse(JSON.stringify(e));c.id=uid();return c;}
@@ -702,7 +1249,18 @@ function redo(){if(!S.redos.length){log('Nada para refazer.','er');return;}var s
 // ── SELECTION ────────────────────────────────────────────────
 function delSel(){if(!S.sel.length)return;snapshot();var set=S.sel;S.ents=S.ents.filter(function(e){return set.indexOf(e.id)<0;});S.sel=[];log('Apagado.','ok');renderAll();updStatus();updSelInfo();}
 function selAll(){S.sel=S.ents.map(function(e){return e.id;});renderAll();updSelInfo();}
-function cancelTool(){S.ds=null;S.sel=[];S.isWin=false;S.winFrom=null;log('Cancelado.');renderAll();updSelInfo();}
+function cancelTool(){
+  S.ds=null;S.sel=[];S.isWin=false;S.winFrom=null;
+  document.getElementById('cmdinput').removeAttribute('tabindex');
+  diHide();
+  // Retornar ao modo SELECT (padrão AutoCAD)
+  S.tool='select';
+  document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+  var rb=document.getElementById('rb-select');if(rb)rb.classList.add('on');
+  document.getElementById('stool').textContent='SELECT';
+  S.wrap.style.cursor='default';
+  renderAll();updSelInfo();
+}
 
 // ── VIEWPORT ─────────────────────────────────────────────────
 function zoomFit(){
@@ -740,22 +1298,22 @@ function renderAll(){ drawGrid(); drawScene(); drawOver(); }
 
 function drawGrid(){
   var ctx=S.gG,W=S.cG.width,H=S.cG.height;
-  ctx.fillStyle='#181c28';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
   if(!S.modes.grid) return;
   var gs=S.modes.gridSz*S.vp.sc; if(gs<4)return;
   var ox=((S.vp.x%gs)+gs)%gs,oy=((S.vp.y%gs)+gs)%gs;
-  ctx.strokeStyle='#222838';ctx.lineWidth=.5;
+  ctx.strokeStyle='#151a2e';ctx.lineWidth=.5;
   for(var x=ox;x<W;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
   for(var y=oy;y<H;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   var gM=gs*10;if(gM>10){
     var ox5=((S.vp.x%gM)+gM)%gM,oy5=((S.vp.y%gM)+gM)%gM;
-    ctx.strokeStyle='#28304a';ctx.lineWidth=1;
+    ctx.strokeStyle='#1a2545';ctx.lineWidth=1;
     for(var x=ox5;x<W;x+=gM){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
     for(var y=oy5;y<H;y+=gM){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
   }
-  ctx.strokeStyle='#2a3560';ctx.lineWidth=1;ctx.setLineDash([4,4]);
-  ctx.beginPath();ctx.moveTo(S.vp.x,0);ctx.lineTo(S.vp.x,H);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(0,S.vp.y);ctx.lineTo(W,S.vp.y);ctx.stroke();
+  ctx.lineWidth=1.2;ctx.setLineDash([]);
+  ctx.strokeStyle='#cc333360';ctx.beginPath();ctx.moveTo(0,S.vp.y);ctx.lineTo(W,S.vp.y);ctx.stroke();
+  ctx.strokeStyle='#33cc3360';ctx.beginPath();ctx.moveTo(S.vp.x,0);ctx.lineTo(S.vp.x,H);ctx.stroke();
   ctx.setLineDash([]);
 }
 
@@ -766,6 +1324,14 @@ function drawScene(){
     if(ly&&!ly.vis) continue;
     var sel=S.sel.indexOf(e.id)>=0;
     drawE(ctx,e,sel);
+    // Hover highlight no SELECT: objeto sob cursor recebe destaque sutil
+    if(S.tool==='select'&&!sel&&S.hoverId===e.id){
+      ctx.save();
+      ctx.strokeStyle='#4d9ef780';ctx.lineWidth=(e.lw||0.7)+1.5;
+      ctx.setLineDash([]);ctx.shadowBlur=6;ctx.shadowColor='#4d9ef7';
+      drawE(ctx,e,false);
+      ctx.restore();
+    }
     if(S.modes.didactic) drawDidactic(ctx,e);
     if(S.modes.showcoords) drawCoords(ctx,e);
   }
@@ -852,17 +1418,67 @@ function drawPreview(ctx){
   var ds=S.ds,hp=S.hover,sc=S.vp.sc;
   ctx.save();ctx.strokeStyle='#4d9ef7';ctx.lineWidth=.7;ctx.setLineDash([5,4]);ctx.globalAlpha=.75;ctx.shadowBlur=0;
   switch(S.tool){
-    case 'line':case 'dim':case 'dimr':case 'dimd':
-      if(ds.pts.length>=1){var p1=w2s(ds.pts[ds.pts.length-1].x,ds.pts[ds.pts.length-1].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();var len=Math.hypot(hp.x-ds.pts[ds.pts.length-1].x,hp.y-ds.pts[ds.pts.length-1].y),ang=(Math.atan2(hp.y-ds.pts[ds.pts.length-1].y,hp.x-ds.pts[ds.pts.length-1].x)*180/Math.PI).toFixed(1);ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText(len.toFixed(2)+'mm  '+ang+'°',p2.x+9,p2.y-8);}
+    case 'line':
+      if(ds&&ds.pts&&ds.pts.length>=1){
+        var base=ds.pts[ds.pts.length-1];
+        var lp1=w2s(base.x,base.y), lp2=w2s(hp.x,hp.y);
+
+        // ── Linha guia dinâmica (do último ponto ao cursor) ──
+        ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.2;ctx.setLineDash([8,4]);ctx.globalAlpha=.85;
+        ctx.beginPath();ctx.moveTo(lp1.x,lp1.y);ctx.lineTo(lp2.x,lp2.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+
+        // Ponto base (verde) e ponto cursor (azul)
+        ctx.fillStyle='#00e676';ctx.beginPath();ctx.arc(lp1.x,lp1.y,4,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#00d4ff';ctx.beginPath();ctx.arc(lp2.x,lp2.y,3,0,Math.PI*2);ctx.fill();
+
+        // ── Indicador ortho/polar ──
+        if(hp.st==='ortho'||hp.st==='polar'){
+          var oCol=hp.st==='ortho'?'#ff5555':'#ffaa00';
+          ctx.strokeStyle=oCol;ctx.lineWidth=.5;ctx.setLineDash([2,4]);ctx.globalAlpha=.6;
+          // linha de rastreamento estendida
+          var dx=hp.x-base.x,dy=hp.y-base.y,ext=3000/sc;
+          var lext=w2s(base.x-dx*ext,base.y-dy*ext),rext=w2s(base.x+dx*ext,base.y+dy*ext);
+          ctx.beginPath();ctx.moveTo(lext.x,lext.y);ctx.lineTo(rext.x,rext.y);ctx.stroke();
+          ctx.setLineDash([]);ctx.globalAlpha=1;
+          ctx.fillStyle=oCol;ctx.font='9px Consolas';
+          ctx.fillText(hp.st.toUpperCase(),lp1.x+6,lp1.y-8);
+        }
+
+        // ── Tooltip de distância e ângulo junto ao cursor ──
+        var llen=Math.hypot(hp.x-base.x,hp.y-base.y);
+        var lang=((Math.atan2(hp.y-base.y,hp.x-base.x)*180/Math.PI)+360)%360;
+        // só mostrar tooltip se o DI não estiver com campos focados
+        var diHasFocus=DI.el&&DI.el.contains(document.activeElement);
+        if(!diHasFocus){
+          var tx=lp2.x+16, ty=lp2.y-8;
+          if(tx+80>S.cD.width) tx=lp2.x-90;
+          if(ty<16) ty=lp2.y+20;
+          ctx.font='bold 10px Consolas';
+          var ltxt=llen.toFixed(2)+'  mm';
+          var atxt=lang.toFixed(1)+'°';
+          var tw=Math.max(ctx.measureText(ltxt).width,ctx.measureText(atxt).width)+10;
+          ctx.fillStyle='rgba(4,8,20,0.92)';
+          ctx.beginPath();
+          if(ctx.roundRect) ctx.roundRect(tx-3,ty-14,tw,30,3);
+          else ctx.rect(tx-3,ty-14,tw,30);
+          ctx.fill();
+          ctx.fillStyle='#00e676';ctx.fillText(ltxt,tx+2,ty);
+          ctx.fillStyle='#f5a623';ctx.font='9px Consolas';ctx.fillText(atxt,tx+2,ty+13);
+        }
+      }
+      break;
+    case 'dim':case 'dimr':case 'dimd':
+      if(ds.pts&&ds.pts.length>=1){var p1=w2s(ds.pts[ds.pts.length-1].x,ds.pts[ds.pts.length-1].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();var len=Math.hypot(hp.x-ds.pts[ds.pts.length-1].x,hp.y-ds.pts[ds.pts.length-1].y),ang=(Math.atan2(hp.y-ds.pts[ds.pts.length-1].y,hp.x-ds.pts[ds.pts.length-1].x)*180/Math.PI).toFixed(1);ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText(len.toFixed(2)+'mm  '+ang+'°',p2.x+9,p2.y-8);}
       break;
     case 'polyline':
-      if(ds.pts.length>=1){ctx.beginPath();var p0=w2s(ds.pts[0].x,ds.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<ds.pts.length;i++){var p=w2s(ds.pts[i].x,ds.pts[i].y);ctx.lineTo(p.x,p.y);}var pe=w2s(hp.x,hp.y);ctx.lineTo(pe.x,pe.y);ctx.stroke();}
+      if(ds.pts&&ds.pts.length>=1){ctx.beginPath();var p0=w2s(ds.pts[0].x,ds.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<ds.pts.length;i++){var p=w2s(ds.pts[i].x,ds.pts[i].y);ctx.lineTo(p.x,p.y);}var pe=w2s(hp.x,hp.y);ctx.lineTo(pe.x,pe.y);ctx.stroke();}
       break;
     case 'rectangle':case 'hatch':
-      if(ds.pts.length>=1){var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.rect(Math.min(p1.x,p2.x),Math.min(p1.y,p2.y),Math.abs(p2.x-p1.x),Math.abs(p2.y-p1.y));ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText(Math.abs(hp.x-ds.pts[0].x).toFixed(2)+'×'+Math.abs(hp.y-ds.pts[0].y).toFixed(2),p2.x+9,p2.y-8);}
+      if(ds.pts&&ds.pts.length>=1){var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.rect(Math.min(p1.x,p2.x),Math.min(p1.y,p2.y),Math.abs(p2.x-p1.x),Math.abs(p2.y-p1.y));ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText(Math.abs(hp.x-ds.pts[0].x).toFixed(2)+'×'+Math.abs(hp.y-ds.pts[0].y).toFixed(2),p2.x+9,p2.y-8);}
       break;
     case 'circle':
-      if(ds.pts.length>=1){var c=w2s(ds.pts[0].x,ds.pts[0].y),r=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y)*sc;ctx.beginPath();ctx.arc(c.x,c.y,r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText('r'+(r/sc).toFixed(2)+'mm',c.x+r+4,c.y);}
+      if(ds.pts&&ds.pts.length>=1){var c=w2s(ds.pts[0].x,ds.pts[0].y),r=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y)*sc;ctx.beginPath();ctx.arc(c.x,c.y,r,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText('r'+(r/sc).toFixed(2)+'mm',c.x+r+4,c.y);}
       break;
     case 'arc':
       var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();
@@ -876,11 +1492,221 @@ function drawPreview(ctx){
       if(ds.pts.length===1){var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}
       else if(ds.pts.length===2){ctx.strokeStyle='#f0c040';var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(ds.pts[1].x,ds.pts[1].y),py=w2s(0,hp.y).y;ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p1.x,py);ctx.stroke();ctx.beginPath();ctx.moveTo(p2.x,p2.y);ctx.lineTo(p2.x,py);ctx.stroke();ctx.beginPath();ctx.moveTo(p1.x,py);ctx.lineTo(p2.x,py);ctx.stroke();}
       break;
-    case 'move':case 'copy':
-      if(ds&&ds.pts.length>=1){var dx=hp.x-ds.pts[0].x,dy=hp.y-ds.pts[0].y;ctx.globalAlpha=.4;for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e){var c=clon(e);transl(c,dx,dy);drawE(ctx,c,false);}}}
+    case 'move':
+      if(ds&&ds.pts&&ds.pts.length>=1){
+        var dx=hp.x-ds.pts[0].x,dy=hp.y-ds.pts[0].y;
+        var bp=w2s(ds.pts[0].x,ds.pts[0].y),ep2=w2s(hp.x,hp.y);
+        // Linha de referência base→destino
+        ctx.strokeStyle='#f5a623';ctx.lineWidth=.7;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(bp.x,bp.y);ctx.lineTo(ep2.x,ep2.y);ctx.stroke();
+        ctx.setLineDash([]);
+        // Preview dos objetos na posição destino
+        ctx.globalAlpha=.55;ctx.strokeStyle='#f5a623';
+        for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e){var c=clon(e);transl(c,dx,dy);drawE(ctx,c,false);}}
+        // Tooltip distância/ângulo
+        ctx.globalAlpha=1;ctx.fillStyle='#f5a623';ctx.font='10px Consolas';
+        var mdist=Math.hypot(dx,dy),mang=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+        ctx.fillText(mdist.toFixed(2)+'mm  '+mang.toFixed(1)+'°',ep2.x+10,ep2.y-8);
+      }
+      break;
+    case 'copy':
+      if(ds&&ds.phase==='dest'&&ds.base){
+        var dx=hp.x-ds.base.x,dy=hp.y-ds.base.y;
+        var bp=w2s(ds.base.x,ds.base.y),ep2=w2s(hp.x,hp.y);
+        // Linha de referência
+        ctx.strokeStyle='#00d4ff';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(bp.x,bp.y);ctx.lineTo(ep2.x,ep2.y);ctx.stroke();
+        ctx.setLineDash([]);
+        // Ponto base
+        ctx.fillStyle='#00e676';ctx.globalAlpha=1;ctx.beginPath();ctx.arc(bp.x,bp.y,4,0,Math.PI*2);ctx.fill();
+        // Preview fantasma das cópias
+        ctx.globalAlpha=.55;ctx.strokeStyle='#00d4ff';
+        for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e){var c=clon(e);transl(c,dx,dy);drawE(ctx,c,false);}}
+        // Tooltip
+        ctx.globalAlpha=1;ctx.setLineDash([]);
+        var cdist=Math.hypot(dx,dy),cang=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+        var tx=ep2.x+12,ty=ep2.y-8;
+        ctx.font='bold 10px Consolas';
+        var ct1=cdist.toFixed(2)+'mm', ct2=cang.toFixed(1)+'°';
+        var cw=Math.max(ctx.measureText(ct1).width,ctx.measureText(ct2).width)+10;
+        ctx.fillStyle='rgba(4,8,20,0.9)';
+        if(ctx.roundRect) ctx.roundRect(tx-2,ty-14,cw,28,3); else ctx.rect(tx-2,ty-14,cw,28);
+        ctx.fill();
+        ctx.fillStyle='#00d4ff';ctx.fillText(ct1,tx+2,ty);
+        ctx.fillStyle='#f5a623';ctx.font='9px Consolas';ctx.fillText(ct2,tx+2,ty+12);
+      }
       break;
     case 'mirror':
       if(ds&&ds.pts.length>=1){var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.strokeStyle='#4ec87a';ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}
+      break;
+    case 'polygon':
+      if(ds&&ds.method==='edge'){
+        if(!ds.p1){
+          // Linha de preview da aresta
+          var p1s=w2s(hp.x,hp.y);
+          ctx.fillStyle='#00e676';ctx.beginPath();ctx.arc(p1s.x,p1s.y,3,0,Math.PI*2);ctx.fill();
+        } else {
+          // Preview do polígono completo pela aresta
+          var ex2=hp.x-ds.p1.x,ey2=hp.y-ds.p1.y;
+          var el=Math.hypot(ex2,ey2);if(el<0.01) break;
+          var mx2=(ds.p1.x+hp.x)/2,my2=(ds.p1.y+hp.y)/2;
+          var ea2=Math.atan2(ey2,ex2);
+          var ra=el/(2*Math.tan(Math.PI/ds.sides));
+          var cx3=mx2-ra*Math.sin(ea2),cy3=my2+ra*Math.cos(ea2);
+          var Rv=el/(2*Math.sin(Math.PI/ds.sides));
+          var sa3=Math.atan2(ds.p1.y-cy3,ds.p1.x-cx3);
+          ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.2;ctx.setLineDash([]);ctx.globalAlpha=.8;
+          ctx.beginPath();
+          for(var i=0;i<=ds.sides;i++){
+            var a3=sa3+i*(2*Math.PI/ds.sides);
+            var px3=w2s(cx3+Rv*Math.cos(a3),cy3+Rv*Math.sin(a3));
+            i===0?ctx.moveTo(px3.x,px3.y):ctx.lineTo(px3.x,px3.y);
+          }
+          ctx.stroke();
+          // Info
+          ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle='#00d4ff';ctx.font='10px Consolas';
+          var pp2=w2s(hp.x,hp.y);ctx.fillText(ds.sides+' lados  aresta='+el.toFixed(2)+'mm',pp2.x+10,pp2.y-8);
+        }
+      } else if(ds&&ds.center){
+        // Preview de inscrito/circunscrito com raio dinâmico
+        var r3=Math.hypot(hp.x-ds.center.x,hp.y-ds.center.y);
+        if(r3<0.01) break;
+        var ang3=Math.atan2(hp.y-ds.center.y,hp.x-ds.center.x);
+        var R3=ds.method==='cc'?r3/Math.cos(Math.PI/ds.sides):r3;
+        ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.2;ctx.setLineDash([]);ctx.globalAlpha=.8;
+        ctx.beginPath();
+        for(var i=0;i<=ds.sides;i++){
+          var a4=ang3+i*(2*Math.PI/ds.sides);
+          var pp3=w2s(ds.center.x+R3*Math.cos(a4),ds.center.y+R3*Math.sin(a4));
+          i===0?ctx.moveTo(pp3.x,pp3.y):ctx.lineTo(pp3.x,pp3.y);
+        }
+        ctx.stroke();
+        // Círculo de referência tracejado
+        var cs=w2s(ds.center.x,ds.center.y);
+        ctx.strokeStyle='#4d9ef750';ctx.lineWidth=.7;ctx.setLineDash([4,3]);
+        ctx.beginPath();ctx.arc(cs.x,cs.y,r3*S.vp.sc,0,Math.PI*2);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        // Info
+        var mt=ds.method==='ic'?'Inscrito':'Circunscrito';
+        ctx.fillStyle='#00d4ff';ctx.font='10px Consolas';
+        var pp4=w2s(hp.x,hp.y);ctx.fillText(ds.sides+' lados  '+mt+'  r='+r3.toFixed(2)+'mm',pp4.x+10,pp4.y-8);
+      } else if(ds&&!ds.center&&ds.method!=='edge'){
+        // Aguardando centro: mostrar ponto de cursor
+        var pp5=w2s(hp.x,hp.y);
+        ctx.fillStyle='#00e676';ctx.beginPath();ctx.arc(pp5.x,pp5.y,4,0,Math.PI*2);ctx.fill();
+      }
+      break;
+    case 'trim':
+      if(ds&&ds.phase==='cut'){
+        // Fase seleção de bordas: destacar objeto sob cursor como possível borda
+        if(!ds.allMode){
+          var tgt2=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],hp.x,hp.y)){tgt2=S.ents[i];break;}}
+          if(tgt2){ctx.globalAlpha=.7;ctx.strokeStyle='#00e676';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,tgt2,false);}
+          // mostrar bordas já selecionadas em verde
+          ctx.globalAlpha=.5;ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;
+          for(var i=0;i<ds.cutters.length;i++){var ce=findE(ds.cutters[i]);if(ce)drawE(ctx,ce,false);}
+        }
+      } else if(ds&&ds.phase==='trim'){
+        // Fase corte: destacar bordas em verde e pré-visualizar trecho a remover em vermelho
+        if(!ds.allMode){
+          ctx.globalAlpha=.35;ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.setLineDash([]);
+          for(var i=0;i<ds.cutters.length;i++){var ce=findE(ds.cutters[i]);if(ce)drawE(ctx,ce,false);}
+        }
+        // encontrar objeto sob o cursor
+        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
+          var e=S.ents[i];
+          if(ds.cutters.indexOf(e.id)<0&&(e.tp==='line'||e.tp==='arc'||e.tp==='circ'||e.tp==='pl')&&hitEnt(e,hp.x,hp.y)){tgt=e;break;}
+        }
+        if(tgt){
+          // calcular preview do trecho que será removido
+          var previewCutters=ds.allMode
+            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
+            : ds.cutters;
+          var preview=getTrimPreview(tgt,hp,previewCutters);
+          if(preview){
+            // desenhar o trecho a remover em vermelho tracejado
+            ctx.globalAlpha=.85;ctx.strokeStyle='#ff3d3d';ctx.lineWidth=2.5;ctx.setLineDash([]);
+            drawSegment(ctx,preview);
+            ctx.setLineDash([]);
+          } else {
+            // sem interseção: destacar objeto todo em vermelho fraco
+            ctx.globalAlpha=.4;ctx.strokeStyle='#ff3d3d';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,tgt,false);
+          }
+        }
+      }
+      break;
+    case 'extend':
+      if(ds&&ds.phase==='bnd'){
+        // Fase seleção de limites: destacar objeto sob cursor como possível limite
+        var tgt2=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],hp.x,hp.y)){tgt2=S.ents[i];break;}}
+        if(tgt2){ctx.globalAlpha=.7;ctx.strokeStyle='#00e676';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,tgt2,false);}
+        // limites já selecionados em verde
+        ctx.globalAlpha=.5;ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;
+        for(var i=0;i<ds.bounds.length;i++){var be=findE(ds.bounds[i]);if(be)drawE(ctx,be,false);}
+      } else if(ds&&ds.phase==='ext'){
+        // Fase extensão: limites em verde + preview ciano da extensão
+        if(!ds.allMode){
+          ctx.globalAlpha=.35;ctx.strokeStyle='#00e676';ctx.lineWidth=1.5;ctx.setLineDash([]);
+          for(var i=0;i<ds.bounds.length;i++){var be=findE(ds.bounds[i]);if(be)drawE(ctx,be,false);}
+        }
+        // objeto sob o cursor
+        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
+          var e=S.ents[i];
+          var isTargetType=(e.tp==='line'||e.tp==='arc'||e.tp==='pl');
+          var ok=ds.allMode||ds.bounds.indexOf(e.id)<0;
+          if(isTargetType&&ok&&hitEnt(e,hp.x,hp.y)){tgt=e;break;}
+        }
+        if(tgt){
+          // destacar objeto base em amarelo
+          ctx.globalAlpha=.7;ctx.strokeStyle='#f5a623';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,tgt,false);
+          // calcular e desenhar preview da extensão em ciano tracejado
+          var extBounds=ds.allMode
+            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
+            : ds.bounds;
+          var prev=getExtendPreview(tgt,hp,extBounds);
+          if(prev){
+            ctx.globalAlpha=.9;ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.5;ctx.setLineDash([6,3]);
+            drawSegment(ctx,prev);
+            ctx.setLineDash([]);
+          }
+        }
+      }
+      break;
+    case 'fillet':
+      if(ds&&ds.phase==='l2'&&ds.e1){
+        // show first line highlighted
+        ctx.globalAlpha=.7;ctx.strokeStyle='#f5a623';ctx.lineWidth=1.5;drawE(ctx,ds.e1,false);
+        // show radius hint
+        ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';
+        var sp2=w2s(hp.x,hp.y);ctx.fillText('r='+ds.r.toFixed(1),sp2.x+15,sp2.y-10);
+      }
+      break;
+    case 'chamfer':
+      if(ds&&ds.phase==='l2'&&ds.e1){
+        ctx.globalAlpha=.7;ctx.strokeStyle='#f5a623';ctx.lineWidth=1.5;drawE(ctx,ds.e1,false);
+        ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';
+        var sp3=w2s(hp.x,hp.y);ctx.fillText('d1='+ds.d1+' d2='+ds.d2,sp3.x+15,sp3.y-10);
+      }
+      break;
+    case 'offset':
+      if(ds&&ds.phase==='pick'){
+        // Fase pick: destacar objeto sob o cursor
+        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],hp.x,hp.y)){hit=S.ents[i];break;}}
+        if(hit){
+          ctx.globalAlpha=.6;ctx.strokeStyle='#f5a623';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,hit,false);
+        }
+        ctx.setLineDash([]);ctx.globalAlpha=.8;ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';
+        var sp4=w2s(hp.x,hp.y);ctx.fillText('d='+ds.dist.toFixed(2),sp4.x+15,sp4.y-10);
+      } else if(ds&&ds.phase==='side'&&ds.base){
+        // Fase side: destacar objeto base + preview dinâmico do offset no lado do cursor
+        ctx.globalAlpha=.8;ctx.strokeStyle='#f5a623';ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,ds.base,false);
+        // preview ghost no lado do cursor
+        var dSigned=offsetSide(ds.base,hp.x,hp.y,ds.dist);
+        var ghost=clon(ds.base);offsE(ghost,dSigned);
+        ctx.globalAlpha=.85;ctx.strokeStyle='#00d4ff';ctx.lineWidth=1.5;ctx.setLineDash([6,3]);drawE(ctx,ghost,false);
+        ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle='#00d4ff';ctx.font='bold 10px Consolas';
+        var sp6=w2s(hp.x,hp.y);ctx.fillText('d='+ds.dist.toFixed(2),sp6.x+15,sp6.y-10);
+      }
       break;
   }
   // crosshair
@@ -918,29 +1744,65 @@ function drawOver(){
 function bindEv(){
   var w=S.wrap;
   w.addEventListener('mousemove',onMM);
-  w.addEventListener('mousedown',onMD);
+  // mousedown no document para capturar mesmo quando input tem foco
+  document.addEventListener('mousedown',onMD);
   w.addEventListener('mouseup',onMU);
   w.addEventListener('dblclick',onDbl);
   w.addEventListener('wheel',onWheel,{passive:false});
   w.addEventListener('contextmenu',function(e){e.preventDefault();cancelTool();});
   document.addEventListener('keydown',onKey);
   document.getElementById('cmdinput').addEventListener('keydown',onCmdKey);
+  // Prevenir que o cmdinput roube foco do canvas durante offset pick
+  document.getElementById('cmdinput').addEventListener('mousedown',function(ev){
+    if(S.tool==='offset'&&S.ds&&S.ds.phase==='pick') ev.preventDefault();
+  });
 }
 function ev2xy(e){var r=S.wrap.getBoundingClientRect();return{sx:e.clientX-r.left,sy:e.clientY-r.top};}
 
 function onMM(e){
   var p=ev2xy(e);
   if(S.isPan){S.vp.x+=p.sx-S.panFrom.x;S.vp.y+=p.sy-S.panFrom.y;S.panFrom={x:p.sx,y:p.sy};renderAll();return;}
+  // No SELECT: não precisa de snap completo, apenas raw coords para hover
+  if(S.tool==='select'){
+    var raw=s2w(p.sx,p.sy);
+    S.hover={x:raw.x,y:raw.y,st:null};
+    document.getElementById('coordbox').textContent='X: '+raw.x.toFixed(3)+'   Y: '+raw.y.toFixed(3);
+    // Hover highlight: encontrar objeto sob cursor
+    var hov=null;
+    for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],raw.x,raw.y)){hov=S.ents[i].id;break;}}
+    if(S.hoverId!==hov){S.hoverId=hov;drawScene();}
+    return;
+  }
   S.hover=doSnap(p.sx,p.sy);
   document.getElementById('coordbox').textContent='X: '+S.hover.x.toFixed(3)+'   Y: '+S.hover.y.toFixed(3);
+  // cursor especial no offset: cell quando aguarda objeto ou lado
+  if(S.tool==='offset'){
+    var ph=S.ds&&S.ds.phase;
+    S.wrap.style.cursor=(ph==='pick'||ph==='side')?'cell':'crosshair';
+  }
+  // Dynamic Input: atualizar posição e valores
+  diUpdate(p.sx,p.sy);
   drawScene();drawOver();
 }
 
 function onMD(e){
+  // Filtrar cliques fora do canvas — exceto offset pick e dynInput
+  var inCanvas = S.wrap.contains(e.target);
+  var inDI = document.getElementById('dynInput').contains(e.target);
+  if(!inCanvas && !inDI && !(S.tool==='offset'&&S.ds&&S.ds.phase==='pick')) return;
+  if(inDI) return; // dynInput trata seus próprios eventos
+
   var p=ev2xy(e);
   if(e.button===1||(e.button===0&&S.tool==='pan')){S.isPan=true;S.panFrom={x:p.sx,y:p.sy};return;}
   if(e.button!==0) return;
   var pt=doSnap(p.sx,p.sy);
+
+  // Offset fases pick e side: clique direto no canvas, independente do foco
+  if(S.tool==='offset'&&S.ds&&(S.ds.phase==='pick'||S.ds.phase==='side')){
+    handleClick(pt);
+    return;
+  }
+
   if(S.tool==='select'){
     var hit=null;
     for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
@@ -963,12 +1825,12 @@ function onMU(e){
   if(S.isWin&&S.hover) finishWin();
 }
 
-function onDbl(e){if(S.tool==='polyline'&&S.ds&&S.ds.pts.length>=2) finishPL();}
+function onDbl(e){if(S.tool==='polyline'&&S.ds&&S.ds.pts&&S.ds.pts.length>=2) finishPL();}
 
 function onWheel(e){e.preventDefault();var p=ev2xy(e);doZoom(e.deltaY<0?1.15:.87,p.sx,p.sy);}
 
 function finishPL(){
-  if(!S.ds||S.ds.pts.length<2){S.ds=null;return;}
+  if(!S.ds||!S.ds.pts||S.ds.pts.length<2){S.ds=null;return;}
   addE({tp:'pl',pts:S.ds.pts.slice(),closed:false});
   log('Polilinha '+S.ds.pts.length+' pts','ok');S.ds=null;
 }
@@ -988,9 +1850,98 @@ function finishWin(){
 }
 
 function onKey(e){
-  if(document.activeElement===document.getElementById('cmdinput')) return;
+  var ci=document.getElementById('cmdinput');
+  var activeEl=document.activeElement;
+  var inDI=DI.el&&DI.el.contains(activeEl);
+
+  // Se o DI está visível e o foco NÃO está num campo do DI nem no cmdinput:
+  // capturar digitação e redirecionar para o campo ativo do DI
+  if(DI.active && activeEl!==ci && !inDI && !e.ctrlKey && !e.altKey && !e.metaKey){
+    var k2=e.key;
+    // Teclas que iniciam entrada numérica/coordenada
+    var isTypeable=(k2.length===1&&/[0-9.\-@<,]/.test(k2));
+    if(isTypeable){
+      e.preventDefault();
+      // Campo padrão: se há base → L (distância); senão → X
+      // Se o focusField já está definido e é válido, manter
+      var hasBase2=!!DI.base;
+      var defaultField=hasBase2?'d':'x';
+      var targetField=DI.focusField||defaultField;
+      // Garantir que campo é coerente com o estado
+      if(hasBase2&&(targetField==='x'||targetField==='y')) targetField='d';
+      if(!hasBase2&&(targetField==='d'||targetField==='a')) targetField='x';
+      var inp=document.getElementById('di-'+targetField);
+      if(inp){
+        inp.value=k2;
+        inp.focus();
+        inp.setSelectionRange(1,1);
+        DI.focusField=targetField;
+        DI.mode=(targetField==='x'||targetField==='y')?'xy':'da';
+        diHighlight();
+        return;
+      }
+    }
+    // Tab: alternar campo do DI
+    if(k2==='Tab'){
+      e.preventDefault();
+      var order=['x','y','d','a'];
+      var idx=order.indexOf(DI.focusField||'x');
+      var next=order[(idx+1)%order.length];
+      DI.focusField=next;
+      var inp2=document.getElementById('di-'+next);
+      if(inp2){inp2.focus();inp2.select();}
+      if(next==='x'||next==='y') DI.mode='xy'; else DI.mode='da';
+      diHighlight();
+      return;
+    }
+  }
+
+  if(activeEl===ci) return;
   var k=e.key;
-  if(k==='Escape'){cancelTool();return;}
+  if(k==='Escape'){
+    if(S.tool==='line'&&S.ds){
+      var ns=S.ds.segs||0;
+      if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
+      S.ds=null;diHide();
+      // Voltar SELECT mantendo seleção atual
+      S.tool='select';
+      document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+      var rbSel=document.getElementById('rb-select');if(rbSel)rbSel.classList.add('on');
+      document.getElementById('stool').textContent='SELECT';
+      S.wrap.style.cursor='default';
+      renderAll();
+    }
+    else if(S.tool==='offset'){
+      if(S.ds&&S.ds.phase==='side'){
+        S.ds.phase='pick';S.ds.base=null;
+        logp('OFFSET d='+S.ds.dist.toFixed(2)+'mm: selecione o objeto (Esc=sair):');
+        renderAll();
+      } else {
+        S.ds=null;
+        document.getElementById('cmdinput').removeAttribute('tabindex');
+        diHide();
+        S.tool='select';
+        document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+        var rbSel2=document.getElementById('rb-select');if(rbSel2)rbSel2.classList.add('on');
+        document.getElementById('stool').textContent='SELECT';
+        S.wrap.style.cursor='default';
+        renderAll();updSelInfo();
+      }
+    }
+    else if(S.tool==='select'){
+      // Esc no modo select: limpar seleção
+      S.sel=[];S.ds=null;S.isWin=false;S.winFrom=null;
+      renderAll();updSelInfo();
+    }
+    else {
+      // Qualquer outra ferramenta: voltar ao SELECT preservando a seleção atual
+      var savedSel=S.sel.slice();
+      cancelTool();
+      S.sel=savedSel;
+      renderAll();updSelInfo();
+    }
+    return;
+  }
   if(k==='Delete'||k==='Backspace'){delSel();return;}
   if(e.ctrlKey&&k==='z'){e.preventDefault();undo();return;}
   if(e.ctrlKey&&(k==='y'||k==='Y')){e.preventDefault();redo();return;}
@@ -1000,37 +1951,229 @@ function onKey(e){
   if(k==='F7'){toggleMode('grid');return;}
   if(k==='F8'){toggleMode('ortho');return;}
   if(k==='F9'){toggleMode('snap');return;}
-  if(k==='Enter'){if(S.tool==='polyline'&&S.ds)finishPL();return;}
+  if(k==='Enter'){
+    e.preventDefault();e.stopPropagation();
+    if(S.tool==='line'&&S.ds){
+      var ns=S.ds.segs||0;
+      if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
+      S.ds=null; renderAll();
+      logp('LINE: 1º ponto (ou coord no cmd):');
+    }
+    else if(S.tool==='polyline'&&S.ds)finishPL();
+    else if(S.tool==='copy'&&S.ds){
+      var nc=S.ds.copies||0;
+      if(nc>0) log('COPY: '+nc+' cópia(s) criada(s).','ok');
+      S.ds=null;renderAll();
+      logp('COPY: clique no objeto a copiar:');
+    }
+    else if(S.tool==='offset'&&S.ds){
+      if(S.ds.phase==='side'){
+        // Enter durante escolha de lado: cancelar objeto atual, voltar para pick
+        S.ds.phase='pick';S.ds.base=null;
+        logp('OFFSET d='+S.ds.dist.toFixed(2)+'mm: selecione o objeto:');renderAll();
+      } else {
+        // Enter durante pick: pedir nova distância
+        S.ds=null;
+        S.wrap.style.cursor='crosshair';
+        var ci=document.getElementById('cmdinput');
+        ci.removeAttribute('tabindex');ci.focus();
+        logp('OFFSET: informe a nova distância:');
+      }
+    } else if(S.tool==='trim'){
+      if(!S.ds||S.ds.phase==='cut'){
+        // Enter: confirmar bordas (ou usar todos visíveis se nenhuma selecionada)
+        var visIds=S.ents.filter(function(e){var ly=getLy(e.ly);return ly&&ly.vis;}).map(function(e){return e.id;});
+        var cutters=(S.ds&&S.ds.cutters&&S.ds.cutters.length)?S.ds.cutters:visIds;
+        var allMode=cutters.length===visIds.length;
+        S.ds={phase:'trim',cutters:cutters,allMode:allMode};
+        S.sel=[];
+        log('TRIM: '+(allMode?'todos os objetos como borda':cutters.length+' borda(s) selecionada(s)'),'ok');
+        logp('TRIM: clique no trecho a remover (Enter=reselecionar bordas, Esc=sair):');
+        renderAll();
+      } else if(S.ds.phase==='trim'){
+        // Enter durante corte: reiniciar seleção de bordas
+        S.ds=null;S.sel=[];
+        logp('TRIM: selecione bordas ou Enter para usar todos:');
+        renderAll();
+      }
+    } else if(S.tool==='extend'){
+      if(!S.ds||S.ds.phase==='bnd'){
+        // Enter: confirmar limites (ou todos visíveis se nenhum selecionado)
+        var visIds=S.ents.filter(function(e){var ly=getLy(e.ly);return ly&&ly.vis;}).map(function(e){return e.id;});
+        var bounds=(S.ds&&S.ds.bounds&&S.ds.bounds.length)?S.ds.bounds:visIds;
+        var allMode=bounds.length===visIds.length&&(!S.ds||!S.ds.bounds||!S.ds.bounds.length);
+        S.ds={phase:'ext',bounds:bounds,allMode:allMode};
+        S.sel=[];
+        log('EXTEND: '+(allMode?'todos os objetos como limite':bounds.length+' limite(s) selecionado(s)'),'ok');
+        logp('EXTEND: clique na extremidade a estender (Enter=reselecionar limites, Esc=sair):');
+        renderAll();
+      } else if(S.ds.phase==='ext'){
+        // Enter durante extensão: reiniciar seleção de limites
+        S.ds=null;S.sel=[];
+        logp('EXTEND: selecione limites ou Enter para usar todos:');
+        renderAll();
+      }
+    } else document.getElementById('cmdinput').focus();
+    return;
+  }
   if(k==='+'||k==='='){doZoom(1.2);return;}
   if(k==='-'){doZoom(.83);return;}
-  var map={l:'line',c:'circle',r:'rectangle',a:'arc',e:'ellipse',t:'text',d:'dim',m:'move',p:'pan',s:'select',z:'fit'};
+  // C = fechar linha (voltar ao 1º ponto) quando LINE ativo com ≥2 segmentos
+  if((k==='c'||k==='C')&&!e.ctrlKey&&!e.altKey&&S.tool==='line'&&S.ds&&S.ds.segs>=1&&S.ds.firstPt){
+    var lp2=S.ds.pts[S.ds.pts.length-1];
+    var fp=S.ds.firstPt;
+    var ld2=Math.hypot(fp.x-lp2.x,fp.y-lp2.y);
+    if(ld2>0.001){
+      addE({tp:'line',x1:lp2.x,y1:lp2.y,x2:fp.x,y2:fp.y});
+      log('LINE: fechado com '+( (S.ds.segs||0)+1)+' segmentos.','ok');
+    }
+    S.ds=null;diHide();renderAll();
+    logp('LINE: 1º ponto:');
+    return;
+  }
+  // U = desfazer último segmento da cadeia LINE ativa
+  if((k==='u'||k==='U')&&!e.ctrlKey&&!e.altKey&&S.tool==='line'&&S.ds&&S.ds.segs>=1){
+    undo();
+    // restaurar ds apontando para o ponto anterior
+    // após undo, o último ent criado foi removido; precisamos retomar do ponto anterior
+    // Encontrar o último segmento da cadeia (se houver)
+    var lastLinePt=null;
+    for(var _i=S.ents.length-1;_i>=0;_i--){
+      if(S.ents[_i].tp==='line'){lastLinePt={x:S.ents[_i].x2,y:S.ents[_i].y2};break;}
+    }
+    var fp2=S.ds.firstPt;
+    S.ds={pts:[lastLinePt||fp2],segs:(S.ds.segs||1)-1,firstPt:fp2};
+    log('LINE: último segmento desfeito.','inf');
+    logp('Próximo ponto ('+S.ds.segs+' seg):');
+    renderAll();return;
+  }
+  var map={l:'line',c:'circle',r:'rectangle',a:'arc',e:'ellipse',t:'text',d:'dim',m:'move',p:'pan',s:'select',z:'fit',f:'fillet'};
   var sk=k.toLowerCase();
   if(map[sk]&&!e.ctrlKey&&!e.altKey){if(sk==='z')zoomFit();else setTool(map[sk]);}
 }
 
 function onCmdKey(e){
+  e.stopPropagation();
+  if(e.key==='Escape'){
+    document.getElementById('cmdinput').value='';
+    // Se há comando ativo, cancelar e voltar ao SELECT
+    if(S.tool!=='select'){
+      var savedSel2=S.sel.slice();
+      cancelTool();
+      S.sel=savedSel2;
+      renderAll();updSelInfo();
+    }
+    return;
+  }
   if(e.key!=='Enter')return;
-  var v=document.getElementById('cmdinput').value.trim();
-  document.getElementById('cmdinput').value='';
-  processCmd(v);
-}
+  e.preventDefault();
+  var ci=document.getElementById('cmdinput');
+  var v=ci.value.trim();
+  ci.value='';
 
-// ── COMMAND PROCESSOR ────────────────────────────────────────
-function processCmd(raw){
-  if(!raw)return;
-  log('> '+raw);
-  // try coordinate first
-  var pt=parseCoord(raw);
-  if(pt){handleClick(pt);return;}
-  var up=raw.toUpperCase().trim(),cmd=up.split(' ')[0];
+  // Enter vazio: finaliza comando ativo (LINE, PL, OFFSET) ou repete último cmd
+  if(!v){
+    if(S.tool==='line'&&S.ds){
+      var ns=S.ds.segs||0;
+      if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
+      S.ds=null; renderAll();
+      logp('LINE: 1º ponto (ou coord no cmd):');
+    } else if(S.tool==='polyline'&&S.ds){ finishPL(); }
+    else if(S.tool==='copy'&&S.ds){
+      var nc2=S.ds.copies||0;
+      if(nc2>0) log('COPY: '+nc2+' cópia(s) criada(s).','ok');
+      S.ds=null;renderAll();
+      logp('COPY: clique no objeto a copiar:');
+    }
+    else if(S.tool==='offset'&&S.ds){
+      if(S.ds.phase==='side'){
+        S.ds.phase='pick';S.ds.base=null;
+        logp('OFFSET d='+S.ds.dist.toFixed(2)+'mm: selecione o objeto:');renderAll();
+      } else {
+        S.ds=null;S.wrap.style.cursor='crosshair';
+        document.getElementById('cmdinput').removeAttribute('tabindex');
+        logp('OFFSET: informe a nova distância (ou Esc para sair):');
+      }
+    }
+    return;
+  }
+
+  log('> '+v);
+
+  // Offset: se aguardando distância, qualquer número inicia a fase pick
+  if(S.tool==='offset'&&(!S.ds||S.ds.phase!=='pick')){
+    var num=parseFloat(v);
+    if(!isNaN(num)&&num>0){
+      S.ds={phase:'pick',dist:num};
+      log('OFFSET: distância = '+num.toFixed(2)+'mm','ok');
+      logp('OFFSET d='+num.toFixed(2)+'mm: clique no objeto a deslocar (Enter=nova dist, Esc=sair):');
+      // Remover foco do input e aplicar cursor; o canvas recebe cliques via listener no document
+      ci.blur();
+      ci.setAttribute('tabindex','-1');  // impede re-foco via clique acidental
+      S.wrap.style.cursor='cell';
+      return;
+    } else {log('OFFSET: informe um número positivo para a distância.','er');return;}
+  }
+
+  // Tentar como coordenada primeiro (10,20 ou @5,3 ou @10<45)
+  var pt=parseCoord(v);
+  if(pt){handleClick(pt);ci.focus();return;}
+
+  // Tentar como número sozinho: distância na direção do cursor
+  // Suportado para LINE e demais ferramentas que têm pts
+  if(S.tool!=='offset' && S.ds && S.ds.pts && S.ds.pts.length>0){
+    var num=parseFloat(v);
+    if(!isNaN(num) && num>0 && v.match(/^[\d]+\.?\d*$/)){
+      var base=S.ds.pts[S.ds.pts.length-1];
+      if(S.hover){
+        var ddx=S.hover.x-base.x,ddy=S.hover.y-base.y,dL=Math.hypot(ddx,ddy);
+        if(dL>0.0001){
+          pt={x:base.x+ddx/dL*num,y:base.y+ddy/dL*num,st:null};
+        } else {
+          // sem direção de cursor: usar horizontal para direita
+          pt={x:base.x+num,y:base.y,st:null};
+        }
+        log('LINE → dist='+num.toFixed(2)+'mm','inf');
+        handleClick(pt);ci.focus();return;
+      }
+    }
+  }
+
+  // C = fechar / U = desfazer último seg — quando LINE ativo
+  if(S.tool==='line'&&S.ds){
+    if(v.toUpperCase()==='C'&&S.ds.segs>=1&&S.ds.firstPt){
+      var lp3=S.ds.pts[S.ds.pts.length-1],fp3=S.ds.firstPt;
+      var ld3=Math.hypot(fp3.x-lp3.x,fp3.y-lp3.y);
+      if(ld3>0.001) addE({tp:'line',x1:lp3.x,y1:lp3.y,x2:fp3.x,y2:fp3.y});
+      log('LINE: fechado.','ok');
+      S.ds=null;diHide();renderAll();logp('LINE: 1º ponto:');ci.focus();return;
+    }
+    if(v.toUpperCase()==='U'&&S.ds.segs>=1){
+      undo();
+      var lastLP=null;
+      for(var _j=S.ents.length-1;_j>=0;_j--){if(S.ents[_j].tp==='line'){lastLP={x:S.ents[_j].x2,y:S.ents[_j].y2};break;}}
+      var fp4=S.ds.firstPt;
+      S.ds={pts:[lastLP||fp4],segs:(S.ds.segs||1)-1,firstPt:fp4};
+      log('LINE: último segmento desfeito.','inf');
+      logp('Próximo ponto ('+S.ds.segs+' seg):');
+      renderAll();ci.focus();return;
+    }
+  }
+
+  // Tentar como comando
+  var up=v.toUpperCase().trim(),cmd=up.split(' ')[0];
   var map={
     'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','R':'rectangle','RECT':'rectangle',
     'A':'arc','ARC':'arc','E':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
-    'PL':'polyline','POLYLINE':'polyline',
-    'D':'dim','DIM':'dim','DR':'dimr','DA':'dima',
+    'PL':'polyline','POLYLINE':'polyline','H':'hatch','HATCH':'hatch',
+    'D':'dim','DIM':'dim','DR':'dimr','DD':'dimd','DA':'dima',
     'M':'move','MOVE':'move','CO':'copy','COPY':'copy',
     'RO':'rotate','ROTATE':'rotate','SC':'scale','SCALE':'scale',
     'MI':'mirror','MIRROR':'mirror','O':'offset','OFFSET':'offset',
+    'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
+    'POL':'polygon','POLYGON':'polygon',
+    'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
+    'AR':'array','ARRAY':'array',
     'P':'pan','PAN':'pan','S':'select','SELECT':'select',
     'U':'undo','UNDO':'undo','REDO':'redo',
     'Z':'zf','ZE':'zf','ZOOM':'zoom',
@@ -1041,19 +2184,22 @@ function processCmd(raw){
     'HELP':'help','?':'help',
   };
   var act=map[cmd];
-  if(!act){log('Comando desconhecido. HELP para lista.','er');return;}
+  if(!act){log('Comando desconhecido: '+v+'. HELP para lista.','er');return;}
   switch(act){
     case 'line':case 'circle':case 'rectangle':case 'arc':case 'ellipse':
-    case 'text':case 'polyline':case 'dim':case 'dimr':case 'dima':
+    case 'text':case 'polyline':case 'hatch':case 'dim':case 'dimr':case 'dimd':case 'dima':
     case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':
+    case 'trim':case 'extend':case 'fillet':case 'chamfer':
       setTool(act);break;
+    case 'polygon':startPolygon();break;
+    case 'array':showArrayDlg();break;
     case 'pan':setTool('pan');break;
     case 'select':setTool('select');break;
     case 'undo':undo();break;
     case 'redo':redo();break;
     case 'del':delSel();break;
     case 'zf':zoomFit();break;
-    case 'zoom':{var v=up.split(' ')[1];if(v==='E'||v==='FIT')zoomFit();else if(v==='IN')doZoom(1.5);else if(v==='OUT')doZoom(.67);}break;
+    case 'zoom':{var zv=up.split(' ')[1];if(zv==='E'||zv==='FIT')zoomFit();else if(zv==='IN')doZoom(1.5);else if(zv==='OUT')doZoom(.67);}break;
     case 'ortho':toggleMode('ortho');break;
     case 'grid':toggleMode('grid');break;
     case 'snap':toggleMode('snap');break;
@@ -1062,20 +2208,25 @@ function processCmd(raw){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS DISPONÍVEIS ═══════════════════════════════','inf');
-      log('DRAW: L C R A E PL T  (Linha Círculo Rect Arco Elipse Polilinha Texto)','inf');
-      log('DIM:  D DR DA  (Linear Raio Ângulo)','inf');
-      log('EDIT: M CO RO SC MI O  (Mover Copiar Rotar Escalar Espelhar Offset)','inf');
-      log('NAV:  P Z ZE +/-  F7=Grade F8=Ortho F9=Snap','inf');
-      log('COORD: 10,20  @5,3  @10<45  (Abs / Relativo / Polar)','inf');
-      log('GERAL: Esc=Cancel Del=Apagar Enter=Fim-PL Ctrl+Z/Y=Undo/Redo','inf');
+      log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
+      log('DRAW: L C R A E PL T H POL (Linha Circ Rect Arco Elipse PL Texto Hach Polígono)','inf');
+      log('DIM:  D DR DD DA (Linear Raio Diâm Ângulo)','inf');
+      log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
+      log('  M=Mover CO=Copiar RO=Rotar SC=Escalar MI=Espelhar O=Offset','inf');
+      log('  TR=Trim EX=Extend F=Fillet CHA=Chamfer AR=Array','inf');
+      log('NAV:  P Z +/- F7=Grade F8=Ortho F9=Snap','inf');
+      log('COORD: 10,20  @5,3  @10<45  50(dist dir cursor)','inf');
+      log('EXPORT: DXF R14 | DXF 2007+ | DWG(via DXF) | SVG | PNG','inf');
+      log('Enter=finaliza cmd | Esc=cancela | Ctrl+Z/Y=Undo/Redo','inf');
       log('════════════════════════════════════════════════════════','inf');
       break;
   }
 }
 
+// ── COMMAND PROCESSOR (integrado no onCmdKey acima) ──────────
+
 function parseCoord(raw){
-  var base=S.ds&&S.ds.pts.length?S.ds.pts[S.ds.pts.length-1]:(S.hover||{x:0,y:0});
+  var base=S.ds&&S.ds.pts&&S.ds.pts.length?S.ds.pts[S.ds.pts.length-1]:(S.hover||{x:0,y:0});
   // polar @D<A
   var m=raw.match(/^@?(-?\d+\.?\d*)<(-?\d+\.?\d*)$/);
   if(m){var d=parseFloat(m[1]),a=parseFloat(m[2])*Math.PI/180,rel=raw[0]==='@';return rel?{x:base.x+d*Math.cos(a),y:base.y+d*Math.sin(a),st:null}:{x:d*Math.cos(a),y:d*Math.sin(a),st:null};}
@@ -1083,6 +2234,246 @@ function parseCoord(raw){
   m=raw.match(/^(@?)(-?\d+\.?\d*),(-?\d+\.?\d*)$/);
   if(m){var rel=m[1]==='@',x=parseFloat(m[2]),y=parseFloat(m[3]);return rel?{x:base.x+x,y:base.y+y,st:null}:{x:x,y:y,st:null};}
   return null;
+}
+
+// ── DYNAMIC INPUT ────────────────────────────────────────────
+var DI = {
+  el:    null,   // container
+  inpX:  null, inpY: null, inpD: null, inpA: null,
+  hint:  null,
+  active: false,  // está visível
+  mode:  'xy',    // 'xy' | 'da' (distance/angle)
+  focusField: 'x', // campo com foco: x|y|d|a
+  // posição do mouse na tela (pixels) para posicionar o painel
+  sx: 0, sy: 0,
+  // base point (último ponto da cadeia)
+  base: null,
+};
+
+function diInit(){
+  DI.el   = document.getElementById('dynInput');
+  DI.inpX = document.getElementById('di-x');
+  DI.inpY = document.getElementById('di-y');
+  DI.inpD = document.getElementById('di-d');
+  DI.inpA = document.getElementById('di-a');
+  DI.hint = document.getElementById('di-hint');
+
+  // Tab: circula entre campos
+  [DI.inpX,DI.inpY,DI.inpD,DI.inpA].forEach(function(inp){
+    inp.addEventListener('keydown', diKey);
+    // Ao focar um campo, marcar modo
+    inp.addEventListener('focus', function(){
+      DI.focusField = this.id.replace('di-','');
+      if(DI.focusField==='x'||DI.focusField==='y') DI.mode='xy';
+      else DI.mode='da';
+      diHighlight();
+      // Ao focar campo de ângulo sem valor, pré-preencher com ângulo atual
+      if(DI.focusField==='a'&&this.value===''&&DI.base&&S.hover){
+        var preAng=(((Math.atan2(S.hover.y-DI.base.y,S.hover.x-DI.base.x)*180/Math.PI)+360)%360).toFixed(1);
+        this.value=preAng;
+        this.select();
+      }
+    });
+    // Prevenir que clique no dynInput feche o foco do canvas
+    inp.addEventListener('mousedown', function(e){ e.stopPropagation(); });
+  });
+}
+
+function diKey(e){
+  if(e.key==='Tab'){
+    e.preventDefault();
+    // Se há base (encadeamento): ciclo é L → A → L
+    // Se não há base (primeiro ponto): ciclo é X → Y → X
+    var hasBase=!!DI.base;
+    var order=hasBase?['d','a']:['x','y'];
+    var idx=order.indexOf(DI.focusField);
+    if(idx<0) idx=0;
+    var next=order[(idx+1)%order.length];
+    DI.focusField=next;
+    var inp=document.getElementById('di-'+next);
+    inp.focus();inp.select();
+    if(next==='x'||next==='y') DI.mode='xy'; else DI.mode='da';
+    // Pré-preencher ângulo se vazio
+    if(next==='a'&&inp.value===''&&DI.base&&S.hover){
+      inp.value=(((Math.atan2(S.hover.y-DI.base.y,S.hover.x-DI.base.x)*180/Math.PI)+360)%360).toFixed(1);
+      inp.select();
+    }
+    diHighlight();
+    return;
+  }
+  if(e.key==='Escape'){
+    e.stopPropagation();
+    diHide();
+    cancelTool();
+    return;
+  }
+  if(e.key==='Enter'){
+    e.preventDefault();
+    e.stopPropagation();
+    diConfirm();
+    return;
+  }
+}
+
+function diConfirm(){
+  // Ler campos ativos e gerar ponto
+  var pt=null;
+  // Modo DA: distância + ângulo (tem prioridade se campo d ou a tem valor)
+  var dv=DI.inpD.value.trim(), av=DI.inpA.value.trim();
+  var xv=DI.inpX.value.trim(), yv=DI.inpY.value.trim();
+
+  var useDA=(DI.mode==='da'&&DI.base)||(dv!==''&&DI.base);
+  var useXY=(DI.mode==='xy')||(xv!==''||yv!='');
+
+  if(useDA){
+    var dn=parseFloat(dv), an=parseFloat(av);
+    var base=DI.base;
+    if(isNaN(dn)||dn===0){
+      // sem distância — usar XY como fallback
+      useDA=false; useXY=true;
+    } else {
+      if(isNaN(an)){
+        // sem ângulo: usar direção atual do cursor
+        if(S.hover&&base){
+          an=Math.atan2(S.hover.y-base.y,S.hover.x-base.x)*180/Math.PI;
+        } else an=0;
+      }
+      var rad=an*Math.PI/180;
+      pt={x:base.x+dn*Math.cos(rad),y:base.y+dn*Math.sin(rad),st:null};
+    }
+  }
+  if(!pt&&useXY&&(xv!==''||yv!=='')){
+    var xn=parseFloat(xv), yn=parseFloat(yv);
+    if(isNaN(xn)) xn=S.hover?S.hover.x:0;
+    if(isNaN(yn)) yn=S.hover?S.hover.y:0;
+    pt={x:xn,y:yn,st:null};
+  }
+
+  if(pt){
+    handleClick(pt);
+    diClear();
+    // Após confirmar: se há base (encadeamento), focar em distância; senão X
+    setTimeout(function(){
+      if(!DI.active) return;
+      var newBase=diGetBase();
+      if(newBase){
+        DI.focusField='d'; DI.mode='da';
+        DI.inpD.focus();
+      } else {
+        DI.focusField='x'; DI.mode='xy';
+        DI.inpX.focus();
+      }
+      diHighlight();
+    },30);
+  }
+}
+
+function diClear(){
+  DI.inpX.value='';DI.inpY.value='';
+  DI.inpD.value='';DI.inpA.value='';
+}
+
+function diHighlight(){
+  [DI.inpX,DI.inpY,DI.inpD,DI.inpA].forEach(function(inp){
+    inp.classList.toggle('active', inp===document.getElementById('di-'+DI.focusField));
+  });
+}
+
+// Decide se o DI deve aparecer para o tool/fase atual
+function diShouldShow(){
+  var t=S.tool;
+  if(t==='select'||t==='pan') return false;
+  // Ferramentas de desenho com entrada de ponto
+  if(t==='line'||t==='polyline'||t==='rectangle'||t==='circle'||
+     t==='arc'||t==='ellipse'||t==='text'||t==='hatch'||t==='polygon') return true;
+  // Comandos de edição quando esperam ponto base ou destino
+  if(t==='move'&&S.ds&&S.ds.pts) return true;
+  if(t==='copy'&&S.ds&&S.ds.phase==='dest') return true;
+  // Offset: fase side (definir ponto de distância não se aplica; pular)
+  return false;
+}
+
+// Calcular base point (último ponto da cadeia ativa)
+function diGetBase(){
+  if(S.ds&&S.ds.pts&&S.ds.pts.length>0)
+    return S.ds.pts[S.ds.pts.length-1];
+  // COPY: base point (só quando na fase dest)
+  if(S.tool==='copy'&&S.ds&&S.ds.phase==='dest'&&S.ds.base)
+    return S.ds.base;
+  return null;
+}
+
+// Atualizar o DI com as coordenadas atuais do cursor
+function diUpdate(sx,sy){
+  if(!diShouldShow()){diHide();return;}
+
+  // Mostrar
+  DI.active=true;
+  DI.el.classList.add('show');
+  DI.sx=sx;DI.sy=sy;
+
+  // Posicionar: offset do cursor
+  var offX=22, offY=22;
+  var rect=S.wrap.getBoundingClientRect();
+  // Evitar sair pelos bordos direito/inferior
+  var px=sx+offX, py=sy+offY;
+  var panelW=176, panelH=110;
+  if(px+panelW>S.wrap.clientWidth-10) px=sx-panelW-8;
+  if(py+panelH>S.wrap.clientHeight-10) py=sy-panelH-8;
+  DI.el.style.left=px+'px';
+  DI.el.style.top=py+'px';
+
+  // Base point
+  var base=diGetBase();
+  DI.base=base;
+
+  // Atualizar campos que NÃO têm foco (não sobrescrever o que o usuário está digitando)
+  var focused=document.activeElement;
+  var hp=S.hover;
+  if(!hp) return;
+
+  if(focused!==DI.inpX) DI.inpX.value=hp.x.toFixed(3);
+  if(focused!==DI.inpY) DI.inpY.value=hp.y.toFixed(3);
+
+  if(base){
+    var dx=hp.x-base.x, dy=hp.y-base.y;
+    var dist=Math.hypot(dx,dy);
+    var ang=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+    if(focused!==DI.inpD) DI.inpD.value=dist.toFixed(3);
+    if(focused!==DI.inpA) DI.inpA.value=ang.toFixed(1);
+    var fieldNames={x:'X abs',y:'Y abs',d:'Distância',a:'Ângulo°'};
+    var hintBase=(fieldNames[DI.focusField]||'')+' · Tab · Enter';
+    if(S.tool==='line'&&S.ds&&S.ds.segs>=1) hintBase+=' · U=undo · C=fechar';
+    DI.hint.textContent=hintBase;
+  } else {
+    if(focused!==DI.inpD) DI.inpD.value='';
+    if(focused!==DI.inpA) DI.inpA.value='';
+    DI.hint.textContent='X, Y absoluto · Tab · Enter=ok';
+  }
+
+  // Visibilidade dos campos: base→L+A em destaque; sem base→X+Y em destaque
+  var hasBase=!!base;
+  var rows=DI.el.querySelectorAll('.di-row');
+  // rows[0]=X, rows[1]=Y, rows[2]=L, rows[3]=A
+  rows[0].style.opacity=hasBase?'0.3':'1';
+  rows[1].style.opacity=hasBase?'0.3':'1';
+  rows[2].style.opacity=hasBase?'1':'0.3';
+  rows[3].style.opacity=hasBase?'1':'0.3';
+
+  // Auto-definir campo padrão (sem roubar foco — só orienta a digitação)
+  var focused2=document.activeElement;
+  var inDI2=DI.el.contains(focused2);
+  if(!inDI2 && focused2!==document.getElementById('cmdinput')){
+    DI.focusField=hasBase?'d':'x';
+    DI.mode=hasBase?'da':'xy';
+    diHighlight();
+  }
+}
+
+function diHide(){
+  DI.active=false;
+  DI.el&&DI.el.classList.remove('show');
+  diClear();
 }
 
 // ── MODES ────────────────────────────────────────────────────
@@ -1098,13 +2489,29 @@ function toggleMode(m){
 
 // ── TOOL ─────────────────────────────────────────────────────
 function setTool(tool){
+  // Ao trocar de ferramenta, manter a seleção existente (padrão AutoCAD)
+  var keepSel=S.sel.slice();
   S.tool=tool;S.ds=null;
+  // Limpar seleção visual apenas ao ir para select ou pan
+  if(tool!=='select'&&tool!=='pan') S.sel=keepSel;
   document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
   var rb=document.getElementById('rb-'+tool);if(rb)rb.classList.add('on');
   document.getElementById('stool').textContent=tool.toUpperCase();
   S.wrap.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
-  var prmpts={line:'Primeiro ponto:',polyline:'Primeiro ponto (Enter=fim):',rectangle:'Primeiro canto:',circle:'Centro:',arc:'Primeiro ponto do arco (3-pontos):',ellipse:'Centro:',text:'Ponto de inserção:',hatch:'Primeiro canto:',dim:'Primeiro ponto:',dimr:'Centro:',dimd:'Centro:',dima:'Vértice:',move:'Selecione obj → ponto base:',copy:'Selecione obj → ponto base:',rotate:'Selecione obj → pivot:',mirror:'Primeiro ponto do eixo:',scale:'Selecione obj:',offset:'Selecione obj:',select:'Clique ou janela para selecionar.',pan:'Arraste | Roda=Zoom'};
+  // Offset usa cursor quadrado customizado quando fase pick está ativa — atualizado dinamicamente em onMM
+  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIM: 1° ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM: clique na borda de corte (Enter=todos, Enter novamente=cortar):',extend:'EXTEND: clique na borda limite (Enter=concluir, depois clique objeto):',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
   logp(prmpts[tool]||tool);
+  // Offset: focar cmd input imediatamente
+  if(tool==='offset'){
+    setTimeout(function(){document.getElementById('cmdinput').focus();},50);
+  }
+  // COPY: se já há seleção, iniciar direto na fase pickbase
+  if(tool==='copy'&&S.sel.length>0){
+    S.ds={phase:'pickbase',copies:0};
+    logp('COPY: '+S.sel.length+' obj. Clique no ponto base:');
+  }
+  // Esconder DI ao trocar ferramenta para select/pan
+  if(tool==='select'||tool==='pan') diHide();
 }
 
 // ── LAYERS UI ────────────────────────────────────────────────
@@ -1134,15 +2541,21 @@ function updStatus(){document.getElementById('scount').textContent=S.ents.length
 function updSelInfo(){var el=document.getElementById('selinfo');if(!S.sel.length){el.textContent='Nenhum objeto';return;}var t={};for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e)t[e.tp]=(t[e.tp]||0)+1;}el.innerHTML='<b style="color:var(--acc)">'+S.sel.length+' objeto(s)</b><br>'+Object.keys(t).map(function(k){return k+': '+t[k];}).join('<br>');}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'3',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';log('Salvo.','ok');}
+function saveDoc(){var d={v:'5',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';log('Salvo.','ok');}
 function openDoc(){document.getElementById('fileInput').click();}
 function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;if(d.vp)S.vp=d.vp;S.sel=[];S.undos=[];S.redos=[];snapshot();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
 function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];S.undos=[];S.redos=[];S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};snapshot();renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
 function showExport(){document.getElementById('ov-export').classList.add('show');}
-function doExport(){var fmt=document.getElementById('ef').value;switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':expDXF();break;case 'png':expPNG();break;}closeOv('ov-export');}
-function expSVG(){var b='';for(var i=0;i<S.ents.length;i++){var e=S.ents[i],ly=getLy(e.ly);if(ly&&!ly.vis)continue;var col=e.col||ly&&ly.col||'#dce4f5',lw=e.lw||.7,da=e.ld==='dashed'?'stroke-dasharray="8,4"':e.ld==='dotted'?'stroke-dasharray="2,4"':e.ld==='center'?'stroke-dasharray="16,4,2,4"':'';var s='stroke="'+col+'" stroke-width="'+lw+'" fill="none" '+da;switch(e.tp){case 'line':b+='<line x1="'+e.x1.toFixed(3)+'" y1="'+(-e.y1).toFixed(3)+'" x2="'+e.x2.toFixed(3)+'" y2="'+(-e.y2).toFixed(3)+'" '+s+'/>\n';break;case 'circ':b+='<circle cx="'+e.cx.toFixed(3)+'" cy="'+(-e.cy).toFixed(3)+'" r="'+e.r.toFixed(3)+'" '+s+'/>\n';break;case 'rect':b+='<rect x="'+e.x.toFixed(3)+'" y="'+(-e.y-e.h).toFixed(3)+'" width="'+e.w.toFixed(3)+'" height="'+e.h.toFixed(3)+'" '+s+'/>\n';break;case 'ell':b+='<ellipse cx="'+e.cx.toFixed(3)+'" cy="'+(-e.cy).toFixed(3)+'" rx="'+e.rx.toFixed(3)+'" ry="'+e.ry.toFixed(3)+'" '+s+'/>\n';break;case 'pl':b+='<polyline points="'+e.pts.map(function(p){return p.x.toFixed(3)+','+(-p.y).toFixed(3);}).join(' ')+'" '+s+'/>\n';break;case 'txt':b+='<text x="'+e.x.toFixed(3)+'" y="'+(-e.y).toFixed(3)+'" fill="'+col+'" font-size="'+(e.h||10)+'" font-family="monospace">'+e.txt+'</text>\n';break;}}var blob=new Blob(['<?xml version="1.0"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -500 1000 1000">\n<rect x="-500" y="-500" width="1000" height="1000" fill="#181c28"/>\n'+b+'</svg>'],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='educad.svg';a.click();log('SVG exportado.','ok');}
-function expDXF(){var d='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';for(var i=0;i<S.ents.length;i++){var e=S.ents[i],ly=getLy(e.ly),ln=ly?ly.nm:'0';switch(e.tp){case 'line':d+='0\nLINE\n8\n'+ln+'\n10\n'+e.x1+'\n20\n'+e.y1+'\n30\n0\n11\n'+e.x2+'\n21\n'+e.y2+'\n31\n0\n';break;case 'circ':d+='0\nCIRCLE\n8\n'+ln+'\n10\n'+e.cx+'\n20\n'+e.cy+'\n30\n0\n40\n'+e.r+'\n';break;case 'arc':d+='0\nARC\n8\n'+ln+'\n10\n'+e.cx+'\n20\n'+e.cy+'\n30\n0\n40\n'+e.r+'\n50\n'+(e.sa*180/Math.PI).toFixed(2)+'\n51\n'+(e.ea*180/Math.PI).toFixed(2)+'\n';break;case 'txt':d+='0\nTEXT\n8\n'+ln+'\n10\n'+e.x+'\n20\n'+e.y+'\n30\n0\n40\n'+(e.h||10)+'\n1\n'+e.txt+'\n';break;}}d+='0\nENDSEC\n0\nEOF\n';var b=new Blob([d],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.dxf';a.click();log('DXF exportado.','ok');}
-function expPNG(){var cv=document.createElement('canvas');cv.width=S.cD.width*2;cv.height=S.cD.height*2;var ctx=cv.getContext('2d');ctx.scale(2,2);ctx.fillStyle='#181c28';ctx.fillRect(0,0,S.cD.width,S.cD.height);var saved=S.gD;S.gD=ctx;drawScene();S.gD=saved;var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='educad.png';a.click();log('PNG exportado.','ok');}
+function doExport(){var fmt=document.getElementById('ef').value;switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':expDXF('AC1009','educad.dxf');break;case 'dxf2k':expDXF('AC1021','educad_2007.dxf');break;case 'dwg':expDXF('AC1021','educad.dxf');break;case 'png':expPNG();break;}closeOv('ov-export');}
+function expSVG(){var b='';for(var i=0;i<S.ents.length;i++){var e=S.ents[i],ly=getLy(e.ly);if(ly&&!ly.vis)continue;var col=e.col||ly&&ly.col||'#dce4f5',lw=e.lw||.7,da=e.ld==='dashed'?'stroke-dasharray="8,4"':e.ld==='dotted'?'stroke-dasharray="2,4"':e.ld==='center'?'stroke-dasharray="16,4,2,4"':'';var s='stroke="'+col+'" stroke-width="'+lw+'" fill="none" '+da;switch(e.tp){case 'line':b+='<line x1="'+e.x1.toFixed(3)+'" y1="'+(-e.y1).toFixed(3)+'" x2="'+e.x2.toFixed(3)+'" y2="'+(-e.y2).toFixed(3)+'" '+s+'/>\n';break;case 'circ':b+='<circle cx="'+e.cx.toFixed(3)+'" cy="'+(-e.cy).toFixed(3)+'" r="'+e.r.toFixed(3)+'" '+s+'/>\n';break;case 'rect':b+='<rect x="'+e.x.toFixed(3)+'" y="'+(-e.y-e.h).toFixed(3)+'" width="'+e.w.toFixed(3)+'" height="'+e.h.toFixed(3)+'" '+s+'/>\n';break;case 'ell':b+='<ellipse cx="'+e.cx.toFixed(3)+'" cy="'+(-e.cy).toFixed(3)+'" rx="'+e.rx.toFixed(3)+'" ry="'+e.ry.toFixed(3)+'" '+s+'/>\n';break;case 'pl':b+='<polyline points="'+e.pts.map(function(p){return p.x.toFixed(3)+','+(-p.y).toFixed(3);}).join(' ')+'" '+s+'/>\n';break;case 'txt':b+='<text x="'+e.x.toFixed(3)+'" y="'+(-e.y).toFixed(3)+'" fill="'+col+'" font-size="'+(e.h||10)+'" font-family="monospace">'+e.txt+'</text>\n';break;}}var blob=new Blob(['<?xml version="1.0"?>\n<svg xmlns="http://www.w3.org/2000/svg" viewBox="-500 -500 1000 1000">\n<rect x="-500" y="-500" width="1000" height="1000" fill="#0a0a1a"/>\n'+b+'</svg>'],{type:'image/svg+xml'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='educad.svg';a.click();log('SVG exportado.','ok');}
+function expDXF(ver,fname){
+  ver=ver||'AC1009';fname=fname||'educad.dxf';
+  function hex2aci(h){if(!h)return 7;h=h.replace('#','');var r=parseInt(h.substr(0,2),16),g=parseInt(h.substr(2,2),16),b=parseInt(h.substr(4,2),16);if(r>200&&g>200&&b>200)return 7;if(r>150&&g<80&&b<80)return 1;if(r<80&&g>150&&b<80)return 3;if(r<80&&g<80&&b>150)return 5;if(r>150&&g>150&&b<80)return 2;return 8;}
+  var d='0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\n'+ver+'\n0\nENDSEC\n';
+  d+='0\nSECTION\n2\nTABLES\n0\nTABLE\n2\nLAYER\n70\n'+S.layers.length+'\n';
+  for(var li=0;li<S.layers.length;li++){var ll=S.layers[li];d+='0\nLAYER\n2\n'+ll.nm+'\n70\n0\n62\n'+hex2aci(ll.col)+'\n6\nCONTINUOUS\n';}
+  d+='0\nENDTAB\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n';for(var i=0;i<S.ents.length;i++){var e=S.ents[i],ly=getLy(e.ly),ln=ly?ly.nm:'0';switch(e.tp){case 'line':d+='0\nLINE\n8\n'+ln+'\n10\n'+e.x1+'\n20\n'+e.y1+'\n30\n0\n11\n'+e.x2+'\n21\n'+e.y2+'\n31\n0\n';break;case 'circ':d+='0\nCIRCLE\n8\n'+ln+'\n10\n'+e.cx+'\n20\n'+e.cy+'\n30\n0\n40\n'+e.r+'\n';break;case 'arc':d+='0\nARC\n8\n'+ln+'\n10\n'+e.cx+'\n20\n'+e.cy+'\n30\n0\n40\n'+e.r+'\n50\n'+(e.sa*180/Math.PI).toFixed(2)+'\n51\n'+(e.ea*180/Math.PI).toFixed(2)+'\n';break;case 'txt':d+='0\nTEXT\n8\n'+ln+'\n10\n'+e.x+'\n20\n'+e.y+'\n30\n0\n40\n'+(e.h||10)+'\n1\n'+e.txt+'\n';break;}}d+='0\nENDSEC\n0\nEOF\n';var b=new Blob([d],{type:'text/plain'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fname;a.click();log(fname+' exportado ('+ver+')','ok');}
+function expPNG(){var cv=document.createElement('canvas');cv.width=S.cD.width*2;cv.height=S.cD.height*2;var ctx=cv.getContext('2d');ctx.scale(2,2);ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,S.cD.width,S.cD.height);var saved=S.gD;S.gD=ctx;drawScene();S.gD=saved;var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='educad.png';a.click();log('PNG exportado.','ok');}
 
 // ── TEMPLATE ─────────────────────────────────────────────────
 function showTemplate(){document.getElementById('ov-template').classList.add('show');}
@@ -1173,10 +2586,1045 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v3  —  Selecione uma ferramenta e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v5 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   snapshot();zoomFit();updStatus();
 }
+// ── POLYGON ──────────────────────────────────────────────────
+function startPolygon(){
+  document.getElementById('ov-polygon').classList.add('show');
+  // Atualizar hint no modal conforme seleção do método
+  document.getElementById('pol-method').onchange=function(){
+    var m=this.value;
+    var hint=document.getElementById('pol-hint');
+    var rrow=document.getElementById('pol-radius-row');
+    if(m==='ic'){
+      hint.textContent='Após OK, clique no centro. O raio vai do centro ao VÉRTICE.';
+      rrow.style.display='';
+      document.getElementById('pol-radius-lbl').textContent='Raio circunscrito (mm):';
+    } else if(m==='cc'){
+      hint.textContent='Após OK, clique no centro. O raio vai do centro ao MEIO DO LADO.';
+      rrow.style.display='';
+      document.getElementById('pol-radius-lbl').textContent='Apótema / raio inscrito (mm):';
+    } else {
+      hint.textContent='Após OK, clique em dois pontos que definem uma aresta do polígono.';
+      rrow.style.display='none';
+    }
+  };
+}
+
+function confirmPolygon(){
+  var sides=parseInt(document.getElementById('pol-sides').value)||6;
+  sides=Math.max(3,Math.min(1024,sides));
+  var method=document.getElementById('pol-method').value;
+  closeOv('ov-polygon');
+  S.tool='polygon';
+  document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+  var rb=document.getElementById('rb-polygon');if(rb)rb.classList.add('on');
+  document.getElementById('stool').textContent='POLYGON';
+  S.wrap.style.cursor='crosshair';
+
+  if(method==='edge'){
+    S.ds={sides:sides,method:'edge',p1:null};
+    logp('POL '+sides+' lados — 1º vértice da aresta:');
+  } else {
+    var r=parseFloat(document.getElementById('pol-radius').value)||25;
+    S.ds={sides:sides,method:method,center:null,radius:r};
+    logp('POL '+sides+' lados ('+( method==='ic'?'Inscrito':'Circunscrito')+') — centro:');
+  }
+}
+
+// Gera e adiciona o polígono ao modelo
+function polyBuild(center,r,sides,method,startAng){
+  // method 'ic': r = circunraio (centro ao vértice)
+  // method 'cc': r = apótema (centro ao meio do lado) → circunraio = r/cos(PI/n)
+  var R=method==='cc'?r/Math.cos(Math.PI/sides):r;
+  var pts=[];
+  for(var i=0;i<sides;i++){
+    var a=startAng+i*(2*Math.PI/sides);
+    pts.push({x:center.x+R*Math.cos(a),y:center.y+R*Math.sin(a)});
+  }
+  pts.push({x:pts[0].x,y:pts[0].y}); // fechar
+  addE({tp:'pl',pts:pts,closed:true});
+  var mt=method==='ic'?'inscrito':'circunscrito';
+  log('Polígono '+sides+' lados ('+mt+') R='+r.toFixed(2)+'mm.','ok');
+}
+
+// ── TRIM / EXTEND GEOMETRY ────────────────────────────────────
+
+// Line-line intersection (parametric)
+function lineLineInt(ax,ay,bx,by,cx,cy,dx,dy){
+  var d1x=bx-ax,d1y=by-ay,d2x=dx-cx,d2y=dy-cy;
+  var cross=d1x*d2y-d1y*d2x;
+  if(Math.abs(cross)<1e-10)return null;
+  var t=((cx-ax)*d2y-(cy-ay)*d2x)/cross;
+  var u=((cx-ax)*d1y-(cy-ay)*d1x)/cross;
+  return{t:t,u:u,x:ax+t*d1x,y:ay+t*d1y};
+}
+
+// line-circle intersections: returns array of {t, x, y}
+function lineCircInt(ax,ay,bx,by,cx,cy,r){
+  var dx=bx-ax,dy=by-ay;
+  var fx=ax-cx,fy=ay-cy;
+  var a=dx*dx+dy*dy,b=2*(fx*dx+fy*dy),c=fx*fx+fy*fy-r*r;
+  var disc=b*b-4*a*c;
+  if(disc<0)return[];
+  var res=[],sq=Math.sqrt(disc);
+  var t1=(-b-sq)/(2*a),t2=(-b+sq)/(2*a);
+  var ix1=ax+t1*dx,iy1=ay+t1*dy,ix2=ax+t2*dx,iy2=ay+t2*dy;
+  res.push({t:t1,x:ix1,y:iy1});
+  if(Math.abs(disc)>1e-10)res.push({t:t2,x:ix2,y:iy2});
+  return res;
+}
+
+// Get all intersections between entity e and cutting entities
+function getIntersections(e,cutters){
+  var pts=[];
+  for(var i=0;i<cutters.length;i++){
+    var c=findE(cutters[i]);
+    if(!c||c.id===e.id)continue;
+    var ips=entIntersect(e,c);
+    for(var j=0;j<ips.length;j++)pts.push(ips[j]);
+  }
+  return pts;
+}
+
+function entIntersect(e1,e2){
+  var pts=[];
+  var EPS=1e-6;
+
+  // ── helpers ──────────────────────────────────────────────────
+  // normalizar e1/e2 para que e1 seja sempre 'line' quando um é linha
+  // tratamos os dois sentidos (e1 vs e2 e e2 vs e1) onde necessário
+
+  // ── LINE vs LINE ─────────────────────────────────────────────
+  if(e1.tp==='line'&&e2.tp==='line'){
+    var r=lineLineInt(e1.x1,e1.y1,e1.x2,e1.y2,e2.x1,e2.y1,e2.x2,e2.y2);
+    // t = param na linha e1 (alvo), u = param na linha e2 (limite)
+    // u deve estar dentro do segmento e2 (o limite existe)
+    // t NÃO é clampado — o doTrim filtra os que estão fora de [0,1]
+    if(r&&r.u>=-EPS&&r.u<=1+EPS)
+      pts.push({t:r.t,x:r.x,y:r.y});
+  }
+
+  // ── LINE vs CIRC/ARC (e1=line, e2=circ/arc) ──────────────────
+  function lineVsCirc(line,circ){
+    var ips=lineCircInt(line.x1,line.y1,line.x2,line.y2,circ.cx,circ.cy,circ.r);
+    for(var k=0;k<ips.length;k++){
+      // se for arco, o ponto deve estar no arco
+      if(circ.tp==='arc'&&!arcHas(Math.atan2(ips[k].y-circ.cy,ips[k].x-circ.cx),circ.sa,circ.ea)) continue;
+      // t não é clampado — o doTrim filtra
+      pts.push({t:ips[k].t,x:ips[k].x,y:ips[k].y});
+    }
+  }
+  if(e1.tp==='line'&&(e2.tp==='circ'||e2.tp==='arc')) lineVsCirc(e1,e2);
+  if(e2.tp==='line'&&(e1.tp==='circ'||e1.tp==='arc')) lineVsCirc(e2,e1);
+
+  // ── LINE vs RECT ──────────────────────────────────────────────
+  function lineVsRect(line,rect){
+    var sides=[
+      {x1:rect.x,        y1:rect.y,        x2:rect.x+rect.w, y2:rect.y},
+      {x1:rect.x+rect.w, y1:rect.y,        x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {x1:rect.x,        y1:rect.y+rect.h, x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {x1:rect.x,        y1:rect.y,        x2:rect.x,        y2:rect.y+rect.h}
+    ];
+    for(var s=0;s<sides.length;s++){
+      var r2=lineLineInt(line.x1,line.y1,line.x2,line.y2,sides[s].x1,sides[s].y1,sides[s].x2,sides[s].y2);
+      if(r2&&r2.u>=-EPS&&r2.u<=1+EPS)
+        pts.push({t:r2.t,x:r2.x,y:r2.y});
+    }
+  }
+  if(e1.tp==='line'&&e2.tp==='rect') lineVsRect(e1,e2);
+  if(e2.tp==='line'&&e1.tp==='rect') lineVsRect(e2,e1);
+
+  // ── CIRC/ARC vs CIRC/ARC ─────────────────────────────────────
+  if((e1.tp==='circ'||e1.tp==='arc')&&(e2.tp==='circ'||e2.tp==='arc')){
+    var dx=e2.cx-e1.cx,dy=e2.cy-e1.cy,d=Math.hypot(dx,dy);
+    if(d>EPS&&d<e1.r+e2.r&&d>Math.abs(e1.r-e2.r)){
+      var aa=(e1.r*e1.r-e2.r*e2.r+d*d)/(2*d),h2=e1.r*e1.r-aa*aa;
+      if(h2>=0){
+        var h=Math.sqrt(h2);
+        var mx=e1.cx+aa*dx/d,my=e1.cy+aa*dy/d;
+        var candidates=[{x:mx+h*dy/d,y:my-h*dx/d},{x:mx-h*dy/d,y:my+h*dx/d}];
+        for(var k=0;k<candidates.length;k++){
+          var px=candidates[k].x,py=candidates[k].y;
+          var a1=Math.atan2(py-e1.cy,px-e1.cx);
+          var a2=Math.atan2(py-e2.cy,px-e2.cx);
+          if(e1.tp==='arc'&&!arcHas(a1,e1.sa,e1.ea)) continue;
+          if(e2.tp==='arc'&&!arcHas(a2,e2.sa,e2.ea)) continue;
+          pts.push({t:a1,x:px,y:py,isAng:true});
+        }
+      }
+    }
+  }
+
+  // ── CIRC/ARC vs LINE (via RECT handled above; cover circ vs rect) ─
+  // arc/circ vs rect: check each side
+  function circVsRect(circ,rect){
+    var sides=[
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x+rect.w, y2:rect.y},
+      {tp:'line',x1:rect.x+rect.w, y1:rect.y,        x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y+rect.h, x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x,        y2:rect.y+rect.h}
+    ];
+    for(var s=0;s<sides.length;s++) lineVsCirc(sides[s],circ);
+  }
+  if((e1.tp==='circ'||e1.tp==='arc')&&e2.tp==='rect') circVsRect(e1,e2);
+  if((e2.tp==='circ'||e2.tp==='arc')&&e1.tp==='rect') circVsRect(e2,e1);
+
+  return pts;
+}
+
+// Param t on line [0..1] = within segment, outside = extension
+function paramOnLine(e,x,y){
+  var dx=e.x2-e.x1,dy=e.y2-e.y1,l2=dx*dx+dy*dy;
+  if(l2<1e-12)return 0;
+  return((x-e.x1)*dx+(y-e.y1)*dy)/l2;
+}
+
+// Which end of a line is closer to a point?
+function nearerEnd(e,px,py){
+  var d1=Math.hypot(px-e.x1,py-e.y1),d2=Math.hypot(px-e.x2,py-e.y2);
+  return d1<=d2?1:2;
+}
+
+// Retorna o segmento (ou arco) que seria removido pelo trim, para preview
+// Retorna null se não há interseção
+function getTrimPreview(tgt,clickPt,cutters){
+  if(tgt.tp==='line'){
+    var ips=getIntersections(tgt,cutters);
+    if(!ips.length) return null;
+    var ts=ips.map(function(p){return{t:p.t,x:p.x,y:p.y};});
+    ts=ts.filter(function(v){return v.t>1e-6&&v.t<1-1e-6;});
+    ts.sort(function(a,b){return a.t-b.t;});
+    ts=ts.filter(function(v,i){return i===0||Math.abs(v.t-ts[i-1].t)>1e-6;});
+    var tc=paramOnLine(tgt,clickPt.x,clickPt.y);
+    var seg=findTrimSeg(ts,tc,tgt);
+    if(!seg) return null;
+    // Trecho a REMOVER:
+    // - começa em seg.from (se existe) ou no início da linha (tgt.x1)
+    // - termina em seg.to (se existe) ou no fim da linha (tgt.x2)
+    var x1=seg.from?seg.from.x:tgt.x1, y1=seg.from?seg.from.y:tgt.y1;
+    var x2=seg.to  ?seg.to.x  :tgt.x2, y2=seg.to  ?seg.to.y  :tgt.y2;
+    return {type:'line',x1:x1,y1:y1,x2:x2,y2:y2};
+  } else if(tgt.tp==='arc'||tgt.tp==='circ'){
+    var ips=getIntersections(tgt,cutters);
+    if(ips.length<2) return null;
+    var norm=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);};
+    var angs=ips.map(function(p){return norm(Math.atan2(p.y-tgt.cy,p.x-tgt.cx));});
+    angs.sort(function(a,b){return a-b;});
+    // deduplicate
+    angs=angs.filter(function(v,i){return i===0||Math.abs(v-angs[i-1])>1e-6;});
+    var ca=norm(Math.atan2(clickPt.y-tgt.cy,clickPt.x-tgt.cx));
+    var seg=findArcTrimSeg(angs,ca);
+    if(!seg) return null;
+    return {type:'arc',cx:tgt.cx,cy:tgt.cy,r:tgt.r,sa:seg.sa,ea:seg.ea};
+  }
+  return null;
+}
+
+// Encontra o segmento [from,to] que contém tc
+function findTrimSeg(ts,tc,tgt){
+  if(!ts.length) return null;
+  if(tc<=ts[0].t)  return {from:null,      to:ts[0]};
+  if(tc>=ts[ts.length-1].t) return {from:ts[ts.length-1], to:null};
+  for(var k=0;k<ts.length-1;k++){
+    if(tc>=ts[k].t&&tc<=ts[k+1].t) return {from:ts[k],to:ts[k+1]};
+  }
+  return null;
+}
+
+// Encontra o arco [sa,ea] CCW que contém o ângulo ca (para arcos/círculos)
+function findArcTrimSeg(angs,ca){
+  // verificar cada intervalo CCW entre angs consecutivos
+  for(var k=0;k<angs.length;k++){
+    var sa=angs[k], ea=angs[(k+1)%angs.length];
+    // intervalo CCW de sa→ea
+    var inArc;
+    if(sa<=ea) inArc=(ca>=sa&&ca<=ea);
+    else       inArc=(ca>=sa||ca<=ea);
+    if(inArc) return {sa:sa,ea:ea};
+  }
+  return null;
+}
+
+// Desenha um segmento preview (linha ou arco parcial) no ctx em screen coords
+function drawSegment(ctx,seg){
+  var sc=S.vp.sc;
+  if(seg.type==='line'){
+    var a=w2s(seg.x1,seg.y1),b=w2s(seg.x2,seg.y2);
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  } else if(seg.type==='arc'){
+    var c=w2s(seg.cx,seg.cy);
+    ctx.beginPath();ctx.arc(c.x,c.y,seg.r*sc,-seg.sa,-seg.ea,false);ctx.stroke();
+  }
+}
+
+function doTrim(tgt,clickPt,cutters){
+  if(tgt.tp==='line'){
+    var ips=getIntersections(tgt,cutters);
+    if(!ips.length) return false;
+    var ts=ips.map(function(p){return{t:p.t,x:p.x,y:p.y};});
+    // filtrar apenas interseções DENTRO do segmento alvo [0,1]
+    ts=ts.filter(function(v){return v.t>1e-6&&v.t<1-1e-6;});
+    ts.sort(function(a,b){return a.t-b.t;});
+    // deduplicar
+    ts=ts.filter(function(v,i){return i===0||Math.abs(v.t-ts[i-1].t)>1e-6;});
+    var tc=paramOnLine(tgt,clickPt.x,clickPt.y);
+    var seg=findTrimSeg(ts,tc,tgt);
+    if(!seg) return false;
+    snapshot();
+    var idx=S.ents.indexOf(tgt);
+    var newE=[];
+    if(seg.from&&seg.to){
+      // Clique entre dois limites: remover trecho do meio, manter as duas pontas
+      // Ponta 1: do início (x1,y1) até seg.from
+      var e1=clon(tgt);e1.x2=seg.from.x;e1.y2=seg.from.y;
+      // Ponta 2: de seg.to até o fim (x2,y2)
+      var e2=clon(tgt);e2.x1=seg.to.x;e2.y1=seg.to.y;
+      newE=[e1,e2];
+    } else if(seg.from&&!seg.to){
+      // Clique após o último limite: remover de seg.from até o fim — manter início até seg.from
+      var e1=clon(tgt);e1.x2=seg.from.x;e1.y2=seg.from.y;newE=[e1];
+    } else if(!seg.from&&seg.to){
+      // Clique antes do primeiro limite: remover do início até seg.to — manter seg.to até o fim
+      var e1=clon(tgt);e1.x1=seg.to.x;e1.y1=seg.to.y;newE=[e1];
+    }
+    if(newE.length) S.ents.splice(idx,1,...newE); else S.ents.splice(idx,1);
+    log('Trim concluído.','ok');renderAll();return true;
+
+  } else if(tgt.tp==='arc'||tgt.tp==='circ'){
+    var ips=getIntersections(tgt,cutters);
+    if(ips.length<2) return false;
+    var norm=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);};
+    var angs=ips.map(function(p){return norm(Math.atan2(p.y-tgt.cy,p.x-tgt.cx));});
+    angs.sort(function(a,b){return a-b;});
+    angs=angs.filter(function(v,i){return i===0||Math.abs(v-angs[i-1])>1e-6;});
+    var ca=norm(Math.atan2(clickPt.y-tgt.cy,clickPt.x-tgt.cx));
+    var seg=findArcTrimSeg(angs,ca);
+    if(!seg) return false;
+    snapshot();
+    var idx=S.ents.indexOf(tgt);
+    // manter o arco complementar: de ea→sa passando pelo outro lado
+    var ne=clon(tgt);ne.tp='arc';ne.sa=seg.ea;ne.ea=seg.sa;
+    S.ents.splice(idx,1,ne);
+    log('Trim arco.','ok');renderAll();return true;
+
+  } else if(tgt.tp==='pl'){
+    // polilinha: tratar cada segmento individualmente
+    var ips=getIntersections(tgt,cutters);
+    if(!ips.length) return false;
+    // encontrar segmento da polilinha clicado e aplicar trim nele
+    var pts=tgt.pts,bestSeg=-1,bestD=1e9;
+    for(var i=0;i<pts.length-1;i++){
+      var d=segD(clickPt.x,clickPt.y,pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y);
+      if(d<bestD){bestD=d;bestSeg=i;}
+    }
+    if(bestSeg<0) return false;
+    // criar linha temporária para esse segmento
+    var fake={tp:'line',x1:pts[bestSeg].x,y1:pts[bestSeg].y,x2:pts[bestSeg+1].x,y2:pts[bestSeg+1].y,id:'__fake__'};
+    var fips=getIntersections(fake,cutters);
+    if(!fips.length) return false;
+    var ts2=fips.map(function(p){return{t:paramOnLine(fake,p.x,p.y),x:p.x,y:p.y};});
+    ts2.sort(function(a,b){return a.t-b.t;});
+    var tc2=paramOnLine(fake,clickPt.x,clickPt.y);
+    var seg2=findTrimSeg(ts2,tc2,fake);
+    if(!seg2) return false;
+    snapshot();
+    var idx=S.ents.indexOf(tgt);
+    // construir novas polilinhas
+    var p1pts=pts.slice(0,bestSeg+1);
+    if(seg2.from) p1pts.push({x:seg2.from.x,y:seg2.from.y});
+    var p2pts=[];
+    if(seg2.to) p2pts.push({x:seg2.to.x,y:seg2.to.y});
+    p2pts=p2pts.concat(pts.slice(bestSeg+1));
+    var newE=[];
+    if(p1pts.length>=2){var e1=clon(tgt);e1.pts=p1pts;newE.push(e1);}
+    if(p2pts.length>=2){var e2=clon(tgt);e2.pts=p2pts;newE.push(e2);}
+    if(newE.length) S.ents.splice(idx,1,...newE); else S.ents.splice(idx,1);
+    log('Trim polilinha.','ok');renderAll();return true;
+  }
+  return false;
+}
+
+// Calcula a interseção da linha infinita de tgt com todos os bounds,
+// retornando o ponto mais próximo do end clicado que esteja ALÉM do end
+function calcExtendPoint(tgt,end,bounds){
+  // end=1 → estender p1 (t<0), end=2 → estender p2 (t>1)
+  var ex=end===1?tgt.x1:tgt.x2, ey=end===1?tgt.y1:tgt.y2;
+  var best=null, bd=1e9;
+  for(var i=0;i<bounds.length;i++){
+    var b=findE(bounds[i]);if(!b||b.id===tgt.id)continue;
+    var ips2=[];
+    if(b.tp==='line'){
+      var r=lineLineInt(tgt.x1,tgt.y1,tgt.x2,tgt.y2,b.x1,b.y1,b.x2,b.y2);
+      // limite deve ser cruzado dentro do seu próprio segmento (u em [0,1])
+      if(r&&r.u>=-1e-6&&r.u<=1+1e-6) ips2.push({t:r.t,x:r.x,y:r.y});
+    } else if(b.tp==='circ'||b.tp==='arc'){
+      var rs=lineCircInt(tgt.x1,tgt.y1,tgt.x2,tgt.y2,b.cx,b.cy,b.r);
+      for(var j=0;j<rs.length;j++){
+        if(b.tp==='arc'&&!arcHas(Math.atan2(rs[j].y-b.cy,rs[j].x-b.cx),b.sa,b.ea))continue;
+        ips2.push(rs[j]);
+      }
+    } else if(b.tp==='rect'){
+      var sides=[
+        {x1:b.x,y1:b.y,x2:b.x+b.w,y2:b.y},{x1:b.x+b.w,y1:b.y,x2:b.x+b.w,y2:b.y+b.h},
+        {x1:b.x,y1:b.y+b.h,x2:b.x+b.w,y2:b.y+b.h},{x1:b.x,y1:b.y,x2:b.x,y2:b.y+b.h}
+      ];
+      for(var s=0;s<sides.length;s++){
+        var r2=lineLineInt(tgt.x1,tgt.y1,tgt.x2,tgt.y2,sides[s].x1,sides[s].y1,sides[s].x2,sides[s].y2);
+        if(r2&&r2.u>=-1e-6&&r2.u<=1+1e-6) ips2.push({t:r2.t,x:r2.x,y:r2.y});
+      }
+    } else if(b.tp==='pl'){
+      for(var s=0;s<b.pts.length-1;s++){
+        var r3=lineLineInt(tgt.x1,tgt.y1,tgt.x2,tgt.y2,b.pts[s].x,b.pts[s].y,b.pts[s+1].x,b.pts[s+1].y);
+        if(r3&&r3.u>=-1e-6&&r3.u<=1+1e-6) ips2.push({t:r3.t,x:r3.x,y:r3.y});
+      }
+    }
+    for(var k=0;k<ips2.length;k++){
+      var ip=ips2[k];
+      // o ponto deve estar ALÉM do extremo clicado (fora do segmento atual)
+      var beyondEnd1=(end===1&&ip.t<1e-6);   // antes de p1
+      var beyondEnd2=(end===2&&ip.t>1-1e-6); // depois de p2
+      if(!beyondEnd1&&!beyondEnd2) continue;
+      var dist=Math.hypot(ip.x-ex,ip.y-ey);
+      if(dist<bd){bd=dist;best=ip;}
+    }
+  }
+  return best;
+}
+
+// Retorna preview da extensão como segmento {type,x1,y1,x2,y2}
+function getExtendPreview(tgt,clickPt,bounds){
+  if(tgt.tp==='line'){
+    var end=nearerEnd(tgt,clickPt.x,clickPt.y);
+    var best=calcExtendPoint(tgt,end,bounds);
+    if(!best) return null;
+    if(end===1) return {type:'line',x1:best.x,y1:best.y,x2:tgt.x1,y2:tgt.y1};
+    else        return {type:'line',x1:tgt.x2,y1:tgt.y2,x2:best.x,y2:best.y};
+  }
+  return null;
+}
+
+function doExtend(tgt,clickPt,bounds){
+  if(tgt.tp==='line'){
+    var end=nearerEnd(tgt,clickPt.x,clickPt.y);
+    var best=calcExtendPoint(tgt,end,bounds);
+    if(!best) return false;
+    snapshot();
+    if(end===1){tgt.x1=best.x;tgt.y1=best.y;}
+    else       {tgt.x2=best.x;tgt.y2=best.y;}
+    log('Extend concluído.','ok');renderAll();return true;
+
+  } else if(tgt.tp==='arc'){
+    // Estender arco: ampliar o ângulo start ou end mais próximo do clique
+    var ca=Math.atan2(clickPt.y-tgt.cy,clickPt.x-tgt.cx);
+    var norm=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);};
+    var can=norm(ca);
+    var san=norm(tgt.sa), ean=norm(tgt.ea);
+    var dSa=Math.min(Math.abs(can-san),Math.PI*2-Math.abs(can-san));
+    var dEa=Math.min(Math.abs(can-ean),Math.PI*2-Math.abs(can-ean));
+    var extendStart=dSa<dEa;
+    // encontrar interseção do arco estendido com os bounds
+    var best2=null,bd2=1e9;
+    var refAng=extendStart?tgt.sa:tgt.ea;
+    for(var i=0;i<bounds.length;i++){
+      var b=findE(bounds[i]);if(!b||b.id===tgt.id)continue;
+      // linha fake tangente ao arco no ponto extremo
+      var refX=tgt.cx+tgt.r*Math.cos(refAng),refY=tgt.cy+tgt.r*Math.sin(refAng);
+      // usar interseção arco vs borda
+      var ips3=entIntersect(tgt,b);
+      for(var j=0;j<ips3.length;j++){
+        var ang=norm(Math.atan2(ips3[j].y-tgt.cy,ips3[j].x-tgt.cx));
+        // deve estar fora do arco atual
+        var inArc=arcHas(ang,tgt.sa,tgt.ea);
+        if(inArc) continue;
+        var dist=Math.hypot(ips3[j].x-refX,ips3[j].y-refY);
+        if(dist<bd2){bd2=dist;best2={ang:ang,x:ips3[j].x,y:ips3[j].y};}
+      }
+    }
+    if(!best2) return false;
+    snapshot();
+    if(extendStart) tgt.sa=best2.ang; else tgt.ea=best2.ang;
+    log('Extend arco.','ok');renderAll();return true;
+
+  } else if(tgt.tp==='pl'){
+    // Polilinha: estender o primeiro ou último segmento
+    if(tgt.pts.length<2) return false;
+    var p1=tgt.pts[0],p2=tgt.pts[1];
+    var pn=tgt.pts[tgt.pts.length-1],pn1=tgt.pts[tgt.pts.length-2];
+    var dStart=Math.hypot(clickPt.x-p1.x,clickPt.y-p1.y);
+    var dEnd=Math.hypot(clickPt.x-pn.x,clickPt.y-pn.y);
+    var extendStart2=dStart<dEnd;
+    var fakeLine=extendStart2
+      ?{tp:'line',x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,id:'__fake__'}
+      :{tp:'line',x1:pn1.x,y1:pn1.y,x2:pn.x,y2:pn.y,id:'__fake__'};
+    var fend=extendStart2?1:2;
+    var best3=calcExtendPoint(fakeLine,fend,bounds);
+    if(!best3) return false;
+    snapshot();
+    if(extendStart2){tgt.pts[0]={x:best3.x,y:best3.y};}
+    else{tgt.pts[tgt.pts.length-1]={x:best3.x,y:best3.y};}
+    log('Extend polilinha.','ok');renderAll();return true;
+  }
+  return false;
+}
+
+// ── FILLET ────────────────────────────────────────────────────
+function doFillet(e1,e2,r,pt1,pt2){
+  if(e1.tp!=='line'||e2.tp!=='line'){log('Fillet: apenas entre duas linhas.','er');return;}
+
+  var len1=Math.hypot(e1.x2-e1.x1,e1.y2-e1.y1);
+  var len2=Math.hypot(e2.x2-e2.x1,e2.y2-e2.y1);
+  if(len1<1e-9||len2<1e-9){log('Fillet: linha de comprimento zero.','er');return;}
+
+  // Vetores unitários — orientados da p1 para p2
+  var u1x=(e1.x2-e1.x1)/len1, u1y=(e1.y2-e1.y1)/len1;
+  var u2x=(e2.x2-e2.x1)/len2, u2y=(e2.y2-e2.y1)/len2;
+
+  // Interseção das linhas (infinitas)
+  var res=lineLineInt(e1.x1,e1.y1,e1.x2,e1.y2,e2.x1,e2.y1,e2.x2,e2.y2);
+  if(!res){log('Fillet: linhas paralelas.','er');return;}
+  var ix=res.x, iy=res.y;
+
+  // Ângulo entre as direções (pode ser obtuso — usar o suplemento)
+  var cosA=u1x*u2x+u1y*u2y;
+  cosA=Math.max(-1,Math.min(1,cosA));
+  // Ângulo interno do canto = PI - acos(|dot|) se linhas se cruzam
+  // A distância da interseção ao ponto de tangência = r / tan(ângulo/2)
+  // Onde ângulo é o ângulo ENTRE as direções apontando PARA FORA do canto
+  // Determinamos as direções "para fora" (saindo da interseção) baseado no lado clicado
+  var ti1=paramOnLine(e1,ix,iy);
+  var ti2=paramOnLine(e2,ix,iy);
+  var tc1=paramOnLine(e1,pt1.x,pt1.y);
+  var tc2=paramOnLine(e2,pt2.x,pt2.y);
+  // s1/s2: +1 se o clique está "acima" da interseção no param, -1 se abaixo
+  var s1=(tc1>=ti1)?1:-1;
+  var s2=(tc2>=ti2)?1:-1;
+
+  // Direções unitárias saindo da interseção em direção ao lado clicado
+  var v1x=s1*u1x, v1y=s1*u1y;
+  var v2x=s2*u2x, v2y=s2*u2y;
+
+  // Ângulo entre os dois vetores "saindo"
+  var dot2=v1x*v2x+v1y*v2y;
+  dot2=Math.max(-1,Math.min(1,dot2));
+  var alpha=Math.acos(dot2); // ângulo entre as duas direções saindo
+
+  // O ângulo do setor do fillet = PI - alpha
+  var filletAngle=Math.PI-alpha;
+  if(filletAngle<1e-6){log('Fillet: ângulo muito pequeno.','er');return;}
+
+  // Distância da interseção ao ponto de tangência
+  var dist=r/Math.tan(filletAngle/2);
+
+  // Pontos de tangência
+  var tp1x=ix+v1x*dist, tp1y=iy+v1y*dist;
+  var tp2x=ix+v2x*dist, tp2y=iy+v2y*dist;
+
+  // Centro do arco: perpendicular a v1 em tp1, distância r
+  // Dois candidatos — escolher o que está equidistante r de tp2
+  var perp1ax=tp1x+(-v1y)*r, perp1ay=tp1y+v1x*r;
+  var perp1bx=tp1x+v1y*r,    perp1by=tp1y+(-v1x)*r;
+  var da=Math.abs(Math.hypot(perp1ax-tp2x,perp1ay-tp2y)-r);
+  var db=Math.abs(Math.hypot(perp1bx-tp2x,perp1by-tp2y)-r);
+  var cx,cy;
+  if(da<db){cx=perp1ax;cy=perp1ay;}else{cx=perp1bx;cy=perp1by;}
+
+  // Ângulos no espaço mundo (Y normal, não invertido)
+  var sa=Math.atan2(tp1y-cy,tp1x-cx);
+  var ea=Math.atan2(tp2y-cy,tp2x-cx);
+
+  // O drawE usa ctx.arc(cx,cy,r,-sa,-ea,true) → anticlockwise no canvas
+  // = clockwise no mundo. Precisamos que o arco vá de sa→ea no sentido
+  // que passa pelo interior do canto (perto de ix,iy).
+  // Testar os dois sentidos e escolher o que tem o ponto médio mais próximo da interseção.
+  function arcMidWorld(startA,endA,clockwise){
+    // ponto médio do arco no mundo
+    var diff=endA-startA;
+    if(clockwise){ diff = diff>0 ? diff-Math.PI*2 : diff; }
+    else          { diff = diff<0 ? diff+Math.PI*2 : diff; }
+    var midA=startA+diff/2;
+    return{x:cx+r*Math.cos(midA),y:cy+r*Math.sin(midA)};
+  }
+  // No canvas: arc(-sa,-ea,true) = clockwise no canvas = sentido horário no canvas
+  // No mundo (Y invertido): isso equivale a sentido ANTI-horário no mundo
+  // Então arc(sa,ea) no mundo vai no sentido horário do mundo = anti-horário canvas
+  // ctx.arc com anticlockwise=true vai de startAngle para endAngle no sentido anti-horário do canvas
+  // = sentido horário no mundo
+  // Vamos só testar os dois e escolher:
+  var mid1=arcMidWorld(sa,ea,false); // CCW mundo (CW canvas = anticlockwise=false)
+  var mid2=arcMidWorld(sa,ea,true);  // CW mundo
+  var dist1=Math.hypot(mid1.x-ix,mid1.y-iy);
+  var dist2=Math.hypot(mid2.x-ix,mid2.y-iy);
+  // O arco correto tem o ponto médio MAIS PERTO da interseção (no interior do canto)
+  var arcSa,arcEa;
+  if(dist1<dist2){
+    // CCW mundo → no drawE (que usa -sa,-ea,true=anticlockwise-canvas = CW-canvas = CCW-mundo): usar sa,ea
+    arcSa=sa; arcEa=ea;
+  } else {
+    // CW mundo → inverter
+    arcSa=ea; arcEa=sa;
+  }
+
+  snapshot();
+  // Aparar as linhas nos pontos de tangência
+  var end1=nearerEnd(e1,pt1.x,pt1.y), end2=nearerEnd(e2,pt2.x,pt2.y);
+  if(end1===1){e1.x1=tp1x;e1.y1=tp1y;}else{e1.x2=tp1x;e1.y2=tp1y;}
+  if(end2===1){e2.x1=tp2x;e2.y1=tp2y;}else{e2.x2=tp2x;e2.y2=tp2y;}
+
+  addE({tp:'arc',cx:cx,cy:cy,r:r,sa:arcSa,ea:arcEa});
+  log('Fillet r='+r.toFixed(2)+'mm.','ok');
+  renderAll();
+}
+
+// ── CHAMFER ───────────────────────────────────────────────────
+function doChamfer(e1,e2,d1,d2,pt1,pt2){
+  if(e1.tp!=='line'||e2.tp!=='line'){log('Chamfer: apenas linhas.','er');return;}
+  var res=lineLineInt(e1.x1,e1.y1,e1.x2,e1.y2,e2.x1,e2.y1,e2.x2,e2.y2);
+  if(!res){log('Chamfer: paralelas.','er');return;}
+  var ix=res.x,iy=res.y;
+  var len1=Math.hypot(e1.x2-e1.x1,e1.y2-e1.y1);
+  var len2=Math.hypot(e2.x2-e2.x1,e2.y2-e2.y1);
+  var d1x=(e1.x2-e1.x1)/len1,d1y=(e1.y2-e1.y1)/len1;
+  var d2x=(e2.x2-e2.x1)/len2,d2y=(e2.y2-e2.y1)/len2;
+  var t1=paramOnLine(e1,pt1.x,pt1.y),t2=paramOnLine(e2,pt2.x,pt2.y);
+  var ti1=paramOnLine(e1,ix,iy),ti2=paramOnLine(e2,ix,iy);
+  var s1=(t1>ti1)?1:-1,s2=(t2>ti2)?1:-1;
+  var cp1x=ix+s1*d1x*d1,cp1y=iy+s1*d1y*d1;
+  var cp2x=ix+s2*d2x*d2,cp2y=iy+s2*d2y*d2;
+  snapshot();
+  var end1=nearerEnd(e1,pt1.x,pt1.y),end2=nearerEnd(e2,pt2.x,pt2.y);
+  if(end1===1){e1.x1=cp1x;e1.y1=cp1y;}else{e1.x2=cp1x;e1.y2=cp1y;}
+  if(end2===1){e2.x1=cp2x;e2.y1=cp2y;}else{e2.x2=cp2x;e2.y2=cp2y;}
+  addE({tp:'line',x1:cp1x,y1:cp1y,x2:cp2x,y2:cp2y});
+  log('Chamfer d1='+d1+' d2='+d2+'mm.','ok');renderAll();
+}
+
+// ── ARRAY ─────────────────────────────────────────────────────
+function arTypeChange(){
+  var v=document.querySelector('input[name="artype"]:checked').value;
+  document.getElementById('ar-rect-form').style.display=v==='rect'?'':'none';
+  document.getElementById('ar-polar-form').style.display=v==='polar'?'':'none';
+  document.getElementById('ar-path-form').style.display=v==='path'?'':'none';
+}
+
+function showArrayDlg(){
+  if(!S.sel.length){log('Selecione objetos antes de executar Array.','er');return;}
+  document.getElementById('ov-array').classList.add('show');
+}
+
+function confirmArray(){
+  var type=document.querySelector('input[name="artype"]:checked').value;
+  if(!S.sel.length){log('Sem objetos selecionados para Array.','er');closeOv('ov-array');return;}
+  if(type==='rect'){
+    var rows=parseInt(document.getElementById('ar-rows').value)||3;
+    var cols=parseInt(document.getElementById('ar-cols').value)||3;
+    var rsp=parseFloat(document.getElementById('ar-rsp').value)||20;
+    var csp=parseFloat(document.getElementById('ar-csp').value)||20;
+    var ang=parseFloat(document.getElementById('ar-ang').value)||0;
+    var rad=ang*Math.PI/180;
+    doArrayRect(rows,cols,rsp,csp,rad);
+  } else if(type==='polar'){
+    var count=parseInt(document.getElementById('ar-pcount').value)||6;
+    var totalAng=parseFloat(document.getElementById('ar-ptotal').value)||360;
+    var fill=document.getElementById('ar-pfill').value==='1';
+    var rotItems=document.getElementById('ar-prot').value==='1';
+    // need center: prompt via command line after closing dialog
+    closeOv('ov-array');
+    S.tool='select';
+    S.ds={arrayPolar:true,count:count,totalAng:totalAng,fill:fill,rotItems:rotItems,sel:S.sel.slice()};
+    logp('ARRAY POLAR: clique no centro de rotação:');
+    // override handleClick temporarily
+    S.tool='_arrayPolar';
+    return;
+  } else if(type==='path'){
+    var count=parseInt(document.getElementById('ar-pathcount').value)||5;
+    var sp=parseFloat(document.getElementById('ar-pathsp').value)||0;
+    var align=document.getElementById('ar-pathalign').value==='1';
+    closeOv('ov-array');
+    S.ds={arrayPath:true,count:count,sp:sp,align:align,sel:S.sel.slice()};
+    S.tool='_arrayPath';
+    logp('ARRAY PATH: clique no objeto de caminho (linha/polilinha/arco/círculo):');
+    return;
+  }
+  closeOv('ov-array');
+}
+
+// Array rectangular: copies in rows×cols grid, offset by (csp,rsp) rotated by ang
+function doArrayRect(rows,cols,rsp,csp,ang){
+  snapshot();
+  var newEnts=[];
+  // compute bounding box center of selection for angular rotation pivot
+  var cx=0,cy=0,n=0;
+  for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(!e)continue;var bb=bbox(e);if(bb){cx+=bb.x+bb.w/2;cy+=bb.y+bb.h/2;n++;}}
+  if(n>0){cx/=n;cy/=n;}
+  for(var r=0;r<rows;r++){
+    for(var c=0;c<cols;c++){
+      if(r===0&&c===0)continue;// skip original
+      var dx0=c*csp,dy0=r*rsp;
+      // rotate offset by ang
+      var dx=dx0*Math.cos(ang)-dy0*Math.sin(ang);
+      var dy=dx0*Math.sin(ang)+dy0*Math.cos(ang);
+      for(var i=0;i<S.sel.length;i++){
+        var e=findE(S.sel[i]);if(!e)continue;
+        var ne=clon(e);transl(ne,dx,dy);newEnts.push(ne);
+      }
+    }
+  }
+  for(var i=0;i<newEnts.length;i++)S.ents.push(newEnts[i]);
+  log('Array Ret '+rows+'×'+cols+' = '+((rows*cols-1)*S.sel.length)+' cópias.','ok');
+  renderAll();updStatus();
+}
+
+// Array polar: executed in handleClick when tool='_arrayPolar'
+function doArrayPolar(center){
+  var ds=S.ds;
+  var count=ds.count,totalAng=ds.totalAng,fill=ds.fill,rotItems=ds.rotItems,sel=ds.sel;
+  var step=totalAng/(fill?count:count-1)*Math.PI/180;
+  snapshot();var newEnts=[];
+  for(var i=1;i<count;i++){
+    var ang=step*i;
+    for(var j=0;j<sel.length;j++){
+      var e=findE(sel[j]);if(!e)continue;
+      var ne=clon(e);
+      // translate so center is origin, rotate, translate back
+      transl(ne,-center.x,-center.y);
+      if(rotItems)rotat(ne,{x:0,y:0},ang);
+      else{var bb2=bbox(ne)||{x:0,y:0,w:0,h:0};var nx=Math.cos(ang),ny=Math.sin(ang),r2=Math.hypot(bb2.x+bb2.w/2,bb2.y+bb2.h/2);transl(ne,(Math.cos(ang)-1)*(bb2.x+bb2.w/2)-Math.sin(ang)*(bb2.y+bb2.h/2),(Math.sin(ang))*(bb2.x+bb2.w/2)+(Math.cos(ang)-1)*(bb2.y+bb2.h/2));}
+      transl(ne,center.x,center.y);
+      newEnts.push(ne);
+    }
+  }
+  for(var i=0;i<newEnts.length;i++)S.ents.push(newEnts[i]);
+  log('Array Polar '+count+' itens.','ok');renderAll();updStatus();
+  S.ds=null;S.tool='select';setTool('select');
+}
+
+// Array along path
+function doArrayPath(pathEnt){
+  var ds=S.ds,sel=ds.sel,count=ds.count,align=ds.align;
+  // compute total path length
+  var pathPts=[];
+  if(pathEnt.tp==='line'){pathPts=[{x:pathEnt.x1,y:pathEnt.y1},{x:pathEnt.x2,y:pathEnt.y2}];}
+  else if(pathEnt.tp==='pl'){pathPts=pathEnt.pts.slice();}
+  else if(pathEnt.tp==='arc'||pathEnt.tp==='circ'){
+    var sa2=pathEnt.tp==='circ'?0:(pathEnt.sa||0),ea2=pathEnt.tp==='circ'?Math.PI*2:(pathEnt.ea||Math.PI*2);
+    var steps=64,dA=(ea2-sa2)/steps;
+    for(var k=0;k<=steps;k++)pathPts.push({x:pathEnt.cx+pathEnt.r*Math.cos(sa2+k*dA),y:pathEnt.cy+pathEnt.r*Math.sin(sa2+k*dA)});
+  } else {log('Array Path: caminho inválido.','er');S.ds=null;setTool('select');return;}
+  // total length
+  var segs2=[];var totalL=0;
+  for(var k=0;k<pathPts.length-1;k++){var segL=Math.hypot(pathPts[k+1].x-pathPts[k].x,pathPts[k+1].y-pathPts[k].y);segs2.push({dx:pathPts[k+1].x-pathPts[k].x,dy:pathPts[k+1].y-pathPts[k].y,len:segL,cum:totalL});totalL+=segL;}
+  var step2=totalL/(count-1);
+  // find bounding box center of selection
+  var scx=0,scy=0,sn=0;
+  for(var i=0;i<sel.length;i++){var e=findE(sel[i]);if(!e)continue;var bb=bbox(e);if(bb){scx+=bb.x+bb.w/2;scy+=bb.y+bb.h/2;sn++;}}
+  if(sn>0){scx/=sn;scy/=sn;}
+  snapshot();var newEnts=[];
+  for(var pi=0;pi<count;pi++){
+    var dist2=pi*step2;
+    // find position on path at dist2
+    var px=pathPts[0].x,py=pathPts[0].y,tang=0;
+    if(pi===0){px=pathPts[0].x;py=pathPts[0].y;tang=segs2.length>0?Math.atan2(segs2[0].dy,segs2[0].dx):0;}
+    else{
+      var rem=dist2;
+      for(var k=0;k<segs2.length;k++){
+        if(rem<=segs2[k].len+1e-9){var t=rem/segs2[k].len;px=pathPts[k].x+t*segs2[k].dx;py=pathPts[k].y+t*segs2[k].dy;tang=Math.atan2(segs2[k].dy,segs2[k].dx);break;}
+        rem-=segs2[k].len;
+      }
+    }
+    if(pi===0)continue;// original stays
+    var dx3=px-scx,dy3=py-scy;
+    for(var i=0;i<sel.length;i++){
+      var e=findE(sel[i]);if(!e)continue;
+      var ne=clon(e);transl(ne,dx3,dy3);
+      if(align)rotat(ne,{x:px,y:py},tang);
+      newEnts.push(ne);
+    }
+  }
+  for(var i=0;i<newEnts.length;i++)S.ents.push(newEnts[i]);
+  log('Array Path: '+count+' itens.','ok');renderAll();updStatus();
+  S.ds=null;S.tool='select';setTool('select');
+}
+
+// ── FILLET / CHAMFER DIALOG ───────────────────────────────────
+function confirmFillet(){
+  var v=parseFloat(document.getElementById('fillet-r').value);
+  if(isNaN(v)||v<0)v=0;
+  if(S.tool==='fillet'||!S.tool){
+    S.filletR=v;
+    S.ds={phase:'l1',r:v};
+  } else if(S.tool==='chamfer'){
+    S.chamferD1=v;
+    var v2=parseFloat(prompt('Distância 2 (mm):',String(v)));
+    if(isNaN(v2)||v2<0)v2=v;
+    S.chamferD2=v2;
+    S.ds={phase:'l1',d1:v,d2:v2};
+  }
+  closeOv('ov-fillet');
+  logp((S.tool==='chamfer'?'CHAMFER':'FILLET')+': clique na 1ª linha:');
+}
+
+// ── MODEL / LAYOUT ───────────────────────────────────────────
+var LY = {
+  active: 'model',   // 'model' | 'layout'
+  pxPerMm: 3.78,     // 96dpi → ~3.78px/mm
+  scale: 0.1,        // escala de impressão
+  paper: {w:297,h:210}, // mm
+  margins: {t:10,r:10,b:10,l:10}, // mm
+  vpX: 0, vpY: 0,    // posição do viewport no layout (mm a partir da margem)
+  vpW: 0, vpH: 0,    // tamanho do viewport (mm)
+  dragging: false, resizing: false,
+  dragOX:0, dragOY:0,
+};
+
+function switchSpace(space){
+  LY.active=space;
+  var model=document.getElementById('tab-model');
+  var layout=document.getElementById('tab-layout1');
+  var panel=document.getElementById('layoutPanel');
+  var cw=document.getElementById('cw');
+  var cmdbar=document.getElementById('cmdbar');
+  if(space==='layout'){
+    model.classList.remove('active');
+    layout.classList.add('active');
+    panel.classList.add('show');
+    layoutApply();
+  } else {
+    layout.classList.remove('active');
+    model.classList.add('active');
+    panel.classList.remove('show');
+  }
+}
+
+function layoutApply(){
+  var paperVal=document.getElementById('lc-paper').value.split(',').map(Number);
+  LY.paper={w:paperVal[0],h:paperVal[1]};
+  var scaleVal=parseFloat(document.getElementById('lc-scale').value);
+  LY.scale=scaleVal;
+  LY.margins={
+    t:parseInt(document.getElementById('lc-mt').value)||10,
+    r:parseInt(document.getElementById('lc-mr').value)||10,
+    b:parseInt(document.getElementById('lc-mb').value)||10,
+    l:parseInt(document.getElementById('lc-ml').value)||10
+  };
+
+  var px=LY.pxPerMm;
+  var sheet=document.getElementById('layoutSheet');
+  var cvs=document.getElementById('layoutCanvas');
+  sheet.style.width=(LY.paper.w*px)+'px';
+  sheet.style.height=(LY.paper.h*px)+'px';
+  cvs.width=Math.round(LY.paper.w*px);
+  cvs.height=Math.round(LY.paper.h*px);
+
+  // Viewport padrão = área útil (dentro das margens)
+  var vpW=LY.paper.w-LY.margins.l-LY.margins.r;
+  var vpH=LY.paper.h-LY.margins.t-LY.margins.b;
+  if(LY.vpW===0||LY.vpH===0){LY.vpX=LY.margins.l;LY.vpY=LY.margins.t;LY.vpW=vpW;LY.vpH=vpH;}
+
+  // Se escala=0 → ajustar ao viewport
+  if(LY.scale===0) layoutFit();
+  else layoutRender();
+  layoutUpdateInfo();
+}
+
+function layoutOrient(){
+  var o=document.getElementById('lc-orient').value;
+  var p=LY.paper;
+  if((o==='land'&&p.w<p.h)||(o==='port'&&p.w>p.h)){
+    LY.paper={w:p.h,h:p.w};
+    // atualizar selector de papel para refletir a inversão
+  }
+  LY.vpW=0;LY.vpH=0; // resetar viewport
+  layoutApply();
+}
+
+function layoutFit(){
+  if(!S.ents.length) return;
+  // calcular bounding box do modelo
+  var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(var i=0;i<S.ents.length;i++){
+    var bb=bbox(S.ents[i]);
+    if(bb){x0=Math.min(x0,bb.x);y0=Math.min(y0,bb.y);x1=Math.max(x1,bb.x+bb.w);y1=Math.max(y1,bb.y+bb.h);}
+  }
+  if(x0===1e9) return;
+  var mw=x1-x0||10,mh=y1-y0||10;
+  var vpW=LY.paper.w-LY.margins.l-LY.margins.r;
+  var vpH=LY.paper.h-LY.margins.t-LY.margins.b;
+  // escala para caber no viewport
+  LY.scale=Math.min(vpW/mw,vpH/mh)*0.95;
+  LY.vpX=LY.margins.l;LY.vpY=LY.margins.t;LY.vpW=vpW;LY.vpH=vpH;
+  document.getElementById('lc-scale').value='0'; // mostrar "Ajustar"
+  layoutRender();
+  layoutUpdateInfo();
+}
+
+function layoutRender(){
+  var cvs=document.getElementById('layoutCanvas');
+  var ctx=cvs.getContext('2d');
+  var px=LY.pxPerMm;
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+
+  // Fundo da folha
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,cvs.width,cvs.height);
+
+  // Área de margem (linha fina cinza)
+  ctx.strokeStyle='#cccccc';ctx.lineWidth=0.5;ctx.setLineDash([3,3]);
+  ctx.strokeRect(
+    LY.margins.l*px, LY.margins.t*px,
+    (LY.paper.w-LY.margins.l-LY.margins.r)*px,
+    (LY.paper.h-LY.margins.t-LY.margins.b)*px
+  );
+  ctx.setLineDash([]);
+
+  // Clip ao viewport do desenho
+  var vpPxX=LY.vpX*px, vpPxY=LY.vpY*px;
+  var vpPxW=LY.vpW*px, vpPxH=LY.vpH*px;
+  ctx.save();
+  ctx.beginPath();ctx.rect(vpPxX,vpPxY,vpPxW,vpPxH);ctx.clip();
+
+  // Calcular bounding box dos objetos
+  var x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;
+  for(var i=0;i<S.ents.length;i++){
+    var bb=bbox(S.ents[i]);
+    if(bb){x0=Math.min(x0,bb.x);y0=Math.min(y0,bb.y);x1=Math.max(x1,bb.x+bb.w);y1=Math.max(y1,bb.y+bb.h);}
+  }
+
+  // Renderizar cada entidade
+  for(var i=0;i<S.ents.length;i++){
+    var e=S.ents[i];
+    var ly=getLy(e.ly);if(ly&&!ly.vis) continue;
+    var col=e.col||ly&&ly.col||'#000000';
+    // converter cor clara para escura na impressão
+    col=col.replace('#dce4f5','#333333').replace('#e8eaf6','#333333');
+    var lw=(e.lw||0.7)*LY.scale*px;
+    ctx.strokeStyle=col;ctx.fillStyle=col;
+    ctx.lineWidth=Math.max(0.3,lw);
+    // dash
+    if(e.ld==='dashed') ctx.setLineDash([6*LY.scale*px,3*LY.scale*px]);
+    else if(e.ld==='dotted') ctx.setLineDash([1.5*LY.scale*px,3*LY.scale*px]);
+    else if(e.ld==='center') ctx.setLineDash([12*LY.scale*px,3*LY.scale*px,2*LY.scale*px,3*LY.scale*px]);
+    else ctx.setLineDash([]);
+
+    // transformar coordenadas modelo → layout
+    // origem: centro da bbox centrado no viewport
+    var mx=(x0+x1)/2, my=(y0+y1)/2;
+    var cx=vpPxX+vpPxW/2, cy=vpPxY+vpPxH/2;
+    function m2l(wx,wy){
+      return{x:cx+(wx-mx)*LY.scale*px, y:cy-(wy-my)*LY.scale*px};
+    }
+
+    ctx.beginPath();
+    switch(e.tp){
+      case 'line':{var a=m2l(e.x1,e.y1),b=m2l(e.x2,e.y2);ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();break;}
+      case 'circ':{var c=m2l(e.cx,e.cy);ctx.arc(c.x,c.y,e.r*LY.scale*px,0,Math.PI*2);ctx.stroke();break;}
+      case 'arc':{var c=m2l(e.cx,e.cy);ctx.arc(c.x,c.y,e.r*LY.scale*px,-e.sa,-e.ea,true);ctx.stroke();break;}
+      case 'rect':{var a=m2l(e.x,e.y);ctx.rect(a.x,a.y-(e.h*LY.scale*px),e.w*LY.scale*px,e.h*LY.scale*px);ctx.stroke();break;}
+      case 'ell':{var c=m2l(e.cx,e.cy);ctx.ellipse(c.x,c.y,e.rx*LY.scale*px,e.ry*LY.scale*px,0,0,Math.PI*2);ctx.stroke();break;}
+      case 'pl':{
+        if(e.pts.length<2) break;
+        var p0=m2l(e.pts[0].x,e.pts[0].y);ctx.moveTo(p0.x,p0.y);
+        for(var j=1;j<e.pts.length;j++){var pj=m2l(e.pts[j].x,e.pts[j].y);ctx.lineTo(pj.x,pj.y);}
+        ctx.stroke();break;
+      }
+      case 'txt':{
+        var tp=m2l(e.x,e.y);
+        ctx.setLineDash([]);ctx.font=(e.h*LY.scale*px)+'px Consolas,monospace';
+        ctx.fillStyle=col;ctx.fillText(e.txt,tp.x,tp.y);break;
+      }
+      case 'dim':{
+        ctx.setLineDash([]);
+        var p1=m2l(e.x1,e.y1),p2=m2l(e.x2,e.y2);
+        var pyy=cy-(e.off-my)*LY.scale*px;
+        ctx.moveTo(p1.x,p1.y);ctx.lineTo(p1.x,pyy);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(p2.x,p2.y);ctx.lineTo(p2.x,pyy);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(p1.x,pyy);ctx.lineTo(p2.x,pyy);ctx.stroke();
+        ctx.font=(3*LY.scale*px+6)+'px Consolas';ctx.textAlign='center';
+        ctx.fillStyle=col;ctx.fillText(e.val+e.unit,(p1.x+p2.x)/2,pyy-3);
+        ctx.textAlign='left';break;
+      }
+    }
+  }
+  ctx.restore();
+
+  // Borda do viewport (linha contínua fina azul)
+  ctx.strokeStyle='#4d9ef755';ctx.lineWidth=0.7;ctx.setLineDash([]);
+  ctx.strokeRect(vpPxX,vpPxY,vpPxW,vpPxH);
+
+  // Atualizar div do viewport para drag/resize
+  layoutUpdateVpRect();
+}
+
+function layoutUpdateVpRect(){
+  var px=LY.pxPerMm;
+  var vpr=document.getElementById('vpRect');
+  vpr.style.left=(LY.vpX*px)+'px';
+  vpr.style.top=(LY.vpY*px)+'px';
+  vpr.style.width=(LY.vpW*px)+'px';
+  vpr.style.height=(LY.vpH*px)+'px';
+}
+
+function layoutUpdateInfo(){
+  var scaleStr=LY.scale===0?'Ajustar':'1:'+(1/LY.scale).toFixed(0);
+  var paperStr=LY.paper.w+'×'+LY.paper.h+'mm';
+  document.getElementById('lc-info').textContent=paperStr+' · '+scaleStr;
+}
+
+function layoutPrint(){
+  // Gerar PNG da folha e imprimir
+  var cvs=document.getElementById('layoutCanvas');
+  var w=window.open('','_blank');
+  w.document.write('<html><head><title>EduCAD Print</title>');
+  w.document.write('<style>*{margin:0;padding:0;}body{background:#fff;}');
+  w.document.write('@media print{@page{margin:0;size:'+LY.paper.w+'mm '+LY.paper.h+'mm;}img{width:100%;height:auto;}}');
+  w.document.write('</style></head><body>');
+  w.document.write('<img src="'+cvs.toDataURL('image/png')+'" style="width:'+LY.paper.w+'mm;height:'+LY.paper.h+'mm;display:block;">');
+  w.document.write('</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){w.print();},400);
+  log('Layout enviado para impressão.','ok');
+}
+
+// Drag do viewport no layout
+(function(){
+  var vpr, sheet, dragging=false, resizing=false, ox=0,oy=0,startVpX,startVpY,startVpW,startVpH;
+  window.addEventListener('load',function(){
+    vpr=document.getElementById('vpRect');
+    var handle=document.getElementById('vpHandle');
+    var px=LY.pxPerMm;
+
+    vpr.addEventListener('mousedown',function(e){
+      if(e.target===handle) return;
+      dragging=true;
+      ox=e.clientX;oy=e.clientY;
+      startVpX=LY.vpX;startVpY=LY.vpY;
+      e.preventDefault();
+    });
+    handle.addEventListener('mousedown',function(e){
+      resizing=true;
+      ox=e.clientX;oy=e.clientY;
+      startVpW=LY.vpW;startVpH=LY.vpH;
+      e.preventDefault();e.stopPropagation();
+    });
+    document.addEventListener('mousemove',function(e){
+      if(dragging){
+        var dx=(e.clientX-ox)/px, dy=(e.clientY-oy)/px;
+        LY.vpX=Math.max(0,Math.min(LY.paper.w-LY.vpW,startVpX+dx));
+        LY.vpY=Math.max(0,Math.min(LY.paper.h-LY.vpH,startVpY+dy));
+        layoutRender();
+      } else if(resizing){
+        var dx=(e.clientX-ox)/px, dy=(e.clientY-oy)/px;
+        LY.vpW=Math.max(10,Math.min(LY.paper.w-LY.vpX,startVpW+dx));
+        LY.vpH=Math.max(10,Math.min(LY.paper.h-LY.vpY,startVpH+dy));
+        layoutRender();
+      }
+    });
+    document.addEventListener('mouseup',function(){dragging=false;resizing=false;});
+  });
+})();
+
 S.undos.push('[]');
 </script>
 </body>

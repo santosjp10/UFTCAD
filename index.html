@@ -35,7 +35,7 @@ body{font-family:system-ui,sans-serif;background:var(--bg0);color:var(--t0);heig
 .rb.on{background:#1e3a5f;color:var(--acc);border-color:var(--acc)}
 .rb.red{color:var(--red)}.rb.red:hover{background:#3f1e1e;border-color:var(--red)}
 /* LAYOUT */
-#ws{flex:1;display:flex;overflow:hidden;position:relative}
+#ws{flex:1;display:flex;overflow:hidden;position:relative;z-index:0}
 /* CANVAS AREA */
 #cw{flex:1;position:relative;overflow:hidden;background:#0a0a1a;cursor:crosshair}
 #cw.pan-mode{cursor:grab}.#cw.pan-active{cursor:grabbing}
@@ -118,7 +118,7 @@ input[type=file]{display:none}
 #tabbar{
   height:26px;background:linear-gradient(180deg,#090d1c,#060910);
   border-top:1px solid var(--bdr);display:flex;align-items:flex-end;
-  padding:0 8px;gap:2px;flex-shrink:0;z-index:20;position:relative;
+  padding:0 8px;gap:2px;flex-shrink:0;
 }
 .tbtab{
   padding:3px 14px 0;font-size:10px;font-family:var(--mono);
@@ -140,7 +140,7 @@ input[type=file]{display:none}
 
 /* ── LAYOUT PANEL ── */
 #layoutPanel{
-  display:none;position:absolute;inset:0;background:#1a1a26;z-index:15;
+  display:none;position:absolute;inset:0;background:#1a1a26;z-index:5;
   flex-direction:column;overflow:hidden;
 }
 #layoutPanel.show{display:flex;}
@@ -184,6 +184,38 @@ input.lc-inp{width:52px;}
   position:absolute;width:8px;height:8px;background:#4d9ef7;
   border:1px solid #fff;border-radius:1px;cursor:nwse-resize;
 }
+
+/* ── DIMSTYLE MODAL ───────────────────────────────────────── */
+#ov-dimstyle .modal{min-width:640px;max-width:96vw;max-height:90vh;padding:0;overflow:hidden;display:flex;flex-direction:column;}
+#ov-dimstyle .modal h3{padding:10px 14px;margin:0;border-bottom:1px solid var(--bdr);font-size:12px;background:var(--bg3);flex-shrink:0;}
+.dsp-body{display:flex;flex:1;overflow:hidden;min-height:0;}
+.dsp-list{width:140px;border-right:1px solid var(--bdr);background:var(--bg3);display:flex;flex-direction:column;flex-shrink:0;}
+.dsp-list-inner{flex:1;overflow-y:auto;padding:4px;}
+.dsp-item{padding:5px 8px;border-radius:3px;cursor:pointer;font-size:10px;font-family:var(--mono);color:var(--t1);display:flex;align-items:center;gap:4px;}
+.dsp-item:hover{background:var(--bg2);color:var(--t0);}
+.dsp-item.active{background:var(--acc);color:#fff;}
+.dsp-item .dsp-cur{font-size:8px;color:#f5a623;}
+.dsp-list-btns{padding:5px;display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--bdr);}
+.dsp-list-btns button{padding:3px 6px;font-size:9px;font-family:var(--mono);cursor:pointer;border-radius:2px;border:1px solid var(--bdr);background:var(--bg2);color:var(--t1);text-align:left;white-space:nowrap;}
+.dsp-list-btns button:hover{color:var(--t0);border-color:var(--acc);}
+.dsp-list-btns button.dsp-primary{background:var(--acc);color:#fff;border-color:var(--acc);}
+.dsp-editor{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
+.dsp-tabs{display:flex;border-bottom:1px solid var(--bdr);background:var(--bg3);flex-shrink:0;}
+.dsp-tab{padding:5px 12px;font-size:10px;font-family:var(--mono);cursor:pointer;color:var(--t2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;}
+.dsp-tab:hover{color:var(--t0);}
+.dsp-tab.on{color:var(--acc);border-bottom-color:var(--acc);}
+.dsp-preview{width:calc(100% - 16px);height:70px;margin:8px;background:#080b18;border:1px solid var(--bdr);border-radius:2px;display:block;flex-shrink:0;}
+.dsp-pane{display:none;flex:1;overflow-y:auto;padding:4px 10px 8px;}
+.dsp-pane.on{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;align-content:start;}
+.dsp-field{display:flex;align-items:center;gap:6px;padding:3px 0;}
+.dsp-field label{width:118px;font-size:9px;color:var(--t2);flex-shrink:0;text-align:right;line-height:1.2;}
+.dsp-inp{background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 6px;border-radius:2px;outline:none;min-width:0;}
+.dsp-inp:focus{border-color:var(--acc);}
+.dsp-inp[type=number]{width:60px;}
+.dsp-inp[type=color]{width:34px;height:20px;padding:1px 2px;cursor:pointer;}
+.dsp-inp[type=text]{width:70px;}
+select.dsp-inp{padding:2px 4px;width:120px;}
+.dsp-foot{padding:7px 12px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:8px;background:var(--bg3);flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -257,6 +289,7 @@ input.lc-inp{width:52px;}
         <div class="rb" id="rb-dimr" onclick="setTool('dimr')" title="Raio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="13" r="7"/><line x1="12" y1="13" x2="17" y2="8"/><text x="14" y="8" font-size="5" fill="currentColor">R</text></svg>Raio</div>
         <div class="rb" id="rb-dimd" onclick="setTool('dimd')" title="Diâmetro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="8"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Diâm.</div>
         <div class="rb" id="rb-dima" onclick="setTool('dima')" title="Ângulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="6"/><path d="M11 19 A7 7 0 0 0 14 13"/></svg>Ângulo</div>
+        <div class="rb" onclick="showDimStyle()" title="Estilos de Cota DDIM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><circle cx="12" cy="10" r="3"/><line x1="12" y1="3" x2="12" y2="7"/></svg>DimStyle</div>
       </div><div class="rglbl">Cotar</div>
     </div>
     <div class="rg">
@@ -494,6 +527,133 @@ input.lc-inp{width:52px;}
   <div class="mact"><button class="btn s" onclick="closeOv('ov-text')">Cancelar</button><button class="btn p" onclick="confirmText()">OK</button></div>
 </div></div>
 
+<!-- DIMSTYLE DIALOG -->
+<div class="ov" id="ov-dimstyle"><div class="modal">
+  <h3>⚙ Gerenciador de Estilos de Cota — DIMSTYLE</h3>
+  <div class="dsp-body">
+
+    <!-- Lista de estilos -->
+    <div class="dsp-list">
+      <div class="dsp-list-inner" id="dsp-list"></div>
+      <div class="dsp-list-btns">
+        <button class="dsp-primary" onclick="dspNew()">＋ Novo</button>
+        <button onclick="dspRename()">✎ Renomear</button>
+        <button onclick="dspSetCurrent()">★ Usar padrão</button>
+        <button onclick="dspDelete()">✕ Excluir</button>
+      </div>
+    </div>
+
+    <!-- Editor -->
+    <div class="dsp-editor">
+      <div class="dsp-tabs">
+        <div class="dsp-tab on" onclick="dspTab(0)">Linhas</div>
+        <div class="dsp-tab"    onclick="dspTab(1)">Setas</div>
+        <div class="dsp-tab"    onclick="dspTab(2)">Texto</div>
+        <div class="dsp-tab"    onclick="dspTab(3)">Unidades</div>
+      </div>
+      <canvas class="dsp-preview" id="dsp-preview" width="460" height="70"></canvas>
+
+      <!-- Pane 0: Linhas (2 colunas) -->
+      <div class="dsp-pane on" id="dsp-pane-0">
+        <div class="dsp-field"><label>Cor da cota:</label>
+          <input class="dsp-inp" type="color" id="dsp-col" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Espessura linha (mm):</label>
+          <select class="dsp-inp" id="dsp-lw" onchange="dspChange()">
+            <option value="0.18">0.18</option><option value="0.25">0.25</option>
+            <option value="0.35">0.35</option><option value="0.5">0.50</option>
+            <option value="0.7">0.70</option><option value="1">1.00</option>
+          </select></div>
+        <div class="dsp-field"><label>Gap extensão (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-gap" value="1" min="0" max="10" step="0.5" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Além da cota (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-beyond" value="1.5" min="0" max="10" step="0.5" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Offset da extensão (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-offset" value="0.5" min="0" max="10" step="0.5" oninput="dspChange()"></div>
+      </div>
+
+      <!-- Pane 1: Setas (2 colunas) -->
+      <div class="dsp-pane" id="dsp-pane-1">
+        <div class="dsp-field"><label>Tipo de seta:</label>
+          <select class="dsp-inp" id="dsp-arrow-type" onchange="dspChange()">
+            <option value="filled">Preenchida ▶</option>
+            <option value="open">Aberta →</option>
+            <option value="tick">Traço ╱</option>
+            <option value="dot">Ponto ●</option>
+            <option value="none">Nenhuma</option>
+          </select></div>
+        <div class="dsp-field"><label>Tamanho seta (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-arrow-size" value="2.5" min="0.5" max="10" step="0.5" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Marca de centro:</label>
+          <select class="dsp-inp" id="dsp-center-mark" onchange="dspChange()">
+            <option value="none">Nenhuma</option>
+            <option value="mark">Marca</option>
+            <option value="line">Linha</option>
+          </select></div>
+        <div class="dsp-field"><label>Tamanho marca (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-center-size" value="2" min="0.5" max="10" step="0.5" oninput="dspChange()"></div>
+      </div>
+
+      <!-- Pane 2: Texto (2 colunas) -->
+      <div class="dsp-pane" id="dsp-pane-2">
+        <div class="dsp-field"><label>Fonte:</label>
+          <select class="dsp-inp" id="dsp-font" onchange="dspChange()">
+            <option value="Consolas,monospace">Consolas</option>
+            <option value="Arial,sans-serif">Arial</option>
+            <option value="'Courier New',monospace">Courier New</option>
+            <option value="'Times New Roman',serif">Times New Roman</option>
+          </select></div>
+        <div class="dsp-field"><label>Altura texto (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-txt-h" value="2.5" min="1" max="20" step="0.5" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Cor do texto:</label>
+          <input class="dsp-inp" type="color" id="dsp-txt-col" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Posição vertical:</label>
+          <select class="dsp-inp" id="dsp-txt-pos" onchange="dspChange()">
+            <option value="above">Acima</option>
+            <option value="center">Centrado</option>
+            <option value="below">Abaixo</option>
+          </select></div>
+        <div class="dsp-field"><label>Alinhamento:</label>
+          <select class="dsp-inp" id="dsp-txt-align" onchange="dspChange()">
+            <option value="aligned">Alinhado</option>
+            <option value="horizontal">Horizontal</option>
+          </select></div>
+        <div class="dsp-field"><label>Offset do texto (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-txt-gap" value="0.8" min="0" max="5" step="0.2" oninput="dspChange()"></div>
+      </div>
+
+      <!-- Pane 3: Unidades (2 colunas) -->
+      <div class="dsp-pane" id="dsp-pane-3">
+        <div class="dsp-field"><label>Unidade linear:</label>
+          <select class="dsp-inp" id="dsp-unit" onchange="dspChange()">
+            <option value="mm">Milímetros (mm)</option>
+            <option value="cm">Centímetros (cm)</option>
+            <option value="m">Metros (m)</option>
+            <option value="in">Polegadas (in)</option>
+            <option value="">Sem unidade</option>
+          </select></div>
+        <div class="dsp-field"><label>Casas decimais:</label>
+          <select class="dsp-inp" id="dsp-prec" onchange="dspChange()">
+            <option value="0">0</option><option value="1">0.0</option>
+            <option value="2">0.00</option><option value="3">0.000</option>
+            <option value="4">0.0000</option>
+          </select></div>
+        <div class="dsp-field"><label>Fator de escala:</label>
+          <input class="dsp-inp" type="number" id="dsp-scale" value="1" min="0.001" max="1000" step="0.1" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Escala geral (DIMSCALE):</label>
+          <input class="dsp-inp" type="number" id="dsp-dimscale" value="1" min="0.1" max="100" step="0.1" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Prefixo:</label>
+          <input class="dsp-inp" type="text" id="dsp-prefix" placeholder="ex: L=" maxlength="10" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Sufixo adicional:</label>
+          <input class="dsp-inp" type="text" id="dsp-suffix" placeholder="ex: ∅" maxlength="10" oninput="dspChange()"></div>
+      </div>
+    </div>
+  </div>
+  <div class="dsp-foot">
+    <button class="btn s" onclick="closeOv('ov-dimstyle')">Fechar</button>
+    <button class="btn p" onclick="dspApply()">✔ Aplicar e fechar</button>
+  </div>
+</div></div>
+
 <!-- ARRAY DIALOG -->
 <div class="ov" id="ov-array"><div class="modal" style="min-width:320px">
   <h3>Array — Cópia em Matriz</h3>
@@ -594,6 +754,8 @@ var S = {
   isPan: false, panFrom: null,
   isWin: false, winFrom: null,
   hoverId: null,
+  dimStyles: null,  // inicializado pelo engine
+  dimCurrent: 'Standard',
   modes: {
     grid:true, snap:true, ortho:false, polar:true,
     gridSz:10, snapSz:5,
@@ -706,61 +868,10 @@ function hitEnt(e,wx,wy) {
     case 'ell':  var nx=(wx-e.cx)/e.rx,ny=(wy-e.cy)/e.ry; return Math.abs(nx*nx+ny*ny-1)<.2;
     case 'pl':   for(var i=0;i<e.pts.length-1;i++) if(segD(wx,wy,e.pts[i].x,e.pts[i].y,e.pts[i+1].x,e.pts[i+1].y)<t) return true; return false;
     case 'txt':  return wx>=e.x&&wx<=e.x+e.txt.length*e.h*.6&&wy>=e.y-e.h&&wy<=e.y;
-    case 'dim':  return segD(wx,wy,e.x1,e.off,e.x2,e.off)<t;
+    case 'dim':{var _g=dimLinePoints(e);return _g?segD(wx,wy,_g.d1x,_g.d1y,_g.d2x,_g.d2y)<t:false;}
     case 'dimr': return segD(wx,wy,e.cx,e.cy,e.ex,e.ey)<t;
     case 'dimd': return segD(wx,wy,2*e.cx-e.ex,2*e.cy-e.ey,e.ex,e.ey)<t;
     case 'dima': return segD(wx,wy,e.vx,e.vy,e.x2,e.y2)<t;
-    case 'polygon':
-      if(!ds){
-        // Não deve chegar aqui normalmente (o modal faz o setup)
-        startPolygon(); break;
-      }
-      if(ds.method==='edge'){
-        if(!ds.p1){
-          ds.p1={x:pt.x,y:pt.y};
-          logp('POL: 2º vértice da aresta:');
-        } else {
-          // Gerar polígono a partir dos dois pontos da aresta
-          var sides=ds.sides;
-          var ex=pt.x-ds.p1.x, ey=pt.y-ds.p1.y;
-          var edgeLen=Math.hypot(ex,ey);
-          // Centro está perpendicular ao meio da aresta
-          var mx=(ds.p1.x+pt.x)/2, my=(ds.p1.y+pt.y)/2;
-          // ângulo da aresta e ângulo para o centro
-          var edgeAng=Math.atan2(ey,ex);
-          // Para polígono regular: distância do centro ao meio da aresta
-          var r=edgeLen/(2*Math.tan(Math.PI/sides)); // apótema
-          // o centro fica perpendicular à aresta, 90° à esquerda
-          var cx2=mx-r*Math.sin(edgeAng), cy2=my+r*Math.cos(edgeAng);
-          // raio para vértices = circunraio
-          var R=edgeLen/(2*Math.sin(Math.PI/sides));
-          // ângulo do 1º vértice (p1)
-          var startAng=Math.atan2(ds.p1.y-cy2,ds.p1.x-cx2);
-          var pts2=[];
-          for(var i=0;i<sides;i++){
-            var a=startAng+i*(2*Math.PI/sides);
-            pts2.push({x:cx2+R*Math.cos(a),y:cy2+R*Math.sin(a)});
-          }
-          pts2.push({x:pts2[0].x,y:pts2[0].y}); // fechar
-          addE({tp:'pl',pts:pts2,closed:true});
-          log('Polígono '+sides+' lados (aresta='+edgeLen.toFixed(2)+'mm).','ok');
-          S.ds=null; logp('POL: 1º vértice da aresta:');
-        }
-      } else {
-        // Centro definido → usar distância do cursor como raio
-        if(!ds.center){
-          ds.center={x:pt.x,y:pt.y};
-          logp('POL: raio (clique ou digite valor):');
-        } else {
-          var r2=Math.hypot(pt.x-ds.center.x,pt.y-ds.center.y);
-          if(r2<0.001) break;
-          polyBuild(ds.center,r2,ds.sides,ds.method,
-                    Math.atan2(pt.y-ds.center.y,pt.x-ds.center.x));
-          S.ds=null; logp('POL: centro:');
-        }
-      }
-      break;
-
     case 'hatch':return wx>=e.x&&wx<=e.x+e.w&&wy>=e.y&&wy<=e.y+e.h;
     default: return false;
   }
@@ -855,6 +966,57 @@ function handleClick(pt) {
       document.getElementById('ov-text').classList.add('show');
       break;
 
+    case 'polygon':
+      if(!ds){
+        // Não deve chegar aqui normalmente (o modal faz o setup)
+        startPolygon(); break;
+      }
+      if(ds.method==='edge'){
+        if(!ds.p1){
+          ds.p1={x:pt.x,y:pt.y};
+          logp('POL: 2º vértice da aresta:');
+        } else {
+          // Gerar polígono a partir dos dois pontos da aresta
+          var sides=ds.sides;
+          var ex=pt.x-ds.p1.x, ey=pt.y-ds.p1.y;
+          var edgeLen=Math.hypot(ex,ey);
+          // Centro está perpendicular ao meio da aresta
+          var mx=(ds.p1.x+pt.x)/2, my=(ds.p1.y+pt.y)/2;
+          // ângulo da aresta e ângulo para o centro
+          var edgeAng=Math.atan2(ey,ex);
+          // Para polígono regular: distância do centro ao meio da aresta
+          var r=edgeLen/(2*Math.tan(Math.PI/sides)); // apótema
+          // o centro fica perpendicular à aresta, 90° à esquerda
+          var cx2=mx-r*Math.sin(edgeAng), cy2=my+r*Math.cos(edgeAng);
+          // raio para vértices = circunraio
+          var R=edgeLen/(2*Math.sin(Math.PI/sides));
+          // ângulo do 1º vértice (p1)
+          var startAng=Math.atan2(ds.p1.y-cy2,ds.p1.x-cx2);
+          var pts2=[];
+          for(var i=0;i<sides;i++){
+            var a=startAng+i*(2*Math.PI/sides);
+            pts2.push({x:cx2+R*Math.cos(a),y:cy2+R*Math.sin(a)});
+          }
+          pts2.push({x:pts2[0].x,y:pts2[0].y}); // fechar
+          addE({tp:'pl',pts:pts2,closed:true});
+          log('Polígono '+sides+' lados (aresta='+edgeLen.toFixed(2)+'mm).','ok');
+          S.ds=null; logp('POL: 1º vértice da aresta:');
+        }
+      } else {
+        // Centro definido → usar distância do cursor como raio
+        if(!ds.center){
+          ds.center={x:pt.x,y:pt.y};
+          logp('POL: raio (clique ou digite valor):');
+        } else {
+          var r2=Math.hypot(pt.x-ds.center.x,pt.y-ds.center.y);
+          if(r2<0.001) break;
+          polyBuild(ds.center,r2,ds.sides,ds.method,
+                    Math.atan2(pt.y-ds.center.y,pt.x-ds.center.x));
+          S.ds=null; logp('POL: centro:');
+        }
+      }
+      break;
+
     case 'hatch':
       if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Canto oposto:');}
       else{
@@ -876,39 +1038,90 @@ function handleClick(pt) {
       break;
 
     /* ─── DIM TOOLS ──────────────────────── */
+    /* ─── COTAS ─────────────────────────────────────────────────
+       Fluxo: p1 → p2 → mover cursor para posicionar → clique confirma
+       O preview completo (linhas, setas, valor) acompanha o cursor
+    ─────────────────────────────────────────────────────────────── */
     case 'dim':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Segundo ponto:');}
-      else if(ds.pts.length===1){ds.pts.push({x:pt.x,y:pt.y});logp('Posição da cota:');}
-      else{
-        var p1=ds.pts[0],p2=ds.pts[1],d=Math.hypot(p2.x-p1.x,p2.y-p1.y);
-        addE({tp:'dim',x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,off:pt.y,val:d.toFixed(2),unit:'mm',col:'#f0c040',ly:2});
-        log('Cota '+d.toFixed(2)+'mm','ok'); S.ds=null;
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
+        logp('DIM: 2º ponto:');
+      } else if(ds.phase==='p2'){
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='pos';
+        var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
+        log('DIM: '+d0.toFixed(2)+'mm — mova o cursor para posicionar a cota:','ok');
+        logp('DIM: clique para confirmar a posição da cota:');
+      } else if(ds.phase==='pos'){
+        var p1=ds.pts[0],p2=ds.pts[1];
+        var d=Math.hypot(p2.x-p1.x,p2.y-p1.y);
+        addE({tp:'dim',x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
+              px:pt.x,py:pt.y,
+              val:d.toFixed(2),unit:'mm',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIM: '+d.toFixed(2)+'mm','ok');
+        S.ds=null; logp('DIM: 1º ponto:');
       }
       break;
+
     case 'dimr':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Ponto no círculo:');}
-      else{
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
+        logp('DIMR: ponto no círculo/arco:');
+      } else if(ds.phase==='p2'){
         var c=ds.pts[0],r=Math.hypot(pt.x-c.x,pt.y-c.y);
-        addE({tp:'dimr',cx:c.x,cy:c.y,ex:pt.x,ey:pt.y,val:r.toFixed(2),unit:'mm',col:'#f0c040',ly:2});
-        log('Raio R'+r.toFixed(2),'ok'); S.ds=null;
+        if(r<0.001) break;
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='pos';
+        log('DIMR: R='+r.toFixed(2)+'mm — mova para posicionar:','ok');
+        logp('DIMR: clique para confirmar:');
+      } else if(ds.phase==='pos'){
+        var c=ds.pts[0],ep=ds.pts[1];
+        var r=Math.hypot(ep.x-c.x,ep.y-c.y);
+        addE({tp:'dimr',cx:c.x,cy:c.y,ex:pt.x,ey:pt.y,val:r.toFixed(2),unit:'mm',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIMR: R'+r.toFixed(2),'ok'); S.ds=null; logp('DIMR: centro:');
       }
       break;
+
     case 'dimd':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Ponto no círculo:');}
-      else{
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
+        logp('DIMD: ponto no círculo:');
+      } else if(ds.phase==='p2'){
         var c=ds.pts[0],r=Math.hypot(pt.x-c.x,pt.y-c.y);
-        addE({tp:'dimd',cx:c.x,cy:c.y,ex:pt.x,ey:pt.y,val:(r*2).toFixed(2),unit:'mm',col:'#f0c040',ly:2});
-        log('Diâmetro ⌀'+(r*2).toFixed(2),'ok'); S.ds=null;
+        if(r<0.001) break;
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='pos';
+        log('DIMD: ⌀='+(r*2).toFixed(2)+'mm — mova para posicionar:','ok');
+        logp('DIMD: clique para confirmar:');
+      } else if(ds.phase==='pos'){
+        var c=ds.pts[0],ep=ds.pts[1];
+        var r=Math.hypot(ep.x-c.x,ep.y-c.y);
+        addE({tp:'dimd',cx:c.x,cy:c.y,ex:pt.x,ey:pt.y,val:(r*2).toFixed(2),unit:'mm',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIMD: ⌀'+(r*2).toFixed(2),'ok'); S.ds=null; logp('DIMD: centro:');
       }
       break;
+
     case 'dima':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Vértice:');}
-      else if(ds.pts.length===1){ds.pts.push({x:pt.x,y:pt.y});logp('Segundo lado:');}
-      else{
-        var v=ds.pts[0],p1=ds.pts[1];
-        var ang=Math.abs((Math.atan2(pt.y-v.y,pt.x-v.x)-Math.atan2(p1.y-v.y,p1.x-v.x))*180/Math.PI);
-        addE({tp:'dima',x1:p1.x,y1:p1.y,vx:v.x,vy:v.y,x2:pt.x,y2:pt.y,val:ang.toFixed(1),unit:'°',col:'#f0c040',ly:2});
-        log('Ângulo '+ang.toFixed(1)+'°','ok'); S.ds=null;
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
+        logp('DIMA: 1º ponto do ângulo:');
+      } else if(ds.phase==='p2'){
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='p3';
+        logp('DIMA: 2º ponto do ângulo:');
+      } else if(ds.phase==='p3'){
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='pos';
+        var v2=ds.pts[0],pa=ds.pts[1],pb=ds.pts[2];
+        var ang2=Math.abs((Math.atan2(pb.y-v2.y,pb.x-v2.x)-Math.atan2(pa.y-v2.y,pa.x-v2.x))*180/Math.PI);
+        if(ang2>180) ang2=360-ang2;
+        ds.angVal=ang2.toFixed(1);
+        log('DIMA: '+ang2.toFixed(1)+'° — mova para posicionar:','ok');
+        logp('DIMA: clique para confirmar:');
+      } else if(ds.phase==='pos'){
+        var v2=ds.pts[0],pa=ds.pts[1],pb=ds.pts[2];
+        addE({tp:'dima',x1:pa.x,y1:pa.y,vx:v2.x,vy:v2.y,x2:pb.x,y2:pb.y,val:ds.angVal,unit:'°',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIMA: '+ds.angVal+'°','ok'); S.ds=null; logp('DIMA: vértice:');
       }
       break;
 
@@ -1165,7 +1378,7 @@ function transl(e,dx,dy){
     case 'rect':case 'hatch': e.x+=dx;e.y+=dy; break;
     case 'pl': for(var i=0;i<e.pts.length;i++){e.pts[i].x+=dx;e.pts[i].y+=dy;} break;
     case 'txt': e.x+=dx;e.y+=dy; break;
-    case 'dim': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy;e.off+=dy; break;
+    case 'dim': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy;if(e.px!==undefined){e.px+=dx;e.py+=dy;}else{e.off+=dy;}break;
     case 'dimr':case 'dimd': e.cx+=dx;e.cy+=dy;e.ex+=dx;e.ey+=dy; break;
     case 'dima': e.x1+=dx;e.y1+=dy;e.vx+=dx;e.vy+=dy;e.x2+=dx;e.y2+=dy; break;
   }
@@ -1252,6 +1465,7 @@ function selAll(){S.sel=S.ents.map(function(e){return e.id;});renderAll();updSel
 function cancelTool(){
   S.ds=null;S.sel=[];S.isWin=false;S.winFrom=null;
   document.getElementById('cmdinput').removeAttribute('tabindex');
+  DI.active=false; // forçar DI inativo antes de diHide para evitar re-trigger
   diHide();
   // Retornar ao modo SELECT (padrão AutoCAD)
   S.tool='select';
@@ -1381,16 +1595,105 @@ function drawE(ctx,e,sel){
   ctx.restore();
 }
 function drawH(ctx,sx,sy){ctx.save();ctx.setLineDash([]);ctx.shadowBlur=0;ctx.fillStyle='#4d9ef7';ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.fillRect(sx-4,sy-4,8,8);ctx.strokeRect(sx-4,sy-4,8,8);ctx.restore();}
+function dimLinePoints(e){
+  // Retorna os dois extremos da linha de cota em coordenadas mundo.
+  // Novo formato (px,py): linha de cota passa por (px,py), paralela ao segmento.
+  // Legado (off): off = Y absoluto da linha de cota (cotas horizontais).
+  var dx=e.x2-e.x1, dy=e.y2-e.y1, len=Math.hypot(dx,dy);
+  if(len<0.001) return null;
+  var ux=dx/len, uy=dy/len;   // unitário paralelo ao segmento
+  var nx=-uy,    ny=ux;        // normal perpendicular (aponta 90° à esq.)
+  var d1x,d1y,d2x,d2y;
+  if(e.px!==undefined && e.py!==undefined){
+    // dot = projeção de (px,py) sobre a normal partindo de p1
+    var dot=(e.px-e.x1)*nx+(e.py-e.y1)*ny;
+    d1x=e.x1+nx*dot; d1y=e.y1+ny*dot;
+    d2x=e.x2+nx*dot; d2y=e.y2+ny*dot;
+  } else {
+    // Legado: off é a coordenada Y da linha de cota
+    d1x=e.x1; d1y=e.off;
+    d2x=e.x2; d2y=e.off;
+  }
+  return {d1x:d1x,d1y:d1y,d2x:d2x,d2y:d2y};
+}
+
 function drawDim(ctx,e){
-  ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;
-  var p1=w2s(e.x1,e.y1),p2=w2s(e.x2,e.y2),py=w2s(0,e.off).y;
-  ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p1.x,py);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(p2.x,p2.y);ctx.lineTo(p2.x,py);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(p1.x,py);ctx.lineTo(p2.x,py);ctx.stroke();
-  var aw=7,ah=3;
-  ctx.beginPath();ctx.moveTo(p1.x,py);ctx.lineTo(p1.x+aw,py-ah);ctx.lineTo(p1.x+aw,py+ah);ctx.closePath();ctx.fill();
-  ctx.beginPath();ctx.moveTo(p2.x,py);ctx.lineTo(p2.x-aw,py-ah);ctx.lineTo(p2.x-aw,py+ah);ctx.closePath();ctx.fill();
-  ctx.font='10px Consolas,monospace';ctx.textAlign='center';ctx.fillText(e.val+e.unit,(p1.x+p2.x)/2,py-5);ctx.textAlign='left';ctx.restore();
+  var g=dimLinePoints(e); if(!g) return;
+  var d1x=g.d1x,d1y=g.d1y,d2x=g.d2x,d2y=g.d2y;
+
+  // Obter estilo: cota pode ter estilo próprio (e.dimStyle) ou usar o padrão
+  var st=(e.dimStyle&&dspGetStyle(e.dimStyle))||curDimStyle();
+  var ds=st.dimscale||1, sc=S.vp.sc;
+
+  ctx.save();
+  ctx.strokeStyle=st.col;ctx.fillStyle=st.col;
+  ctx.lineWidth=st.lw*sc*ds*0.1; // lw em mm → pixels
+  ctx.setLineDash([]);ctx.shadowBlur=0;
+
+  var sp1=w2s(e.x1,e.y1),sp2=w2s(e.x2,e.y2);
+  var sd1=w2s(d1x,d1y),  sd2=w2s(d2x,d2y);
+
+  // Extensões com gap e beyond em pixels
+  var GAP=(st.extOffset||0.5)*sc*ds*0.1, EXT=(st.extBeyond||1.5)*sc*ds*0.1;
+  function drawExt(ox,oy,tx,ty){
+    var dx=tx-ox,dy=ty-oy,el=Math.hypot(dx,dy);
+    if(el<0.5) return;
+    var ux=dx/el,uy=dy/el;
+    ctx.beginPath();ctx.moveTo(ox+ux*GAP,oy+uy*GAP);ctx.lineTo(tx+ux*EXT,ty+uy*EXT);ctx.stroke();
+  }
+  drawExt(sp1.x,sp1.y,sd1.x,sd1.y);
+  drawExt(sp2.x,sp2.y,sd2.x,sd2.y);
+
+  // Linha de cota
+  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
+
+  // Setas
+  var AW=(st.arrowSize||2.5)*sc*ds*0.1, AH=AW*0.4;
+  var da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
+  function drawArrow(px,py,ang){
+    if(st.arrowType==='none') return;
+    if(st.arrowType==='tick'){ctx.beginPath();ctx.moveTo(px-AW*0.7,py+AW*0.7);ctx.lineTo(px+AW*0.7,py-AW*0.7);ctx.stroke();return;}
+    if(st.arrowType==='dot'){ctx.beginPath();ctx.arc(px,py,AW*0.5,0,Math.PI*2);ctx.fill();return;}
+    if(st.arrowType==='open'){
+      ctx.beginPath();
+      ctx.moveTo(px-AW*Math.cos(ang)+AH*Math.sin(ang),py-AW*Math.sin(ang)-AH*Math.cos(ang));
+      ctx.lineTo(px,py);
+      ctx.lineTo(px-AW*Math.cos(ang)-AH*Math.sin(ang),py-AW*Math.sin(ang)+AH*Math.cos(ang));
+      ctx.stroke();return;
+    }
+    // filled (default)
+    ctx.beginPath();ctx.moveTo(px,py);
+    ctx.lineTo(px-AW*Math.cos(ang)+AH*Math.sin(ang),py-AW*Math.sin(ang)-AH*Math.cos(ang));
+    ctx.lineTo(px-AW*Math.cos(ang)-AH*Math.sin(ang),py-AW*Math.sin(ang)+AH*Math.cos(ang));
+    ctx.closePath();ctx.fill();
+  }
+  drawArrow(sd1.x,sd1.y,da+Math.PI);
+  drawArrow(sd2.x,sd2.y,da);
+
+  // Valor formatado com o estilo
+  var rawMM=parseFloat(e.val)||Math.hypot(e.x2-e.x1,e.y2-e.y1);
+  var valStr=dimValStr(rawMM,st);
+
+  // Texto
+  var txtPx=Math.max(6,(st.txtH||2.5)*sc*ds*0.1);
+  ctx.font='bold '+txtPx+'px '+(st.font||'Consolas,monospace');
+  ctx.fillStyle=st.txtCol||st.col;
+  var mx=(sd1.x+sd2.x)/2, my=(sd1.y+sd2.y)/2;
+  var ta=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
+  if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
+
+  var txtGapPx=(st.txtGap||0.8)*sc*ds*0.1;
+  var offY=st.txtPos==='below'?(txtPx+txtGapPx):st.txtPos==='center'?txtPx*0.35:-(txtGapPx+2);
+
+  if(st.txtAlign==='aligned'){
+    ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
+    ctx.textAlign='center';ctx.fillText(valStr,0,offY);
+    ctx.restore();
+  } else {
+    ctx.textAlign='center';ctx.fillText(valStr,mx,my+offY);
+  }
+
+  ctx.restore();
 }
 function drawDimR(ctx,e){ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;var c=w2s(e.cx,e.cy),ep=w2s(e.ex,e.ey);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(ep.x,ep.y);ctx.stroke();ctx.font='10px Consolas,monospace';ctx.fillText('R'+e.val,ep.x+5,ep.y-5);ctx.restore();}
 function drawDimD(ctx,e){ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;var c=w2s(e.cx,e.cy),ep=w2s(e.ex,e.ey),op=w2s(2*e.cx-e.ex,2*e.cy-e.ey);ctx.beginPath();ctx.moveTo(op.x,op.y);ctx.lineTo(ep.x,ep.y);ctx.stroke();ctx.font='10px Consolas,monospace';ctx.fillText('⌀'+e.val,(op.x+ep.x)/2-10,(op.y+ep.y)/2-6);ctx.restore();}
@@ -1468,8 +1771,52 @@ function drawPreview(ctx){
         }
       }
       break;
-    case 'dim':case 'dimr':case 'dimd':
-      if(ds.pts&&ds.pts.length>=1){var p1=w2s(ds.pts[ds.pts.length-1].x,ds.pts[ds.pts.length-1].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();var len=Math.hypot(hp.x-ds.pts[ds.pts.length-1].x,hp.y-ds.pts[ds.pts.length-1].y),ang=(Math.atan2(hp.y-ds.pts[ds.pts.length-1].y,hp.x-ds.pts[ds.pts.length-1].x)*180/Math.PI).toFixed(1);ctx.setLineDash([]);ctx.globalAlpha=1;ctx.font='10px Consolas';ctx.fillStyle='#4d9ef7';ctx.fillText(len.toFixed(2)+'mm  '+ang+'°',p2.x+9,p2.y-8);}
+    case 'dim':
+      if(ds&&ds.phase==='p2'&&ds.pts){
+        // Linha de preview do 1º ao cursor
+        var sp1=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(sp1.x,sp1.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        ctx.fillStyle='#f0c040';ctx.beginPath();ctx.arc(sp1.x,sp1.y,3,0,Math.PI*2);ctx.fill();
+        var ld=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y);
+        ctx.font='10px Consolas';ctx.fillText(ld.toFixed(2)+'mm',spc.x+8,spc.y-6);
+      } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
+        // Preview COMPLETO: extensões + linha de cota + setas + valor
+        var p1=ds.pts[0],p2=ds.pts[1];
+        drawDimPreview(ctx,p1,p2,hp);
+      }
+      break;
+    case 'dimr':case 'dimd':
+      if(ds&&ds.phase==='p2'&&ds.pts){
+        var sp1=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(sp1.x,sp1.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        var rd=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y);
+        var prefix=S.tool==='dimd'?'⌀':'R';
+        var val=S.tool==='dimd'?(rd*2).toFixed(2):rd.toFixed(2);
+        ctx.fillStyle='#f0c040';ctx.font='10px Consolas';
+        ctx.fillText(prefix+val+'mm',w2s(hp.x,hp.y).x+8,w2s(hp.x,hp.y).y-6);
+      } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
+        // Preview linha de raio/diâmetro apontando para cursor
+        var c=ds.pts[0],ep2=ds.pts[1];
+        var r=Math.hypot(ep2.x-c.x,ep2.y-c.y);
+        var cs=w2s(c.x,c.y),eps=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([]);ctx.globalAlpha=.85;
+        ctx.beginPath();ctx.moveTo(cs.x,cs.y);ctx.lineTo(eps.x,eps.y);ctx.stroke();
+        var prefix2=S.tool==='dimd'?'⌀':'R';
+        var val2=S.tool==='dimd'?(r*2).toFixed(2):r.toFixed(2);
+        // Seta na ponta
+        var ang2=Math.atan2(eps.y-cs.y,eps.x-cs.x);
+        ctx.beginPath();ctx.moveTo(eps.x,eps.y);
+        ctx.lineTo(eps.x-10*Math.cos(ang2-0.3),eps.y-10*Math.sin(ang2-0.3));
+        ctx.lineTo(eps.x-10*Math.cos(ang2+0.3),eps.y-10*Math.sin(ang2+0.3));
+        ctx.closePath();ctx.fill();
+        ctx.fillStyle='#f0c040';ctx.font='bold 10px Consolas';
+        ctx.fillText(prefix2+val2+'mm',eps.x+8,eps.y-6);
+        ctx.globalAlpha=1;
+      }
       break;
     case 'polyline':
       if(ds.pts&&ds.pts.length>=1){ctx.beginPath();var p0=w2s(ds.pts[0].x,ds.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<ds.pts.length;i++){var p=w2s(ds.pts[i].x,ds.pts[i].y);ctx.lineTo(p.x,p.y);}var pe=w2s(hp.x,hp.y);ctx.lineTo(pe.x,pe.y);ctx.stroke();}
@@ -1488,9 +1835,37 @@ function drawPreview(ctx){
       if(ds.pts.length===1){var c=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}
       else if(ds.pts.length===2){var c=w2s(ds.pts[0].x,ds.pts[0].y),rx=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y)*sc,ry=Math.abs(hp.y-ds.pts[0].y)*sc;if(rx>0&&ry>0){ctx.beginPath();ctx.ellipse(c.x,c.y,rx,ry,0,0,Math.PI*2);ctx.stroke();}}
       break;
-    case 'dim':
-      if(ds.pts.length===1){var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(hp.x,hp.y);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();}
-      else if(ds.pts.length===2){ctx.strokeStyle='#f0c040';var p1=w2s(ds.pts[0].x,ds.pts[0].y),p2=w2s(ds.pts[1].x,ds.pts[1].y),py=w2s(0,hp.y).y;ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p1.x,py);ctx.stroke();ctx.beginPath();ctx.moveTo(p2.x,p2.y);ctx.lineTo(p2.x,py);ctx.stroke();ctx.beginPath();ctx.moveTo(p1.x,py);ctx.lineTo(p2.x,py);ctx.stroke();}
+
+    case 'dima':
+      if(ds&&ds.phase==='p2'&&ds.pts&&ds.pts.length===1){
+        var sv=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+      } else if(ds&&ds.phase==='p3'&&ds.pts&&ds.pts.length===2){
+        var sv=w2s(ds.pts[0].x,ds.pts[0].y),sa=w2s(ds.pts[1].x,ds.pts[1].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([]);ctx.globalAlpha=.8;
+        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(sa.x,sa.y);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        var a1=Math.atan2(sa.y-sv.y,sa.x-sv.x),a2=Math.atan2(spc.y-sv.y,spc.x-sv.x);
+        var angD=Math.abs((a2-a1)*180/Math.PI);if(angD>180)angD=360-angD;
+        ctx.beginPath();ctx.arc(sv.x,sv.y,30,a1,a2);ctx.stroke();
+        ctx.fillStyle='#f0c040';ctx.font='10px Consolas';ctx.fillText(angD.toFixed(1)+'°',spc.x+8,spc.y-6);
+        ctx.globalAlpha=1;
+      } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===3){
+        var v3=ds.pts[0],pa3=ds.pts[1],pb3=ds.pts[2];
+        var sv=w2s(v3.x,v3.y),sa=w2s(pa3.x,pa3.y),sb=w2s(pb3.x,pb3.y);
+        var r3=Math.hypot(hp.x-v3.x,hp.y-v3.y)*S.vp.sc;
+        var a1b=Math.atan2(sa.y-sv.y,sa.x-sv.x),a2b=Math.atan2(sb.y-sv.y,sb.x-sv.x);
+        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([]);ctx.globalAlpha=.85;
+        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(sa.x,sa.y);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(sb.x,sb.y);ctx.stroke();
+        ctx.beginPath();ctx.arc(sv.x,sv.y,r3,a1b,a2b);ctx.stroke();
+        ctx.fillStyle='#f0c040';ctx.font='bold 10px Consolas';
+        var ma3=(a1b+a2b)/2;
+        ctx.fillText(ds.angVal+'°',sv.x+Math.cos(ma3)*(r3+12),sv.y+Math.sin(ma3)*(r3+12));
+        ctx.globalAlpha=1;
+      }
       break;
     case 'move':
       if(ds&&ds.pts&&ds.pts.length>=1){
@@ -1729,7 +2104,7 @@ function drawWinSel(ctx){
 function drawOver(){
   S.gO.clearRect(0,0,S.cO.width,S.cO.height);
   var sm=document.getElementById('snapmark'),sl=document.getElementById('snaplbl');
-  if(!S.hover||S.tool==='select'||S.tool==='pan'||!S.hover.st||S.hover.st==='grid'){sm.style.display='none';sl.style.display='none';return;}
+  if(!S.hover||S.tool==='pan'||!S.hover.st||S.hover.st==='grid'){sm.style.display='none';sl.style.display='none';return;}
   var sp=w2s(S.hover.x,S.hover.y),st=S.hover.st;
   var col={end:'#4ec87a',mid:'#f0c040',cen:'#4d9ef7',polar:'#e85050',ortho:'#e85050'}[st]||'#4d9ef7';
   sm.style.left=sp.x+'px';sm.style.top=sp.y+'px';sm.style.display='block';
@@ -1762,15 +2137,28 @@ function ev2xy(e){var r=S.wrap.getBoundingClientRect();return{sx:e.clientX-r.lef
 function onMM(e){
   var p=ev2xy(e);
   if(S.isPan){S.vp.x+=p.sx-S.panFrom.x;S.vp.y+=p.sy-S.panFrom.y;S.panFrom={x:p.sx,y:p.sy};renderAll();return;}
-  // No SELECT: não precisa de snap completo, apenas raw coords para hover
+  // Na fase de posicionamento de cotas, usar posição raw
+  var isDimPos=(S.ds&&S.ds.phase==='pos')&&
+    (S.tool==='dim'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
+  if(isDimPos){
+    var rawDim=s2w(p.sx,p.sy);
+    S.hover={x:rawDim.x,y:rawDim.y,st:null};
+    document.getElementById('coordbox').textContent='X: '+rawDim.x.toFixed(3)+'   Y: '+rawDim.y.toFixed(3);
+    drawScene();drawOver();
+    return;
+  }
+  // No SELECT: usar doSnap para detectar pontos de snap e mostrar markers
   if(S.tool==='select'){
-    var raw=s2w(p.sx,p.sy);
-    S.hover={x:raw.x,y:raw.y,st:null};
-    document.getElementById('coordbox').textContent='X: '+raw.x.toFixed(3)+'   Y: '+raw.y.toFixed(3);
+    S.hover=doSnap(p.sx,p.sy);
+    document.getElementById('coordbox').textContent='X: '+S.hover.x.toFixed(3)+'   Y: '+S.hover.y.toFixed(3);
+    // Garantir que o DI está oculto no SELECT
+    if(DI.active) diHide();
     // Hover highlight: encontrar objeto sob cursor
+    var raw2=s2w(p.sx,p.sy);
     var hov=null;
-    for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],raw.x,raw.y)){hov=S.ents[i].id;break;}}
-    if(S.hoverId!==hov){S.hoverId=hov;drawScene();}
+    for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],raw2.x,raw2.y)){hov=S.ents[i].id;break;}}
+    if(S.hoverId!==hov){S.hoverId=hov;}
+    drawScene();drawOver();
     return;
   }
   S.hover=doSnap(p.sx,p.sy);
@@ -1795,7 +2183,10 @@ function onMD(e){
   var p=ev2xy(e);
   if(e.button===1||(e.button===0&&S.tool==='pan')){S.isPan=true;S.panFrom={x:p.sx,y:p.sy};return;}
   if(e.button!==0) return;
-  var pt=doSnap(p.sx,p.sy);
+  // Na fase de posicionamento de cotas, usar posição raw sem object snap
+  var dimPosFase=(S.ds&&S.ds.phase==='pos')&&
+    (S.tool==='dim'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
+  var pt=dimPosFase?s2w(p.sx,p.sy):doSnap(p.sx,p.sy);
 
   // Offset fases pick e side: clique direto no canvas, independente do foco
   if(S.tool==='offset'&&S.ds&&(S.ds.phase==='pick'||S.ds.phase==='side')){
@@ -1859,7 +2250,8 @@ function onKey(e){
   if(DI.active && activeEl!==ci && !inDI && !e.ctrlKey && !e.altKey && !e.metaKey){
     var k2=e.key;
     // Teclas que iniciam entrada numérica/coordenada
-    var isTypeable=(k2.length===1&&/[0-9.\-@<,]/.test(k2));
+    // Só redirecionar dígitos/símbolos — NUNCA letras (que são atalhos de comando)
+    var isTypeable=(k2.length===1&&/[0-9.\-@<,]/.test(k2)&&!/[a-zA-Z]/.test(k2));
     if(isTypeable){
       e.preventDefault();
       // Campo padrão: se há base → L (distância); senão → X
@@ -1936,6 +2328,7 @@ function onKey(e){
     else {
       // Qualquer outra ferramenta: voltar ao SELECT preservando a seleção atual
       var savedSel=S.sel.slice();
+      DI.active=false;diHide();
       cancelTool();
       S.sel=savedSel;
       renderAll();updSelInfo();
@@ -2173,6 +2566,7 @@ function onCmdKey(e){
     'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
+    'DDIM':'ddim','DIMSTYLE':'ddim',
     'AR':'array','ARRAY':'array',
     'P':'pan','PAN':'pan','S':'select','SELECT':'select',
     'U':'undo','UNDO':'undo','REDO':'redo',
@@ -2193,6 +2587,7 @@ function onCmdKey(e){
       setTool(act);break;
     case 'polygon':startPolygon();break;
     case 'array':showArrayDlg();break;
+    case 'ddim':showDimStyle();break;
     case 'pan':setTool('pan');break;
     case 'select':setTool('select');break;
     case 'undo':undo();break;
@@ -2405,7 +2800,10 @@ function diGetBase(){
 
 // Atualizar o DI com as coordenadas atuais do cursor
 function diUpdate(sx,sy){
-  if(!diShouldShow()){diHide();return;}
+  if(!diShouldShow()){
+    if(DI.active) diHide();
+    return;
+  }
 
   // Mostrar
   DI.active=true;
@@ -2472,8 +2870,13 @@ function diUpdate(sx,sy){
 
 function diHide(){
   DI.active=false;
-  DI.el&&DI.el.classList.remove('show');
+  DI.focusField=null;
+  if(DI.el) DI.el.classList.remove('show');
   diClear();
+  // Tirar foco dos campos do DI para não bloquear atalhos de teclado
+  if(DI.el&&DI.el.contains(document.activeElement)){
+    document.activeElement.blur();
+  }
 }
 
 // ── MODES ────────────────────────────────────────────────────
@@ -2511,7 +2914,7 @@ function setTool(tool){
     logp('COPY: '+S.sel.length+' obj. Clique no ponto base:');
   }
   // Esconder DI ao trocar ferramenta para select/pan
-  if(tool==='select'||tool==='pan') diHide();
+  if(tool==='select'||tool==='pan'){DI.active=false;diHide();}
 }
 
 // ── LAYERS UI ────────────────────────────────────────────────
@@ -2648,6 +3051,83 @@ function polyBuild(center,r,sides,method,startAng){
   addE({tp:'pl',pts:pts,closed:true});
   var mt=method==='ic'?'inscrito':'circunscrito';
   log('Polígono '+sides+' lados ('+mt+') R='+r.toFixed(2)+'mm.','ok');
+}
+
+// ── DIM HELPERS ──────────────────────────────────────────────
+
+// Calcula o offset da cota linear (distância perpendicular ao segmento p1-p2)
+// O offset é armazenado como a coordenada Y da linha de cota (sistema mundo)
+// Para cotas horizontais: off = cursor.y (deslocamento vertical)
+// Para cotas verticais: off = cursor.x (deslocamento horizontal)
+// Para cotas oblíquas: projeção perpendicular
+function dimCalcOff(p1,p2,cursor){
+  // Vetor do segmento
+  var dx=p2.x-p1.x, dy=p2.y-p1.y;
+  var len=Math.hypot(dx,dy);
+  if(len<1e-9) return cursor.y;
+  // Vertor normal (perpendicular)
+  var nx=-dy/len, ny=dx/len;
+  // Offset = distância do cursor ao segmento na direção normal
+  var dot=(cursor.x-p1.x)*nx+(cursor.y-p1.y)*ny;
+  // Ponto na linha de cota = ponto médio + normal * offset
+  var midX=(p1.x+p2.x)/2+nx*dot;
+  var midY=(p1.y+p2.y)/2+ny*dot;
+  return {ox:midX,oy:midY,dot:dot};
+}
+
+// Desenha preview da cota usando EXATAMENTE a mesma lógica de dimLinePoints
+function drawDimPreview(ctx,p1,p2,cursor){
+  // Reutilizar dimLinePoints passando um objeto temporário com px,py = cursor
+  var tmp={x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:cursor.x,py:cursor.y};
+  var g=dimLinePoints(tmp); if(!g) return;
+  var d1x=g.d1x,d1y=g.d1y,d2x=g.d2x,d2y=g.d2y;
+
+  var col='#f0c040';
+  ctx.save();
+  ctx.strokeStyle=col;ctx.fillStyle=col;
+  ctx.lineWidth=0.8;ctx.setLineDash([]);ctx.globalAlpha=0.9;ctx.shadowBlur=0;
+
+  var sp1=w2s(p1.x,p1.y), sp2=w2s(p2.x,p2.y);
+  var sd1=w2s(d1x,d1y),   sd2=w2s(d2x,d2y);
+
+  // Extensões
+  var GAP=2,EXT=4;
+  function ext(ox,oy,tx,ty){
+    var ex=tx-ox,ey=ty-oy,el=Math.hypot(ex,ey);
+    if(el<0.5) return;
+    var eux=ex/el,euy=ey/el;
+    ctx.beginPath();ctx.moveTo(ox+eux*GAP,oy+euy*GAP);ctx.lineTo(tx+eux*EXT,ty+euy*EXT);ctx.stroke();
+  }
+  ext(sp1.x,sp1.y,sd1.x,sd1.y);
+  ext(sp2.x,sp2.y,sd2.x,sd2.y);
+
+  // Linha de cota
+  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
+
+  // Setas
+  var AW=7,AH=3,da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
+  function arr(px,py,a){
+    ctx.beginPath();ctx.moveTo(px,py);
+    ctx.lineTo(px-AW*Math.cos(a)+AH*Math.sin(a),py-AW*Math.sin(a)-AH*Math.cos(a));
+    ctx.lineTo(px-AW*Math.cos(a)-AH*Math.sin(a),py-AW*Math.sin(a)+AH*Math.cos(a));
+    ctx.closePath();ctx.fill();
+  }
+  arr(sd1.x,sd1.y,da+Math.PI);
+  arr(sd2.x,sd2.y,da);
+
+  // Valor
+  var len=Math.hypot(p2.x-p1.x,p2.y-p1.y);
+  var val=len.toFixed(2)+'mm';
+  var mx=(sd1.x+sd2.x)/2,my=(sd1.y+sd2.y)/2;
+  var ta=da; if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
+  ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
+  ctx.font='bold 10px Consolas,monospace';ctx.textAlign='center';
+  var tw=ctx.measureText(val).width;
+  ctx.fillStyle='rgba(6,10,24,0.88)';ctx.fillRect(-tw/2-3,-14,tw+6,14);
+  ctx.fillStyle=col;ctx.fillText(val,0,-3);
+  ctx.restore();
+
+  ctx.restore();
 }
 
 // ── TRIM / EXTEND GEOMETRY ────────────────────────────────────
@@ -3365,6 +3845,274 @@ function confirmFillet(){
   closeOv('ov-fillet');
   logp((S.tool==='chamfer'?'CHAMFER':'FILLET')+': clique na 1ª linha:');
 }
+
+
+// ── DIMSTYLE ENGINE ─────────────────────────────────────────────────────────
+
+// Estilo de cota padrão (Standard)
+var DS_DEFAULT = {
+  name:'Standard',
+  col:'#f0c040', lw:0.5,
+  extGap:1, extBeyond:1.5, extOffset:0.5,
+  arrowType:'filled', arrowSize:2.5,
+  centerMark:'none', centerSize:2,
+  font:'Consolas,monospace', txtH:2.5, txtCol:'#f0c040',
+  txtPos:'above', txtAlign:'aligned', txtGap:0.8,
+  unit:'mm', prec:2, scale:1, prefix:'', suffix:'', dimscale:1
+};
+
+// Banco de estilos e estilo corrente
+if(!S.dimStyles) S.dimStyles=[JSON.parse(JSON.stringify(DS_DEFAULT))];
+if(!S.dimCurrent) S.dimCurrent='Standard';
+
+var _dspSel=null; // nome do estilo selecionado no manager
+
+function curDimStyle(){
+  for(var i=0;i<S.dimStyles.length;i++)
+    if(S.dimStyles[i].name===S.dimCurrent) return S.dimStyles[i];
+  return S.dimStyles[0]||DS_DEFAULT;
+}
+
+function showDimStyle(){
+  _dspSel=S.dimCurrent;
+  dspRenderList();
+  dspLoadFields(_dspSel);
+  document.getElementById('ov-dimstyle').classList.add('show');
+  dspDrawPreview();
+}
+
+function dspRenderList(){
+  var el=document.getElementById('dsp-list');
+  el.innerHTML='';
+  S.dimStyles.forEach(function(st){
+    var d=document.createElement('div');
+    d.className='dsp-item'+(st.name===_dspSel?' active':'');
+    d.innerHTML=(st.name===S.dimCurrent?'<span class="dsp-cur">★</span>':'')+
+                '<span>'+st.name+'</span>';
+    d.onclick=function(){_dspSel=st.name;dspRenderList();dspLoadFields(st.name);dspDrawPreview();};
+    el.appendChild(d);
+  });
+  // enable/disable delete (cannot delete last or Standard)
+  var btn=document.getElementById('dsp-btn-del');
+  if(btn) btn.disabled=(S.dimStyles.length<=1||_dspSel==='Standard');
+}
+
+function dspGetStyle(name){
+  for(var i=0;i<S.dimStyles.length;i++) if(S.dimStyles[i].name===name) return S.dimStyles[i];
+  return null;
+}
+
+function dspLoadFields(name){
+  var st=dspGetStyle(name)||DS_DEFAULT;
+  document.getElementById('dsp-col').value=st.col;
+  document.getElementById('dsp-lw').value=st.lw;
+  document.getElementById('dsp-ext-gap').value=st.extGap;
+  document.getElementById('dsp-ext-beyond').value=st.extBeyond;
+  document.getElementById('dsp-ext-offset').value=st.extOffset;
+  document.getElementById('dsp-arrow-type').value=st.arrowType;
+  document.getElementById('dsp-arrow-size').value=st.arrowSize;
+  document.getElementById('dsp-center-mark').value=st.centerMark;
+  document.getElementById('dsp-center-size').value=st.centerSize;
+  document.getElementById('dsp-font').value=st.font;
+  document.getElementById('dsp-txt-h').value=st.txtH;
+  document.getElementById('dsp-txt-col').value=st.txtCol;
+  document.getElementById('dsp-txt-pos').value=st.txtPos;
+  document.getElementById('dsp-txt-align').value=st.txtAlign;
+  document.getElementById('dsp-txt-gap').value=st.txtGap;
+  document.getElementById('dsp-unit').value=st.unit;
+  document.getElementById('dsp-prec').value=st.prec;
+  document.getElementById('dsp-scale').value=st.scale;
+  document.getElementById('dsp-prefix').value=st.prefix||'';
+  document.getElementById('dsp-suffix').value=st.suffix||'';
+  document.getElementById('dsp-dimscale').value=st.dimscale||1;
+}
+
+function dspReadFields(){
+  return {
+    col:document.getElementById('dsp-col').value,
+    lw:parseFloat(document.getElementById('dsp-lw').value),
+    extGap:parseFloat(document.getElementById('dsp-ext-gap').value),
+    extBeyond:parseFloat(document.getElementById('dsp-ext-beyond').value),
+    extOffset:parseFloat(document.getElementById('dsp-ext-offset').value),
+    arrowType:document.getElementById('dsp-arrow-type').value,
+    arrowSize:parseFloat(document.getElementById('dsp-arrow-size').value),
+    centerMark:document.getElementById('dsp-center-mark').value,
+    centerSize:parseFloat(document.getElementById('dsp-center-size').value),
+    font:document.getElementById('dsp-font').value,
+    txtH:parseFloat(document.getElementById('dsp-txt-h').value),
+    txtCol:document.getElementById('dsp-txt-col').value,
+    txtPos:document.getElementById('dsp-txt-pos').value,
+    txtAlign:document.getElementById('dsp-txt-align').value,
+    txtGap:parseFloat(document.getElementById('dsp-txt-gap').value),
+    unit:document.getElementById('dsp-unit').value,
+    prec:parseInt(document.getElementById('dsp-prec').value),
+    scale:parseFloat(document.getElementById('dsp-scale').value)||1,
+    prefix:document.getElementById('dsp-prefix').value,
+    suffix:document.getElementById('dsp-suffix').value,
+    dimscale:parseFloat(document.getElementById('dsp-dimscale').value)||1
+  };
+}
+
+function dspChange(){
+  // Salvar no estilo selecionado em tempo real
+  var st=dspGetStyle(_dspSel);
+  if(!st) return;
+  var f=dspReadFields();
+  Object.keys(f).forEach(function(k){st[k]=f[k];});
+  dspDrawPreview();
+  // Associatividade: re-renderizar cotas existentes
+  renderAll();
+}
+
+function dspTab(n){
+  document.querySelectorAll('.dsp-tab').forEach(function(t,i){t.classList.toggle('on',i===n);});
+  document.querySelectorAll('.dsp-pane').forEach(function(p,i){
+    p.classList.remove('on','show');
+    if(i===n) p.classList.add('on');
+  });
+}
+
+function dspNew(){
+  var name=prompt('Nome do novo estilo:','Estilo '+(S.dimStyles.length+1));
+  if(!name||!name.trim()) return;
+  if(dspGetStyle(name)){alert('Já existe um estilo com esse nome.');return;}
+  var base=dspGetStyle(_dspSel)||DS_DEFAULT;
+  var newSt=JSON.parse(JSON.stringify(base));
+  newSt.name=name.trim();
+  S.dimStyles.push(newSt);
+  _dspSel=newSt.name;
+  dspRenderList();
+  dspLoadFields(_dspSel);
+  dspDrawPreview();
+}
+
+function dspRename(){
+  var st=dspGetStyle(_dspSel);
+  if(!st||st.name==='Standard'){alert('O estilo Standard não pode ser renomeado.');return;}
+  var name=prompt('Novo nome:',st.name);
+  if(!name||!name.trim()) return;
+  if(dspGetStyle(name)){alert('Já existe um estilo com esse nome.');return;}
+  // Atualizar cotas que usam este estilo
+  S.ents.forEach(function(e){if((e.tp==='dim'||e.tp==='dimr'||e.tp==='dimd'||e.tp==='dima')&&e.dimStyle===st.name) e.dimStyle=name.trim();});
+  if(S.dimCurrent===st.name) S.dimCurrent=name.trim();
+  st.name=name.trim();
+  _dspSel=st.name;
+  dspRenderList();
+}
+
+function dspSetCurrent(){
+  if(!_dspSel) return;
+  S.dimCurrent=_dspSel;
+  dspRenderList();
+  log('Estilo de cota padrão: '+_dspSel,'ok');
+}
+
+function dspDelete(){
+  if(S.dimStyles.length<=1){alert('Não é possível excluir o único estilo.');return;}
+  if(_dspSel==='Standard'){alert('O estilo Standard não pode ser excluído.');return;}
+  if(!confirm('Excluir estilo "'+_dspSel+'"?')) return;
+  S.dimStyles=S.dimStyles.filter(function(s){return s.name!==_dspSel;});
+  if(S.dimCurrent===_dspSel) S.dimCurrent=S.dimStyles[0].name;
+  _dspSel=S.dimCurrent;
+  dspRenderList();
+  dspLoadFields(_dspSel);
+  dspDrawPreview();
+}
+
+function dspApply(){
+  dspChange();
+  S.dimCurrent=_dspSel;
+  renderAll();
+  closeOv('ov-dimstyle');
+  log('Estilo de cota aplicado: '+S.dimCurrent,'ok');
+}
+
+// Preview da cota no mini-canvas
+function dspDrawPreview(){
+  var cv=document.getElementById('dsp-preview');
+  if(!cv) return;
+  var ctx=cv.getContext('2d');
+  var W=cv.width,H=cv.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0a0c1a';ctx.fillRect(0,0,W,H);
+
+  var st=dspGetStyle(_dspSel)||DS_DEFAULT;
+  var ds=st.dimscale||1;
+  // Simular uma cota de 80px de comprimento no centro
+  var y=H/2, x1=60, x2=W-60, dimY=H*0.25;
+  var sc=2; // px por mm fictício para preview
+
+  // Linha do objeto (fina)
+  ctx.strokeStyle='#4d9ef760';ctx.lineWidth=1;ctx.setLineDash([]);
+  ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.stroke();
+
+  // Extensões
+  var gap=st.extGap*sc*ds, beyond=st.extBeyond*sc*ds;
+  var dir=dimY<y?-1:1; // direção das extensões
+  ctx.strokeStyle=st.col;ctx.lineWidth=st.lw*sc;ctx.setLineDash([]);
+  [[x1,y,x1,dimY],[x2,y,x2,dimY]].forEach(function(pts){
+    var ox=pts[0],oy=pts[1],tx=pts[2],ty=pts[3];
+    var dx=tx-ox,dy=ty-oy,l=Math.hypot(dx,dy);
+    if(l<1) return;
+    var ux=dx/l,uy=dy/l;
+    ctx.beginPath();ctx.moveTo(ox+ux*gap,oy+uy*gap);ctx.lineTo(tx+ux*beyond,ty+uy*beyond);ctx.stroke();
+  });
+
+  // Linha de cota
+  ctx.beginPath();ctx.moveTo(x1,dimY);ctx.lineTo(x2,dimY);ctx.stroke();
+
+  // Setas
+  var aw=st.arrowSize*sc*ds, ah=aw*0.4;
+  function drawArrow(px,py,ang){
+    if(st.arrowType==='none') return;
+    if(st.arrowType==='tick'){
+      ctx.beginPath();ctx.moveTo(px-aw*0.7,py+aw*0.7);ctx.lineTo(px+aw*0.7,py-aw*0.7);ctx.stroke();return;
+    }
+    if(st.arrowType==='dot'){
+      ctx.beginPath();ctx.arc(px,py,aw*0.5,0,Math.PI*2);ctx.fillStyle=st.col;ctx.fill();return;
+    }
+    ctx.fillStyle=st.col;
+    ctx.beginPath();ctx.moveTo(px,py);
+    if(st.arrowType==='open'){
+      ctx.moveTo(px-aw*Math.cos(ang)+ah*Math.sin(ang),py-aw*Math.sin(ang)-ah*Math.cos(ang));
+      ctx.lineTo(px,py);
+      ctx.lineTo(px-aw*Math.cos(ang)-ah*Math.sin(ang),py-aw*Math.sin(ang)+ah*Math.cos(ang));
+      ctx.stroke();
+    } else {
+      ctx.lineTo(px-aw*Math.cos(ang)+ah*Math.sin(ang),py-aw*Math.sin(ang)-ah*Math.cos(ang));
+      ctx.lineTo(px-aw*Math.cos(ang)-ah*Math.sin(ang),py-aw*Math.sin(ang)+ah*Math.cos(ang));
+      ctx.closePath();ctx.fill();
+    }
+  }
+  drawArrow(x1,dimY,Math.PI);
+  drawArrow(x2,dimY,0);
+
+  // Texto
+  var txtPx=(st.txtH||2.5)*sc*ds;
+  ctx.font=(txtPx>6?'bold ':'')+Math.max(8,txtPx)+'px '+st.font;
+  ctx.textAlign='center';
+  var valMM=((x2-x1)/sc/ds);
+  var val=dimValStr(valMM,st);
+  var txtGap=(st.txtGap||0.8)*sc*ds;
+  var txtY=dimY-(st.txtPos==='below'?(-txtGap):txtGap+txtPx*0.5);
+  if(st.txtPos==='center') txtY=dimY+txtPx*0.35;
+  ctx.fillStyle=st.txtCol;
+  ctx.fillText(val,(x1+x2)/2,txtY);
+  ctx.textAlign='left';
+}
+
+// Formata o valor numérico conforme o estilo
+function dimValStr(rawMM, st){
+  st=st||curDimStyle();
+  var scale=st.scale||1, prec=st.prec!==undefined?st.prec:2;
+  var v=rawMM*scale;
+  if(st.unit==='cm') v/=10;
+  else if(st.unit==='m') v/=1000;
+  else if(st.unit==='in') v/=25.4;
+  var prefix=st.prefix||'', suffix=st.suffix!==undefined?st.suffix:st.unit||'';
+  return prefix+v.toFixed(prec)+suffix;
+}
+
 
 // ── MODEL / LAYOUT ───────────────────────────────────────────
 var LY = {

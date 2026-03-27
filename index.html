@@ -147,11 +147,12 @@ input[type=file]{display:none}
 #layoutBg{
   flex:1;position:relative;overflow:auto;
   background:repeating-linear-gradient(45deg,#12121e 0,#12121e 10px,#131320 10px,#131320 20px);
-  display:flex;align-items:center;justify-content:center;padding:40px;
+  /* scroll container — sem flex, para que margin:auto funcione com scroll */
 }
 #layoutSheet{
   background:#fff;position:relative;box-shadow:0 8px 40px #000c;
-  flex-shrink:0;
+  /* centralizar com margin auto + transform-origin center para zoom correto */
+  transform-origin:top left;
 }
 #layoutCanvas{position:absolute;top:0;left:0;}
 #layoutControls{
@@ -216,6 +217,98 @@ input.lc-inp{width:52px;}
 .dsp-inp[type=text]{width:70px;}
 select.dsp-inp{padding:2px 4px;width:120px;}
 .dsp-foot{padding:7px 12px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:8px;background:var(--bg3);flex-shrink:0;}
+
+/* ── UNITS DIALOG ─────────────────────────────────────────── */
+#ov-units .modal{min-width:440px;max-width:96vw;padding:0;overflow:hidden;}
+#ov-units .modal h3{padding:9px 14px;margin:0;border-bottom:1px solid var(--bdr);font-size:12px;background:var(--bg3);}
+.un-body{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:14px 16px 10px;}
+.un-col{display:flex;flex-direction:column;gap:8px;padding-right:12px;}
+.un-col+.un-col{padding-right:0;padding-left:12px;border-left:1px solid var(--bdr);}
+.un-section{font-size:11px;font-weight:bold;color:var(--t0);margin-bottom:2px;}
+.un-lbl{font-size:10px;color:var(--t2);margin-bottom:2px;display:block;text-decoration:underline;text-underline-offset:2px;}
+select.un-sel{width:100%;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:4px 8px;border-radius:2px;outline:none;cursor:pointer;}
+select.un-sel:focus{border-color:var(--acc);}
+.un-check{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t1);cursor:pointer;margin-top:2px;}
+.un-check input{accent-color:var(--acc);width:13px;height:13px;cursor:pointer;}
+.un-divider{grid-column:1/-1;height:1px;background:var(--bdr);margin:4px 0;}
+.un-insert{grid-column:1/-1;}
+.un-insert .un-section{margin-bottom:4px;}
+.un-sample{grid-column:1/-1;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:7px 10px;font:11px var(--mono);color:var(--t2);}
+.un-sample span{display:block;color:var(--t0);font-size:10px;margin-bottom:3px;}
+.un-foot{padding:8px 14px;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end;background:var(--bg3);}
+
+/* ── LINETYPE MANAGER ─────────────────────────────────────── */
+#ov-linetype .modal{min-width:560px;max-width:96vw;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:90vh;}
+#ov-linetype .modal h3{padding:9px 14px;margin:0;border-bottom:1px solid var(--bdr);font-size:12px;background:var(--bg3);flex-shrink:0;}
+.lt-body{display:flex;flex:1;overflow:hidden;min-height:0;}
+/* Lista de tipos */
+.lt-list{flex:1;overflow-y:auto;min-height:0;}
+.lt-head{display:grid;grid-template-columns:28px 130px 1fr 60px 60px;gap:0;background:var(--bg3);border-bottom:1px solid var(--bdr);font-size:9px;color:var(--t2);padding:4px 8px;font-family:var(--mono);flex-shrink:0;}
+.lt-row{display:grid;grid-template-columns:28px 130px 1fr 60px 60px;gap:0;align-items:center;padding:4px 8px;border-bottom:1px solid var(--bdr)22;cursor:pointer;font-size:10px;font-family:var(--mono);color:var(--t1);}
+.lt-row:hover{background:var(--bg2);}
+.lt-row.active{background:#1a2a3a;color:var(--t0);}
+.lt-row.current .lt-cur{color:#f5a623;}
+.lt-cur{font-size:11px;text-align:center;}
+.lt-name{font-weight:500;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lt-prev canvas{display:block;}
+.lt-col-dot{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid #333;flex-shrink:0;}
+.lt-lw-badge{font-size:9px;color:var(--t2);text-align:right;white-space:nowrap;}
+/* Editor lateral */
+.lt-editor{width:200px;border-left:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;background:var(--bg3);}
+.lt-editor-title{padding:7px 10px;font-size:10px;color:var(--t2);border-bottom:1px solid var(--bdr);font-family:var(--mono);}
+.lt-editor-body{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:7px;}
+.lt-ef{display:flex;flex-direction:column;gap:3px;}
+.lt-ef label{font-size:9px;color:var(--t2);}
+select.lt-sel,input.lt-inp{background:var(--bg2);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px 7px;border-radius:2px;outline:none;width:100%;}
+select.lt-sel:focus,input.lt-inp:focus{border-color:var(--acc);}
+input.lt-inp[type=color]{height:24px;padding:1px 3px;cursor:pointer;}
+input.lt-inp[type=number]{width:100%;box-sizing:border-box;}
+.lt-preview-box{width:100%;height:28px;background:#080b18;border:1px solid var(--bdr);border-radius:2px;margin-top:2px;}
+/* Botões rodapé */
+.lt-foot{padding:7px 10px;border-top:1px solid var(--bdr);display:flex;gap:6px;flex-wrap:wrap;background:var(--bg3);flex-shrink:0;}
+.lt-foot-r{margin-left:auto;display:flex;gap:6px;}
+
+/* ── LAYOUT ZOOM + LEGENDA ──────────────────────────────────── */
+#layoutBg{cursor:grab;}
+#layoutBg.panning{cursor:grabbing;}
+#ly-zoom-bar{
+  position:absolute;bottom:12px;right:16px;
+  display:flex;align-items:center;gap:4px;
+  background:rgba(8,10,22,0.88);border:1px solid var(--bdr);
+  border-radius:16px;padding:3px 10px;z-index:30;
+  font:10px var(--mono);color:var(--t2);
+}
+.ly-zb-btn{
+  width:22px;height:22px;border-radius:50%;border:none;
+  background:var(--bg3);color:var(--t0);font-size:14px;line-height:1;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:.1s;flex-shrink:0;
+}
+.ly-zb-btn:hover{background:var(--acc);color:#fff;}
+#ly-zoom-pct{width:42px;text-align:center;color:var(--t0);font-size:10px;}
+
+/* Legenda na folha */
+.ly-legend{
+  position:absolute;border:1px solid #888;background:#fff;
+  font-family:Arial,sans-serif;overflow:hidden;cursor:move;
+  box-shadow:1px 1px 4px #0003;user-select:none;
+}
+.ly-legend table{width:100%;border-collapse:collapse;font-size:9px;}
+.ly-legend td,.ly-legend th{border:1px solid #888;padding:2px 5px;white-space:nowrap;}
+.ly-legend th{background:#e8e8e8;font-weight:bold;font-size:9px;}
+/* Editor modal de legenda */
+#ov-legend .modal{min-width:500px;max-width:96vw;padding:0;overflow:hidden;display:flex;flex-direction:column;max-height:88vh;}
+#ov-legend .modal h3{padding:9px 14px;margin:0;border-bottom:1px solid var(--bdr);font-size:12px;background:var(--bg3);}
+.lg-body{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.lg-preview{flex:1;overflow:auto;padding:12px;background:var(--bg3);display:flex;align-items:center;justify-content:center;}
+.lg-toolbar{padding:6px 12px;border-bottom:1px solid var(--bdr);display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap;}
+.lg-table-wrap{overflow:auto;max-height:220px;}
+table#lg-tbl{width:100%;border-collapse:collapse;font-size:11px;font-family:var(--mono);}
+table#lg-tbl th{background:var(--bg3);padding:4px 8px;border:1px solid var(--bdr);font-size:10px;color:var(--t2);text-align:left;}
+table#lg-tbl td{padding:3px 6px;border:1px solid var(--bdr);}
+table#lg-tbl input{background:var(--bg2);border:none;color:var(--t0);font:10px var(--mono);width:100%;outline:none;padding:1px 3px;}
+table#lg-tbl input:focus{background:#1a2a3a;}
+.lg-foot{padding:8px 12px;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end;background:var(--bg3);flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -237,7 +330,9 @@ select.dsp-inp{padding:2px 4px;width:120px;}
         <div class="rb" onclick="newDoc()" title="Novo Ctrl+N"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
         <div class="rb" onclick="saveDoc()" title="Salvar Ctrl+S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
         <div class="rb" onclick="openDoc()" title="Abrir Ctrl+O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
-        <div class="rb" onclick="showExport()" title="Exportar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</div>
+        <div class="rb" onclick="showLineType()" title="Tipos de Linha LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
+        <div class="rb" onclick="showUnits()" title="Unidades UN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>Unidades</div>
+        <div class="rb" onclick="showExport()"  title="Exportar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</div>
       </div><div class="rglbl">Arquivo</div>
     </div>
     <div class="rg">
@@ -285,7 +380,8 @@ select.dsp-inp{padding:2px 4px;width:120px;}
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" id="rb-dim"  onclick="setTool('dim')"  title="Cota Linear D"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><line x1="12" y1="14" x2="12" y2="18"/></svg>Cota</div>
+        <div class="rb" id="rb-dim"    onclick="setTool('dim')"    title="Cota Linear DLI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="19" x2="21" y2="19"/><line x1="3" y1="17" x2="3" y2="21"/><line x1="21" y1="17" x2="21" y2="21"/><line x1="8" y1="14" x2="8" y2="19"/><line x1="16" y1="14" x2="16" y2="19"/></svg>Linear</div>
+        <div class="rb" id="rb-dimali" onclick="setTool('dimali')" title="Cota Alinhada DAL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="4" y1="20" x2="20" y2="8"/><line x1="3" y1="18" x2="5" y2="22"/><line x1="19" y1="6" x2="21" y2="10"/><line x1="8" y1="15" x2="10" y2="19"/><line x1="14" y1="10" x2="16" y2="14"/></svg>Alinhada</div>
         <div class="rb" id="rb-dimr" onclick="setTool('dimr')" title="Raio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="13" r="7"/><line x1="12" y1="13" x2="17" y2="8"/><text x="14" y="8" font-size="5" fill="currentColor">R</text></svg>Raio</div>
         <div class="rb" id="rb-dimd" onclick="setTool('dimd')" title="Diâmetro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="8"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Diâm.</div>
         <div class="rb" id="rb-dima" onclick="setTool('dima')" title="Ângulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="6"/><path d="M11 19 A7 7 0 0 0 14 13"/></svg>Ângulo</div>
@@ -353,6 +449,14 @@ select.dsp-inp{padding:2px 4px;width:120px;}
       <div id="vpRect">
         <div class="vp-handle" style="bottom:-4px;right:-4px;" id="vpHandle"></div>
       </div>
+      <!-- Legendas dinâmicas geradas por JS aqui -->
+    </div>
+    <!-- Barra de zoom flutuante -->
+    <div id="ly-zoom-bar">
+      <button class="ly-zb-btn" onclick="lyZoom(-1)" title="Reduzir (-)">−</button>
+      <span id="ly-zoom-pct">100%</span>
+      <button class="ly-zb-btn" onclick="lyZoom(+1)" title="Ampliar (+)">+</button>
+      <button class="ly-zb-btn" onclick="lyZoomFit()" title="Ajustar à janela" style="font-size:11px;width:auto;padding:0 6px;border-radius:10px;">⊡</button>
     </div>
   </div>
   <div id="layoutControls">
@@ -398,6 +502,7 @@ select.dsp-inp{padding:2px 4px;width:120px;}
       </select>
     </div>
     <div class="lc-sep"></div>
+    <button class="lc-btn" onclick="showLegendEditor()">📋 Legenda</button>
     <button class="lc-btn" onclick="layoutFit()">⊡ Ajustar</button>
     <button class="lc-btn primary" onclick="layoutPrint()">🖨 Imprimir</button>
     <span style="margin-left:auto;font-size:9px;color:var(--t2)" id="lc-info">A4 Paisagem · 1:10</span>
@@ -427,7 +532,12 @@ select.dsp-inp{padding:2px 4px;width:120px;}
         <select class="ps" id="propLD" onchange="S.style.ld=this.value">
           <option value="solid">Contínua</option><option value="dashed">Tracejada</option>
           <option value="dotted">Pontilhada</option><option value="center">Centro</option>
+          <option value="phantom">Fantasma</option><option value="divide">Divide</option>
+          <option value="hidden">Oculta</option><option value="dashdot">Traço-Ponto</option>
         </select>
+      </div>
+      <div class="prow"><span class="plbl">Tipo:</span>
+        <select class="ps" id="propLT" onchange="ltQuickApply(this.value)" style="max-width:120px"></select>
       </div>
     </div>
     <div class="rph">◈ SNAP &amp; MODOS</div>
@@ -527,6 +637,227 @@ select.dsp-inp{padding:2px 4px;width:120px;}
   <div class="mact"><button class="btn s" onclick="closeOv('ov-text')">Cancelar</button><button class="btn p" onclick="confirmText()">OK</button></div>
 </div></div>
 
+<!-- UNITS DIALOG -->
+<div class="ov" id="ov-units"><div class="modal">
+  <h3>Drawing Units</h3>
+  <div class="un-body">
+
+    <!-- Coluna: Length -->
+    <div class="un-col">
+      <div class="un-section">Length</div>
+      <div>
+        <label class="un-lbl">Type:</label>
+        <select class="un-sel" id="un-len-type" onchange="unUpdateSample()">
+          <option value="decimal">Decimal</option>
+          <option value="engineering">Engineering</option>
+          <option value="architectural">Architectural</option>
+          <option value="fractional">Fractional</option>
+          <option value="scientific">Scientific</option>
+        </select>
+      </div>
+      <div>
+        <label class="un-lbl">Precision:</label>
+        <select class="un-sel" id="un-len-prec" onchange="unUpdateSample()">
+          <option value="0">0</option>
+          <option value="1">0.0</option>
+          <option value="2">0.00</option>
+          <option value="3">0.000</option>
+          <option value="4" selected>0.0000</option>
+          <option value="5">0.00000</option>
+          <option value="6">0.000000</option>
+          <option value="7">0.0000000</option>
+          <option value="8">0.00000000</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Coluna: Angle -->
+    <div class="un-col">
+      <div class="un-section">Angle</div>
+      <div>
+        <label class="un-lbl">Type:</label>
+        <select class="un-sel" id="un-ang-type" onchange="unUpdateSample()">
+          <option value="decimal_deg">Decimal degrees</option>
+          <option value="deg_min_sec">Deg/Min/Sec</option>
+          <option value="gradians">Gradians</option>
+          <option value="radians">Radians</option>
+          <option value="surveyor">Surveyor's units</option>
+        </select>
+      </div>
+      <div>
+        <label class="un-lbl">Precision:</label>
+        <select class="un-sel" id="un-ang-prec" onchange="unUpdateSample()">
+          <option value="0" selected>0</option>
+          <option value="1">0.0</option>
+          <option value="2">0.00</option>
+          <option value="3">0.000</option>
+          <option value="4">0.0000</option>
+        </select>
+      </div>
+      <label class="un-check">
+        <input type="checkbox" id="un-clockwise" onchange="unUpdateSample()">
+        Clockwise
+      </label>
+    </div>
+
+    <div class="un-divider"></div>
+
+    <!-- Insertion scale (largura total) -->
+    <div class="un-insert">
+      <div class="un-section">Insertion scale</div>
+      <div style="font-size:9px;color:var(--t2);margin-bottom:5px;">Units to scale inserted content:</div>
+      <select class="un-sel" id="un-insert" style="max-width:200px" onchange="unUpdateSample()">
+        <option value="unitless">Unitless</option>
+        <option value="inches">Inches</option>
+        <option value="feet">Feet</option>
+        <option value="miles">Miles</option>
+        <option value="mm" selected>Millimeters</option>
+        <option value="cm">Centimeters</option>
+        <option value="m">Meters</option>
+        <option value="km">Kilometers</option>
+        <option value="microinches">Microinches</option>
+        <option value="mils">Mils</option>
+        <option value="yards">Yards</option>
+        <option value="angstroms">Angstroms</option>
+        <option value="nanometers">Nanometers</option>
+        <option value="microns">Microns</option>
+        <option value="decimeters">Decimeters</option>
+        <option value="dekameters">Dekameters</option>
+        <option value="hectometers">Hectometers</option>
+        <option value="gigameters">Gigameters</option>
+        <option value="au">Astronomical units</option>
+        <option value="ly">Light years</option>
+        <option value="parsecs">Parsecs</option>
+      </select>
+    </div>
+
+    <!-- Sample output -->
+    <div class="un-sample">
+      <span>Sample output</span>
+      <div id="un-sample-len">1.5,2.0039,0</div>
+      <div id="un-sample-ang">3&lt;45,0</div>
+    </div>
+
+  </div>
+  <div class="un-foot">
+    <button class="btn p" onclick="unApply()">OK</button>
+    <button class="btn s" onclick="closeOv('ov-units')">Cancel</button>
+    <button class="btn s" onclick="unDirection()">Direction...</button>
+  </div>
+</div></div>
+
+<!-- LEGEND EDITOR -->
+<div class="ov" id="ov-legend"><div class="modal">
+  <h3>📋 Editor de Legenda</h3>
+  <div class="lg-body">
+    <div class="lg-toolbar">
+      <button class="btn s" style="font-size:10px" onclick="lgAddRow()">＋ Linha</button>
+      <button class="btn s" style="font-size:10px" onclick="lgAddCol()">＋ Coluna</button>
+      <button class="btn s" style="font-size:10px" onclick="lgDelRow()">✕ Linha</button>
+      <button class="btn s" style="font-size:10px" onclick="lgDelCol()">✕ Coluna</button>
+      <span style="margin-left:6px;font-size:9px;color:var(--t2)">Título:</span>
+      <input id="lg-title" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 8px;border-radius:2px;outline:none;width:140px;" value="LEGENDA" oninput="lgPreviewUpdate()">
+      <span style="font-size:9px;color:var(--t2)">Pos:</span>
+      <select id="lg-pos" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 6px;border-radius:2px;outline:none;" onchange="lgPreviewUpdate()">
+        <option value="br">Inferior Direito</option>
+        <option value="bl">Inferior Esquerdo</option>
+        <option value="tr">Superior Direito</option>
+        <option value="tl">Superior Esquerdo</option>
+        <option value="free">Livre</option>
+      </select>
+    </div>
+    <div class="lg-table-wrap" style="padding:8px 12px;">
+      <table id="lg-tbl">
+        <thead id="lg-thead"></thead>
+        <tbody id="lg-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:6px 12px;border-top:1px solid var(--bdr);font-size:9px;color:var(--t2)">
+      Dica: clique nas células para editar. A legenda aparece na folha de impressão.
+    </div>
+  </div>
+  <div class="lg-foot">
+    <button class="btn s" onclick="lgRemove()">Remover legenda</button>
+    <button class="btn s" onclick="closeOv('ov-legend')">Cancelar</button>
+    <button class="btn p" onclick="lgSave()">✔ Inserir / Atualizar</button>
+  </div>
+</div></div>
+
+<!-- LINETYPE MANAGER -->
+<div class="ov" id="ov-linetype"><div class="modal">
+  <h3>⚙ Gerenciador de Tipos de Linha — LINETYPE</h3>
+  <div class="lt-body">
+
+    <!-- Lista principal -->
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="lt-head">
+        <span></span>
+        <span>Nome</span>
+        <span>Aparência</span>
+        <span>Cor</span>
+        <span>Esp.</span>
+      </div>
+      <div class="lt-list" id="lt-list"></div>
+    </div>
+
+    <!-- Painel editor lateral -->
+    <div class="lt-editor">
+      <div class="lt-editor-title" id="lt-ed-title">Selecione um tipo</div>
+      <div class="lt-editor-body">
+        <div class="lt-ef">
+          <label>Nome:</label>
+          <input class="lt-inp" type="text" id="lt-name" maxlength="32" oninput="ltEdChange()">
+        </div>
+        <div class="lt-ef">
+          <label>Tipo de linha:</label>
+          <select class="lt-sel" id="lt-ld" onchange="ltEdChange()">
+            <option value="solid">━━━ Contínua</option>
+            <option value="dashed">╍╍╍ Tracejada</option>
+            <option value="dotted">·····  Pontilhada</option>
+            <option value="center">─ · ─ Centro</option>
+            <option value="phantom">── ·· ── Fantasma</option>
+            <option value="divide">──··── Divide</option>
+            <option value="hidden">- - - Oculta</option>
+            <option value="dashdot">─·─·─ Traço-Ponto</option>
+          </select>
+        </div>
+        <div class="lt-ef">
+          <label>Cor:</label>
+          <input class="lt-inp" type="color" id="lt-col" oninput="ltEdChange()">
+        </div>
+        <div class="lt-ef">
+          <label>Espessura (mm):</label>
+          <select class="lt-sel" id="lt-lw" onchange="ltEdChange()">
+            <option value="0.13">0.13</option>
+            <option value="0.18">0.18</option>
+            <option value="0.25">0.25</option>
+            <option value="0.35">0.35</option>
+            <option value="0.5">0.50</option>
+            <option value="0.7">0.70</option>
+            <option value="1.0">1.00</option>
+            <option value="1.4">1.40</option>
+            <option value="2.0">2.00</option>
+          </select>
+        </div>
+        <div class="lt-ef">
+          <label>Preview:</label>
+          <canvas class="lt-preview-box" id="lt-prev-canvas" width="174" height="28"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lt-foot">
+    <button class="btn s" style="font-size:10px" onclick="ltNew()">＋ Novo</button>
+    <button class="btn s" style="font-size:10px" onclick="ltDelete()">✕ Excluir</button>
+    <button class="btn s" style="font-size:10px" onclick="ltSetCurrent()">★ Usar como padrão</button>
+    <div class="lt-foot-r">
+      <button class="btn s" onclick="closeOv('ov-linetype')">Fechar</button>
+      <button class="btn p" onclick="ltApply()">✔ Aplicar</button>
+    </div>
+  </div>
+</div></div>
+
 <!-- DIMSTYLE DIALOG -->
 <div class="ov" id="ov-dimstyle"><div class="modal">
   <h3>⚙ Gerenciador de Estilos de Cota — DIMSTYLE</h3>
@@ -553,22 +884,60 @@ select.dsp-inp{padding:2px 4px;width:120px;}
       </div>
       <canvas class="dsp-preview" id="dsp-preview" width="460" height="70"></canvas>
 
-      <!-- Pane 0: Linhas (2 colunas) -->
+      <!-- Pane 0: Linhas -->
       <div class="dsp-pane on" id="dsp-pane-0">
+
+        <!-- Coluna esq: Dimension Lines -->
         <div class="dsp-field"><label>Cor da cota:</label>
           <input class="dsp-inp" type="color" id="dsp-col" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Espessura linha (mm):</label>
+        <div class="dsp-field"><label>Espessura (mm):</label>
           <select class="dsp-inp" id="dsp-lw" onchange="dspChange()">
             <option value="0.18">0.18</option><option value="0.25">0.25</option>
             <option value="0.35">0.35</option><option value="0.5">0.50</option>
             <option value="0.7">0.70</option><option value="1">1.00</option>
           </select></div>
-        <div class="dsp-field"><label>Gap extensão (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-gap" value="1" min="0" max="10" step="0.5" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Além da cota (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-beyond" value="1.5" min="0" max="10" step="0.5" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Offset da extensão (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-offset" value="0.5" min="0" max="10" step="0.5" oninput="dspChange()"></div>
+        <div class="dsp-field"><label>Além da linha ext. (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-beyond" value="1.5" min="0" max="20" step="0.25" oninput="dspChange()"></div>
+
+        <!-- Espaçador para alinhar coluna da direita -->
+        <div></div>
+
+        <!-- Separador: Extension Lines Offset From -->
+        <div style="grid-column:1/-1;margin:6px 0 2px;padding:5px 6px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;font-size:9px;color:var(--t2);font-weight:bold;letter-spacing:.4px;">
+          Extension Lines Offset From
+        </div>
+
+        <!-- Origin -->
+        <div class="dsp-field">
+          <label>Origin (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-origin" value="0.625"
+                 min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
+                 title="Distância entre o objeto cotado e o início da linha de extensão">
+        </div>
+
+        <!-- Dimension line -->
+        <div class="dsp-field">
+          <label>Dimension line (mm):</label>
+          <input class="dsp-inp" type="number" id="dsp-ext-dimline" value="1.25"
+                 min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
+                 title="Afastamento da linha de extensão além da linha de cota">
+        </div>
+
+        <!-- Fixed length checkbox (largura total) -->
+        <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:5px;margin-top:2px;">
+          <label style="display:flex;align-items:center;gap:7px;font-size:10px;color:var(--t1);cursor:pointer;">
+            <input type="checkbox" id="dsp-ext-fixed" onchange="dspChange();dspExtToggle()"
+                   style="accent-color:var(--acc);width:13px;height:13px;cursor:pointer;">
+            Fixed length extension lines
+          </label>
+          <div class="dsp-field" id="dsp-ext-fixed-row" style="opacity:0.35;pointer-events:none;">
+            <label>Length (mm):</label>
+            <input class="dsp-inp" type="number" id="dsp-ext-fixlen" value="1"
+                   min="0.1" max="50" step="0.25" oninput="dspChange()"
+                   title="Comprimento fixo das linhas de extensão">
+          </div>
+        </div>
+
       </div>
 
       <!-- Pane 1: Setas (2 colunas) -->
@@ -754,8 +1123,11 @@ var S = {
   isPan: false, panFrom: null,
   isWin: false, winFrom: null,
   hoverId: null,
-  dimStyles: null,  // inicializado pelo engine
+  dimStyles: null,
   dimCurrent: 'Standard',
+  units: null,    // inicializado pelo engine
+  lineTypes: null, // inicializado pelo engine
+  ltCurrent: 'lt_continuous',
   modes: {
     grid:true, snap:true, ortho:false, polar:true,
     gridSz:10, snapSz:5,
@@ -788,6 +1160,14 @@ window.addEventListener('load', function() {
   loadDemo();
   updLayerUI();
   updLayerSel();
+  // Popular selector de tipos de linha no painel de propriedades
+  function updLTSel(){
+    var sel=document.getElementById('propLT'); if(!sel) return;
+    sel.innerHTML=S.lineTypes.map(function(lt){
+      return '<option value="'+lt.id+'"'+(lt.id===S.ltCurrent?' selected':'')+'>'+lt.name+'</option>';
+    }).join('');
+  }
+  updLTSel();
   log('EduCAD 2D v6 — Modo SELECT ativo. Clique para selecionar. HELP=comandos.','inf');
   log('Novos: TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  AR=Array','inf');
   log('Atalhos: L C R A E PL T D M CO RO MI SC O TR EX F CHA AR  |  F7=Grade F8=Ortho F9=Snap','inf');
@@ -808,34 +1188,36 @@ function s2w(sx,sy){ return {x: (sx-S.vp.x)/S.vp.sc, y: -(sy-S.vp.y)/S.vp.sc}; }
 // ── SNAP ─────────────────────────────────────────────────────
 function doSnap(sx,sy) {
   var raw = s2w(sx,sy);
-  if(!S.modes.snap) return {x:raw.x, y:raw.y, st:null};
-  var tol = 12/S.vp.sc, best=null, bd=tol;
-  function tryP(px,py,st) { var d=Math.hypot(px-raw.x,py-raw.y); if(d<bd){bd=d;best={x:px,y:py,st:st};} }
-  // grid
-  if(S.modes.grid) { var gs=S.modes.snapSz; tryP(Math.round(raw.x/gs)*gs, Math.round(raw.y/gs)*gs,'grid'); }
-  // object snaps
-  for(var i=0;i<S.ents.length;i++) {
-    var e=S.ents[i], ly=getLy(e.ly);
-    if(ly&&!ly.vis) continue;
-    var sps=snapPts(e);
-    for(var j=0;j<sps.length;j++) { var sp=sps[j]; if(S.modes[sp.st]||sp.st==='grid') tryP(sp.x,sp.y,sp.st); }
+  // Snap de objeto e grade: só aplicar se S.modes.snap estiver ativo
+  var best = {x:raw.x, y:raw.y, st:null};
+  if(S.modes.snap){
+    var tol = 12/S.vp.sc, bd=tol;
+    function tryP(px,py,st) { var d=Math.hypot(px-raw.x,py-raw.y); if(d<bd){bd=d;best={x:px,y:py,st:st};} }
+    // snap de grade
+    if(S.modes.grid){ var gs=S.modes.snapSz; tryP(Math.round(raw.x/gs)*gs, Math.round(raw.y/gs)*gs,'grid'); }
+    // snap de objeto
+    for(var i=0;i<S.ents.length;i++){
+      var e=S.ents[i], ly=getLy(e.ly);
+      if(ly&&!ly.vis) continue;
+      var sps=snapPts(e);
+      for(var j=0;j<sps.length;j++){ var sp=sps[j]; if(S.modes[sp.st]||sp.st==='grid') tryP(sp.x,sp.y,sp.st); }
+    }
   }
-  if(!best) best={x:raw.x,y:raw.y,st:null};
-  // ortho constraint
-  if(S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0) {
+  // Ortho: independente do snap — restringe a H ou V a partir do último ponto
+  if(S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
     var ref=S.ds.pts[S.ds.pts.length-1];
-    var dx=Math.abs(best.x-ref.x), dy=Math.abs(best.y-ref.y);
-    if(dx>dy) best={x:best.x,y:ref.y,st:'ortho'}; else best={x:ref.x,y:best.y,st:'ortho'};
+    var adx=Math.abs(best.x-ref.x), ady=Math.abs(best.y-ref.y);
+    best={x:(adx>ady?best.x:ref.x), y:(adx>ady?ref.y:best.y), st:'ortho'};
   }
-  // polar 15°
-  if(S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0) {
+  // Polar 15°: independente do snap — só quando ortho está desativado
+  if(S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
     var ref2=S.ds.pts[S.ds.pts.length-1];
     var ang=Math.atan2(best.y-ref2.y,best.x-ref2.x)*180/Math.PI;
     var snp=Math.round(ang/15)*15;
-    if(Math.abs(ang-snp)<2.5) {
+    if(Math.abs(ang-snp)<2.5){
       var r=Math.hypot(best.x-ref2.x,best.y-ref2.y);
       var rad=snp*Math.PI/180;
-      best={x:ref2.x+r*Math.cos(rad),y:ref2.y+r*Math.sin(rad),st:'polar'};
+      best={x:ref2.x+r*Math.cos(rad), y:ref2.y+r*Math.sin(rad), st:'polar'};
     }
   }
   return best;
@@ -1043,23 +1425,58 @@ function handleClick(pt) {
        O preview completo (linhas, setas, valor) acompanha o cursor
     ─────────────────────────────────────────────────────────────── */
     case 'dim':
+      // ── COTA LINEAR (DIMLINEAR) ─────────────────────────────
+      // Mede a distância horizontal OU vertical conforme posição do cursor
       if(!ds){
         S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
-        logp('DIM: 2º ponto:');
+        logp('DIMLINEAR: 2º ponto (ou Enter para selecionar objeto):');
+      } else if(ds.phase==='p2'){
+        ds.pts.push({x:pt.x,y:pt.y});
+        ds.phase='pos';
+        // Pré-calcular direção H/V com base no cursor atual — será atualizada no hover
+        ds.dimDir=dimLinearDir(ds.pts[0],ds.pts[1],pt);
+        var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
+        log('DIMLINEAR: '+d0.toFixed(2)+'mm — mova para posicionar (H ou V segue o cursor):','ok');
+        logp('DIMLINEAR: clique para confirmar posição:');
+      } else if(ds.phase==='pos'){
+        var p1=ds.pts[0],p2=ds.pts[1];
+        // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
+        // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
+        var dir=ds.dimDir||dimLinearDir(p1,p2,pt);
+        // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
+        var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
+        addE({tp:'dim',subtp:'linear',dimDir:dir,
+              x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
+              px:pt.x,py:pt.y,
+              val:measuredVal.toFixed(2),unit:'mm',
+              col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIMLINEAR: '+measuredVal.toFixed(2)+'mm ('+(dir==='h'?'horizontal':'vertical')+')','ok');
+        S.ds=null; logp('DIMLINEAR: 1º ponto:');
+      }
+      break;
+
+    case 'dimali':
+      // ── COTA ALINHADA (DIMALIGNED) ──────────────────────────
+      // A linha de cota fica paralela ao segmento real, mede comprimento real
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}],phase:'p2'};
+        logp('DIMALIGNED: 2º ponto:');
       } else if(ds.phase==='p2'){
         ds.pts.push({x:pt.x,y:pt.y});
         ds.phase='pos';
         var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
-        log('DIM: '+d0.toFixed(2)+'mm — mova o cursor para posicionar a cota:','ok');
-        logp('DIM: clique para confirmar a posição da cota:');
+        log('DIMALIGNED: '+d0.toFixed(2)+'mm — mova para posicionar:','ok');
+        logp('DIMALIGNED: clique para confirmar posição:');
       } else if(ds.phase==='pos'){
         var p1=ds.pts[0],p2=ds.pts[1];
         var d=Math.hypot(p2.x-p1.x,p2.y-p1.y);
-        addE({tp:'dim',x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
+        addE({tp:'dim',subtp:'aligned',
+              x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,
               px:pt.x,py:pt.y,
-              val:d.toFixed(2),unit:'mm',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
-        log('DIM: '+d.toFixed(2)+'mm','ok');
-        S.ds=null; logp('DIM: 1º ponto:');
+              val:d.toFixed(2),unit:'mm',
+              col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
+        log('DIMALIGNED: '+d.toFixed(2)+'mm','ok');
+        S.ds=null; logp('DIMALIGNED: 1º ponto:');
       }
       break;
 
@@ -1562,7 +1979,17 @@ function applyStyle(ctx,e,sel){
   ctx.shadowBlur=sel?8:0;ctx.shadowColor=sel?'#4d9ef7':'transparent';
 }
 function setDash(ctx,ld){
-  switch(ld){case 'dashed':ctx.setLineDash([8,4]);break;case 'dotted':ctx.setLineDash([2,4]);break;case 'center':ctx.setLineDash([16,4,2,4]);break;default:ctx.setLineDash([]);}
+  var sc=S.vp.sc||1, f=Math.max(0.5,Math.min(3,sc*0.5));
+  switch(ld){
+    case 'dashed':   ctx.setLineDash([10*f,4*f]);break;
+    case 'dotted':   ctx.setLineDash([1.5,4*f]);break;
+    case 'center':   ctx.setLineDash([18*f,4*f,4*f,4*f]);break;
+    case 'phantom':  ctx.setLineDash([18*f,4*f,4*f,4*f,4*f,4*f]);break;
+    case 'divide':   ctx.setLineDash([12*f,3*f,3*f,3*f,3*f,3*f]);break;
+    case 'hidden':   ctx.setLineDash([5*f,4*f]);break;
+    case 'dashdot':  ctx.setLineDash([12*f,3*f,3*f,3*f]);break;
+    default:         ctx.setLineDash([]);
+  }
 }
 
 function drawE(ctx,e,sel){
@@ -1596,25 +2023,93 @@ function drawE(ctx,e,sel){
 }
 function drawH(ctx,sx,sy){ctx.save();ctx.setLineDash([]);ctx.shadowBlur=0;ctx.fillStyle='#4d9ef7';ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.fillRect(sx-4,sy-4,8,8);ctx.strokeRect(sx-4,sy-4,8,8);ctx.restore();}
 function dimLinePoints(e){
-  // Retorna os dois extremos da linha de cota em coordenadas mundo.
-  // Novo formato (px,py): linha de cota passa por (px,py), paralela ao segmento.
-  // Legado (off): off = Y absoluto da linha de cota (cotas horizontais).
+  // Retorna {d1x,d1y,d2x,d2y}: os dois extremos da linha de cota.
+  // e.subtp: 'linear'(default) = cota ortogonal (H ou V)  |  'aligned' = paralela ao segmento
+
   var dx=e.x2-e.x1, dy=e.y2-e.y1, len=Math.hypot(dx,dy);
   if(len<0.001) return null;
-  var ux=dx/len, uy=dy/len;   // unitário paralelo ao segmento
-  var nx=-uy,    ny=ux;        // normal perpendicular (aponta 90° à esq.)
+
+  var aligned=(e.subtp==='aligned');
   var d1x,d1y,d2x,d2y;
-  if(e.px!==undefined && e.py!==undefined){
-    // dot = projeção de (px,py) sobre a normal partindo de p1
-    var dot=(e.px-e.x1)*nx+(e.py-e.y1)*ny;
-    d1x=e.x1+nx*dot; d1y=e.y1+ny*dot;
-    d2x=e.x2+nx*dot; d2y=e.y2+ny*dot;
+
+  if(aligned){
+    // ── COTA ALINHADA ──────────────────────────────────────────
+    // Linha de cota paralela ao segmento p1-p2.
+    var ux=dx/len, uy=dy/len;
+    var nx=-uy, ny=ux;                      // normal perpendicular
+
+    if(e.px!==undefined && e.py!==undefined){
+      var dot=(e.px-e.x1)*nx+(e.py-e.y1)*ny;
+      d1x=e.x1+nx*dot; d1y=e.y1+ny*dot;
+      d2x=e.x2+nx*dot; d2y=e.y2+ny*dot;
+    } else {
+      // legado
+      var midY=(e.y1+e.y2)/2;
+      var dot2=ny!==0?(e.off-midY)/ny:0;
+      d1x=e.x1+nx*dot2; d1y=e.y1+ny*dot2;
+      d2x=e.x2+nx*dot2; d2y=e.y2+ny*dot2;
+    }
   } else {
-    // Legado: off é a coordenada Y da linha de cota
-    d1x=e.x1; d1y=e.off;
-    d2x=e.x2; d2y=e.off;
+    // ── COTA LINEAR (ORTOGONAL) ────────────────────────────────
+    // A linha de cota é sempre H ou V, escolhida pelo lado para o qual o
+    // cursor foi deslocado. Se o cursor está mais afastado verticalmente
+    // do segmento → cota horizontal (mede ΔX); afastado horiz → mede ΔY.
+    // O comportamento espelha o DIMLINEAR do AutoCAD.
+    if(e.px!==undefined && e.py!==undefined){
+      // Determinar modo H ou V guardado em e.dimDir ('h' ou 'v')
+      var horizontal=(e.dimDir==='h');
+      if(horizontal){
+        // Linha de cota é horizontal em y=py; projeta p1.x e p2.x sobre ela
+        d1x=e.x1; d1y=e.py;
+        d2x=e.x2; d2y=e.py;
+      } else {
+        // Linha de cota é vertical em x=px; projeta p1.y e p2.y sobre ela
+        d1x=e.px; d1y=e.y1;
+        d2x=e.px; d2y=e.y2;
+      }
+    } else {
+      // legado (off = Y da linha)
+      d1x=e.x1; d1y=e.off;
+      d2x=e.x2; d2y=e.off;
+    }
   }
   return {d1x:d1x,d1y:d1y,d2x:d2x,d2y:d2y};
+}
+
+// Decide H ou V para cota linear com base na posição do cursor.
+// Critério AutoCAD: o cursor é projetado perpendicularmente nas duas
+// retas de cota possíveis (horizontal passando pelos pontos, vertical
+// passando pelos pontos). A que tiver menor distância à projeção vence.
+//
+// Simplificado: a cota H coloca a linha em y=cursor.y — a distância do
+// cursor à linha de cota H é |cursor.y - clampado_entre_y1_y2|.
+// A cota V coloca a linha em x=cursor.x — distância é |cursor.x - clampado_entre_x1_x2|.
+// Quando o cursor está fora do intervalo (afastado), essa distância cresce
+// linearmente → a que ficar menor indica para onde o usuário quer empurrar a cota.
+function dimLinearDir(p1,p2,cursor){
+  // Bounding box do segmento
+  var minX=Math.min(p1.x,p2.x), maxX=Math.max(p1.x,p2.x);
+  var minY=Math.min(p1.y,p2.y), maxY=Math.max(p1.y,p2.y);
+
+  // Distância do cursor à faixa horizontal dos pontos (para cota V)
+  var clampedY=Math.max(minY,Math.min(maxY,cursor.y));
+  var distToV=Math.abs(cursor.y-clampedY);   // 0 se cursor entre y1 e y2
+
+  // Distância do cursor à faixa vertical dos pontos (para cota H)
+  var clampedX=Math.max(minX,Math.min(maxX,cursor.x));
+  var distToH=Math.abs(cursor.x-clampedX);   // 0 se cursor entre x1 e x2
+
+  // O cursor está mais afastado verticalmente → cota H (linha de cota horizontal)
+  // O cursor está mais afastado horizontalmente → cota V (linha de cota vertical)
+  var absOffH=Math.abs(cursor.y-(p1.y+p2.y)/2);  // quanto saiu do centro em Y
+  var absOffV=Math.abs(cursor.x-(p1.x+p2.x)/2);  // quanto saiu do centro em X
+
+  // Desempate: usa inclinação do segmento
+  if(absOffH===absOffV){
+    var dx=p2.x-p1.x, dy=p2.y-p1.y;
+    return Math.abs(dx)>=Math.abs(dy)?'h':'v';
+  }
+  return absOffH>=absOffV?'h':'v';
 }
 
 function drawDim(ctx,e){
@@ -1633,13 +2128,40 @@ function drawDim(ctx,e){
   var sp1=w2s(e.x1,e.y1),sp2=w2s(e.x2,e.y2);
   var sd1=w2s(d1x,d1y),  sd2=w2s(d2x,d2y);
 
-  // Extensões com gap e beyond em pixels
-  var GAP=(st.extOffset||0.5)*sc*ds*0.1, EXT=(st.extBeyond||1.5)*sc*ds*0.1;
+  // ── Linhas de extensão ──────────────────────────────────────────────────────
+  // Modo normal: começam no objeto (com gap de origem) e terminam além da linha de cota.
+  // Modo Fixed Length (AutoCAD): comprimento fixo medido A PARTIR DA LINHA DE COTA
+  //   para o lado do objeto. A linha tem sempre o mesmo tamanho, independente de onde
+  //   o objeto está. Termina além da linha de cota com o 'beyond' padrão.
+  var EXT_BEYOND=(st.extDimline!==undefined?st.extDimline:st.extBeyond||1.5)*sc*ds*0.1;
+
   function drawExt(ox,oy,tx,ty){
-    var dx=tx-ox,dy=ty-oy,el=Math.hypot(dx,dy);
+    // (ox,oy) = ponto no objeto cotado (sp1 ou sp2)
+    // (tx,ty) = ponto correspondente na linha de cota (sd1 ou sd2)
+    var dx=tx-ox, dy=ty-oy, el=Math.hypot(dx,dy);
     if(el<0.5) return;
-    var ux=dx/el,uy=dy/el;
-    ctx.beginPath();ctx.moveTo(ox+ux*GAP,oy+uy*GAP);ctx.lineTo(tx+ux*EXT,ty+uy*EXT);ctx.stroke();
+    var ux=dx/el, uy=dy/el; // unitário da extensão (objeto → linha de cota)
+
+    var startX, startY, endX, endY;
+
+    if(st.extFixed){
+      // Fixed Length: a extensão começa a fixLen acima da linha de cota
+      // (na direção do objeto) e termina EXT_BEYOND além da linha de cota.
+      var fixPx=(st.extFixLen||1)*sc*ds*0.1;
+      // Ponto de início: recua fixPx a partir da linha de cota na direção do objeto
+      startX=tx-ux*fixPx;  startY=ty-uy*fixPx;
+      // Ponto de fim: avança EXT_BEYOND além da linha de cota
+      endX=tx+ux*EXT_BEYOND; endY=ty+uy*EXT_BEYOND;
+    } else {
+      // Normal: gap de origem + vai até além da linha de cota
+      var GAP=(st.extOrigin!==undefined?st.extOrigin:st.extOffset||0.5)*sc*ds*0.1;
+      // Início: avança GAP a partir do objeto
+      startX=ox+ux*GAP;  startY=oy+uy*GAP;
+      // Fim: avança EXT_BEYOND além da linha de cota
+      endX=tx+ux*EXT_BEYOND; endY=ty+uy*EXT_BEYOND;
+    }
+
+    ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(endX,endY);ctx.stroke();
   }
   drawExt(sp1.x,sp1.y,sd1.x,sd1.y);
   drawExt(sp2.x,sp2.y,sd2.x,sd2.y);
@@ -1773,7 +2295,7 @@ function drawPreview(ctx){
       break;
     case 'dim':
       if(ds&&ds.phase==='p2'&&ds.pts){
-        // Linha de preview do 1º ao cursor
+        // Fase p2: linha de preview do 1º ao cursor
         var sp1=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
         ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
         ctx.beginPath();ctx.moveTo(sp1.x,sp1.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
@@ -1782,9 +2304,27 @@ function drawPreview(ctx){
         var ld=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y);
         ctx.font='10px Consolas';ctx.fillText(ld.toFixed(2)+'mm',spc.x+8,spc.y-6);
       } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
-        // Preview COMPLETO: extensões + linha de cota + setas + valor
+        // Fase pos: preview COMPLETO com cota linear ortogonal (H ou V)
         var p1=ds.pts[0],p2=ds.pts[1];
-        drawDimPreview(ctx,p1,p2,hp);
+        // Atualizar direção em tempo real conforme cursor
+        ds.dimDir=dimLinearDir(p1,p2,hp);
+        drawDimLinearPreview(ctx,p1,p2,hp,ds.dimDir);
+      }
+      break;
+
+    case 'dimali':
+      if(ds&&ds.phase==='p2'&&ds.pts){
+        var sp1=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#4ec87a';ctx.lineWidth=.8;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();ctx.moveTo(sp1.x,sp1.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        ctx.fillStyle='#4ec87a';ctx.beginPath();ctx.arc(sp1.x,sp1.y,3,0,Math.PI*2);ctx.fill();
+        var ld=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y);
+        ctx.font='10px Consolas';ctx.fillText(ld.toFixed(2)+'mm',spc.x+8,spc.y-6);
+      } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
+        // Cota alinhada: preview paralela ao segmento
+        var p1=ds.pts[0],p2=ds.pts[1];
+        drawDimPreview(ctx,p1,p2,hp,'#4ec87a');
       }
       break;
     case 'dimr':case 'dimd':
@@ -2139,7 +2679,7 @@ function onMM(e){
   if(S.isPan){S.vp.x+=p.sx-S.panFrom.x;S.vp.y+=p.sy-S.panFrom.y;S.panFrom={x:p.sx,y:p.sy};renderAll();return;}
   // Na fase de posicionamento de cotas, usar posição raw
   var isDimPos=(S.ds&&S.ds.phase==='pos')&&
-    (S.tool==='dim'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
+    (S.tool==='dim'||S.tool==='dimali'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
   if(isDimPos){
     var rawDim=s2w(p.sx,p.sy);
     S.hover={x:rawDim.x,y:rawDim.y,st:null};
@@ -2183,10 +2723,16 @@ function onMD(e){
   var p=ev2xy(e);
   if(e.button===1||(e.button===0&&S.tool==='pan')){S.isPan=true;S.panFrom={x:p.sx,y:p.sy};return;}
   if(e.button!==0) return;
-  // Na fase de posicionamento de cotas, usar posição raw sem object snap
+  // Na fase de posicionamento de cotas, usar S.hover (já é raw, sem snap de objeto)
+  // Isso garante que o clique confirma EXATAMENTE o preview visível.
   var dimPosFase=(S.ds&&S.ds.phase==='pos')&&
-    (S.tool==='dim'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
-  var pt=dimPosFase?s2w(p.sx,p.sy):doSnap(p.sx,p.sy);
+    (S.tool==='dim'||S.tool==='dimali'||S.tool==='dimr'||S.tool==='dimd'||S.tool==='dima');
+  var pt;
+  if(dimPosFase && S.hover){
+    pt=S.hover;  // usar posição do preview — sem snap, sem atração
+  } else {
+    pt=doSnap(p.sx,p.sy);
+  }
 
   // Offset fases pick e side: clique direto no canvas, independente do foco
   if(S.tool==='offset'&&S.ds&&(S.ds.phase==='pick'||S.ds.phase==='side')){
@@ -2559,7 +3105,9 @@ function onCmdKey(e){
     'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','R':'rectangle','RECT':'rectangle',
     'A':'arc','ARC':'arc','E':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
     'PL':'polyline','POLYLINE':'polyline','H':'hatch','HATCH':'hatch',
-    'D':'dim','DIM':'dim','DR':'dimr','DD':'dimd','DA':'dima',
+    'D':'dim','DIM':'dim','DLI':'dim','DIMLINEAR':'dim',
+    'DAL':'dimali','DIMALIGNED':'dimali',
+    'DR':'dimr','DD':'dimd','DA':'dima',
     'M':'move','MOVE':'move','CO':'copy','COPY':'copy',
     'RO':'rotate','ROTATE':'rotate','SC':'scale','SCALE':'scale',
     'MI':'mirror','MIRROR':'mirror','O':'offset','OFFSET':'offset',
@@ -2567,6 +3115,8 @@ function onCmdKey(e){
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
     'DDIM':'ddim','DIMSTYLE':'ddim',
+    'UN':'units','UNITS':'units','DDUNITS':'units',
+    'LT':'linetype','LINETYPE':'linetype','LTYPE':'linetype',
     'AR':'array','ARRAY':'array',
     'P':'pan','PAN':'pan','S':'select','SELECT':'select',
     'U':'undo','UNDO':'undo','REDO':'redo',
@@ -2581,13 +3131,15 @@ function onCmdKey(e){
   if(!act){log('Comando desconhecido: '+v+'. HELP para lista.','er');return;}
   switch(act){
     case 'line':case 'circle':case 'rectangle':case 'arc':case 'ellipse':
-    case 'text':case 'polyline':case 'hatch':case 'dim':case 'dimr':case 'dimd':case 'dima':
+    case 'text':case 'polyline':case 'hatch':case 'dim':case 'dimali':case 'dimr':case 'dimd':case 'dima':
     case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':
     case 'trim':case 'extend':case 'fillet':case 'chamfer':
       setTool(act);break;
     case 'polygon':startPolygon();break;
     case 'array':showArrayDlg();break;
     case 'ddim':showDimStyle();break;
+    case 'linetype':showLineType();break;
+    case 'units':showUnits();break;
     case 'pan':setTool('pan');break;
     case 'select':setTool('select');break;
     case 'undo':undo();break;
@@ -2605,6 +3157,7 @@ function onCmdKey(e){
     case 'help':
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL T H POL (Linha Circ Rect Arco Elipse PL Texto Hach Polígono)','inf');
+      log('CONFIG: UN=Unidades  DDIM=DimStyle  LAYER/LA=Camadas','inf');
       log('DIM:  D DR DD DA (Linear Raio Diâm Ângulo)','inf');
       log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
       log('  M=Mover CO=Copiar RO=Rotar SC=Escalar MI=Espelhar O=Offset','inf');
@@ -2780,7 +3333,7 @@ function diShouldShow(){
   if(t==='select'||t==='pan') return false;
   // Ferramentas de desenho com entrada de ponto
   if(t==='line'||t==='polyline'||t==='rectangle'||t==='circle'||
-     t==='arc'||t==='ellipse'||t==='text'||t==='hatch'||t==='polygon') return true;
+     t==='arc'||t==='ellipse'||t==='text'||t==='hatch'||t==='polygon'||t==='dimali') return true;
   // Comandos de edição quando esperam ponto base ou destino
   if(t==='move'&&S.ds&&S.ds.pts) return true;
   if(t==='copy'&&S.ds&&S.ds.phase==='dest') return true;
@@ -2902,7 +3455,7 @@ function setTool(tool){
   document.getElementById('stool').textContent=tool.toUpperCase();
   S.wrap.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
   // Offset usa cursor quadrado customizado quando fase pick está ativa — atualizado dinamicamente em onMM
-  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIM: 1° ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM: clique na borda de corte (Enter=todos, Enter novamente=cortar):',extend:'EXTEND: clique na borda limite (Enter=concluir, depois clique objeto):',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
+  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIMLINEAR: 1º ponto:',dimali:'DIMALIGNED: 1º ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM: clique na borda de corte (Enter=todos, Enter novamente=cortar):',extend:'EXTEND: clique na borda limite (Enter=concluir, depois clique objeto):',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
   logp(prmpts[tool]||tool);
   // Offset: focar cmd input imediatamente
   if(tool==='offset'){
@@ -3075,14 +3628,78 @@ function dimCalcOff(p1,p2,cursor){
   return {ox:midX,oy:midY,dot:dot};
 }
 
-// Desenha preview da cota usando EXATAMENTE a mesma lógica de dimLinePoints
-function drawDimPreview(ctx,p1,p2,cursor){
+// Preview cota LINEAR ortogonal (H ou V)
+function drawDimLinearPreview(ctx,p1,p2,cursor,col){
+  col=col||'#f0c040';
+  var dir=dimLinearDir(p1,p2,cursor);
+  // Construir as coordenadas da linha de cota ortogonal
+  var d1x,d1y,d2x,d2y,measuredVal;
+  if(dir==='h'){
+    // Linha de cota horizontal em y=cursor.y
+    d1x=p1.x; d1y=cursor.y;
+    d2x=p2.x; d2y=cursor.y;
+    measuredVal=Math.abs(p2.x-p1.x);
+  } else {
+    // Linha de cota vertical em x=cursor.x
+    d1x=cursor.x; d1y=p1.y;
+    d2x=cursor.x; d2y=p2.y;
+    measuredVal=Math.abs(p2.y-p1.y);
+  }
+
+  ctx.save();
+  ctx.strokeStyle=col;ctx.fillStyle=col;
+  ctx.lineWidth=0.8;ctx.setLineDash([]);ctx.globalAlpha=0.9;ctx.shadowBlur=0;
+
+  var sp1=w2s(p1.x,p1.y), sp2=w2s(p2.x,p2.y);
+  var sd1=w2s(d1x,d1y),   sd2=w2s(d2x,d2y);
+
+  // Extensões
+  var GAP=2, EXT=4;
+  function ext(ox,oy,tx,ty){
+    var ex2=tx-ox,ey2=ty-oy,el=Math.hypot(ex2,ey2);
+    if(el<0.5) return;
+    var eux=ex2/el,euy=ey2/el;
+    ctx.beginPath();ctx.moveTo(ox+eux*GAP,oy+euy*GAP);ctx.lineTo(tx+eux*EXT,ty+euy*EXT);ctx.stroke();
+  }
+  ext(sp1.x,sp1.y,sd1.x,sd1.y);
+  ext(sp2.x,sp2.y,sd2.x,sd2.y);
+
+  // Linha de cota
+  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
+
+  // Setas
+  var AW=7,AH=3,da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
+  function arr(px,py,a){
+    ctx.beginPath();ctx.moveTo(px,py);
+    ctx.lineTo(px-AW*Math.cos(a)+AH*Math.sin(a),py-AW*Math.sin(a)-AH*Math.cos(a));
+    ctx.lineTo(px-AW*Math.cos(a)-AH*Math.sin(a),py-AW*Math.sin(a)+AH*Math.cos(a));
+    ctx.closePath();ctx.fill();
+  }
+  arr(sd1.x,sd1.y,da+Math.PI);
+  arr(sd2.x,sd2.y,da);
+
+  // Valor + indicador H/V
+  var val=measuredVal.toFixed(2)+'mm';
+  var dirLbl=dir==='h'?' [H]':' [V]';
+  var mx=(sd1.x+sd2.x)/2, my=(sd1.y+sd2.y)/2;
+  var ta=da; if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
+  ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
+  ctx.font='bold 10px Consolas,monospace';ctx.textAlign='center';
+  var tw=ctx.measureText(val+dirLbl).width;
+  ctx.fillStyle='rgba(6,10,24,0.88)';ctx.fillRect(-tw/2-3,-14,tw+6,14);
+  ctx.fillStyle=col;ctx.fillText(val+dirLbl,0,-3);
+  ctx.restore();
+
+  ctx.restore();
+}
+
+// Preview cota ALINHADA (paralela ao segmento) — aceita cor opcional
+function drawDimPreview(ctx,p1,p2,cursor,col){
+  col=col||'#f0c040';
   // Reutilizar dimLinePoints passando um objeto temporário com px,py = cursor
-  var tmp={x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:cursor.x,py:cursor.y};
+  var tmp={x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:cursor.x,py:cursor.y,subtp:'aligned'};
   var g=dimLinePoints(tmp); if(!g) return;
   var d1x=g.d1x,d1y=g.d1y,d2x=g.d2x,d2y=g.d2y;
-
-  var col='#f0c040';
   ctx.save();
   ctx.strokeStyle=col;ctx.fillStyle=col;
   ctx.lineWidth=0.8;ctx.setLineDash([]);ctx.globalAlpha=0.9;ctx.shadowBlur=0;
@@ -3853,7 +4470,9 @@ function confirmFillet(){
 var DS_DEFAULT = {
   name:'Standard',
   col:'#f0c040', lw:0.5,
-  extGap:1, extBeyond:1.5, extOffset:0.5,
+  extBeyond:1.5,
+  extOrigin:0.625, extDimline:1.25,
+  extFixed:false, extFixLen:1,
   arrowType:'filled', arrowSize:2.5,
   centerMark:'none', centerSize:2,
   font:'Consolas,monospace', txtH:2.5, txtCol:'#f0c040',
@@ -3906,9 +4525,12 @@ function dspLoadFields(name){
   var st=dspGetStyle(name)||DS_DEFAULT;
   document.getElementById('dsp-col').value=st.col;
   document.getElementById('dsp-lw').value=st.lw;
-  document.getElementById('dsp-ext-gap').value=st.extGap;
-  document.getElementById('dsp-ext-beyond').value=st.extBeyond;
-  document.getElementById('dsp-ext-offset').value=st.extOffset;
+  document.getElementById('dsp-ext-beyond').value=st.extBeyond!==undefined?st.extBeyond:1.5;
+  document.getElementById('dsp-ext-origin').value=st.extOrigin!==undefined?st.extOrigin:0.625;
+  document.getElementById('dsp-ext-dimline').value=st.extDimline!==undefined?st.extDimline:1.25;
+  document.getElementById('dsp-ext-fixed').checked=!!st.extFixed;
+  document.getElementById('dsp-ext-fixlen').value=st.extFixLen!==undefined?st.extFixLen:1;
+  dspExtToggle();
   document.getElementById('dsp-arrow-type').value=st.arrowType;
   document.getElementById('dsp-arrow-size').value=st.arrowSize;
   document.getElementById('dsp-center-mark').value=st.centerMark;
@@ -3931,9 +4553,11 @@ function dspReadFields(){
   return {
     col:document.getElementById('dsp-col').value,
     lw:parseFloat(document.getElementById('dsp-lw').value),
-    extGap:parseFloat(document.getElementById('dsp-ext-gap').value),
-    extBeyond:parseFloat(document.getElementById('dsp-ext-beyond').value),
-    extOffset:parseFloat(document.getElementById('dsp-ext-offset').value),
+    extBeyond:parseFloat(document.getElementById('dsp-ext-beyond').value)||1.5,
+    extOrigin:parseFloat(document.getElementById('dsp-ext-origin').value)||0,
+    extDimline:parseFloat(document.getElementById('dsp-ext-dimline').value)||0,
+    extFixed:document.getElementById('dsp-ext-fixed').checked,
+    extFixLen:parseFloat(document.getElementById('dsp-ext-fixlen').value)||1,
     arrowType:document.getElementById('dsp-arrow-type').value,
     arrowSize:parseFloat(document.getElementById('dsp-arrow-size').value),
     centerMark:document.getElementById('dsp-center-mark').value,
@@ -3951,6 +4575,21 @@ function dspReadFields(){
     suffix:document.getElementById('dsp-suffix').value,
     dimscale:parseFloat(document.getElementById('dsp-dimscale').value)||1
   };
+}
+
+// Habilita/desabilita campos Origin e Dimension line conforme Fixed length
+function dspExtToggle(){
+  var fixed=document.getElementById('dsp-ext-fixed').checked;
+  var row=document.getElementById('dsp-ext-fixed-row');
+  var origin=document.getElementById('dsp-ext-origin');
+  var dimline=document.getElementById('dsp-ext-dimline');
+  // Fixed ativado: Length habilitado, Origin e Dimension line desabilitados
+  row.style.opacity=fixed?'1':'0.35';
+  row.style.pointerEvents=fixed?'auto':'none';
+  origin.disabled=fixed;
+  dimline.disabled=fixed;
+  origin.style.opacity=fixed?'0.4':'1';
+  dimline.style.opacity=fixed?'0.4':'1';
 }
 
 function dspChange(){
@@ -4047,7 +4686,7 @@ function dspDrawPreview(){
   ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.stroke();
 
   // Extensões
-  var gap=st.extGap*sc*ds, beyond=st.extBeyond*sc*ds;
+  var beyond_px=(st.extDimline!==undefined?st.extDimline:st.extBeyond||1.5)*sc*ds;
   var dir=dimY<y?-1:1; // direção das extensões
   ctx.strokeStyle=st.col;ctx.lineWidth=st.lw*sc;ctx.setLineDash([]);
   [[x1,y,x1,dimY],[x2,y,x2,dimY]].forEach(function(pts){
@@ -4055,7 +4694,17 @@ function dspDrawPreview(){
     var dx=tx-ox,dy=ty-oy,l=Math.hypot(dx,dy);
     if(l<1) return;
     var ux=dx/l,uy=dy/l;
-    ctx.beginPath();ctx.moveTo(ox+ux*gap,oy+uy*gap);ctx.lineTo(tx+ux*beyond,ty+uy*beyond);ctx.stroke();
+    var sx2,sy2,ex2,ey2;
+    if(st.extFixed){
+      var fixPx2=(st.extFixLen||1)*sc*ds;
+      sx2=tx-ux*fixPx2; sy2=ty-uy*fixPx2;
+      ex2=tx+ux*beyond_px; ey2=ty+uy*beyond_px;
+    } else {
+      var gap2=(st.extOrigin!==undefined?st.extOrigin:st.extGap||1)*sc*ds;
+      sx2=ox+ux*gap2; sy2=oy+uy*gap2;
+      ex2=tx+ux*beyond_px; ey2=ty+uy*beyond_px;
+    }
+    ctx.beginPath();ctx.moveTo(sx2,sy2);ctx.lineTo(ex2,ey2);ctx.stroke();
   });
 
   // Linha de cota
@@ -4114,18 +4763,624 @@ function dimValStr(rawMM, st){
 }
 
 
+
+// ── UNITS ENGINE ─────────────────────────────────────────────────────────────
+// Estado global de unidades do desenho
+if(!S.units) S.units = {
+  lenType:'decimal',   // decimal | engineering | architectural | fractional | scientific
+  lenPrec:4,           // casas decimais
+  angType:'decimal_deg', // decimal_deg | deg_min_sec | gradians | radians | surveyor
+  angPrec:0,
+  clockwise:false,
+  insertScale:'mm'
+};
+
+function showUnits(){
+  var u=S.units;
+  document.getElementById('un-len-type').value = u.lenType;
+  document.getElementById('un-len-prec').value = String(u.lenPrec);
+  document.getElementById('un-ang-type').value = u.angType;
+  document.getElementById('un-ang-prec').value = String(u.angPrec);
+  document.getElementById('un-clockwise').checked = u.clockwise;
+  document.getElementById('un-insert').value = u.insertScale;
+  unUpdateSample();
+  document.getElementById('ov-units').classList.add('show');
+}
+
+function unFormatLen(v){
+  var type=document.getElementById('un-len-type').value;
+  var prec=parseInt(document.getElementById('un-len-prec').value)||0;
+  switch(type){
+    case 'scientific': return v.toExponential(prec);
+    case 'engineering':{
+      // feet + decimal inches
+      var ft=Math.floor(v/304.8), inch=(v-ft*304.8)/25.4;
+      return ft+"'-"+inch.toFixed(prec)+'"';
+    }
+    case 'architectural':{
+      var ft=Math.floor(v/304.8), rem=(v-ft*304.8)/25.4;
+      var inInt=Math.floor(rem), fr=rem-inInt;
+      var denoms=[2,4,8,16,32,64];
+      var den=denoms[Math.min(prec,5)];
+      var num=Math.round(fr*den);
+      var fracStr=num>0?(inInt+' '+num+'/'+den+'"'):(inInt+'"');
+      return ft+"'-"+fracStr;
+    }
+    case 'fractional':{
+      var denoms=[1,2,4,8,16,32,64,128,256];
+      var den=denoms[Math.min(prec,8)];
+      var whole=Math.floor(v), fr=v-whole;
+      var num=Math.round(fr*den);
+      if(num===0) return String(whole);
+      if(num===den) return String(whole+1);
+      return whole+' '+num+'/'+den;
+    }
+    default: return v.toFixed(prec);
+  }
+}
+
+function unFormatAng(deg){
+  var type=document.getElementById('un-ang-type').value;
+  var prec=parseInt(document.getElementById('un-ang-prec').value)||0;
+  var cw=document.getElementById('un-clockwise').checked;
+  if(cw) deg=-deg;
+  deg=((deg%360)+360)%360;
+  switch(type){
+    case 'deg_min_sec':{
+      var d=Math.floor(deg), m=Math.floor((deg-d)*60), s=((deg-d)*60-m)*60;
+      return d+"d"+m+"'"+s.toFixed(prec)+'"';
+    }
+    case 'gradians': return (deg*400/360).toFixed(prec)+'g';
+    case 'radians':  return (deg*Math.PI/180).toFixed(prec)+'r';
+    case 'surveyor':{
+      // N/S dd° mm' ss" E/W
+      var ns=deg<=180?'N':'S', ew=(deg<=90||deg>270)?'E':'W';
+      var sd=deg<=90?deg:deg<=180?180-deg:deg<=270?deg-180:360-deg;
+      var d2=Math.floor(sd),m2=Math.floor((sd-d2)*60),s2=((sd-d2)*60-m2)*60;
+      return ns+' '+d2+"d"+m2+"' "+s2.toFixed(prec)+'" '+ew;
+    }
+    default: return deg.toFixed(prec)+'°';
+  }
+}
+
+function unUpdateSample(){
+  var lenStr = unFormatLen(1.5)+', '+unFormatLen(2.0039)+', '+unFormatLen(0);
+  var angStr = '3&lt;'+unFormatAng(45);
+  document.getElementById('un-sample-len').innerHTML = lenStr;
+  document.getElementById('un-sample-ang').innerHTML = angStr;
+}
+
+function unApply(){
+  S.units.lenType  = document.getElementById('un-len-type').value;
+  S.units.lenPrec  = parseInt(document.getElementById('un-len-prec').value)||0;
+  S.units.angType  = document.getElementById('un-ang-type').value;
+  S.units.angPrec  = parseInt(document.getElementById('un-ang-prec').value)||0;
+  S.units.clockwise= document.getElementById('un-clockwise').checked;
+  S.units.insertScale = document.getElementById('un-insert').value;
+  renderAll();
+  log('Unidades configuradas: '+S.units.lenType+' ('+S.units.lenPrec+' casas) | '+
+      S.units.angType+' | '+S.units.insertScale,'ok');
+  closeOv('ov-units');
+}
+
+function unDirection(){
+  // Diálogo simples de direção de ângulo base
+  var dirs=['East (0°)','North (90°)','West (180°)','South (270°)'];
+  var cur=S.units.angBase||0;
+  var res=prompt('Base angle direction (0=East, 90=North, 180=West, 270=South):',cur);
+  if(res!==null){S.units.angBase=parseFloat(res)||0;log('Direção base do ângulo: '+S.units.angBase+'°','ok');}
+}
+
+// Formatar comprimento respeitando as unidades configuradas (usado em logs e DI)
+function fmtLen(v){
+  if(!S.units) return v.toFixed(2)+'mm';
+  return unFormatLen_val(v, S.units.lenType, S.units.lenPrec);
+}
+function unFormatLen_val(v,type,prec){
+  switch(type){
+    case 'scientific': return v.toExponential(prec);
+    case 'fractional':{
+      var denoms=[1,2,4,8,16,32,64,128,256];
+      var den=denoms[Math.min(prec,8)];
+      var whole=Math.floor(v),fr=v-whole,num=Math.round(fr*den);
+      if(num===0) return String(whole);
+      if(num===den) return String(whole+1);
+      return whole+' '+num+'/'+den;
+    }
+    default: return v.toFixed(prec);
+  }
+}
+
+
+
+// ── LINETYPE ENGINE ──────────────────────────────────────────────────────────
+
+// Padrões de dash para cada tipo de linha (em pixels base)
+var LT_DASH = {
+  solid:    [],
+  dashed:   [10,4],
+  dotted:   [1.5,4],
+  center:   [18,4,4,4],
+  phantom:  [18,4,4,4,4,4],
+  divide:   [18,4,4,4,4,4],
+  hidden:   [5,4],
+  dashdot:  [12,3,3,3],
+};
+
+// Biblioteca de tipos de linha do desenho
+if(!S.lineTypes) S.lineTypes = [
+  {id:'lt_continuous', name:'Continuous',  ld:'solid',   col:'#dce4f5', lw:0.7,  builtin:true},
+  {id:'lt_center',     name:'Center',      ld:'center',  col:'#556688', lw:0.35, builtin:true},
+  {id:'lt_hidden',     name:'Hidden',      ld:'dashed',  col:'#557799', lw:0.35, builtin:true},
+  {id:'lt_phantom',    name:'Phantom',     ld:'phantom', col:'#668866', lw:0.35, builtin:true},
+  {id:'lt_dotted',     name:'Dotted',      ld:'dotted',  col:'#888866', lw:0.25, builtin:true},
+  {id:'lt_dashdot',    name:'Dash Dot',    ld:'dashdot', col:'#887766', lw:0.35, builtin:true},
+];
+if(!S.ltCurrent) S.ltCurrent = 'lt_continuous';
+
+var _ltSel = null; // id do tipo selecionado no manager
+
+function getLT(id){ return S.lineTypes.find(function(t){return t.id===id;})||S.lineTypes[0]; }
+
+function showLineType(){
+  _ltSel = S.ltCurrent;
+  ltRenderList();
+  ltLoadEditor(_ltSel);
+  document.getElementById('ov-linetype').classList.add('show');
+}
+
+// ── Renderizar a lista ────────────────────────────────────────
+function ltRenderList(){
+  var el=document.getElementById('lt-list');
+  el.innerHTML='';
+  S.lineTypes.forEach(function(lt){
+    var row=document.createElement('div');
+    row.className='lt-row'+(lt.id===_ltSel?' active':'')+(lt.id===S.ltCurrent?' current':'');
+    // Preview canvas inline
+    var cvs=document.createElement('canvas');
+    cvs.width=120; cvs.height=18;
+    cvs.style.cssText='display:block;width:120px;height:18px;';
+    ltDrawPreviewCanvas(cvs, lt);
+    // Montar células
+    row.innerHTML=
+      '<span class="lt-cur">'+(lt.id===S.ltCurrent?'★':'')+'</span>'+
+      '<span class="lt-name">'+lt.name+'</span>'+
+      '<span class="lt-prev"></span>'+
+      '<span style="display:flex;align-items:center;gap:3px;"><span class="lt-col-dot" style="background:'+lt.col+'"></span></span>'+
+      '<span class="lt-lw-badge">'+parseFloat(lt.lw).toFixed(2)+'</span>';
+    row.querySelector('.lt-prev').appendChild(cvs);
+    row.addEventListener('click',function(){
+      _ltSel=lt.id; ltRenderList(); ltLoadEditor(lt.id);
+    });
+    el.appendChild(row);
+  });
+}
+
+// ── Preview de linha num canvas ───────────────────────────────
+function ltDrawPreviewCanvas(cvs, lt){
+  var ctx=cvs.getContext('2d');
+  var W=cvs.width, H=cvs.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#08090f'; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle=lt.col;
+  ctx.lineWidth=Math.max(0.5, Math.min(3, (lt.lw||0.7)*1.5));
+  var dash=LT_DASH[lt.ld]||[];
+  ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(6, H/2); ctx.lineTo(W-6, H/2); ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ── Carregar campos do editor ─────────────────────────────────
+function ltLoadEditor(id){
+  var lt=getLT(id);
+  if(!lt){ document.getElementById('lt-ed-title').textContent='Selecione um tipo'; return; }
+  document.getElementById('lt-ed-title').textContent='Editando: '+lt.name;
+  document.getElementById('lt-name').value=lt.name;
+  document.getElementById('lt-ld').value=lt.ld;
+  document.getElementById('lt-col').value=lt.col;
+  document.getElementById('lt-lw').value=String(lt.lw);
+  // Desabilitar nome para builtins
+  document.getElementById('lt-name').disabled=!!lt.builtin;
+  ltDrawPreviewBig();
+}
+
+function ltEdChange(){
+  var lt=getLT(_ltSel); if(!lt) return;
+  // Atualizar o objeto com os valores do editor
+  if(!lt.builtin) lt.name=document.getElementById('lt-name').value.trim()||lt.name;
+  lt.ld  = document.getElementById('lt-ld').value;
+  lt.col = document.getElementById('lt-col').value;
+  lt.lw  = parseFloat(document.getElementById('lt-lw').value)||0.7;
+  ltRenderList();
+  ltDrawPreviewBig();
+  renderAll();
+}
+
+function ltDrawPreviewBig(){
+  var cvs=document.getElementById('lt-prev-canvas'); if(!cvs) return;
+  var lt=getLT(_ltSel); if(!lt) return;
+  cvs.width=174; cvs.height=28;
+  ltDrawPreviewCanvas(cvs, lt);
+}
+
+// ── CRUD ──────────────────────────────────────────────────────
+function ltNew(){
+  var name=prompt('Nome do novo tipo de linha:', 'Tipo '+(S.lineTypes.length+1));
+  if(!name||!name.trim()) return;
+  var id='lt_'+Date.now();
+  S.lineTypes.push({id:id, name:name.trim(), ld:'solid', col:'#dce4f5', lw:0.7, builtin:false});
+  _ltSel=id;
+  ltRenderList(); ltLoadEditor(id);
+}
+
+function ltDelete(){
+  var lt=getLT(_ltSel);
+  if(!lt){ return; }
+  if(lt.builtin){ alert('Tipos de linha padrão não podem ser excluídos.'); return; }
+  if(!confirm('Excluir "'+lt.name+'"?')) return;
+  S.lineTypes=S.lineTypes.filter(function(t){return t.id!==_ltSel;});
+  if(S.ltCurrent===_ltSel) S.ltCurrent=S.lineTypes[0].id;
+  _ltSel=S.ltCurrent;
+  ltRenderList(); ltLoadEditor(_ltSel);
+}
+
+function ltSetCurrent(){
+  if(!_ltSel) return;
+  S.ltCurrent=_ltSel;
+  // Aplicar ao estilo de desenho atual
+  var lt=getLT(_ltSel);
+  S.style.col=lt.col; S.style.lw=lt.lw; S.style.ld=lt.ld;
+  // Atualizar painel de propriedades
+  var el;
+  el=document.getElementById('propCol'); if(el) el.value=lt.col;
+  el=document.getElementById('propLW');  if(el) el.value=String(lt.lw);
+  el=document.getElementById('propLD');  if(el) el.value=lt.ld;
+  ltRenderList();
+  log('Tipo de linha padrão: '+lt.name+' ('+lt.ld+', '+lt.col+', '+lt.lw+'mm)','ok');
+}
+
+function ltApply(){
+  ltEdChange();     // gravar campos atuais
+  ltSetCurrent();   // definir como padrão
+  renderAll();
+  closeOv('ov-linetype');
+  log('Configuração de linha aplicada.','ok');
+}
+
+// ── Aplicar tipo de linha a objeto(s) selecionado(s) ─────────
+function ltApplyToSel(){
+  if(!S.sel.length){ log('Selecione objetos primeiro.','er'); return; }
+  var lt=getLT(_ltSel); if(!lt) return;
+  snapshot();
+  S.sel.forEach(function(id){
+    var e=findE(id); if(!e) return;
+    e.col=lt.col; e.lw=lt.lw; e.ld=lt.ld;
+  });
+  renderAll();
+  log('Tipo "'+lt.name+'" aplicado a '+S.sel.length+' objeto(s).','ok');
+}
+
+// ── setDash atualizado para suportar novos tipos ──────────────
+// (substitui a função existente)
+
+
+function ltQuickApply(id){
+  S.ltCurrent=id;
+  var lt=getLT(id); if(!lt) return;
+  S.style.col=lt.col; S.style.lw=lt.lw; S.style.ld=lt.ld;
+  var el;
+  el=document.getElementById('propCol'); if(el) el.value=lt.col;
+  el=document.getElementById('propLW');  if(el) el.value=String(lt.lw);
+  el=document.getElementById('propLD');  if(el) el.value=lt.ld;
+  log('Tipo de linha: '+lt.name,'ok');
+}
+
+
 // ── MODEL / LAYOUT ───────────────────────────────────────────
 var LY = {
-  active: 'model',   // 'model' | 'layout'
-  pxPerMm: 3.78,     // 96dpi → ~3.78px/mm
-  scale: 0.1,        // escala de impressão
-  paper: {w:297,h:210}, // mm
-  margins: {t:10,r:10,b:10,l:10}, // mm
-  vpX: 0, vpY: 0,    // posição do viewport no layout (mm a partir da margem)
-  vpW: 0, vpH: 0,    // tamanho do viewport (mm)
+  active: 'model',
+  pxPerMm: 3.78,
+  scale: 0.1,
+  paper: {w:297,h:210},
+  margins: {t:10,r:10,b:10,l:10},
+  vpX: 0, vpY: 0, vpW: 0, vpH: 0,
   dragging: false, resizing: false,
   dragOX:0, dragOY:0,
+  viewZoom: 1,    // zoom da visualização (não afeta impressão)
+  isPanning: false, panFrom: null,
+  legend: null,   // dados da legenda
 };
+
+
+// ── LAYOUT ZOOM ──────────────────────────────────────────────────────────────
+// (viewZoom, isPanning, panFrom e legend são inicializados no objeto LY abaixo)
+
+var LY_ZOOM_STEPS = [0.1,0.15,0.2,0.25,0.33,0.5,0.67,0.75,1,1.25,1.5,2,2.5,3,4,5];
+
+function lyApplyZoom(){
+  var sheet = document.getElementById('layoutSheet');
+  var bg    = document.getElementById('layoutBg');
+  if(!sheet||!bg) return;
+  var px = LY.pxPerMm;
+  var z  = LY.viewZoom;
+
+  // Dimensões reais da folha em px (antes do zoom)
+  var sheetW = LY.paper.w * px;
+  var sheetH = LY.paper.h * px;
+
+  // Dimensões visuais após zoom
+  var visW = sheetW * z;
+  var visH = sheetH * z;
+
+  // Padding mínimo ao redor da folha
+  var PAD = 40;
+
+  // Aplicar transform com origin top-left — o posicionamento via margin faz a centralização
+  sheet.style.transformOrigin = 'top left';
+  sheet.style.transform = 'scale('+z+')';
+
+  // A folha ocupa sheetW×sheetH px no fluxo do documento (antes da escala).
+  // O transform:scale não altera o espaço de layout — precisamos compensar
+  // com padding no container para que o scroll abranja a área visual completa.
+  var padH = Math.max(PAD, (bg.clientHeight - visH) / 2);
+  var padW = Math.max(PAD, (bg.clientWidth  - visW) / 2);
+
+  // Usar padding no container em vez de margin na folha — evita o clipping
+  bg.style.paddingTop    = padH + 'px';
+  bg.style.paddingBottom = padH + 'px';
+  bg.style.paddingLeft   = padW + 'px';
+  bg.style.paddingRight  = padW + 'px';
+
+  // Reset margin da folha (o padding do container centraliza)
+  sheet.style.marginLeft = '0';
+  sheet.style.marginTop  = '0';
+
+  // Atualizar label
+  document.getElementById('ly-zoom-pct').textContent = Math.round(z*100)+'%';
+}
+
+function lyZoom(dir){
+  var idx = LY_ZOOM_STEPS.indexOf(LY.viewZoom);
+  if(idx<0) idx = LY_ZOOM_STEPS.findIndex(function(z){return z>=LY.viewZoom;})||8;
+  idx = Math.max(0, Math.min(LY_ZOOM_STEPS.length-1, idx+dir));
+  LY.viewZoom = LY_ZOOM_STEPS[idx];
+  lyApplyZoom();
+}
+
+function lyZoomFit(){
+  var bg = document.getElementById('layoutBg');
+  var px = LY.pxPerMm;
+  var zw = (bg.clientWidth  - 80) / (LY.paper.w * px);
+  var zh = (bg.clientHeight - 80) / (LY.paper.h * px);
+  LY.viewZoom = Math.max(0.1, Math.min(5, Math.min(zw,zh)));
+  // Arredondar para step mais próximo
+  var best = LY_ZOOM_STEPS.reduce(function(a,b){return Math.abs(b-LY.viewZoom)<Math.abs(a-LY.viewZoom)?b:a;});
+  LY.viewZoom = best;
+  lyApplyZoom();
+}
+
+// Zoom com scroll do mouse dentro do layoutBg
+(function(){
+  window.addEventListener('load', function(){
+    var bg = document.getElementById('layoutBg');
+    if(!bg) return;
+
+    bg.addEventListener('wheel', function(e){
+      if(LY.active!=='layout') return;
+      e.preventDefault();
+      lyZoom(e.deltaY<0?1:-1);
+    }, {passive:false});
+
+    // Pan com botão do meio ou arrastar o fundo
+    bg.addEventListener('mousedown', function(e){
+      if(LY.active!=='layout') return;
+      // Só pan no fundo (não na folha ou controles)
+      if(e.target===bg){
+        LY.isPanning=true;
+        LY.panFrom={x:e.clientX, y:e.clientY, sl:bg.scrollLeft, st:bg.scrollTop};
+        bg.classList.add('panning');
+        e.preventDefault();
+      }
+    });
+    document.addEventListener('mousemove', function(e){
+      if(!LY.isPanning) return;
+      var bg2=document.getElementById('layoutBg');
+      var dx=e.clientX-LY.panFrom.x, dy=e.clientY-LY.panFrom.y;
+      bg2.scrollLeft=LY.panFrom.sl-dx;
+      bg2.scrollTop =LY.panFrom.st-dy;
+    });
+    document.addEventListener('mouseup', function(){
+      if(LY.isPanning){
+        LY.isPanning=false;
+        var bg2=document.getElementById('layoutBg');
+        if(bg2) bg2.classList.remove('panning');
+      }
+    });
+  });
+})();
+
+// ── LEGENDA ───────────────────────────────────────────────────────────────────
+// Estado da legenda
+// LY.legend é inicializado no objeto LY acima
+/* LY.legend = {
+  visible: bool,
+  title: string,
+  pos: 'br'|'bl'|'tr'|'tl'|'free',
+  cols: ['Coluna1','Coluna2',...],
+  rows: [['val1','val2',...], ...],
+  freeX: number (mm), freeY: number (mm)  // quando pos=free
+} */
+
+// Dados padrão da legenda
+var LG_DEFAULT = {
+  visible:true, title:'LEGENDA',
+  pos:'br',
+  cols:['Nº','Descrição','Quantidade','Observação'],
+  rows:[
+    ['1','','',''],
+    ['2','','',''],
+    ['3','','',''],
+  ],
+  freeX:10, freeY:10
+};
+
+// ── Editor de legenda ──────────────────────────────────────────
+function showLegendEditor(){
+  if(!LY.legend) LY.legend = JSON.parse(JSON.stringify(LG_DEFAULT));
+  var lg = LY.legend;
+  document.getElementById('lg-title').value = lg.title||'LEGENDA';
+  document.getElementById('lg-pos').value   = lg.pos||'br';
+  lgBuildTable(lg);
+  document.getElementById('ov-legend').classList.add('show');
+}
+
+function lgBuildTable(lg){
+  // Cabeçalho
+  var thead = document.getElementById('lg-thead');
+  thead.innerHTML = '<tr>'+lg.cols.map(function(c,i){
+    return '<th><input value="'+lgEsc(c)+'" oninput="lgColChange('+i+',this.value)" style="font-weight:bold;width:90px;"></th>';
+  }).join('')+'</tr>';
+  // Linhas
+  var tbody = document.getElementById('lg-tbody');
+  tbody.innerHTML = lg.rows.map(function(row,ri){
+    return '<tr>'+lg.cols.map(function(_,ci){
+      var v=row[ci]||'';
+      return '<td><input value="'+lgEsc(v)+'" oninput="lgCellChange('+ri+','+ci+',this.value)" style="width:90px;"></td>';
+    }).join('')+'</tr>';
+  }).join('');
+}
+
+function lgEsc(s){return String(s||'').replace(/"/g,'&quot;');}
+
+function lgColChange(ci,val){
+  if(LY.legend) LY.legend.cols[ci]=val;
+}
+function lgCellChange(ri,ci,val){
+  if(LY.legend) LY.legend.rows[ri][ci]=val;
+}
+
+function lgAddRow(){
+  if(!LY.legend) return;
+  LY.legend.rows.push(LY.legend.cols.map(function(){return '';}));
+  lgBuildTable(LY.legend);
+}
+function lgAddCol(){
+  if(!LY.legend) return;
+  LY.legend.cols.push('Coluna '+(LY.legend.cols.length+1));
+  LY.legend.rows.forEach(function(r){r.push('');});
+  lgBuildTable(LY.legend);
+}
+function lgDelRow(){
+  if(!LY.legend||LY.legend.rows.length<=1) return;
+  LY.legend.rows.pop();
+  lgBuildTable(LY.legend);
+}
+function lgDelCol(){
+  if(!LY.legend||LY.legend.cols.length<=1) return;
+  LY.legend.cols.pop();
+  LY.legend.rows.forEach(function(r){r.pop();});
+  lgBuildTable(LY.legend);
+}
+function lgRemove(){
+  LY.legend=null;
+  layoutRender();
+  closeOv('ov-legend');
+  log('Legenda removida.','ok');
+}
+function lgSave(){
+  if(!LY.legend) LY.legend=JSON.parse(JSON.stringify(LG_DEFAULT));
+  LY.legend.title  = document.getElementById('lg-title').value||'LEGENDA';
+  LY.legend.pos    = document.getElementById('lg-pos').value;
+  LY.legend.visible= true;
+  layoutRender();
+  closeOv('ov-legend');
+  log('Legenda inserida na folha.','ok');
+}
+function lgPreviewUpdate(){ /* sem preview em tempo real — atualiza ao salvar */ }
+
+// ── Desenhar legenda no canvas do layout ──────────────────────
+function layoutDrawLegend(ctx, px){
+  var lg = LY.legend;
+  if(!lg||!lg.visible) return;
+
+  var cols  = lg.cols||[];
+  var rows  = lg.rows||[];
+  var title = lg.title||'LEGENDA';
+  if(!cols.length) return;
+
+  // Dimensões em pixels de canvas (aprox. 20px por coluna + texto)
+  var colW  = 90;    // px por coluna
+  var rowH  = 18;    // px por linha
+  var titleH= 20;    // px do cabeçalho título
+  var tableW= cols.length * colW;
+  var tableH= titleH + rowH + rows.length * rowH; // título + cabeçalho + linhas
+
+  // Posição na folha (em px do canvas)
+  var W=LY.paper.w*px, H=LY.paper.h*px;
+  var ml=LY.margins.l*px, mr=LY.margins.r*px;
+  var mt=LY.margins.t*px, mb=LY.margins.b*px;
+  var pad=4;
+
+  var lx, ly2;
+  switch(lg.pos){
+    case 'br': lx=W-mr-tableW-pad; ly2=H-mb-tableH-pad; break;
+    case 'bl': lx=ml+pad;          ly2=H-mb-tableH-pad; break;
+    case 'tr': lx=W-mr-tableW-pad; ly2=mt+pad;          break;
+    case 'tl': lx=ml+pad;          ly2=mt+pad;           break;
+    default:   lx=(lg.freeX||10)*px; ly2=(lg.freeY||10)*px;
+  }
+
+  ctx.save();
+  ctx.setLineDash([]);
+
+  // Fundo branco
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(lx, ly2, tableW, tableH);
+
+  // Título
+  ctx.fillStyle='#d0d0d0';
+  ctx.fillRect(lx, ly2, tableW, titleH);
+  ctx.strokeStyle='#444';ctx.lineWidth=0.8;
+  ctx.strokeRect(lx, ly2, tableW, titleH);
+  ctx.fillStyle='#000';ctx.font='bold 10px Arial,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(title, lx+tableW/2, ly2+13);
+
+  // Cabeçalho de colunas
+  var hy=ly2+titleH;
+  ctx.fillStyle='#e8e8e8';
+  ctx.fillRect(lx, hy, tableW, rowH);
+  ctx.font='bold 8px Arial,sans-serif';ctx.textAlign='left';
+  cols.forEach(function(c,i){
+    var cx=lx+i*colW;
+    ctx.strokeStyle='#666';ctx.lineWidth=0.6;
+    ctx.strokeRect(cx, hy, colW, rowH);
+    ctx.fillStyle='#000';
+    ctx.fillText(String(c||'').substring(0,12), cx+3, hy+12);
+  });
+
+  // Linhas de dados
+  ctx.font='8px Arial,sans-serif';
+  rows.forEach(function(row,ri){
+    var ry=hy+(ri+1)*rowH;
+    ctx.fillStyle= ri%2===0?'#fff':'#f7f7f7';
+    ctx.fillRect(lx, ry, tableW, rowH);
+    cols.forEach(function(_,ci){
+      var cx=lx+ci*colW;
+      ctx.strokeStyle='#aaa';ctx.lineWidth=0.4;
+      ctx.strokeRect(cx, ry, colW, rowH);
+      ctx.fillStyle='#000';
+      ctx.fillText(String((row[ci]||'')).substring(0,14), cx+3, ry+12);
+    });
+  });
+
+  // Borda externa
+  ctx.strokeStyle='#333';ctx.lineWidth=1.2;
+  ctx.strokeRect(lx, ly2, tableW, tableH);
+
+  ctx.restore();
+}
+
 
 function switchSpace(space){
   LY.active=space;
@@ -4139,6 +5394,7 @@ function switchSpace(space){
     layout.classList.add('active');
     panel.classList.add('show');
     layoutApply();
+    setTimeout(function(){ lyZoomFit(); }, 80);
   } else {
     layout.classList.remove('active');
     model.classList.add('active');
@@ -4175,6 +5431,7 @@ function layoutApply(){
   if(LY.scale===0) layoutFit();
   else layoutRender();
   layoutUpdateInfo();
+  if(typeof lyApplyZoom==='function') lyApplyZoom();
 }
 
 function layoutOrient(){
@@ -4299,6 +5556,9 @@ function layoutRender(){
   // Borda do viewport (linha contínua fina azul)
   ctx.strokeStyle='#4d9ef755';ctx.lineWidth=0.7;ctx.setLineDash([]);
   ctx.strokeRect(vpPxX,vpPxY,vpPxW,vpPxH);
+
+  // Desenhar legenda por cima
+  layoutDrawLegend(ctx, px);
 
   // Atualizar div do viewport para drag/resize
   layoutUpdateVpRect();

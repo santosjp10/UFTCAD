@@ -348,6 +348,8 @@ table#lg-tbl input:focus{background:#1a2a3a;}
         <div class="rb" id="rb-pan"    onclick="setTool('pan')"    title="Pan P / roda mouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>Pan</div>
         <div class="rb" onclick="zoomFit()" title="Zoom Fit Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>Zoom Fit</div>
         <div class="rb" onclick="selAll()" title="Ctrl+A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3,2"/></svg>Sel. Tudo</div>
+        <div class="rb" onclick="setTool('dist')" title="Distância DI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="9" x2="3" y2="15"/><line x1="21" y1="9" x2="21" y2="15"/></svg>Dist</div>
+        <div class="rb" onclick="setTool('area')" title="Área AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 21,9 18,20 6,20 3,9"/></svg>Área</div>
       </div><div class="rglbl">Navegar</div>
     </div>
     <div class="rg">
@@ -360,7 +362,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
         <div class="rb" id="rb-ellipse"   onclick="setTool('ellipse')"   title="Elipse E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>Elipse</div>
         <div class="rb" id="rb-text"      onclick="setTool('text')"      title="Texto T"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Texto</div>
         <div class="rb" id="rb-polygon" onclick="startPolygon()" title="Polígono POL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,8 17,20 7,20 4,8"/></svg>Polígono</div>
-        <div class="rb" id="rb-hatch"       onclick="setTool('hatch')"     title="Hachura"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
+        <div class="rb" id="rb-hatch" onclick="showHatchDlg()" title="Hachura H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
       </div><div class="rglbl">Desenhar</div>
     </div>
     <div class="rg">
@@ -548,7 +550,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
       <div class="tg on" id="tg-polar" onclick="toggleMode('polar')">POLAR</div>
       <div class="tg on" id="tg-end"   onclick="toggleMode('end')">ENDPOINT</div>
       <div class="tg on" id="tg-mid"   onclick="toggleMode('mid')">MIDPOINT</div>
-      <div class="tg"    id="tg-int"   onclick="toggleMode('int')">INTERSECT</div>
+      <div class="tg on" id="tg-int"   onclick="toggleMode('int')">INTERSECT</div>
       <div class="tg on" id="tg-cen"   onclick="toggleMode('cen')">CENTER</div>
     </div>
     <div class="rph">▦ GRADE</div>
@@ -588,7 +590,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <!-- STATUS -->
 <div id="sbar">
-  <span class="stool" id="stool">LINE</span>
+  <span class="stool" id="stool">SELECT</span>
   <span class="ssep"></span>
   <span>Zoom: <span class="sv" id="szoom">100%</span></span>
   <span class="ssep"></span>
@@ -634,19 +636,22 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <h3>Inserir Texto</h3>
   <label>Conteúdo:</label><input id="tv" value="Texto">
   <label>Altura (mm):</label><input id="th" type="number" value="10" min="1">
+  <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer;margin:4px 0 8px">
+    <input type="checkbox" id="twipeout" style="accent-color:var(--acc)"> Fundo branco (Wipeout)
+  </label>
   <div class="mact"><button class="btn s" onclick="closeOv('ov-text')">Cancelar</button><button class="btn p" onclick="confirmText()">OK</button></div>
 </div></div>
 
 <!-- UNITS DIALOG -->
 <div class="ov" id="ov-units"><div class="modal">
-  <h3>Drawing Units</h3>
+  <h3>Unidades do Desenho</h3>
   <div class="un-body">
 
     <!-- Coluna: Length -->
     <div class="un-col">
-      <div class="un-section">Length</div>
+      <div class="un-section">Comprimento</div>
       <div>
-        <label class="un-lbl">Type:</label>
+        <label class="un-lbl">Tipo:</label>
         <select class="un-sel" id="un-len-type" onchange="unUpdateSample()">
           <option value="decimal">Decimal</option>
           <option value="engineering">Engineering</option>
@@ -656,7 +661,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
         </select>
       </div>
       <div>
-        <label class="un-lbl">Precision:</label>
+        <label class="un-lbl">Precisão:</label>
         <select class="un-sel" id="un-len-prec" onchange="unUpdateSample()">
           <option value="0">0</option>
           <option value="1">0.0</option>
@@ -673,19 +678,19 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
     <!-- Coluna: Angle -->
     <div class="un-col">
-      <div class="un-section">Angle</div>
+      <div class="un-section">Ângulo</div>
       <div>
-        <label class="un-lbl">Type:</label>
+        <label class="un-lbl">Tipo:</label>
         <select class="un-sel" id="un-ang-type" onchange="unUpdateSample()">
-          <option value="decimal_deg">Decimal degrees</option>
-          <option value="deg_min_sec">Deg/Min/Sec</option>
-          <option value="gradians">Gradians</option>
-          <option value="radians">Radians</option>
-          <option value="surveyor">Surveyor's units</option>
+          <option value="decimal_deg">Graus decimais</option>
+          <option value="deg_min_sec">Grau/Min/Seg</option>
+          <option value="gradians">Gradianos</option>
+          <option value="radians">Radianos</option>
+          <option value="surveyor">Unidades de agrimensor</option>
         </select>
       </div>
       <div>
-        <label class="un-lbl">Precision:</label>
+        <label class="un-lbl">Precisão:</label>
         <select class="un-sel" id="un-ang-prec" onchange="unUpdateSample()">
           <option value="0" selected>0</option>
           <option value="1">0.0</option>
@@ -702,38 +707,38 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
     <div class="un-divider"></div>
 
-    <!-- Insertion scale (largura total) -->
+    <!-- Escala de inserção (largura total) -->
     <div class="un-insert">
-      <div class="un-section">Insertion scale</div>
-      <div style="font-size:9px;color:var(--t2);margin-bottom:5px;">Units to scale inserted content:</div>
+      <div class="un-section">Escala de inserção</div>
+      <div style="font-size:9px;color:var(--t2);margin-bottom:5px;">Unidades para escalar conteúdo inserido:</div>
       <select class="un-sel" id="un-insert" style="max-width:200px" onchange="unUpdateSample()">
-        <option value="unitless">Unitless</option>
-        <option value="inches">Inches</option>
-        <option value="feet">Feet</option>
-        <option value="miles">Miles</option>
-        <option value="mm" selected>Millimeters</option>
-        <option value="cm">Centimeters</option>
-        <option value="m">Meters</option>
-        <option value="km">Kilometers</option>
-        <option value="microinches">Microinches</option>
+        <option value="unitless">Sem unidade</option>
+        <option value="inches">Polegadas</option>
+        <option value="feet">Pés</option>
+        <option value="miles">Milhas</option>
+        <option value="mm" selected>Milímetros</option>
+        <option value="cm">Centímetros</option>
+        <option value="m">Metros</option>
+        <option value="km">Quilômetros</option>
+        <option value="microinches">Micropolegadas</option>
         <option value="mils">Mils</option>
-        <option value="yards">Yards</option>
-        <option value="angstroms">Angstroms</option>
-        <option value="nanometers">Nanometers</option>
-        <option value="microns">Microns</option>
-        <option value="decimeters">Decimeters</option>
-        <option value="dekameters">Dekameters</option>
-        <option value="hectometers">Hectometers</option>
-        <option value="gigameters">Gigameters</option>
-        <option value="au">Astronomical units</option>
-        <option value="ly">Light years</option>
+        <option value="yards">Jardas</option>
+        <option value="angstroms">Ångströms</option>
+        <option value="nanometers">Nanômetros</option>
+        <option value="microns">Mícrons</option>
+        <option value="decimeters">Decímetros</option>
+        <option value="dekameters">Decâmetros</option>
+        <option value="hectometers">Hectômetros</option>
+        <option value="gigameters">Gigâmetros</option>
+        <option value="au">Unidades astronômicas</option>
+        <option value="ly">Anos-luz</option>
         <option value="parsecs">Parsecs</option>
       </select>
     </div>
 
-    <!-- Sample output -->
+    <!-- Amostra -->
     <div class="un-sample">
-      <span>Sample output</span>
+      <span>Amostra</span>
       <div id="un-sample-len">1.5,2.0039,0</div>
       <div id="un-sample-ang">3&lt;45,0</div>
     </div>
@@ -742,7 +747,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <div class="un-foot">
     <button class="btn p" onclick="unApply()">OK</button>
     <button class="btn s" onclick="closeOv('ov-units')">Cancel</button>
-    <button class="btn s" onclick="unDirection()">Direction...</button>
+    <button class="btn s" onclick="unDirection()">Direção...</button>
   </div>
 </div></div>
 
@@ -902,14 +907,14 @@ table#lg-tbl input:focus{background:#1a2a3a;}
         <!-- Espaçador para alinhar coluna da direita -->
         <div></div>
 
-        <!-- Separador: Extension Lines Offset From -->
+        <!-- Separador: Deslocamento das Linhas de Extensão -->
         <div style="grid-column:1/-1;margin:6px 0 2px;padding:5px 6px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;font-size:9px;color:var(--t2);font-weight:bold;letter-spacing:.4px;">
-          Extension Lines Offset From
+          Deslocamento das Linhas de Extensão
         </div>
 
         <!-- Origin -->
         <div class="dsp-field">
-          <label>Origin (mm):</label>
+          <label>Origem (mm):</label>
           <input class="dsp-inp" type="number" id="dsp-ext-origin" value="0.625"
                  min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
                  title="Distância entre o objeto cotado e o início da linha de extensão">
@@ -917,7 +922,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
         <!-- Dimension line -->
         <div class="dsp-field">
-          <label>Dimension line (mm):</label>
+          <label>Linha de cota (mm):</label>
           <input class="dsp-inp" type="number" id="dsp-ext-dimline" value="1.25"
                  min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
                  title="Afastamento da linha de extensão além da linha de cota">
@@ -928,10 +933,10 @@ table#lg-tbl input:focus{background:#1a2a3a;}
           <label style="display:flex;align-items:center;gap:7px;font-size:10px;color:var(--t1);cursor:pointer;">
             <input type="checkbox" id="dsp-ext-fixed" onchange="dspChange();dspExtToggle()"
                    style="accent-color:var(--acc);width:13px;height:13px;cursor:pointer;">
-            Fixed length extension lines
+            Comprimento fixo das extensões
           </label>
           <div class="dsp-field" id="dsp-ext-fixed-row" style="opacity:0.35;pointer-events:none;">
-            <label>Length (mm):</label>
+            <label>Comprimento (mm):</label>
             <input class="dsp-inp" type="number" id="dsp-ext-fixlen" value="1"
                    min="0.1" max="50" step="0.25" oninput="dspChange()"
                    title="Comprimento fixo das linhas de extensão">
@@ -1086,6 +1091,40 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   </div>
 </div></div>
 
+<!-- HATCH PATTERN DIALOG -->
+<div class="ov" id="ov-hatch"><div class="modal" style="min-width:360px">
+  <h3>Padrão de Hachura — ABNT</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px;">
+    <div style="grid-column:1/-1;font-size:9px;color:var(--t2);margin-bottom:4px;">Selecione o padrão:</div>
+    <select id="hpat-sel" size="9" style="grid-column:1/-1;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px;border-radius:2px;height:180px;" onchange="hpUpdate()">
+      <option value="lines|45|5">Linhas 45° (Genérico)</option>
+      <option value="lines|30|4">Linhas 30°</option>
+      <option value="lines|0|4">Linhas Horizontais</option>
+      <option value="lines|90|4">Linhas Verticais</option>
+      <option value="cross|0|6">Grade / Concreto</option>
+      <option value="cross|45|6">Grade 45° (Pedra)</option>
+      <option value="lines|45|3">Solo Compactado (denso)</option>
+      <option value="dots|0|6">Pontos / Areia</option>
+      <option value="zigzag|0|6">Zigue-Zague / Vegetal</option>
+      <option value="dashed|45|5">Tracejado 45° (Oculto)</option>
+      <option value="lines|45|8">Espaçado (área verde)</option>
+    </select>
+    <div style="grid-column:1/-1;height:1px;background:var(--bdr);margin:4px 0;"></div>
+    <div>
+      <label style="font-size:9px;color:var(--t2);display:block;margin-bottom:3px;">Ângulo (°):</label>
+      <input id="hpat-ang" type="number" value="45" min="0" max="180" style="width:80px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px 6px;border-radius:2px;outline:none;">
+    </div>
+    <div>
+      <label style="font-size:9px;color:var(--t2);display:block;margin-bottom:3px;">Espaçamento (mm):</label>
+      <input id="hpat-sp" type="number" value="5" min="1" max="50" style="width:80px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px 6px;border-radius:2px;outline:none;">
+    </div>
+  </div>
+  <div class="mact">
+    <button class="btn s" onclick="closeOv('ov-hatch')">Cancelar</button>
+    <button class="btn p" onclick="confirmHatch()">OK — Desenhar</button>
+  </div>
+</div></div>
+
 <!-- FILLET DIALOG -->
 <div class="ov" id="ov-fillet"><div class="modal">
   <h3 id="fillet-title">Fillet — Arredondamento</h3>
@@ -1114,6 +1153,7 @@ var S = {
   ],
   curLy: 0,
   style: {col:'#dce4f5', lw:.7, ld:'solid'},
+  hatchPat: {name:'Linhas 45°',ang:45,sp:5,type:'lines'},
   vp: {x:0, y:0, sc:2},  // world→screen: sx = wx*sc + vp.x
   sel: [],
   undos: [], redos: [],
@@ -1123,6 +1163,7 @@ var S = {
   isPan: false, panFrom: null,
   isWin: false, winFrom: null,
   hoverId: null,
+  lastTool: null,  // último comando para repetição (Enter)
   dimStyles: null,
   dimCurrent: 'Standard',
   units: null,    // inicializado pelo engine
@@ -1131,7 +1172,7 @@ var S = {
   modes: {
     grid:true, snap:true, ortho:false, polar:true,
     gridSz:10, snapSz:5,
-    end:true, mid:true, int:false, cen:true,
+    end:true, mid:true, int:true,  cen:true,
     didactic:true, showcoords:false, showangles:false,
   },
   // canvas refs (set in init)
@@ -1231,7 +1272,7 @@ function snapPts(e) {
     case 'arc':   pts.push(cp(e.cx,e.cy),ep(e.cx+e.r*Math.cos(e.sa),e.cy+e.r*Math.sin(e.sa)),ep(e.cx+e.r*Math.cos(e.ea),e.cy+e.r*Math.sin(e.ea))); break;
     case 'rect':  pts.push(ep(e.x,e.y),ep(e.x+e.w,e.y),ep(e.x,e.y+e.h),ep(e.x+e.w,e.y+e.h),mp(e.x+e.w/2,e.y),mp(e.x+e.w/2,e.y+e.h),mp(e.x,e.y+e.h/2),mp(e.x+e.w,e.y+e.h/2),cp(e.x+e.w/2,e.y+e.h/2)); break;
     case 'ell':   pts.push(cp(e.cx,e.cy),ep(e.cx+e.rx,e.cy),ep(e.cx-e.rx,e.cy),ep(e.cx,e.cy+e.ry),ep(e.cx,e.cy-e.ry)); break;
-    case 'pl':
+    case 'spline':case 'pl':
       for(var i=0;i<e.pts.length;i++){pts.push(ep(e.pts[i].x,e.pts[i].y));if(i>0)pts.push(mp((e.pts[i].x+e.pts[i-1].x)/2,(e.pts[i].y+e.pts[i-1].y)/2));}
       break;
   }
@@ -1248,7 +1289,7 @@ function hitEnt(e,wx,wy) {
     case 'arc':  return Math.abs(Math.hypot(wx-e.cx,wy-e.cy)-e.r)<t && arcHas(Math.atan2(wy-e.cy,wx-e.cx),e.sa,e.ea);
     case 'rect': return (wx>=e.x&&wx<=e.x+e.w&&(Math.abs(wy-e.y)<t||Math.abs(wy-e.y-e.h)<t))||(wy>=e.y&&wy<=e.y+e.h&&(Math.abs(wx-e.x)<t||Math.abs(wx-e.x-e.w)<t));
     case 'ell':  var nx=(wx-e.cx)/e.rx,ny=(wy-e.cy)/e.ry; return Math.abs(nx*nx+ny*ny-1)<.2;
-    case 'pl':   for(var i=0;i<e.pts.length-1;i++) if(segD(wx,wy,e.pts[i].x,e.pts[i].y,e.pts[i+1].x,e.pts[i+1].y)<t) return true; return false;
+    case 'pl':case 'spline': for(var i=0;i<e.pts.length-1;i++) if(segD(wx,wy,e.pts[i].x,e.pts[i].y,e.pts[i+1].x,e.pts[i+1].y)<t) return true; return false;
     case 'txt':  return wx>=e.x&&wx<=e.x+e.txt.length*e.h*.6&&wy>=e.y-e.h&&wy<=e.y;
     case 'dim':{var _g=dimLinePoints(e);return _g?segD(wx,wy,_g.d1x,_g.d1y,_g.d2x,_g.d2y)<t:false;}
     case 'dimr': return segD(wx,wy,e.cx,e.cy,e.ex,e.ey)<t;
@@ -1399,12 +1440,25 @@ function handleClick(pt) {
       }
       break;
 
+    case 'spline':
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}]};
+        logp('SPLINE: próximo ponto (Enter=finalizar, mín. 2 pts):');
+      } else {
+        ds.pts.push({x:pt.x,y:pt.y});
+        logp('SPLINE: ponto '+(ds.pts.length)+' (Enter=finalizar):');
+      }
+      break;
+
     case 'hatch':
-      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('Canto oposto:');}
+      if(!ds){S.ds={pts:[{x:pt.x,y:pt.y}]};logp('HATCH: canto oposto:');}
       else{
         var p1=ds.pts[0];
-        addE({tp:'hatch',x:Math.min(p1.x,pt.x),y:Math.min(p1.y,pt.y),w:Math.abs(pt.x-p1.x),h:Math.abs(pt.y-p1.y),ang:45,sp:5});
-        log('Hachura inserida','ok'); S.ds=null;
+        var pat=S.hatchPat||{ang:45,sp:5,type:'lines'};
+        addE({tp:'hatch',x:Math.min(p1.x,pt.x),y:Math.min(p1.y,pt.y),
+              w:Math.abs(pt.x-p1.x),h:Math.abs(pt.y-p1.y),
+              ang:pat.ang,sp:pat.sp,htype:pat.type,col:S.style.col});
+        log('Hachura "'+pat.name+'" inserida','ok'); S.ds=null;
       }
       break;
 
@@ -1539,6 +1593,33 @@ function handleClick(pt) {
         var v2=ds.pts[0],pa=ds.pts[1],pb=ds.pts[2];
         addE({tp:'dima',x1:pa.x,y1:pa.y,vx:v2.x,vy:v2.y,x2:pb.x,y2:pb.y,val:ds.angVal,unit:'°',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
         log('DIMA: '+ds.angVal+'°','ok'); S.ds=null; logp('DIMA: vértice:');
+      }
+      break;
+
+    /* ─── MEASURE TOOLS ─────────────────────── */
+    case 'dist':
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}]};
+        logp('DIST: 2º ponto:');
+      } else {
+        var p1=ds.pts[0],dx=pt.x-p1.x,dy=pt.y-p1.y;
+        var dist=Math.hypot(dx,dy);
+        var ang=((Math.atan2(dy,dx)*180/Math.PI)+360)%360;
+        log('DISTÂNCIA: '+dist.toFixed(4)+'mm  |  ΔX='+Math.abs(dx).toFixed(4)+'mm  ΔY='+Math.abs(dy).toFixed(4)+'mm  ∠='+ang.toFixed(2)+'°','ok');
+        S.ds=null;logp('DIST: 1º ponto:');
+      }
+      break;
+
+    case 'area':
+      if(!ds){
+        S.ds={pts:[{x:pt.x,y:pt.y}]};
+        logp('ÁREA: próximo ponto (Enter=calcular, mín 3 pts):');
+      } else {
+        ds.pts.push({x:pt.x,y:pt.y});
+        if(ds.pts.length>=3)
+          logp('ÁREA: ponto '+ds.pts.length+' (Enter=calcular):');
+        else
+          logp('ÁREA: ponto '+ds.pts.length+' (mais 1 ponto p/ calcular):');
       }
       break;
 
@@ -1793,7 +1874,7 @@ function transl(e,dx,dy){
     case 'line': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy; break;
     case 'circ':case 'arc':case 'ell': e.cx+=dx;e.cy+=dy; break;
     case 'rect':case 'hatch': e.x+=dx;e.y+=dy; break;
-    case 'pl': for(var i=0;i<e.pts.length;i++){e.pts[i].x+=dx;e.pts[i].y+=dy;} break;
+    case 'pl':case 'spline': for(var i=0;i<e.pts.length;i++){e.pts[i].x+=dx;e.pts[i].y+=dy;} break;
     case 'txt': e.x+=dx;e.y+=dy; break;
     case 'dim': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy;if(e.px!==undefined){e.px+=dx;e.py+=dy;}else{e.off+=dy;}break;
     case 'dimr':case 'dimd': e.cx+=dx;e.cy+=dy;e.ex+=dx;e.ey+=dy; break;
@@ -1879,6 +1960,38 @@ function redo(){if(!S.redos.length){log('Nada para refazer.','er');return;}var s
 // ── SELECTION ────────────────────────────────────────────────
 function delSel(){if(!S.sel.length)return;snapshot();var set=S.sel;S.ents=S.ents.filter(function(e){return set.indexOf(e.id)<0;});S.sel=[];log('Apagado.','ok');renderAll();updStatus();updSelInfo();}
 function selAll(){S.sel=S.ents.map(function(e){return e.id;});renderAll();updSelInfo();}
+function finishSpline(){
+  if(!S.ds||!S.ds.pts||S.ds.pts.length<2){S.ds=null;return;}
+  addE({tp:'spline',pts:S.ds.pts.map(function(p){return{x:p.x,y:p.y};})});
+  log('SPLINE: '+S.ds.pts.length+' pontos','ok');
+  S.ds=null;logp('SPLINE: 1º ponto:');
+}
+
+
+function showHatchDlg(){
+  document.getElementById('ov-hatch').classList.add('show');
+}
+function hpUpdate(){
+  var sel=document.getElementById('hpat-sel');
+  var val=sel.value.split('|');
+  document.getElementById('hpat-ang').value=val[1]||45;
+  document.getElementById('hpat-sp').value=val[2]||5;
+}
+function confirmHatch(){
+  var sel=document.getElementById('hpat-sel');
+  var parts=sel.value.split('|');
+  var name=sel.options[sel.selectedIndex].text;
+  S.hatchPat={
+    name:name,
+    type:parts[0]||'lines',
+    ang:parseInt(document.getElementById('hpat-ang').value)||45,
+    sp:parseFloat(document.getElementById('hpat-sp').value)||5
+  };
+  closeOv('ov-hatch');
+  setTool('hatch');
+  logp('HATCH "'+name+'": 1º canto:');
+}
+
 function cancelTool(){
   S.ds=null;S.sel=[];S.isWin=false;S.winFrom=null;
   document.getElementById('cmdinput').removeAttribute('tabindex');
@@ -1919,7 +2032,7 @@ function bbox(e){
     case 'circ':case 'arc': return{x:e.cx-e.r,y:e.cy-e.r,w:e.r*2,h:e.r*2};
     case 'rect':case 'hatch': return{x:e.x,y:e.y,w:e.w,h:e.h};
     case 'ell': return{x:e.cx-e.rx,y:e.cy-e.ry,w:e.rx*2,h:e.ry*2};
-    case 'pl': if(!e.pts.length)return null;var mx=e.pts[0].x,my=e.pts[0].y,Mx=mx,My=my;for(var i=0;i<e.pts.length;i++){mx=Math.min(mx,e.pts[i].x);my=Math.min(my,e.pts[i].y);Mx=Math.max(Mx,e.pts[i].x);My=Math.max(My,e.pts[i].y);}return{x:mx,y:my,w:Mx-mx,h:My-my};
+    case 'spline':case 'pl': if(!e.pts.length)return null;var mx=e.pts[0].x,my=e.pts[0].y,Mx=mx,My=my;for(var i=0;i<e.pts.length;i++){mx=Math.min(mx,e.pts[i].x);my=Math.min(my,e.pts[i].y);Mx=Math.max(Mx,e.pts[i].x);My=Math.max(My,e.pts[i].y);}return{x:mx,y:my,w:Mx-mx,h:My-my};
     default: return null;
   }
 }
@@ -2001,17 +2114,82 @@ function drawE(ctx,e,sel){
     case 'arc':{var c=w2s(e.cx,e.cy);ctx.beginPath();ctx.arc(c.x,c.y,e.r*sc,-e.sa,-e.ea,true);ctx.stroke();if(sel)drawH(ctx,c.x,c.y);break;}
     case 'rect':{var a=w2s(e.x,e.y);ctx.beginPath();ctx.rect(a.x,a.y-e.h*sc,e.w*sc,e.h*sc);ctx.stroke();if(sel){drawH(ctx,a.x,a.y);drawH(ctx,a.x+e.w*sc,a.y);drawH(ctx,a.x,a.y-e.h*sc);drawH(ctx,a.x+e.w*sc,a.y-e.h*sc);}break;}
     case 'ell':{var c=w2s(e.cx,e.cy);ctx.beginPath();ctx.ellipse(c.x,c.y,e.rx*sc,e.ry*sc,0,0,Math.PI*2);ctx.stroke();break;}
+    case 'spline':{
+      if(!e.pts||e.pts.length<2) break;
+      ctx.beginPath();
+      var spts=e.pts;
+      var p0=w2s(spts[0].x,spts[0].y); ctx.moveTo(p0.x,p0.y);
+      for(var i=0;i<spts.length-1;i++){
+        var p0c=w2s(i>0?spts[i-1].x:spts[0].x, i>0?spts[i-1].y:spts[0].y);
+        var p1c=w2s(spts[i].x,spts[i].y);
+        var p2c=w2s(spts[i+1].x,spts[i+1].y);
+        var p3c=w2s(i+2<spts.length?spts[i+2].x:spts[i+1].x, i+2<spts.length?spts[i+2].y:spts[i+1].y);
+        var cp1x=p1c.x+(p2c.x-p0c.x)/6, cp1y=p1c.y+(p2c.y-p0c.y)/6;
+        var cp2x=p2c.x-(p3c.x-p1c.x)/6, cp2y=p2c.y-(p3c.y-p1c.y)/6;
+        ctx.bezierCurveTo(cp1x,cp1y,cp2x,cp2y,p2c.x,p2c.y);
+      }
+      ctx.stroke();
+      if(sel) for(var i=0;i<spts.length;i++){var s=w2s(spts[i].x,spts[i].y);drawH(ctx,s.x,s.y);}
+      break;
+    }
     case 'pl':{if(e.pts.length<2)break;ctx.beginPath();var p0=w2s(e.pts[0].x,e.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<e.pts.length;i++){var p=w2s(e.pts[i].x,e.pts[i].y);ctx.lineTo(p.x,p.y);}if(e.closed)ctx.closePath();ctx.stroke();if(sel)for(var i=0;i<e.pts.length;i++){var s=w2s(e.pts[i].x,e.pts[i].y);drawH(ctx,s.x,s.y);}break;}
-    case 'txt':{var p=w2s(e.x,e.y);ctx.setLineDash([]);ctx.shadowBlur=0;ctx.font=Math.max(8,e.h*sc)+'px Consolas,monospace';ctx.fillStyle=e.col||'#dce4f5';ctx.fillText(e.txt,p.x,p.y);break;}
+    case 'txt':{
+      var p=w2s(e.x,e.y);ctx.setLineDash([]);ctx.shadowBlur=0;
+      var fnt=Math.max(8,e.h*sc)+'px '+(e.font||'Consolas,monospace');
+      ctx.font=fnt;
+      if(e.wipeout){
+        var tw2=ctx.measureText(e.txt).width;
+        var th2=e.h*sc;
+        var pad2=3;
+        ctx.fillStyle='#ffffff';
+        ctx.fillRect(p.x-pad2,p.y-th2-pad2,tw2+pad2*2,th2+pad2*2);
+      }
+      ctx.fillStyle=e.col||'#dce4f5';
+      ctx.fillText(e.txt,p.x,p.y);
+      break;
+    }
     case 'hatch':{
       var a=w2s(e.x,e.y),pw=e.w*sc,ph=e.h*sc;
+      var hcol=e.col||'#6080a0';
       ctx.save();ctx.beginPath();ctx.rect(a.x,a.y-ph,pw,ph);ctx.clip();
-      var sp=e.sp*sc,rad=(e.ang||45)*Math.PI/180;
-      ctx.strokeStyle=e.col||'#6080a0';ctx.lineWidth=.4;ctx.setLineDash([]);
-      for(var d=-pw-ph;d<pw+ph;d+=sp){
-        ctx.beginPath();ctx.moveTo(a.x+d/Math.sin(rad),a.y);ctx.lineTo(a.x+d/Math.sin(rad)+Math.cos(rad)*(pw+ph)*2,a.y+Math.sin(rad)*(pw+ph)*2);ctx.stroke();
+      ctx.strokeStyle=hcol;ctx.lineWidth=.5;ctx.setLineDash([]);
+      var sp2=Math.max(1,e.sp*sc),rad=(e.ang||45)*Math.PI/180;
+      var ht=e.htype||'lines';
+      function hLine(x1h,y1h,x2h,y2h){ctx.beginPath();ctx.moveTo(x1h,y1h);ctx.lineTo(x2h,y2h);ctx.stroke();}
+      if(ht==='cross'||ht==='grid'){
+        // Grade: linhas horizontais + verticais
+        for(var xg=a.x;xg<a.x+pw;xg+=sp2) hLine(xg,a.y-ph,xg,a.y);
+        for(var yg=a.y-ph;yg<a.y;yg+=sp2) hLine(a.x,yg,a.x+pw,yg);
+      } else if(ht==='dots'){
+        // Pontos
+        for(var xi=a.x+sp2/2;xi<a.x+pw;xi+=sp2){
+          for(var yi=a.y-ph+sp2/2;yi<a.y;yi+=sp2){
+            ctx.beginPath();ctx.arc(xi,yi,0.8,0,Math.PI*2);ctx.fill();
+          }
+        }
+      } else if(ht==='zigzag'){
+        var step=sp2*2;
+        for(var yzig=a.y-ph;yzig<a.y+step;yzig+=step){
+          ctx.beginPath();
+          for(var xzig=a.x;xzig<a.x+pw+step;xzig+=step){
+            ctx.lineTo(xzig,yzig);ctx.lineTo(xzig+step/2,yzig-sp2);
+          }
+          ctx.stroke();
+        }
+      } else {
+        // Linhas paralelas (padrão e tipos derivados)
+        var dashPat=ht==='dashed'?[4,3]:ht==='dotted'?[1,3]:[];
+        ctx.setLineDash(dashPat);
+        var sinR=Math.sin(rad)||0.001;
+        for(var d=-pw-ph;d<pw+ph;d+=sp2){
+          hLine(a.x+d/sinR,a.y,a.x+d/sinR+Math.cos(rad)*(pw+ph)*2,a.y+Math.sin(rad)*(pw+ph)*2);
+        }
+        ctx.setLineDash([]);
       }
-      ctx.restore();ctx.setLineDash([]);ctx.beginPath();ctx.rect(a.x,a.y-ph,pw,ph);ctx.stroke();
+      ctx.restore();
+      // Borda
+      ctx.strokeStyle=hcol;ctx.lineWidth=.6;ctx.setLineDash([]);
+      ctx.beginPath();ctx.rect(a.x,a.y-ph,pw,ph);ctx.stroke();
       break;
     }
     case 'dim':  drawDim(ctx,e);  break;
@@ -2358,6 +2536,28 @@ function drawPreview(ctx){
         ctx.globalAlpha=1;
       }
       break;
+    case 'spline':
+      if(ds&&ds.pts&&ds.pts.length>=1){
+        // Pontos já confirmados + cursor atual
+        var allpts=ds.pts.concat([{x:hp.x,y:hp.y}]);
+        ctx.strokeStyle='#4ec87a';ctx.lineWidth=1;ctx.setLineDash([]);ctx.globalAlpha=.8;
+        ctx.beginPath();
+        var sp0=w2s(allpts[0].x,allpts[0].y);ctx.moveTo(sp0.x,sp0.y);
+        for(var i=0;i<allpts.length-1;i++){
+          var a0=w2s(i>0?allpts[i-1].x:allpts[0].x,i>0?allpts[i-1].y:allpts[0].y);
+          var a1=w2s(allpts[i].x,allpts[i].y);
+          var a2=w2s(allpts[i+1].x,allpts[i+1].y);
+          var a3=w2s(i+2<allpts.length?allpts[i+2].x:allpts[i+1].x,i+2<allpts.length?allpts[i+2].y:allpts[i+1].y);
+          var cx1=a1.x+(a2.x-a0.x)/6,cy1=a1.y+(a2.y-a0.y)/6;
+          var cx2=a2.x-(a3.x-a1.x)/6,cy2=a2.y-(a3.y-a1.y)/6;
+          ctx.bezierCurveTo(cx1,cy1,cx2,cy2,a2.x,a2.y);
+        }
+        ctx.stroke();
+        // Pontos de controle
+        ctx.fillStyle='#4ec87a';ctx.globalAlpha=1;
+        for(var i=0;i<ds.pts.length;i++){var sp=w2s(ds.pts[i].x,ds.pts[i].y);ctx.beginPath();ctx.arc(sp.x,sp.y,3,0,Math.PI*2);ctx.fill();}
+      }
+      break;
     case 'polyline':
       if(ds.pts&&ds.pts.length>=1){ctx.beginPath();var p0=w2s(ds.pts[0].x,ds.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<ds.pts.length;i++){var p=w2s(ds.pts[i].x,ds.pts[i].y);ctx.lineTo(p.x,p.y);}var pe=w2s(hp.x,hp.y);ctx.lineTo(pe.x,pe.y);ctx.stroke();}
       break;
@@ -2405,6 +2605,36 @@ function drawPreview(ctx){
         var ma3=(a1b+a2b)/2;
         ctx.fillText(ds.angVal+'°',sv.x+Math.cos(ma3)*(r3+12),sv.y+Math.sin(ma3)*(r3+12));
         ctx.globalAlpha=1;
+      }
+      break;
+    case 'dist':
+      if(ds&&ds.pts&&ds.pts.length===1){
+        var sp1=w2s(ds.pts[0].x,ds.pts[0].y),spc=w2s(hp.x,hp.y);
+        ctx.strokeStyle='#00e676';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.globalAlpha=.8;
+        ctx.beginPath();ctx.moveTo(sp1.x,sp1.y);ctx.lineTo(spc.x,spc.y);ctx.stroke();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        ctx.fillStyle='#00e676';ctx.beginPath();ctx.arc(sp1.x,sp1.y,4,0,Math.PI*2);ctx.fill();
+        var dd=Math.hypot(hp.x-ds.pts[0].x,hp.y-ds.pts[0].y);
+        ctx.font='bold 10px Consolas';
+        ctx.fillText(dd.toFixed(3)+'mm',spc.x+8,spc.y-6);
+      }
+      break;
+    case 'area':
+      if(ds&&ds.pts&&ds.pts.length>=1){
+        ctx.strokeStyle='#f5a623';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.globalAlpha=.7;
+        ctx.beginPath();
+        var ap=w2s(ds.pts[0].x,ds.pts[0].y);ctx.moveTo(ap.x,ap.y);
+        for(var i=1;i<ds.pts.length;i++){var pi=w2s(ds.pts[i].x,ds.pts[i].y);ctx.lineTo(pi.x,pi.y);}
+        ctx.lineTo(w2s(hp.x,hp.y).x,w2s(hp.x,hp.y).y);
+        ctx.closePath();ctx.stroke();
+        ctx.fillStyle='#f5a62318';ctx.fill();
+        ctx.setLineDash([]);ctx.globalAlpha=1;
+        if(ds.pts.length>=2){
+          var ptsA=ds.pts.concat([{x:hp.x,y:hp.y}]),nA=ptsA.length,aA=0;
+          for(var i=0;i<nA;i++){var j=(i+1)%nA;aA+=ptsA[i].x*ptsA[j].y-ptsA[j].x*ptsA[i].y;}
+          ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';
+          ctx.fillText((Math.abs(aA)/2).toFixed(2)+' mm²',w2s(hp.x,hp.y).x+8,w2s(hp.x,hp.y).y-6);
+        }
       }
       break;
     case 'move':
@@ -2646,11 +2876,12 @@ function drawOver(){
   var sm=document.getElementById('snapmark'),sl=document.getElementById('snaplbl');
   if(!S.hover||S.tool==='pan'||!S.hover.st||S.hover.st==='grid'){sm.style.display='none';sl.style.display='none';return;}
   var sp=w2s(S.hover.x,S.hover.y),st=S.hover.st;
-  var col={end:'#4ec87a',mid:'#f0c040',cen:'#4d9ef7',polar:'#e85050',ortho:'#e85050'}[st]||'#4d9ef7';
+  var col={end:'#4ec87a',mid:'#f0c040',cen:'#4d9ef7',int:'#ff9020',polar:'#e85050',ortho:'#e85050'}[st]||'#4d9ef7';
   sm.style.left=sp.x+'px';sm.style.top=sp.y+'px';sm.style.display='block';
   if(st==='end') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><rect x="-5" y="-5" width="10" height="10" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
   else if(st==='mid') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><polygon points="0,-6 6,5 -6,5" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
   else if(st==='cen') sm.innerHTML='<svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" fill="none" stroke="'+col+'" stroke-width="1.5"/><line x1="-7" y1="0" x2="7" y2="0" stroke="'+col+'" stroke-width="1"/><line x1="0" y1="-7" x2="0" y2="7" stroke="'+col+'" stroke-width="1"/></svg>';
+  else if(st==='int') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><line x1="-6" y1="-6" x2="6" y2="6" stroke="'+col+'" stroke-width="1.8"/><line x1="6" y1="-6" x2="-6" y2="6" stroke="'+col+'" stroke-width="1.8"/></svg>';
   else sm.innerHTML='<svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="4" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
   sl.textContent=st.toUpperCase();sl.style.left=(sp.x+14)+'px';sl.style.top=(sp.y-20)+'px';sl.style.display='block';sl.style.color=col;sl.style.borderColor=col;
 }
@@ -2786,6 +3017,22 @@ function finishWin(){
   log('Seleção: '+S.sel.length+' obj.','ok');renderAll();updSelInfo();
 }
 
+// Finaliza o comando LINE (Enter ou Esc): mantém segmentos, volta ao SELECT
+function finishLine(){
+  if(S.tool!=='line') return;
+  var ns=S.ds?S.ds.segs||0:0;
+  if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
+  S.ds=null;
+  diHide();
+  S.tool='select';
+  document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
+  var rb=document.getElementById('rb-select');if(rb)rb.classList.add('on');
+  document.getElementById('stool').textContent='SELECT';
+  S.wrap.style.cursor='default';
+  renderAll();
+  logp('SELECT: clique para selecionar.');
+}
+
 function onKey(e){
   var ci=document.getElementById('cmdinput');
   var activeEl=document.activeElement;
@@ -2838,16 +3085,8 @@ function onKey(e){
   var k=e.key;
   if(k==='Escape'){
     if(S.tool==='line'&&S.ds){
-      var ns=S.ds.segs||0;
-      if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
-      S.ds=null;diHide();
-      // Voltar SELECT mantendo seleção atual
-      S.tool='select';
-      document.querySelectorAll('.rb').forEach(function(b){b.classList.remove('on');});
-      var rbSel=document.getElementById('rb-select');if(rbSel)rbSel.classList.add('on');
-      document.getElementById('stool').textContent='SELECT';
-      S.wrap.style.cursor='default';
-      renderAll();
+      // Esc = finalizar LINE mantendo segmentos criados → volta SELECT (padrão AutoCAD)
+      finishLine();
     }
     else if(S.tool==='offset'){
       if(S.ds&&S.ds.phase==='side'){
@@ -2892,13 +3131,23 @@ function onKey(e){
   if(k==='F9'){toggleMode('snap');return;}
   if(k==='Enter'){
     e.preventDefault();e.stopPropagation();
-    if(S.tool==='line'&&S.ds){
-      var ns=S.ds.segs||0;
-      if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
-      S.ds=null; renderAll();
-      logp('LINE: 1º ponto (ou coord no cmd):');
+    if(S.tool==='line'){
+      // Enter = finalizar LINE → volta SELECT (padrão AutoCAD)
+      // Se não há segmentos e há um 1º ponto definido, descartar silenciosamente
+      finishLine();
     }
     else if(S.tool==='polyline'&&S.ds)finishPL();
+    else if(S.tool==='spline'&&S.ds){finishSpline();}
+    else if(S.tool==='area'&&S.ds&&S.ds.pts&&S.ds.pts.length>=3){
+      // Calcular área pelo teorema de Shoelace
+      var pts=S.ds.pts, n=pts.length, areaVal=0;
+      for(var i=0;i<n;i++){var j=(i+1)%n;areaVal+=pts[i].x*pts[j].y;areaVal-=pts[j].x*pts[i].y;}
+      areaVal=Math.abs(areaVal)/2;
+      var perimeter=0;for(var i=0;i<n;i++){var j=(i+1)%n;perimeter+=Math.hypot(pts[j].x-pts[i].x,pts[j].y-pts[i].y);}
+      log('ÁREA: '+areaVal.toFixed(4)+' mm²  ('+( areaVal/1000000).toFixed(6)+' m²)','ok');
+      log('PERÍMETRO: '+perimeter.toFixed(4)+'mm','ok');
+      S.ds=null;logp('ÁREA: 1º ponto:');
+    }
     else if(S.tool==='copy'&&S.ds){
       var nc=S.ds.copies||0;
       if(nc>0) log('COPY: '+nc+' cópia(s) criada(s).','ok');
@@ -2966,8 +3215,7 @@ function onKey(e){
       addE({tp:'line',x1:lp2.x,y1:lp2.y,x2:fp.x,y2:fp.y});
       log('LINE: fechado com '+( (S.ds.segs||0)+1)+' segmentos.','ok');
     }
-    S.ds=null;diHide();renderAll();
-    logp('LINE: 1º ponto:');
+    finishLine();
     return;
   }
   // U = desfazer último segmento da cadeia LINE ativa
@@ -2995,8 +3243,10 @@ function onCmdKey(e){
   e.stopPropagation();
   if(e.key==='Escape'){
     document.getElementById('cmdinput').value='';
-    // Se há comando ativo, cancelar e voltar ao SELECT
-    if(S.tool!=='select'){
+    if(S.tool==='line'&&S.ds){
+      // Esc no LINE: finalizar mantendo segmentos → SELECT
+      finishLine();
+    } else if(S.tool!=='select'){
       var savedSel2=S.sel.slice();
       cancelTool();
       S.sel=savedSel2;
@@ -3010,13 +3260,26 @@ function onCmdKey(e){
   var v=ci.value.trim();
   ci.value='';
 
-  // Enter vazio: finaliza comando ativo (LINE, PL, OFFSET) ou repete último cmd
+  // Enter vazio: finaliza comando ativo OU repete último comando (padrão AutoCAD)
   if(!v){
+    // Se em SELECT e há lastTool, repetir o último comando
+    if(S.tool==='select'&&S.lastTool){
+      var lt=S.lastTool;
+      if(lt==='spline') lt='spline';
+      if(lt==='dist'||lt==='area'||lt==='hatch'){setTool(lt);}
+      else if(lt==='hatch'){showHatchDlg();}
+      else if(lt==='array'){showArrayDlg();}
+      else setTool(lt);
+      log('Repetindo: '+lt.toUpperCase(),'inf');
+      return;
+    }
     if(S.tool==='line'&&S.ds){
       var ns=S.ds.segs||0;
       if(ns>0) log('LINE: '+ns+' segmento(s) criado(s).','ok');
       S.ds=null; renderAll();
       logp('LINE: 1º ponto (ou coord no cmd):');
+    } else if(S.tool==='line'&&S.ds){
+      finishLine();
     } else if(S.tool==='polyline'&&S.ds){ finishPL(); }
     else if(S.tool==='copy'&&S.ds){
       var nc2=S.ds.copies||0;
@@ -3104,7 +3367,7 @@ function onCmdKey(e){
   var map={
     'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','R':'rectangle','RECT':'rectangle',
     'A':'arc','ARC':'arc','E':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
-    'PL':'polyline','POLYLINE':'polyline','H':'hatch','HATCH':'hatch',
+    'PL':'polyline','POLYLINE':'polyline','SPL':'spline','SPLINE':'spline','H':'hatch','HATCH':'hatch',
     'D':'dim','DIM':'dim','DLI':'dim','DIMLINEAR':'dim',
     'DAL':'dimali','DIMALIGNED':'dimali',
     'DR':'dimr','DD':'dimd','DA':'dima',
@@ -3118,6 +3381,7 @@ function onCmdKey(e){
     'UN':'units','UNITS':'units','DDUNITS':'units',
     'LT':'linetype','LINETYPE':'linetype','LTYPE':'linetype',
     'AR':'array','ARRAY':'array',
+    'DI':'dist','DIST':'dist','DISTANCE':'dist','AA':'area','AREA':'area',
     'P':'pan','PAN':'pan','S':'select','SELECT':'select',
     'U':'undo','UNDO':'undo','REDO':'redo',
     'Z':'zf','ZE':'zf','ZOOM':'zoom',
@@ -3131,7 +3395,7 @@ function onCmdKey(e){
   if(!act){log('Comando desconhecido: '+v+'. HELP para lista.','er');return;}
   switch(act){
     case 'line':case 'circle':case 'rectangle':case 'arc':case 'ellipse':
-    case 'text':case 'polyline':case 'hatch':case 'dim':case 'dimali':case 'dimr':case 'dimd':case 'dima':
+    case 'text':case 'polyline':case 'spline':case 'hatch':case 'dim':case 'dimali':case 'dimr':case 'dimd':case 'dima':
     case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':
     case 'trim':case 'extend':case 'fillet':case 'chamfer':
       setTool(act);break;
@@ -3140,6 +3404,8 @@ function onCmdKey(e){
     case 'ddim':showDimStyle();break;
     case 'linetype':showLineType();break;
     case 'units':showUnits();break;
+    case 'dist':setTool('dist');break;
+    case 'area':setTool('area');break;
     case 'pan':setTool('pan');break;
     case 'select':setTool('select');break;
     case 'undo':undo();break;
@@ -3156,7 +3422,8 @@ function onCmdKey(e){
     case 'ly':showAddLayer();break;
     case 'help':
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
-      log('DRAW: L C R A E PL T H POL (Linha Circ Rect Arco Elipse PL Texto Hach Polígono)','inf');
+      log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
+      log('MEDIR: DI=Distância  AA=Área','inf');
       log('CONFIG: UN=Unidades  DDIM=DimStyle  LAYER/LA=Camadas','inf');
       log('DIM:  D DR DD DA (Linear Raio Diâm Ângulo)','inf');
       log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
@@ -3333,7 +3600,7 @@ function diShouldShow(){
   if(t==='select'||t==='pan') return false;
   // Ferramentas de desenho com entrada de ponto
   if(t==='line'||t==='polyline'||t==='rectangle'||t==='circle'||
-     t==='arc'||t==='ellipse'||t==='text'||t==='hatch'||t==='polygon'||t==='dimali') return true;
+     t==='arc'||t==='ellipse'||t==='text'||t==='hatch'||t==='polygon'||t==='dimali'||t==='spline') return true;
   // Comandos de edição quando esperam ponto base ou destino
   if(t==='move'&&S.ds&&S.ds.pts) return true;
   if(t==='copy'&&S.ds&&S.ds.phase==='dest') return true;
@@ -3445,6 +3712,8 @@ function toggleMode(m){
 
 // ── TOOL ─────────────────────────────────────────────────────
 function setTool(tool){
+  // Rastrear último comando para repetição com Enter
+  if(tool!=='select'&&tool!=='pan') S.lastTool=tool;
   // Ao trocar de ferramenta, manter a seleção existente (padrão AutoCAD)
   var keepSel=S.sel.slice();
   S.tool=tool;S.ds=null;
@@ -3518,7 +3787,7 @@ function showTemplate(){document.getElementById('ov-template').classList.add('sh
 function doTemplate(){var fs=document.getElementById('tf').value.split(',').map(Number),sc=parseFloat(document.getElementById('ts').value)||1,w=fs[0]*sc,h=fs[1]*sc,lb=25,m=5;S.ents.unshift({id:uid(),tp:'rect',x:-w/2,y:-h/2,w:w,h:h,col:'#dce4f5',lw:1,ld:'solid',ly:0},{id:uid(),tp:'rect',x:-w/2+lb,y:-h/2+m,w:w-lb-m,h:h-2*m,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'line',x1:-w/2+lb,y1:-h/2+m+30,x2:w/2-m,y2:-h/2+m+30,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'txt',x:-w/2+lb+5,y:-h/2+m+20,txt:'EduCAD 2D | '+fs[0]+'×'+fs[1]+'mm | ABNT NBR 10068',h:6,col:'#8b97b8',lw:.35,ld:'solid',ly:0});snapshot();zoomFit();closeOv('ov-template');log('Template '+fs[0]+'×'+fs[1]+'mm inserido.','ok');}
 
 // ── TEXT CONFIRM ─────────────────────────────────────────────
-function confirmText(){var txt=document.getElementById('tv').value||'Texto',h=parseFloat(document.getElementById('th').value)||10;if(S.ds&&S.ds.pts&&S.ds.pts[0]){addE({tp:'txt',x:S.ds.pts[0].x,y:S.ds.pts[0].y,txt:txt,h:h});}S.ds=null;closeOv('ov-text');}
+function confirmText(){var txt=document.getElementById('tv').value||'Texto',h=parseFloat(document.getElementById('th').value)||10,wp=document.getElementById('twipeout')&&document.getElementById('twipeout').checked;if(S.ds&&S.ds.pts&&S.ds.pts[0]){addE({tp:'txt',x:S.ds.pts[0].x,y:S.ds.pts[0].y,txt:txt,h:h,wipeout:wp});}S.ds=null;closeOv('ov-text');}
 
 // ── EDUCATIONAL SHORTCUTS ────────────────────────────────────
 function lineCenter(){S.style.ld='center';S.style.col='#556688';S.style.lw=.35;document.getElementById('propLD').value='center';document.getElementById('propCol').value='#556688';setTool('line');}
@@ -4306,7 +4575,7 @@ function arTypeChange(){
   document.getElementById('ar-path-form').style.display=v==='path'?'':'none';
 }
 
-function showArrayDlg(){
+function showArrayDlg(){S.lastTool='array';
   if(!S.sel.length){log('Selecione objetos antes de executar Array.','er');return;}
   document.getElementById('ov-array').classList.add('show');
 }

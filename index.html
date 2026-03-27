@@ -316,6 +316,8 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.0 · Uso Educacional</span>
+  <button onclick="showAbout()" style="background:none;border:1px solid var(--bdr);color:var(--t2);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;" title="Sobre / Licença">ⓘ Sobre</button>
 </div>
 
 <div id="ribbon">
@@ -599,7 +601,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v3 | HELP = lista de comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.0 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1091,6 +1093,79 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   </div>
 </div></div>
 
+<!-- ABOUT / LICENSE MODAL -->
+<div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
+  <h3 style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.0 — Software Educacional</span>
+  </h3>
+  <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--acc);">
+      <b style="color:var(--t0);">Finalidade</b><br>
+      <span style="color:var(--t1);">Software desenvolvido exclusivamente para fins educacionais na disciplina de
+      <b>Desenho Técnico</b> — Ciências Agrárias e Agronomia. Permite que estudantes
+      aprendam ferramentas CAD sem necessidade de computadores de alto desempenho
+      ou licenças comerciais.</span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #4ec87a;">
+      <b style="color:#4ec87a;">Licença — MIT License</b><br>
+      <span style="color:var(--t1);">Copyright © 2026 — EduCAD 2D<br><br>
+      É concedida permissão, gratuitamente, a qualquer pessoa que obtenha uma cópia
+      deste software, para utilizá-lo sem restrições, incluindo os direitos de usar,
+      copiar, modificar, mesclar, publicar, distribuir e sublicenciar, sujeito às
+      seguintes condições:<br><br>
+      O aviso de copyright acima e este aviso de permissão devem ser incluídos em
+      todas as cópias ou partes substanciais do software.<br><br>
+      <b>O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE
+      QUALQUER TIPO.</b></span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #f5a623;">
+      <b style="color:#f5a623;">Declaração de Independência</b><br>
+      <span style="color:var(--t1);">Este software é <b>código original</b>, desenvolvido de forma independente.
+      Não é derivado, não contém código, nem é afiliado ao
+      <b>AutoCAD®</b> (Autodesk, Inc.), <b>ZWCAD®</b> (ZWSOFT) ou qualquer outro
+      software CAD comercial. Os nomes de comandos (LINE, CIRCLE, TRIM, etc.)
+      são termos técnicos do domínio público da geometria e do desenho técnico.</span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--bdr);">
+      <b style="color:var(--t0);">Distribuição</b><br>
+      <span style="color:var(--t1);">✔ Pode ser distribuído gratuitamente para alunos<br>
+      ✔ Pode ser copiado, modificado e adaptado para fins educacionais<br>
+      ✔ Pode ser usado em laboratórios, aulas presenciais e remotas<br>
+      ✗ Não deve ser comercializado ou vendido</span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--acc);">
+      <b style="color:var(--t0);">Desenvolvedor</b><br>
+      <span style="color:var(--t1);">Dúvidas, sugestões ou contribuições:<br>
+      <a href="mailto:santosjp10@gmail.com" style="color:var(--acc);text-decoration:none;">
+        ✉ santosjp10@gmail.com
+      </a></span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #9d6fff;text-align:center;">
+      <span style="color:var(--t2);font-size:10px;">
+        Desenvolvido com o auxílio da Inteligência Artificial<br>
+        <b style="color:#9d6fff;font-size:13px;">Claude</b>
+        <span style="color:var(--t2);font-size:10px;"> · </span>
+        <b style="color:var(--t0);font-size:11px;">Anthropic</b><br>
+        <span style="color:var(--t2);font-size:9px;margin-top:4px;display:block;">
+          Agradecimento especial à Anthropic por disponibilizar a tecnologia de IA
+          que tornou possível o desenvolvimento deste projeto educacional.
+        </span>
+      </span>
+    </div>
+
+  </div>
+  <div style="padding:8px 14px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;background:var(--bg3);">
+    <button class="btn p" onclick="closeOv('ov-about')">Fechar</button>
+  </div>
+</div></div>
+
 <!-- HATCH PATTERN DIALOG -->
 <div class="ov" id="ov-hatch"><div class="modal" style="min-width:360px">
   <h3>Padrão de Hachura — ABNT</h3>
@@ -1138,7 +1213,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v3 — ENGINE LIMPO, SEM CLOSURES PROBLEMÁTICAS
+   EduCAD 2D v6.0 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1209,7 +1284,9 @@ window.addEventListener('load', function() {
     }).join('');
   }
   updLTSel();
-  log('EduCAD 2D v6 — Modo SELECT ativo. Clique para selecionar. HELP=comandos.','inf');
+  log('EduCAD 2D v6.0 — Software Educacional Livre (Licença MIT)','inf');
+  log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
+  log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novos: TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  AR=Array','inf');
   log('Atalhos: L C R A E PL T D M CO RO MI SC O TR EX F CHA AR  |  F7=Grade F8=Ortho F9=Snap','inf');
   setTool('select');
@@ -1990,6 +2067,10 @@ function confirmHatch(){
   closeOv('ov-hatch');
   setTool('hatch');
   logp('HATCH "'+name+'": 1º canto:');
+}
+
+function showAbout(){
+  document.getElementById('ov-about').classList.add('show');
 }
 
 function cancelTool(){

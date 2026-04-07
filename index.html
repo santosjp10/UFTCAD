@@ -3146,9 +3146,18 @@ function onKey(e){
   // capturar digitação e redirecionar para o campo ativo do DI
   if(DI.active && activeEl!==ci && !inDI && !e.ctrlKey && !e.altKey && !e.metaKey){
     var k2=e.key;
-    // Teclas que iniciam entrada numérica/coordenada
-    // Só redirecionar dígitos/símbolos — NUNCA letras (que são atalhos de comando)
-    var isTypeable=(k2.length===1&&/[0-9.\-@<,]/.test(k2)&&!/[a-zA-Z]/.test(k2));
+    // @ e < iniciam notação de coordenada AutoCAD (@dx,dy ou @dist<ang)
+    // Devem sempre ir para o cmdinput, não para o DI
+    if(k2==='@'||k2==='<'){
+      e.preventDefault();
+      ci.value=k2;
+      ci.focus();
+      ci.setSelectionRange(1,1);
+      return;
+    }
+    // Teclas numéricas simples → redirecionar para campo ativo do DI
+    // Excluir @ e < pois pertencem ao cmdinput (coordenadas relativas)
+    var isTypeable=(k2.length===1&&/[0-9.\-]/.test(k2));
     if(isTypeable){
       e.preventDefault();
       // Campo padrão: se há base → L (distância); senão → X
@@ -3606,6 +3615,20 @@ function diInit(){
 }
 
 function diKey(e){
+  // Se o usuário digita ',' ou '<' dentro do DI, significa que está tentando
+  // inserir uma coordenada no formato AutoCAD (x,y ou dist<ang).
+  // Transferir o conteúdo atual do campo para o cmdinput e continuar lá.
+  if(e.key===','||e.key==='<'){
+    e.preventDefault();
+    var ci=document.getElementById('cmdinput');
+    var currentVal=document.activeElement?document.activeElement.value.trim():'';
+    diClear();
+    if(DI.el) DI.el.classList.remove('show');
+    ci.value=currentVal+e.key;
+    ci.focus();
+    ci.setSelectionRange(ci.value.length,ci.value.length);
+    return;
+  }
   if(e.key==='Tab'){
     e.preventDefault();
     // Se há base (encadeamento): ciclo é L → A → L

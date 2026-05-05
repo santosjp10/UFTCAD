@@ -4451,8 +4451,12 @@ function doTrim(tgt,clickPt,cutters){
 // retornando o ponto mais próximo do end clicado que esteja ALÉM do end
 function calcExtendPoint(tgt,end,bounds){
   // end=1 → estender p1 (t<0), end=2 → estender p2 (t>1)
+  // Comportamento AutoCAD: estende até o PRÓXIMO limite na direção da extensão,
+  // passando por linhas intermediárias a cada clique sucessivo.
   var ex=end===1?tgt.x1:tgt.x2, ey=end===1?tgt.y1:tgt.y2;
-  var best=null, bd=1e9;
+
+  // Coleta TODAS as interseções além do extremo, em todas as fronteiras
+  var allIntersections=[];
   for(var i=0;i<bounds.length;i++){
     var b=findE(bounds[i]);if(!b||b.id===tgt.id)continue;
     var ips2=[];
@@ -4483,13 +4487,25 @@ function calcExtendPoint(tgt,end,bounds){
     }
     for(var k=0;k<ips2.length;k++){
       var ip=ips2[k];
-      // o ponto deve estar ALÉM do extremo clicado (fora do segmento atual)
-      var beyondEnd1=(end===1&&ip.t<1e-6);   // antes de p1
-      var beyondEnd2=(end===2&&ip.t>1-1e-6); // depois de p2
+      // Ponto deve estar ALÉM do extremo na direção de extensão
+      // end=1: estender p1, interseções com t < -1e-6 (antes de p1 na reta)
+      // end=2: estender p2, interseções com t > 1+1e-6 (depois de p2 na reta)
+      var beyondEnd1=(end===1&&ip.t<-1e-6);
+      var beyondEnd2=(end===2&&ip.t>1+1e-6);
       if(!beyondEnd1&&!beyondEnd2) continue;
-      var dist=Math.hypot(ip.x-ex,ip.y-ey);
-      if(dist<bd){bd=dist;best=ip;}
+      allIntersections.push({t:ip.t,x:ip.x,y:ip.y});
     }
+  }
+  if(allIntersections.length===0) return null;
+
+  // Seleciona a interseção MAIS PRÓXIMA do extremo na direção de extensão
+  // (menor distância absoluta do t=0 ou t=1 respectivamente)
+  // Isso garante comportamento igual ao AutoCAD: para em cada limite intermediário
+  var best=null, bd=1e9;
+  for(var m=0;m<allIntersections.length;m++){
+    var ip=allIntersections[m];
+    var dist=Math.hypot(ip.x-ex,ip.y-ey);
+    if(dist<bd){bd=dist;best=ip;}
   }
   return best;
 }

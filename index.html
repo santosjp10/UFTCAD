@@ -1334,12 +1334,26 @@ function doSnap(sx,sy) {
     function tryP(px,py,st) { var d=Math.hypot(px-raw.x,py-raw.y); if(d<bd){bd=d;best={x:px,y:py,st:st};} }
     // snap de grade
     if(S.modes.grid){ var gs=S.modes.snapSz; tryP(Math.round(raw.x/gs)*gs, Math.round(raw.y/gs)*gs,'grid'); }
-    // snap de objeto
+    // snap de objeto (endpoint, midpoint, center)
     for(var i=0;i<S.ents.length;i++){
       var e=S.ents[i], ly=getLy(e.ly);
       if(ly&&!ly.vis) continue;
       var sps=snapPts(e);
       for(var j=0;j<sps.length;j++){ var sp=sps[j]; if(S.modes[sp.st]||sp.st==='grid') tryP(sp.x,sp.y,sp.st); }
+    }
+    // snap de interseção: calcular cruzamentos entre pares de entidades visíveis
+    if(S.modes['int']){
+      var visEnts=[];
+      for(var vi=0;vi<S.ents.length;vi++){var vly=getLy(S.ents[vi].ly);if(!vly||vly.vis)visEnts.push(S.ents[vi]);}
+      for(var ii=0;ii<visEnts.length;ii++){
+        for(var jj=ii+1;jj<visEnts.length;jj++){
+          var ipts=entIntersectSnap(visEnts[ii],visEnts[jj]);
+          for(var kk=0;kk<ipts.length;kk++){
+            var ip=ipts[kk];
+            tryP(ip.x,ip.y,'int');
+          }
+        }
+      }
     }
   }
   // Ortho: independente do snap — restringe a H ou V a partir do último ponto
@@ -4275,6 +4289,94 @@ function entIntersect(e1,e2){
   return pts;
 }
 
+// Interseções entre dois segmentos para uso no snap: ambos t e u devem estar em [0,1]
+function entIntersectSnap(e1,e2){
+  var pts=[], EPS=1e-6;
+
+  // LINE vs LINE — ambos os parâmetros dentro do segmento
+  if(e1.tp==='line'&&e2.tp==='line'){
+    var r=lineLineInt(e1.x1,e1.y1,e1.x2,e1.y2,e2.x1,e2.y1,e2.x2,e2.y2);
+    if(r&&r.t>=-EPS&&r.t<=1+EPS&&r.u>=-EPS&&r.u<=1+EPS)
+      pts.push({x:r.x,y:r.y});
+    return pts;
+  }
+
+  // LINE vs CIRC/ARC — t deve estar em [0,1]
+  function lineVsCircSnap(line,circ){
+    var ips=lineCircInt(line.x1,line.y1,line.x2,line.y2,circ.cx,circ.cy,circ.r);
+    for(var k=0;k<ips.length;k++){
+      var ip=ips[k];
+      if(ip.t<-EPS||ip.t>1+EPS) continue;
+      if(circ.tp==='arc'&&!arcHas(Math.atan2(ip.y-circ.cy,ip.x-circ.cx),circ.sa,circ.ea)) continue;
+      pts.push({x:ip.x,y:ip.y});
+    }
+  }
+  if(e1.tp==='line'&&(e2.tp==='circ'||e2.tp==='arc')){lineVsCircSnap(e1,e2);return pts;}
+  if(e2.tp==='line'&&(e1.tp==='circ'||e1.tp==='arc')){lineVsCircSnap(e2,e1);return pts;}
+
+  // LINE vs RECT — cada lado como segmento
+  function lineVsRectSnap(line,rect){
+    var sides=[
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x+rect.w, y2:rect.y},
+      {tp:'line',x1:rect.x+rect.w, y1:rect.y,        x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y+rect.h, x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x,        y2:rect.y+rect.h}
+    ];
+    for(var s=0;s<sides.length;s++){
+      var r2=lineLineInt(line.x1,line.y1,line.x2,line.y2,sides[s].x1,sides[s].y1,sides[s].x2,sides[s].y2);
+      if(r2&&r2.t>=-EPS&&r2.t<=1+EPS&&r2.u>=-EPS&&r2.u<=1+EPS) pts.push({x:r2.x,y:r2.y});
+    }
+  }
+  if(e1.tp==='line'&&e2.tp==='rect'){lineVsRectSnap(e1,e2);return pts;}
+  if(e2.tp==='line'&&e1.tp==='rect'){lineVsRectSnap(e2,e1);return pts;}
+
+  // CIRC/ARC vs CIRC/ARC
+  if((e1.tp==='circ'||e1.tp==='arc')&&(e2.tp==='circ'||e2.tp==='arc')){
+    var dx=e2.cx-e1.cx,dy=e2.cy-e1.cy,d=Math.hypot(dx,dy);
+    if(d>EPS&&d<e1.r+e2.r&&d>Math.abs(e1.r-e2.r)){
+      var aa=(e1.r*e1.r-e2.r*e2.r+d*d)/(2*d),h2=e1.r*e1.r-aa*aa;
+      if(h2>=0){
+        var h=Math.sqrt(h2),mx=e1.cx+aa*dx/d,my=e1.cy+aa*dy/d;
+        var cands=[{x:mx+h*dy/d,y:my-h*dx/d},{x:mx-h*dy/d,y:my+h*dx/d}];
+        for(var k=0;k<cands.length;k++){
+          var px=cands[k].x,py=cands[k].y;
+          var a1=Math.atan2(py-e1.cy,px-e1.cx),a2=Math.atan2(py-e2.cy,px-e2.cx);
+          if(e1.tp==='arc'&&!arcHas(a1,e1.sa,e1.ea)) continue;
+          if(e2.tp==='arc'&&!arcHas(a2,e2.sa,e2.ea)) continue;
+          pts.push({x:px,y:py});
+        }
+      }
+    }
+    return pts;
+  }
+
+  // CIRC/ARC vs RECT
+  function circVsRectSnap(circ,rect){
+    var sides=[
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x+rect.w, y2:rect.y},
+      {tp:'line',x1:rect.x+rect.w, y1:rect.y,        x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y+rect.h, x2:rect.x+rect.w, y2:rect.y+rect.h},
+      {tp:'line',x1:rect.x,        y1:rect.y,        x2:rect.x,        y2:rect.y+rect.h}
+    ];
+    for(var s=0;s<sides.length;s++) lineVsCircSnap(sides[s],circ);
+  }
+  if((e1.tp==='circ'||e1.tp==='arc')&&e2.tp==='rect'){circVsRectSnap(e1,e2);return pts;}
+  if((e2.tp==='circ'||e2.tp==='arc')&&e1.tp==='rect'){circVsRectSnap(e2,e1);return pts;}
+
+  // POLYLINE vs qualquer — tratar cada segmento
+  function plVsEnt(pl,other){
+    for(var s=0;s<pl.pts.length-1;s++){
+      var seg={tp:'line',x1:pl.pts[s].x,y1:pl.pts[s].y,x2:pl.pts[s+1].x,y2:pl.pts[s+1].y};
+      var sub=entIntersectSnap(seg,other);
+      for(var k=0;k<sub.length;k++) pts.push(sub[k]);
+    }
+  }
+  if(e1.tp==='pl'){plVsEnt(e1,e2);return pts;}
+  if(e2.tp==='pl'){plVsEnt(e2,e1);return pts;}
+
+  return pts;
+}
+
 // Param t on line [0..1] = within segment, outside = extension
 function paramOnLine(e,x,y){
   var dx=e.x2-e.x1,dy=e.y2-e.y1,l2=dx*dx+dy*dy;
@@ -4310,14 +4412,21 @@ function getTrimPreview(tgt,clickPt,cutters){
   } else if(tgt.tp==='arc'||tgt.tp==='circ'){
     var ips=getIntersections(tgt,cutters);
     if(ips.length<2) return null;
-    var norm=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);};
+    var TWO_PI=Math.PI*2;
+    var norm=function(v){return((v%TWO_PI)+TWO_PI)%TWO_PI;};
     var angs=ips.map(function(p){return norm(Math.atan2(p.y-tgt.cy,p.x-tgt.cx));});
     angs.sort(function(a,b){return a-b;});
     // deduplicate
     angs=angs.filter(function(v,i){return i===0||Math.abs(v-angs[i-1])>1e-6;});
+    // Para arcos, filtrar apenas interseções dentro do arco
+    if(tgt.tp==='arc'){
+      angs=angs.filter(function(a){return arcHas(a,tgt.sa,tgt.ea);});
+      if(angs.length<2) return null;
+    }
     var ca=norm(Math.atan2(clickPt.y-tgt.cy,clickPt.x-tgt.cx));
     var seg=findArcTrimSeg(angs,ca);
     if(!seg) return null;
+    // O preview mostra o trecho que será REMOVIDO (seg.sa → seg.ea)
     return {type:'arc',cx:tgt.cx,cy:tgt.cy,r:tgt.r,sa:seg.sa,ea:seg.ea};
   }
   return null;
@@ -4335,15 +4444,19 @@ function findTrimSeg(ts,tc,tgt){
 }
 
 // Encontra o arco [sa,ea] CCW que contém o ângulo ca (para arcos/círculos)
+// angs já está ordenado de 0..2PI. O circle/arc é dividido em N fatias CCW.
 function findArcTrimSeg(angs,ca){
-  // verificar cada intervalo CCW entre angs consecutivos
-  for(var k=0;k<angs.length;k++){
-    var sa=angs[k], ea=angs[(k+1)%angs.length];
-    // intervalo CCW de sa→ea
-    var inArc;
-    if(sa<=ea) inArc=(ca>=sa&&ca<=ea);
-    else       inArc=(ca>=sa||ca<=ea);
-    if(inArc) return {sa:sa,ea:ea};
+  var TWO_PI=Math.PI*2;
+  var norm=function(v){return((v%TWO_PI)+TWO_PI)%TWO_PI;};
+  ca=norm(ca);
+  var n=angs.length;
+  for(var k=0;k<n;k++){
+    var sa=norm(angs[k]);
+    var ea=norm(angs[(k+1)%n]);
+    // verifica se ca está no intervalo CCW de sa→ea
+    var span=(ea-sa+TWO_PI)%TWO_PI; // comprimento CCW do arco
+    var dist=(ca-sa+TWO_PI)%TWO_PI; // distância CCW de sa até ca
+    if(dist<=span+1e-9) return {sa:sa,ea:ea};
   }
   return null;
 }
@@ -4356,7 +4469,8 @@ function drawSegment(ctx,seg){
     ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
   } else if(seg.type==='arc'){
     var c=w2s(seg.cx,seg.cy);
-    ctx.beginPath();ctx.arc(c.x,c.y,seg.r*sc,-seg.sa,-seg.ea,false);ctx.stroke();
+    // usar mesma convenção do render principal: ângulos negados, sentido horário no canvas (= CCW no espaço world)
+    ctx.beginPath();ctx.arc(c.x,c.y,seg.r*sc,-seg.sa,-seg.ea,true);ctx.stroke();
   }
 }
 
@@ -4396,19 +4510,63 @@ function doTrim(tgt,clickPt,cutters){
   } else if(tgt.tp==='arc'||tgt.tp==='circ'){
     var ips=getIntersections(tgt,cutters);
     if(ips.length<2) return false;
-    var norm=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);};
+    var TWO_PI=Math.PI*2;
+    var norm=function(v){return((v%TWO_PI)+TWO_PI)%TWO_PI;};
     var angs=ips.map(function(p){return norm(Math.atan2(p.y-tgt.cy,p.x-tgt.cx));});
     angs.sort(function(a,b){return a-b;});
+    // deduplicar
     angs=angs.filter(function(v,i){return i===0||Math.abs(v-angs[i-1])>1e-6;});
     var ca=norm(Math.atan2(clickPt.y-tgt.cy,clickPt.x-tgt.cx));
+
+    // Para arcos (não círculos), limitar os pontos de corte apenas aos que
+    // estão dentro do arco existente
+    if(tgt.tp==='arc'){
+      angs=angs.filter(function(a){return arcHas(a,tgt.sa,tgt.ea);});
+      if(angs.length<2) return false;
+    }
+
     var seg=findArcTrimSeg(angs,ca);
     if(!seg) return false;
+
     snapshot();
     var idx=S.ents.indexOf(tgt);
-    // manter o arco complementar: de ea→sa passando pelo outro lado
-    var ne=clon(tgt);ne.tp='arc';ne.sa=seg.ea;ne.ea=seg.sa;
-    S.ents.splice(idx,1,ne);
-    log('Trim arco.','ok');renderAll();return true;
+
+    if(tgt.tp==='circ'){
+      // Círculo: o trecho clicado (seg.sa→seg.ea) é REMOVIDO.
+      // O resultado é um arco que vai de seg.ea → seg.sa (o complemento CCW).
+      var ne=clon(tgt);
+      ne.tp='arc';
+      ne.sa=seg.ea;   // começa onde termina o trecho removido
+      ne.ea=seg.sa;   // termina onde começa o trecho removido
+      S.ents.splice(idx,1,ne);
+      log('Trim círculo → arco.','ok');renderAll();return true;
+
+    } else {
+      // Arco existente: remover o trecho seg.sa→seg.ea (CCW).
+      // Pode gerar até 2 arcos residuais.
+      var origSa=norm(tgt.sa), origEa=norm(tgt.ea);
+      var remSa=seg.sa, remEa=seg.ea; // trecho a remover (CCW)
+
+      // Verificar se ca realmente cai dentro do arco existente
+      if(!arcHas(ca,origSa,origEa)) return false;
+
+      var newE=[];
+
+      // Arco 1: de origSa até remSa (se span > 0)
+      var span1=(remSa-origSa+TWO_PI)%TWO_PI;
+      if(span1>1e-6){
+        var e1=clon(tgt);e1.sa=origSa;e1.ea=remSa;newE.push(e1);
+      }
+      // Arco 2: de remEa até origEa (se span > 0)
+      var span2=(origEa-remEa+TWO_PI)%TWO_PI;
+      if(span2>1e-6){
+        var e2=clon(tgt);e2.sa=remEa;e2.ea=origEa;newE.push(e2);
+      }
+
+      if(newE.length) S.ents.splice(idx,1,...newE);
+      else S.ents.splice(idx,1);
+      log('Trim arco.','ok');renderAll();return true;
+    }
 
   } else if(tgt.tp==='pl'){
     // polilinha: tratar cada segmento individualmente

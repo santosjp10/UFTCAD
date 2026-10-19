@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v6.1</title>
+<title>EduCAD 2D v6.3</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -187,36 +187,63 @@ input.lc-inp{width:52px;}
 }
 
 /* ── DIMSTYLE MODAL ───────────────────────────────────────── */
-#ov-dimstyle .modal{min-width:640px;max-width:96vw;max-height:90vh;padding:0;overflow:hidden;display:flex;flex-direction:column;}
-#ov-dimstyle .modal h3{padding:10px 14px;margin:0;border-bottom:1px solid var(--bdr);font-size:12px;background:var(--bg3);flex-shrink:0;}
-.dsp-body{display:flex;flex:1;overflow:hidden;min-height:0;}
-.dsp-list{width:140px;border-right:1px solid var(--bdr);background:var(--bg3);display:flex;flex-direction:column;flex-shrink:0;}
-.dsp-list-inner{flex:1;overflow-y:auto;padding:4px;}
-.dsp-item{padding:5px 8px;border-radius:3px;cursor:pointer;font-size:10px;font-family:var(--mono);color:var(--t1);display:flex;align-items:center;gap:4px;}
-.dsp-item:hover{background:var(--bg2);color:var(--t0);}
-.dsp-item.active{background:var(--acc);color:#fff;}
-.dsp-item .dsp-cur{font-size:8px;color:#f5a623;}
-.dsp-list-btns{padding:5px;display:flex;flex-direction:column;gap:3px;border-top:1px solid var(--bdr);}
-.dsp-list-btns button{padding:3px 6px;font-size:9px;font-family:var(--mono);cursor:pointer;border-radius:2px;border:1px solid var(--bdr);background:var(--bg2);color:var(--t1);text-align:left;white-space:nowrap;}
-.dsp-list-btns button:hover{color:var(--t0);border-color:var(--acc);}
-.dsp-list-btns button.dsp-primary{background:var(--acc);color:#fff;border-color:var(--acc);}
-.dsp-editor{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;}
-.dsp-tabs{display:flex;border-bottom:1px solid var(--bdr);background:var(--bg3);flex-shrink:0;}
-.dsp-tab{padding:5px 12px;font-size:10px;font-family:var(--mono);cursor:pointer;color:var(--t2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;}
-.dsp-tab:hover{color:var(--t0);}
-.dsp-tab.on{color:var(--acc);border-bottom-color:var(--acc);}
-.dsp-preview{width:calc(100% - 16px);height:70px;margin:8px;background:#080b18;border:1px solid var(--bdr);border-radius:2px;display:block;flex-shrink:0;}
-.dsp-pane{display:none;flex:1;overflow-y:auto;padding:4px 10px 8px;}
-.dsp-pane.on{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px;align-content:start;}
-.dsp-field{display:flex;align-items:center;gap:6px;padding:3px 0;}
-.dsp-field label{width:118px;font-size:9px;color:var(--t2);flex-shrink:0;text-align:right;line-height:1.2;}
-.dsp-inp{background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 6px;border-radius:2px;outline:none;min-width:0;}
-.dsp-inp:focus{border-color:var(--acc);}
-.dsp-inp[type=number]{width:60px;}
-.dsp-inp[type=color]{width:34px;height:20px;padding:1px 2px;cursor:pointer;}
-.dsp-inp[type=text]{width:70px;}
-select.dsp-inp{padding:2px 4px;width:120px;}
-.dsp-foot{padding:7px 12px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;gap:8px;background:var(--bg3);flex-shrink:0;}
+/* Exportação (v6.3) */
+.ef-opts{margin:2px 0 8px;padding:6px 8px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px}
+.ef-chk{display:flex!important;align-items:center;gap:6px;cursor:pointer;color:var(--t1)!important;margin:3px 0!important}
+.ef-chk input{width:auto!important;margin:0!important}
+.ef-note{display:none;margin:6px 0 10px;padding:7px 9px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:3px;font-size:10px;line-height:1.5;color:var(--t1)}
+.dwg-steps{margin:0 0 10px 18px;font-size:11px;line-height:1.55;color:var(--t1)}
+.dwg-steps li{margin-bottom:6px}
+/* DDIM (v6.2) */
+.ddim-modal{padding:0!important;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;overflow:hidden}
+.ddim-modal h3{padding:10px 14px;margin:0!important;background:var(--bg3);display:flex;align-items:center;gap:10px}
+.ddim-cmd{font:9px var(--mono);color:var(--t2);font-weight:normal;margin-left:auto}
+.ddim-mgr{display:flex;gap:12px;padding:12px 14px;min-height:0;overflow:auto}
+.ddim-col-list{width:190px;display:flex;flex-direction:column;flex-shrink:0}
+.ddim-col-prev{flex:1;display:flex;flex-direction:column;min-width:300px}
+.ddim-col-btns{width:150px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;padding-top:16px}
+.ddim-col-btns .btn{text-align:left}
+.ddim-col-btns .btn:disabled{opacity:.4;cursor:default}
+.ddim-sp{flex:1;min-height:10px}
+.ddim-curline{font-size:10px;color:var(--t1);margin-bottom:8px}
+.ddim-curline b{color:var(--acc2)}
+.ddim-lbl{font-size:10px;color:var(--t2);margin:4px 0 3px}
+.ddim-list{flex:1;min-height:180px;max-height:300px;overflow-y:auto;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:3px}
+.ddim-item{display:flex;align-items:center;gap:5px;padding:5px 6px;border-radius:2px;cursor:pointer;font:10px var(--mono);color:var(--t1)}
+.ddim-item:hover{background:var(--bg2);color:var(--t0)}
+.ddim-item.active{background:#1e3a5f;color:var(--acc);outline:1px solid var(--acc)}
+.ddim-star{width:10px;color:var(--acc2)}
+.ddim-nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ddim-ct{font-size:8px;color:var(--t2)}
+.ddim-preview{position:static!important;width:100%;height:240px;background:#080b18;border:1px solid var(--bdr);border-radius:3px;display:block}
+.ddim-desc{font-size:10px;color:var(--t1);line-height:1.5;white-space:pre-line;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;padding:6px 8px;min-height:48px}
+.ddim-foot{padding:8px 14px;border-top:1px solid var(--bdr);background:var(--bg3);margin:0!important}
+.ddim-edit{width:900px}
+.ddim-tabs{display:flex;flex-wrap:wrap;background:var(--bg3);border-bottom:1px solid var(--bdr);padding:0 8px}
+.ddim-tab{padding:6px 11px;font-size:10px;color:var(--t2);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.ddim-tab:hover{color:var(--t0)}
+.ddim-tab.on{color:var(--acc);border-bottom-color:var(--acc)}
+.ddim-editbody{display:flex;gap:12px;padding:10px 14px;min-height:0;overflow:hidden;flex:1}
+.ddim-pane{flex:1;overflow-y:auto;min-width:0;max-height:62vh;padding-right:4px}
+.ddim-editprev{width:360px;flex-shrink:0;display:flex;flex-direction:column;gap:6px}
+.ddim-editprev .ddim-preview{height:260px}
+.ddim-note{font-size:9px;color:var(--t2);line-height:1.5}
+.ddim-sec{border:1px solid var(--bdr);border-radius:3px;padding:4px 10px 8px;margin:0 0 10px}
+.ddim-sec legend{font-size:10px;color:var(--acc);padding:0 4px;font-weight:600}
+.ddim-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.ddim-row.off{opacity:.35;pointer-events:none}
+.ddim-row label{width:170px;font-size:10px!important;color:var(--t1)!important;margin:0!important;display:block}
+.ddim-modal .ddim-inp,.ddim-modal .ddim-row input,.ddim-modal .ddim-row select{width:auto!important;margin:0!important;padding:3px 6px!important;font:10px var(--mono)!important;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);border-radius:2px}
+.ddim-row input[type=number]{width:90px!important}
+.ddim-row input[type=text]{width:120px!important}
+.ddim-row input[type=color]{width:42px!important;height:22px;padding:1px 2px!important;cursor:pointer}
+.ddim-row input[type=checkbox]{width:14px!important;height:14px;accent-color:var(--acc)}
+.ddim-row select{min-width:150px;max-width:230px}
+.ddim-inp.bad{border-color:var(--red)!important;background:#3f1e1e!important}
+.ddim-var{margin-left:auto;font:8px var(--mono);color:var(--t2);border:1px solid var(--bdr);border-radius:2px;padding:0 4px;white-space:nowrap}
+.ddim-hint{font-size:9px;color:var(--t2);margin:-1px 0 3px 178px;line-height:1.4}
+#ov-dimstyle .modal select.ddim-inp{width:100%!important}
+@media (max-width:900px){.ddim-mgr,.ddim-editbody{flex-direction:column}.ddim-col-list,.ddim-col-btns,.ddim-editprev{width:auto}.ddim-col-btns{flex-direction:row;flex-wrap:wrap}}
 
 /* ── UNITS DIALOG ─────────────────────────────────────────── */
 #ov-units .modal{min-width:440px;max-width:96vw;padding:0;overflow:hidden;}
@@ -327,7 +354,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.1 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.3 · Uso Educacional</span>
   <button onclick="showAbout()" style="background:none;border:1px solid var(--bdr);color:var(--t2);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;" title="Sobre / Licença">ⓘ Sobre</button>
 </div>
 
@@ -564,6 +591,10 @@ table#lg-tbl input:focus{background:#1a2a3a;}
       <div class="prow"><span class="plbl">Tipo:</span>
         <select class="ps" id="propLT" onchange="ltQuickApply(this.value)" style="max-width:120px"></select>
       </div>
+      <div class="prow" title="Estilo das novas cotas. Com cotas selecionadas, aplica o estilo a elas. DDIM abre o gerenciador.">
+        <span class="plbl">Est. cota:</span>
+        <span style="display:flex;gap:3px;align-items:center"><select class="ps" id="propDS" onchange="propDimStyleChange(this.value)" style="max-width:96px"></select><span class="lyico" style="cursor:pointer" onclick="showDimStyle()" title="DDIM">⚙</span></span>
+      </div>
     </div>
     <div class="rph">◈ SNAP &amp; MODOS</div>
     <div class="togg">
@@ -622,7 +653,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.1 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.3 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -644,16 +675,35 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <div class="mact"><button class="btn s" onclick="closeOv('ov-template')">Cancelar</button><button class="btn p" onclick="doTemplate()">Inserir</button></div>
 </div></div>
 
-<div class="ov" id="ov-export"><div class="modal">
+<div class="ov" id="ov-export"><div class="modal" style="min-width:380px;max-width:460px">
   <h3>Exportar</h3>
-  <label>Formato:</label>
-  <select id="ef">
+  <label for="ef">Formato:</label>
+  <select id="ef" onchange="expFmtChange()">
+    <option value="dxf">DXF 2000 — AutoCAD, ZWCAD, BricsCAD (recomendado)</option>
+    <option value="dwg">DWG — via DXF 2000 (ver instruções)</option>
+    <option value="dxf12">DXF R12 — compatibilidade máxima (LibreCAD, QGIS, CNC)</option>
     <option value="json">JSON (EduCAD — editável)</option>
-    <option value="dxf">DXF R12 — AutoCAD, LibreCAD, QGIS</option>
     <option value="svg">SVG (mm, escala 1:1)</option>
     <option value="png">PNG (imagem da tela)</option></select>
-  <div style="margin:6px 0;padding:6px;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:3px;font-size:9px;color:var(--acc2)"><b>Nota:</b> DWG é um formato proprietário e não é gerado. O DXF R12 abre no AutoCAD (e pode ser salvo como DWG por ele), no LibreCAD e no QGIS. Cotas e hachuras são exportadas como geometria simples (linhas, sólidos e textos).</div>
+  <div id="ef-dxfopts" class="ef-opts">
+    <label class="ef-chk"><input type="checkbox" id="dxf-dims" checked> Cotas editáveis (entidades DIMENSION com estilos do DDIM)</label>
+    <label class="ef-chk"><input type="checkbox" id="dxf-hatch" checked> Hachuras como entidade HATCH</label>
+  </div>
+  <div id="ef-note" class="ef-note"></div>
   <div class="mact"><button class="btn s" onclick="closeOv('ov-export')">Cancelar</button><button class="btn p" onclick="doExport()">Exportar</button></div>
+</div></div>
+
+<!-- DWG: instruções de conversão -->
+<div class="ov" id="ov-dwg"><div class="modal" style="max-width:520px">
+  <h3>Exportação para DWG</h3>
+  <div class="ef-note" style="display:block;margin-bottom:10px">Foi baixado o arquivo <b id="dwg-file"></b> no formato <b>DXF 2000</b>, que contém todo o desenho (camadas, cores, tipos e espessuras de linha, cotas e hachuras). Para obter o <b>.DWG</b>, converta-o por um dos caminhos abaixo:</div>
+  <ol class="dwg-steps">
+    <li><b>AutoCAD ou ZWCAD</b>: abra o arquivo .dxf (Abrir → tipo de arquivo DXF) e use <b>Salvar como → Desenho (*.dwg)</b>, escolhendo a versão desejada.</li>
+    <li><b>ODA File Converter</b> (gratuito, Windows/macOS/Linux): selecione a pasta de entrada com o .dxf, a pasta de saída, o formato de saída <b>DWG</b> e a versão (ex.: ACAD2018), e clique em Iniciar. Converte vários arquivos de uma vez.</li>
+    <li><b>BricsCAD, DraftSight ou QCAD Pro</b>: também abrem o DXF e salvam em DWG.</li>
+  </ol>
+  <div class="ef-note" style="display:block">Por que não DWG direto? O DWG é um formato binário fechado. Gravá-lo no navegador exigiria uma biblioteca comercial licenciada (ODA) ou uma biblioteca GPL experimental, incompatível com a licença MIT do EduCAD. O DXF é o formato de intercâmbio documentado pela própria Autodesk e é aberto diretamente pelo AutoCAD e pelo ZWCAD.</div>
+  <div class="mact"><button class="btn p" onclick="closeOv('ov-dwg')">Entendi</button></div>
 </div></div>
 
 <div class="ov" id="ov-text"><div class="modal">
@@ -887,169 +937,60 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   </div>
 </div></div>
 
-<!-- DIMSTYLE DIALOG -->
-<div class="ov" id="ov-dimstyle"><div class="modal">
-  <h3>⚙ Gerenciador de Estilos de Cota — DIMSTYLE</h3>
-  <div class="dsp-body">
-
-    <!-- Lista de estilos -->
-    <div class="dsp-list">
-      <div class="dsp-list-inner" id="dsp-list"></div>
-      <div class="dsp-list-btns">
-        <button class="dsp-primary" onclick="dspNew()">＋ Novo</button>
-        <button onclick="dspRename()">✎ Renomear</button>
-        <button onclick="dspSetCurrent()">★ Usar padrão</button>
-        <button onclick="dspDelete()">✕ Excluir</button>
-      </div>
+<!-- DDIM — GERENCIADOR DE ESTILOS DE COTA (v6.2) -->
+<div class="ov" id="ov-dimstyle"><div class="modal ddim-modal" role="dialog" aria-labelledby="ddim-h">
+  <h3 id="ddim-h">Gerenciador de estilos de cota <span class="ddim-cmd">DDIM / DIMSTYLE</span></h3>
+  <div class="ddim-mgr">
+    <div class="ddim-col-list">
+      <div class="ddim-curline">Estilo atual: <b id="ddim-cur"></b></div>
+      <div class="ddim-lbl">Estilos:</div>
+      <div class="ddim-list" id="ddim-list"></div>
+      <div class="ddim-lbl">Listar:</div>
+      <select id="ddim-filter" class="ddim-inp" onchange="ddimRenderManager()">
+        <option value="all">Todos os estilos</option>
+        <option value="used">Estilos em uso</option>
+      </select>
     </div>
-
-    <!-- Editor -->
-    <div class="dsp-editor">
-      <div class="dsp-tabs">
-        <div class="dsp-tab on" onclick="dspTab(0)">Linhas</div>
-        <div class="dsp-tab"    onclick="dspTab(1)">Setas</div>
-        <div class="dsp-tab"    onclick="dspTab(2)">Texto</div>
-        <div class="dsp-tab"    onclick="dspTab(3)">Unidades</div>
-      </div>
-      <canvas class="dsp-preview" id="dsp-preview" width="460" height="70"></canvas>
-
-      <!-- Pane 0: Linhas -->
-      <div class="dsp-pane on" id="dsp-pane-0">
-
-        <!-- Coluna esq: Dimension Lines -->
-        <div class="dsp-field"><label>Cor da cota:</label>
-          <input class="dsp-inp" type="color" id="dsp-col" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Espessura (mm):</label>
-          <select class="dsp-inp" id="dsp-lw" onchange="dspChange()">
-            <option value="0.18">0.18</option><option value="0.25">0.25</option>
-            <option value="0.35">0.35</option><option value="0.5">0.50</option>
-            <option value="0.7">0.70</option><option value="1">1.00</option>
-          </select></div>
-        <div class="dsp-field"><label>Além da linha ext. (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-beyond" value="1.5" min="0" max="20" step="0.25" oninput="dspChange()"></div>
-
-        <!-- Espaçador para alinhar coluna da direita -->
-        <div></div>
-
-        <!-- Separador: Deslocamento das Linhas de Extensão -->
-        <div style="grid-column:1/-1;margin:6px 0 2px;padding:5px 6px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;font-size:9px;color:var(--t2);font-weight:bold;letter-spacing:.4px;">
-          Deslocamento das Linhas de Extensão
-        </div>
-
-        <!-- Origin -->
-        <div class="dsp-field">
-          <label>Origem (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-origin" value="0.625"
-                 min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
-                 title="Distância entre o objeto cotado e o início da linha de extensão">
-        </div>
-
-        <!-- Dimension line -->
-        <div class="dsp-field">
-          <label>Linha de cota (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-ext-dimline" value="1.25"
-                 min="0" max="20" step="0.125" oninput="dspChange();dspExtToggle()"
-                 title="Afastamento da linha de extensão além da linha de cota">
-        </div>
-
-        <!-- Fixed length checkbox (largura total) -->
-        <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:5px;margin-top:2px;">
-          <label style="display:flex;align-items:center;gap:7px;font-size:10px;color:var(--t1);cursor:pointer;">
-            <input type="checkbox" id="dsp-ext-fixed" onchange="dspChange();dspExtToggle()"
-                   style="accent-color:var(--acc);width:13px;height:13px;cursor:pointer;">
-            Comprimento fixo das extensões
-          </label>
-          <div class="dsp-field" id="dsp-ext-fixed-row" style="opacity:0.35;pointer-events:none;">
-            <label>Comprimento (mm):</label>
-            <input class="dsp-inp" type="number" id="dsp-ext-fixlen" value="1"
-                   min="0.1" max="50" step="0.25" oninput="dspChange()"
-                   title="Comprimento fixo das linhas de extensão">
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Pane 1: Setas (2 colunas) -->
-      <div class="dsp-pane" id="dsp-pane-1">
-        <div class="dsp-field"><label>Tipo de seta:</label>
-          <select class="dsp-inp" id="dsp-arrow-type" onchange="dspChange()">
-            <option value="filled">Preenchida ▶</option>
-            <option value="open">Aberta →</option>
-            <option value="tick">Traço ╱</option>
-            <option value="dot">Ponto ●</option>
-            <option value="none">Nenhuma</option>
-          </select></div>
-        <div class="dsp-field"><label>Tamanho seta (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-arrow-size" value="2.5" min="0.5" max="10" step="0.5" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Marca de centro:</label>
-          <select class="dsp-inp" id="dsp-center-mark" onchange="dspChange()">
-            <option value="none">Nenhuma</option>
-            <option value="mark">Marca</option>
-            <option value="line">Linha</option>
-          </select></div>
-        <div class="dsp-field"><label>Tamanho marca (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-center-size" value="2" min="0.5" max="10" step="0.5" oninput="dspChange()"></div>
-      </div>
-
-      <!-- Pane 2: Texto (2 colunas) -->
-      <div class="dsp-pane" id="dsp-pane-2">
-        <div class="dsp-field"><label>Fonte:</label>
-          <select class="dsp-inp" id="dsp-font" onchange="dspChange()">
-            <option value="Consolas,monospace">Consolas</option>
-            <option value="Arial,sans-serif">Arial</option>
-            <option value="'Courier New',monospace">Courier New</option>
-            <option value="'Times New Roman',serif">Times New Roman</option>
-          </select></div>
-        <div class="dsp-field"><label>Altura texto (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-txt-h" value="2.5" min="1" max="20" step="0.5" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Cor do texto:</label>
-          <input class="dsp-inp" type="color" id="dsp-txt-col" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Posição vertical:</label>
-          <select class="dsp-inp" id="dsp-txt-pos" onchange="dspChange()">
-            <option value="above">Acima</option>
-            <option value="center">Centrado</option>
-            <option value="below">Abaixo</option>
-          </select></div>
-        <div class="dsp-field"><label>Alinhamento:</label>
-          <select class="dsp-inp" id="dsp-txt-align" onchange="dspChange()">
-            <option value="aligned">Alinhado</option>
-            <option value="horizontal">Horizontal</option>
-          </select></div>
-        <div class="dsp-field"><label>Offset do texto (mm):</label>
-          <input class="dsp-inp" type="number" id="dsp-txt-gap" value="0.8" min="0" max="5" step="0.2" oninput="dspChange()"></div>
-      </div>
-
-      <!-- Pane 3: Unidades (2 colunas) -->
-      <div class="dsp-pane" id="dsp-pane-3">
-        <div class="dsp-field"><label>Unidade linear:</label>
-          <select class="dsp-inp" id="dsp-unit" onchange="dspChange()">
-            <option value="mm">Milímetros (mm)</option>
-            <option value="cm">Centímetros (cm)</option>
-            <option value="m">Metros (m)</option>
-            <option value="in">Polegadas (in)</option>
-            <option value="">Sem unidade</option>
-          </select></div>
-        <div class="dsp-field"><label>Casas decimais:</label>
-          <select class="dsp-inp" id="dsp-prec" onchange="dspChange()">
-            <option value="0">0</option><option value="1">0.0</option>
-            <option value="2">0.00</option><option value="3">0.000</option>
-            <option value="4">0.0000</option>
-          </select></div>
-        <div class="dsp-field"><label>Fator de escala:</label>
-          <input class="dsp-inp" type="number" id="dsp-scale" value="1" min="0.001" max="1000" step="0.1" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Escala geral (DIMSCALE):</label>
-          <input class="dsp-inp" type="number" id="dsp-dimscale" value="1" min="0.1" max="100" step="0.1" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Prefixo:</label>
-          <input class="dsp-inp" type="text" id="dsp-prefix" placeholder="ex: L=" maxlength="10" oninput="dspChange()"></div>
-        <div class="dsp-field"><label>Sufixo adicional:</label>
-          <input class="dsp-inp" type="text" id="dsp-suffix" placeholder="ex: ∅" maxlength="10" oninput="dspChange()"></div>
-      </div>
+    <div class="ddim-col-prev">
+      <div class="ddim-lbl" id="ddim-prev-title">Pré-visualização</div>
+      <canvas id="ddim-preview" class="ddim-preview"></canvas>
+      <div class="ddim-lbl">Descrição:</div>
+      <div class="ddim-desc" id="ddim-desc"></div>
+    </div>
+    <div class="ddim-col-btns">
+      <button class="btn s" id="ddim-setcur" onclick="ddimSetCurrent()" title="Novas cotas usarão este estilo">Definir atual</button>
+      <button class="btn p" onclick="ddimNew()">Novo…</button>
+      <button class="btn s" onclick="ddimModify()" title="Alterações atualizam todas as cotas deste estilo">Modificar…</button>
+      <button class="btn s" onclick="ddimRename()">Renomear…</button>
+      <button class="btn s" id="ddim-del" onclick="ddimDelete()">Excluir</button>
+      <div class="ddim-sp"></div>
+      <button class="btn s" id="ddim-apply" onclick="ddimApplySel()" title="Atribui o estilo selecionado às cotas selecionadas no desenho">Aplicar à seleção</button>
     </div>
   </div>
-  <div class="dsp-foot">
-    <button class="btn s" onclick="closeOv('ov-dimstyle')">Fechar</button>
-    <button class="btn p" onclick="dspApply()">✔ Aplicar e fechar</button>
+  <div class="mact ddim-foot"><button class="btn p" onclick="closeOv('ov-dimstyle')">Fechar</button></div>
+</div></div>
+
+<!-- DDIM — NOVO ESTILO -->
+<div class="ov" id="ov-ddimnew"><div class="modal" style="min-width:320px" role="dialog">
+  <h3>Criar novo estilo de cota</h3>
+  <label for="ddimn-name">Nome do novo estilo:</label><input id="ddimn-name" onkeydown="if(event.key==='Enter'){event.preventDefault();ddimNewContinue();}">
+  <label for="ddimn-base">Começar com:</label><select id="ddimn-base"></select>
+  <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ddimn-cur" style="width:auto;margin:0"> Definir como estilo atual</label>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-ddimnew')">Cancelar</button><button class="btn p" onclick="ddimNewContinue()">Continuar…</button></div>
+</div></div>
+
+<!-- DDIM — EDITOR DO ESTILO (abas) -->
+<div class="ov" id="ov-dimedit"><div class="modal ddim-modal ddim-edit" role="dialog" aria-labelledby="ddime-title">
+  <h3 id="ddime-title">Modificar estilo de cota</h3>
+  <div class="ddim-tabs" id="ddime-tabs"></div>
+  <div class="ddim-editbody">
+    <div class="ddim-pane" id="ddime-pane"></div>
+    <div class="ddim-editprev">
+      <canvas id="ddime-preview" class="ddim-preview"></canvas>
+      <div class="ddim-note">As siglas à direita dos campos são as variáveis equivalentes do AutoCAD. Tamanhos em mm do desenho, multiplicados pela escala global.</div>
+    </div>
   </div>
+  <div class="mact ddim-foot"><button class="btn s" onclick="ddimEditCancel()">Cancelar</button><button class="btn p" onclick="ddimEditOK()">OK</button></div>
 </div></div>
 
 <!-- ARRAY DIALOG -->
@@ -1119,7 +1060,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.1 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.3 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1235,7 +1176,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v6.1 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v6.3 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1294,7 +1235,7 @@ window.addEventListener('load', function() {
   S.vp.y = S.cD.height/2;
   bindEv();
   diInit();
-  loadDemo();
+  startBlank();
   updLayerUI();
   updLayerSel();
   // Popular selector de tipos de linha no painel de propriedades
@@ -1305,10 +1246,11 @@ window.addEventListener('load', function() {
     }).join('');
   }
   updLTSel();
-  log('EduCAD 2D v6.1 — Software Educacional Livre (Licença MIT)','inf');
+  updDimStyleSel();
+  log('EduCAD 2D v6.3 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
-  log('Novos: TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  AR=Array','inf');
+  log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
   log('Atalhos: L C R A E PL T D M CO RO MI SC O TR EX F CHA AR  |  F7=Grade F8=Ortho F9=Snap','inf');
   setTool('select');
 });
@@ -1405,10 +1347,7 @@ function hitEnt(e,wx,wy) {
     case 'ell':  var lp=ellLocal(e,wx,wy),nx=lp.x/e.rx,ny=lp.y/e.ry; return Math.abs(Math.sqrt(nx*nx+ny*ny)-1)*Math.min(e.rx,e.ry)<t;
     case 'pl':case 'spline': for(var i=0;i<e.pts.length-1;i++) if(segD(wx,wy,e.pts[i].x,e.pts[i].y,e.pts[i+1].x,e.pts[i+1].y)<t) return true; return false;
     case 'txt':  var lt=ellLocal({cx:e.x,cy:e.y,rot:e.rot},wx,wy); return lt.x>=-t&&lt.x<=String(e.txt).length*e.h*.6+t&&lt.y>=-t&&lt.y<=e.h+t;
-    case 'dim':{var _g=dimLinePoints(e);return _g?segD(wx,wy,_g.d1x,_g.d1y,_g.d2x,_g.d2y)<t:false;}
-    case 'dimr': return segD(wx,wy,e.cx,e.cy,e.ex,e.ey)<t;
-    case 'dimd': return segD(wx,wy,2*e.cx-e.ex,2*e.cy-e.ey,e.ex,e.ey)<t;
-    case 'dima': return segD(wx,wy,e.vx,e.vy,e.x2,e.y2)<t;
+    case 'dim':case 'dimr':case 'dimd':case 'dima': return dimHit(e,wx,wy,t);
     case 'hatch':return wx>=e.x&&wx<=e.x+e.w&&wy>=e.y&&wy<=e.y+e.h;
     default: return false;
   }
@@ -1734,8 +1673,10 @@ function handleClick(pt) {
         logp('DIMA: clique para confirmar:');
       } else if(ds.phase==='pos'){
         var v2=ds.pts[0],pa=ds.pts[1],pb=ds.pts[2];
-        addE({tp:'dima',x1:pa.x,y1:pa.y,vx:v2.x,vy:v2.y,x2:pb.x,y2:pb.y,val:ds.angVal,unit:'°',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2});
-        log('DIMA: '+ds.angVal+'°','ok'); S.ds=null; logp('DIMA: vértice:');
+        var _ae={tp:'dima',x1:pa.x,y1:pa.y,vx:v2.x,vy:v2.y,x2:pb.x,y2:pb.y,px:pt.x,py:pt.y,unit:'°',col:curDimStyle().col,dimStyle:S.dimCurrent,ly:2};
+        _ae.val=dimMeasure(_ae).toFixed(4);
+        addE(_ae);
+        log('DIMA: '+dimAngText(parseFloat(_ae.val),curDimStyle()),'ok'); S.ds=null; logp('DIMA: vértice:');
       }
       break;
 
@@ -2026,7 +1967,7 @@ function transl(e,dx,dy){
     case 'txt': e.x+=dx;e.y+=dy; break;
     case 'dim': e.x1+=dx;e.y1+=dy;e.x2+=dx;e.y2+=dy;if(e.px!==undefined){e.px+=dx;e.py+=dy;}else{e.off+=dy;}break;
     case 'dimr':case 'dimd': e.cx+=dx;e.cy+=dy;e.ex+=dx;e.ey+=dy; break;
-    case 'dima': e.x1+=dx;e.y1+=dy;e.vx+=dx;e.vy+=dy;e.x2+=dx;e.y2+=dy; break;
+    case 'dima': e.x1+=dx;e.y1+=dy;e.vx+=dx;e.vy+=dy;e.x2+=dx;e.y2+=dy;if(e.px!==undefined){e.px+=dx;e.py+=dy;} break;
   }
 }
 
@@ -2112,6 +2053,7 @@ function xformE(e,fn,info){
       var a=P(e.x1,e.y1),v=P(e.vx,e.vy),b=P(e.x2,e.y2);
       if(info.kind==='mir'){var t2=a;a=b;b=t2;}
       e.x1=a.x;e.y1=a.y;e.vx=v.x;e.vy=v.y;e.x2=b.x;e.y2=b.y;
+      if(e.px!==undefined){var pp=P(e.px,e.py);e.px=pp.x;e.py=pp.y;}
     }break;
   }
 }
@@ -2299,10 +2241,7 @@ function bbox(e){
     case 'rect':case 'hatch': return{x:e.x,y:e.y,w:e.w,h:e.h};
     case 'ell': return ptsBox(ellPoints(e,36));
     case 'txt': return ptsBox(txtCorners(e));
-    case 'dim':{var g=dimLinePoints(e);var dp=[{x:e.x1,y:e.y1},{x:e.x2,y:e.y2}];if(g)dp.push({x:g.d1x,y:g.d1y},{x:g.d2x,y:g.d2y});return ptsBox(dp);}
-    case 'dimr': return ptsBox([{x:e.cx,y:e.cy},{x:e.ex,y:e.ey}]);
-    case 'dimd': return ptsBox([{x:2*e.cx-e.ex,y:2*e.cy-e.ey},{x:e.ex,y:e.ey}]);
-    case 'dima': return ptsBox([{x:e.vx,y:e.vy},{x:e.x1,y:e.y1},{x:e.x2,y:e.y2}]);
+    case 'dim':case 'dimr':case 'dimd':case 'dima': return dimBox(e);
     case 'spline':case 'pl': if(!e.pts.length)return null;var mx=e.pts[0].x,my=e.pts[0].y,Mx=mx,My=my;for(var i=0;i<e.pts.length;i++){mx=Math.min(mx,e.pts[i].x);my=Math.min(my,e.pts[i].y);Mx=Math.max(Mx,e.pts[i].x);My=Math.max(My,e.pts[i].y);}return{x:mx,y:my,w:Mx-mx,h:My-my};
     default: return null;
   }
@@ -2449,13 +2388,10 @@ function drawE(ctx,e,sel){
           ctx.stroke();
         }
       } else {
-        // Linhas paralelas (padrão e tipos derivados)
+        // Linhas paralelas: ângulo medido no sentido anti-horário (como no AutoCAD e na exportação)
         var dashPat=ht==='dashed'?[4,3]:ht==='dotted'?[1,3]:[];
         ctx.setLineDash(dashPat);
-        var sinR=Math.sin(rad)||0.001;
-        for(var d=-pw-ph;d<pw+ph;d+=sp2){
-          hLine(a.x+d/sinR,a.y,a.x+d/sinR+Math.cos(rad)*(pw+ph)*2,a.y+Math.sin(rad)*(pw+ph)*2);
-        }
+        hatchLines({x:e.x,y:e.y,w:e.w,h:e.h},e.ang!==undefined?e.ang:45,Math.max(e.sp||5,1/sc)).forEach(function(q){var p1=w2s(q[0],q[1]),p2=w2s(q[2],q[3]);hLine(p1.x,p1.y,p2.x,p2.y);});
         ctx.setLineDash([]);
       }
       ctx.restore();
@@ -2464,10 +2400,7 @@ function drawE(ctx,e,sel){
       ctx.beginPath();ctx.rect(a.x,a.y-ph,pw,ph);ctx.stroke();
       break;
     }
-    case 'dim':  drawDim(ctx,e);  break;
-    case 'dimr': drawDimR(ctx,e); break;
-    case 'dimd': drawDimD(ctx,e); break;
-    case 'dima': drawDimA(ctx,e); break;
+    case 'dim':case 'dimr':case 'dimd':case 'dima': drawDimEnt(ctx,e,sel); break;
   }
   ctx.restore();
 }
@@ -2562,115 +2495,6 @@ function dimLinearDir(p1,p2,cursor){
   return absOffH>=absOffV?'h':'v';
 }
 
-function drawDim(ctx,e){
-  var g=dimLinePoints(e); if(!g) return;
-  var d1x=g.d1x,d1y=g.d1y,d2x=g.d2x,d2y=g.d2y;
-
-  // Obter estilo: cota pode ter estilo próprio (e.dimStyle) ou usar o padrão
-  var st=(e.dimStyle&&dspGetStyle(e.dimStyle))||curDimStyle();
-  var ds=st.dimscale||1, sc=S.vp.sc;
-
-  ctx.save();
-  ctx.strokeStyle=st.col;ctx.fillStyle=st.col;
-  ctx.lineWidth=st.lw*sc*ds*0.1; // lw em mm → pixels
-  ctx.setLineDash([]);ctx.shadowBlur=0;
-
-  var sp1=w2s(e.x1,e.y1),sp2=w2s(e.x2,e.y2);
-  var sd1=w2s(d1x,d1y),  sd2=w2s(d2x,d2y);
-
-  // ── Linhas de extensão ──────────────────────────────────────────────────────
-  // Modo normal: começam no objeto (com gap de origem) e terminam além da linha de cota.
-  // Modo Fixed Length (AutoCAD): comprimento fixo medido A PARTIR DA LINHA DE COTA
-  //   para o lado do objeto. A linha tem sempre o mesmo tamanho, independente de onde
-  //   o objeto está. Termina além da linha de cota com o 'beyond' padrão.
-  var EXT_BEYOND=(st.extDimline!==undefined?st.extDimline:st.extBeyond||1.5)*sc*ds*0.1;
-
-  function drawExt(ox,oy,tx,ty){
-    // (ox,oy) = ponto no objeto cotado (sp1 ou sp2)
-    // (tx,ty) = ponto correspondente na linha de cota (sd1 ou sd2)
-    var dx=tx-ox, dy=ty-oy, el=Math.hypot(dx,dy);
-    if(el<0.5) return;
-    var ux=dx/el, uy=dy/el; // unitário da extensão (objeto → linha de cota)
-
-    var startX, startY, endX, endY;
-
-    if(st.extFixed){
-      // Fixed Length: a extensão começa a fixLen acima da linha de cota
-      // (na direção do objeto) e termina EXT_BEYOND além da linha de cota.
-      var fixPx=(st.extFixLen||1)*sc*ds*0.1;
-      // Ponto de início: recua fixPx a partir da linha de cota na direção do objeto
-      startX=tx-ux*fixPx;  startY=ty-uy*fixPx;
-      // Ponto de fim: avança EXT_BEYOND além da linha de cota
-      endX=tx+ux*EXT_BEYOND; endY=ty+uy*EXT_BEYOND;
-    } else {
-      // Normal: gap de origem + vai até além da linha de cota
-      var GAP=(st.extOrigin!==undefined?st.extOrigin:st.extOffset||0.5)*sc*ds*0.1;
-      // Início: avança GAP a partir do objeto
-      startX=ox+ux*GAP;  startY=oy+uy*GAP;
-      // Fim: avança EXT_BEYOND além da linha de cota
-      endX=tx+ux*EXT_BEYOND; endY=ty+uy*EXT_BEYOND;
-    }
-
-    ctx.beginPath();ctx.moveTo(startX,startY);ctx.lineTo(endX,endY);ctx.stroke();
-  }
-  drawExt(sp1.x,sp1.y,sd1.x,sd1.y);
-  drawExt(sp2.x,sp2.y,sd2.x,sd2.y);
-
-  // Linha de cota
-  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
-
-  // Setas
-  var AW=(st.arrowSize||2.5)*sc*ds*0.1, AH=AW*0.4;
-  var da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
-  function drawArrow(px,py,ang){
-    if(st.arrowType==='none') return;
-    if(st.arrowType==='tick'){ctx.beginPath();ctx.moveTo(px-AW*0.7,py+AW*0.7);ctx.lineTo(px+AW*0.7,py-AW*0.7);ctx.stroke();return;}
-    if(st.arrowType==='dot'){ctx.beginPath();ctx.arc(px,py,AW*0.5,0,Math.PI*2);ctx.fill();return;}
-    if(st.arrowType==='open'){
-      ctx.beginPath();
-      ctx.moveTo(px-AW*Math.cos(ang)+AH*Math.sin(ang),py-AW*Math.sin(ang)-AH*Math.cos(ang));
-      ctx.lineTo(px,py);
-      ctx.lineTo(px-AW*Math.cos(ang)-AH*Math.sin(ang),py-AW*Math.sin(ang)+AH*Math.cos(ang));
-      ctx.stroke();return;
-    }
-    // filled (default)
-    ctx.beginPath();ctx.moveTo(px,py);
-    ctx.lineTo(px-AW*Math.cos(ang)+AH*Math.sin(ang),py-AW*Math.sin(ang)-AH*Math.cos(ang));
-    ctx.lineTo(px-AW*Math.cos(ang)-AH*Math.sin(ang),py-AW*Math.sin(ang)+AH*Math.cos(ang));
-    ctx.closePath();ctx.fill();
-  }
-  drawArrow(sd1.x,sd1.y,da+Math.PI);
-  drawArrow(sd2.x,sd2.y,da);
-
-  // Valor formatado com o estilo
-  var rawMM=parseFloat(e.val)||Math.hypot(e.x2-e.x1,e.y2-e.y1);
-  var valStr=dimValStr(rawMM,st);
-
-  // Texto
-  var txtPx=Math.max(6,(st.txtH||2.5)*sc*ds*0.1);
-  ctx.font='bold '+txtPx+'px '+(st.font||'Consolas,monospace');
-  ctx.fillStyle=st.txtCol||st.col;
-  var mx=(sd1.x+sd2.x)/2, my=(sd1.y+sd2.y)/2;
-  var ta=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
-  if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
-
-  var txtGapPx=(st.txtGap||0.8)*sc*ds*0.1;
-  var offY=st.txtPos==='below'?(txtPx+txtGapPx):st.txtPos==='center'?txtPx*0.35:-(txtGapPx+2);
-
-  if(st.txtAlign==='aligned'){
-    ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
-    ctx.textAlign='center';ctx.fillText(valStr,0,offY);
-    ctx.restore();
-  } else {
-    ctx.textAlign='center';ctx.fillText(valStr,mx,my+offY);
-  }
-
-  ctx.restore();
-}
-function drawDimR(ctx,e){ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;var c=w2s(e.cx,e.cy),ep=w2s(e.ex,e.ey);ctx.beginPath();ctx.moveTo(c.x,c.y);ctx.lineTo(ep.x,ep.y);ctx.stroke();ctx.font='10px Consolas,monospace';ctx.fillText('R'+e.val,ep.x+5,ep.y-5);ctx.restore();}
-function drawDimD(ctx,e){ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;var c=w2s(e.cx,e.cy),ep=w2s(e.ex,e.ey),op=w2s(2*e.cx-e.ex,2*e.cy-e.ey);ctx.beginPath();ctx.moveTo(op.x,op.y);ctx.lineTo(ep.x,ep.y);ctx.stroke();ctx.font='10px Consolas,monospace';ctx.fillText('⌀'+e.val,(op.x+ep.x)/2-10,(op.y+ep.y)/2-6);ctx.restore();}
-function drawDimA(ctx,e){ctx.save();ctx.strokeStyle=e.col||'#f0c040';ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=.5;ctx.setLineDash([]);ctx.shadowBlur=0;var v=w2s(e.vx,e.vy),p1=w2s(e.x1,e.y1),p2=w2s(e.x2,e.y2);ctx.beginPath();ctx.moveTo(v.x,v.y);ctx.lineTo(p1.x,p1.y);ctx.stroke();ctx.beginPath();ctx.moveTo(v.x,v.y);ctx.lineTo(p2.x,p2.y);ctx.stroke();var r=40,a1=Math.atan2(p1.y-v.y,p1.x-v.x),a2=Math.atan2(p2.y-v.y,p2.x-v.x);ctx.beginPath();ctx.arc(v.x,v.y,r,a1,a2);ctx.stroke();ctx.font='10px Consolas,monospace';var ma=(a1+a2)/2;ctx.fillText(e.val+'°',v.x+Math.cos(ma)*(r+8),v.y+Math.sin(ma)*(r+8));ctx.restore();}
-
 function drawDidactic(ctx,e){
   ctx.save();ctx.font='9px Consolas';ctx.fillStyle='#4a5880';ctx.setLineDash([]);ctx.shadowBlur=0;
   switch(e.tp){
@@ -2758,7 +2582,7 @@ function drawPreview(ctx){
         var p1=ds.pts[0],p2=ds.pts[1];
         // Atualizar direção em tempo real conforme cursor
         ds.dimDir=dimLinearDir(p1,p2,hp);
-        drawDimLinearPreview(ctx,p1,p2,hp,ds.dimDir);
+        drawDimTemp(ctx,{tp:'dim',subtp:'linear',dimDir:ds.dimDir,x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:hp.x,py:hp.y});
       }
       break;
 
@@ -2774,7 +2598,7 @@ function drawPreview(ctx){
       } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
         // Cota alinhada: preview paralela ao segmento
         var p1=ds.pts[0],p2=ds.pts[1];
-        drawDimPreview(ctx,p1,p2,hp,'#4ec87a');
+        drawDimTemp(ctx,{tp:'dim',subtp:'aligned',x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:hp.x,py:hp.y});
       }
       break;
     case 'dimr':case 'dimd':
@@ -2789,22 +2613,9 @@ function drawPreview(ctx){
         ctx.fillStyle='#f0c040';ctx.font='10px Consolas';
         ctx.fillText(prefix+val+'mm',w2s(hp.x,hp.y).x+8,w2s(hp.x,hp.y).y-6);
       } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===2){
-        // Preview linha de raio/diâmetro apontando para cursor
-        var c=ds.pts[0],ep2=ds.pts[1];
-        var r=Math.hypot(ep2.x-c.x,ep2.y-c.y);
-        var cs=w2s(c.x,c.y),eps=w2s(hp.x,hp.y);
-        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([]);ctx.globalAlpha=.85;
-        ctx.beginPath();ctx.moveTo(cs.x,cs.y);ctx.lineTo(eps.x,eps.y);ctx.stroke();
-        var prefix2=S.tool==='dimd'?'⌀':'R';
-        var val2=S.tool==='dimd'?(r*2).toFixed(2):r.toFixed(2);
-        // Seta na ponta
-        var ang2=Math.atan2(eps.y-cs.y,eps.x-cs.x);
-        ctx.beginPath();ctx.moveTo(eps.x,eps.y);
-        ctx.lineTo(eps.x-10*Math.cos(ang2-0.3),eps.y-10*Math.sin(ang2-0.3));
-        ctx.lineTo(eps.x-10*Math.cos(ang2+0.3),eps.y-10*Math.sin(ang2+0.3));
-        ctx.closePath();ctx.fill();
-        ctx.fillStyle='#f0c040';ctx.font='bold 10px Consolas';
-        ctx.fillText(prefix2+val2+'mm',eps.x+8,eps.y-6);
+        // Pré-visualização com o estilo atual
+        var c=ds.pts[0],ep2=ds.pts[1],r=Math.hypot(ep2.x-c.x,ep2.y-c.y);
+        drawDimTemp(ctx,{tp:S.tool,cx:c.x,cy:c.y,ex:hp.x,ey:hp.y,val:String(S.tool==='dimd'?r*2:r)});
         ctx.globalAlpha=1;
       }
       break;
@@ -2866,18 +2677,9 @@ function drawPreview(ctx){
         ctx.globalAlpha=1;
       } else if(ds&&ds.phase==='pos'&&ds.pts&&ds.pts.length===3){
         var v3=ds.pts[0],pa3=ds.pts[1],pb3=ds.pts[2];
-        var sv=w2s(v3.x,v3.y),sa=w2s(pa3.x,pa3.y),sb=w2s(pb3.x,pb3.y);
-        var r3=Math.hypot(hp.x-v3.x,hp.y-v3.y)*S.vp.sc;
-        var a1b=Math.atan2(sa.y-sv.y,sa.x-sv.x),a2b=Math.atan2(sb.y-sv.y,sb.x-sv.x);
-        ctx.strokeStyle='#f0c040';ctx.lineWidth=.8;ctx.setLineDash([]);ctx.globalAlpha=.85;
-        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(sa.x,sa.y);ctx.stroke();
-        ctx.beginPath();ctx.moveTo(sv.x,sv.y);ctx.lineTo(sb.x,sb.y);ctx.stroke();
-        ctx.beginPath();ctx.arc(sv.x,sv.y,r3,a1b,a2b);ctx.stroke();
-        ctx.fillStyle='#f0c040';ctx.font='bold 10px Consolas';
-        var ma3=(a1b+a2b)/2;
-        ctx.fillText(ds.angVal+'°',sv.x+Math.cos(ma3)*(r3+12),sv.y+Math.sin(ma3)*(r3+12));
-        ctx.globalAlpha=1;
+        drawDimTemp(ctx,{tp:'dima',vx:v3.x,vy:v3.y,x1:pa3.x,y1:pa3.y,x2:pb3.x,y2:pb3.y,px:hp.x,py:hp.y});
       }
+      break;
       break;
     case 'dist':
       if(ds&&ds.pts&&ds.pts.length===1){
@@ -3673,7 +3475,8 @@ function onCmdKey(e){
     'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
-    'DDIM':'ddim','DIMSTYLE':'ddim',
+    'DXFOUT':'dxfout','DWGOUT':'dwgout','EXPORT':'export','EXP':'export',
+    'DDIM':'ddim','DIMSTYLE':'ddim','DST':'ddim','DIMSTY':'ddim','DEMO':'demo',
     'UN':'units','UNITS':'units','DDUNITS':'units',
     'LT':'linetype','LINETYPE':'linetype','LTYPE':'linetype',
     'AR':'array','ARRAY':'array',
@@ -3698,6 +3501,10 @@ function onCmdKey(e){
     case 'polygon':startPolygon();break;
     case 'array':showArrayDlg();break;
     case 'ddim':showDimStyle();break;
+    case 'dxfout':expDXF('2000');break;
+    case 'dwgout':expDWG();break;
+    case 'export':showExport();break;
+    case 'demo':if(S.ents.length&&!confirm('Carregar o desenho de exemplo substitui o desenho atual. Continuar?'))break;loadDemo();updLayerUI();break;
     case 'linetype':showLineType();break;
     case 'units':showUnits();break;
     case 'dist':setTool('dist');break;
@@ -3720,14 +3527,14 @@ function onCmdKey(e){
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
       log('MEDIR: DI=Distância  AA=Área','inf');
-      log('CONFIG: UN=Unidades  DDIM=DimStyle  LAYER/LA=Camadas','inf');
-      log('DIM:  D DR DD DA (Linear Raio Diâm Ângulo)','inf');
+      log('CONFIG: UN=Unidades  DDIM/DIMSTYLE/DST=Estilos de cota  LAYER/LA=Camadas  DEMO=Exemplo','inf');
+      log('DIM:  D DAL DR DD DA (Linear Alinhada Raio Diâm Ângulo)  |  DDIM = estilos de cota','inf');
       log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
       log('  M=Mover CO=Copiar RO=Rotar SC=Escalar MI=Espelhar O=Offset','inf');
       log('  TR=Trim EX=Extend F=Fillet CHA=Chamfer AR=Array','inf');
       log('NAV:  P Z +/- F7=Grade F8=Ortho F9=Snap','inf');
       log('COORD: 10,20  @5,3  @10<45  50(dist dir cursor)','inf');
-      log('EXPORT: JSON | DXF R12 (todos os tipos) | SVG (mm) | PNG','inf');
+      log('EXPORT/EXP: DXF 2000 | DWG (via DXF) | DXF R12 | JSON | SVG | PNG   —   DXFOUT = DXF 2000 direto','inf');
       log('Enter/Espaço=finaliza cmd | Esc=cancela | Ctrl+Z/Y=Undo/Redo','inf');
       log('════════════════════════════════════════════════════════','inf');
       break;
@@ -4085,7 +3892,7 @@ function updStatus(){document.getElementById('scount').textContent=S.ents.length
 function updSelInfo(){var el=document.getElementById('selinfo');if(!S.sel.length){el.textContent='Nenhum objeto';return;}var t={};for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e)t[e.tp]=(t[e.tp]||0)+1;}el.innerHTML='<b style="color:var(--acc)">'+S.sel.length+' objeto(s)</b><br>'+Object.keys(t).map(function(k){return k+': '+t[k];}).join('<br>');}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'5',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function saveDoc(){var d={v:'6.3',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima'];
 function validateDoc(d){
@@ -4098,6 +3905,10 @@ function validateDoc(d){
     if((e.tp==='pl'||e.tp==='spline')&&!Array.isArray(e.pts)) return 'entidade '+i+' sem vértices';
     if(e.tp==='txt') e.txt=String(e.txt==null?'':e.txt);
   }
+  if(d.dimStyles!==undefined){
+    if(!Array.isArray(d.dimStyles)) return 'estilos de cota inválidos';
+    for(var k=0;k<d.dimStyles.length;k++){ if(!d.dimStyles[k]||typeof d.dimStyles[k]!=='object') return 'estilo de cota '+k+' inválido'; }
+  }
   if(d.layers){
     if(!Array.isArray(d.layers)) return 'camadas inválidas';
     var has0=false;
@@ -4106,11 +3917,30 @@ function validateDoc(d){
   }
   return null;
 }
+// v6.2: estilos de cota do arquivo (arquivos antigos mantêm os padrões)
+function loadDimStyles(d){
+  var list=Array.isArray(d.dimStyles)&&d.dimStyles.length?d.dimStyles.map(normDimStyle):dimDefaultStyles();
+  var seen={};list=list.filter(function(st){if(seen[st.name])return false;seen[st.name]=1;return true;});
+  if(!list.some(function(st){return st.name==='Standard';})) list.unshift(normDimStyle(DS_DEFAULT));
+  S.dimStyles=list;
+  S.dimCurrent=(d.dimCurrent&&list.some(function(st){return st.name===d.dimCurrent;}))?d.dimCurrent:'Standard';
+  S.ents.forEach(function(e){ if(isDim(e)&&e.dimStyle&&!dspGetStyle(e.dimStyle)) e.dimStyle='Standard'; });
+  updDimStyleSel();
+}
 function openDoc(){document.getElementById('fileInput').click();}
-function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
-function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
-function showExport(){document.getElementById('ov-export').classList.add('show');}
-function doExport(){var fmt=document.getElementById('ef').value;switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':case 'dxf2k':case 'dwg':expDXF();break;case 'png':expPNG();break;}closeOv('ov-export');}
+function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
+function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};loadDimStyles({});renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
+function showExport(){expFmtChange();document.getElementById('ov-export').classList.add('show');}
+function doExport(){var fmt=document.getElementById('ef').value;closeOv('ov-export');switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':case 'dxf2k':expDXF('2000');break;case 'dxf12':expDXF('12');break;case 'dwg':expDWG();break;case 'png':expPNG();break;}}
+var EXP_NOTES={
+  dxf:'Abre no AutoCAD 2000 ou superior, ZWCAD, BricsCAD, DraftSight, LibreCAD e QGIS. Preserva camadas, cores RGB, espessuras e tipos de linha, polilinhas, elipses, splines, hachuras e cotas editáveis. Unidades: milímetros.',
+  dwg:'O DWG é um formato fechado: o EduCAD gera um DXF 2000 completo e mostra como convertê-lo em DWG no AutoCAD, no ZWCAD ou no conversor gratuito ODA File Converter.',
+  dxf12:'Formato antigo, aceito por praticamente qualquer programa (incluindo máquinas CNC e cortadoras). Elipses e splines viram polilinhas; cotas e hachuras viram linhas e textos; cores aproximadas à paleta padrão.',
+  json:'Formato nativo do EduCAD: guarda tudo (inclusive estilos de cota) para continuar editando aqui.',
+  svg:'Vetorial em milímetros (escala 1:1), para Inkscape, relatórios e páginas web.',
+  png:'Imagem da área de desenho atual.'
+};
+function expFmtChange(){var f=document.getElementById('ef').value;document.getElementById('ef-dxfopts').style.display=(f==='dxf'||f==='dwg')?'block':'none';var n=document.getElementById('ef-note');n.textContent=EXP_NOTES[f]||'';n.style.display='block';}
 /* ═══════════════════════════════════════════════════════════════════
    v6.1 — EXPORTAÇÃO
    Cada entidade é convertida em primitivas no MUNDO (mm):
@@ -4138,22 +3968,6 @@ function hatchLines(r,angDeg,sp){
   }
   return out;
 }
-function arrowPrims(tx,ty,dirx,diry,st,ds,out){
-  var AW=(st.arrowSize||2.5)*ds,AH=AW*0.4,t=st.arrowType||'filled',px=-diry,py=dirx;
-  if(t==='none') return;
-  if(t==='tick'){ var k=AW*0.7; out.push({k:'line',x1:tx-k*(dirx+px)*0.7071,y1:ty-k*(diry+py)*0.7071,x2:tx+k*(dirx+px)*0.7071,y2:ty+k*(diry+py)*0.7071}); return; }
-  if(t==='dot'){ out.push({k:'circle',cx:tx,cy:ty,r:AW*0.5,fill:true}); return; }
-  var b1={x:tx-dirx*AW+px*AH,y:ty-diry*AW+py*AH},b2={x:tx-dirx*AW-px*AH,y:ty-diry*AW-py*AH};
-  if(t==='open'){ out.push({k:'line',x1:b1.x,y1:b1.y,x2:tx,y2:ty},{k:'line',x1:tx,y1:ty,x2:b2.x,y2:b2.y}); return; }
-  out.push({k:'solid',pts:[{x:tx,y:ty},b1,b2]});
-}
-function dimTextPrim(mx,my,ang,txt,st,ds,pos){
-  var th=(st.txtH||2.5)*ds,gap=(st.txtGap||0.8)*ds;
-  if(st.txtAlign!=='aligned') ang=0;
-  if(ang>Math.PI/2+1e-9||ang<-Math.PI/2-1e-9) ang+=Math.PI;
-  var ux=-Math.sin(ang),uy=Math.cos(ang),off=(pos||st.txtPos)==='below'?-(gap+th):(pos||st.txtPos)==='center'?-th/2:gap;
-  return {k:'text',x:mx+ux*off,y:my+uy*off,h:th,rot:ang,txt:txt,align:'center'};
-}
 function entPrims(e){
   var o=[];
   switch(e.tp){
@@ -4178,38 +3992,11 @@ function entPrims(e){
       else if(ht!=='zigzag'){ segs=hatchLines(r,e.ang||45,spc); }
       segs.forEach(function(g){o.push({k:'line',x1:g[0],y1:g[1],x2:g[2],y2:g[3],ld:(ht==='dashed'?'dashed':ht==='dotted'?'dotted':'solid')});});
     } break;
-    case 'dim':{
-      var g=dimLinePoints(e); if(!g) break;
-      var st=dimStyleOf(e),ds=st.dimscale||1,gap=(st.extOrigin!==undefined?st.extOrigin:0.625)*ds,bey=(st.extDimline!==undefined?st.extDimline:1.25)*ds;
-      [[e.x1,e.y1,g.d1x,g.d1y],[e.x2,e.y2,g.d2x,g.d2y]].forEach(function(q){
-        var dx=q[2]-q[0],dy=q[3]-q[1],l=Math.hypot(dx,dy); if(l<1e-6) return; var ux=dx/l,uy=dy/l;
-        var sx=st.extFixed?q[2]-ux*(st.extFixLen||1)*ds:q[0]+ux*gap, sy=st.extFixed?q[3]-uy*(st.extFixLen||1)*ds:q[1]+uy*gap;
-        o.push({k:'line',x1:sx,y1:sy,x2:q[2]+ux*bey,y2:q[3]+uy*bey});
-      });
-      o.push({k:'line',x1:g.d1x,y1:g.d1y,x2:g.d2x,y2:g.d2y});
-      var L=Math.hypot(g.d2x-g.d1x,g.d2y-g.d1y)||1,dx2=(g.d2x-g.d1x)/L,dy2=(g.d2y-g.d1y)/L;
-      arrowPrims(g.d1x,g.d1y,-dx2,-dy2,st,ds,o); arrowPrims(g.d2x,g.d2y,dx2,dy2,st,ds,o);
-      var raw=parseFloat(e.val)||Math.hypot(e.x2-e.x1,e.y2-e.y1);
-      o.push(dimTextPrim((g.d1x+g.d2x)/2,(g.d1y+g.d2y)/2,Math.atan2(dy2,dx2),dimValStr(raw,st),st,ds));
-    } break;
-    case 'dimr':case 'dimd':{
-      var st2=dimStyleOf(e),ds2=st2.dimscale||1,dx3=e.ex-e.cx,dy3=e.ey-e.cy,l3=Math.hypot(dx3,dy3)||1,ux3=dx3/l3,uy3=dy3/l3;
-      var isD=e.tp==='dimd',sx3=isD?2*e.cx-e.ex:e.cx,sy3=isD?2*e.cy-e.ey:e.cy;
-      o.push({k:'line',x1:sx3,y1:sy3,x2:e.ex,y2:e.ey});
-      arrowPrims(e.ex,e.ey,ux3,uy3,st2,ds2,o); if(isD) arrowPrims(sx3,sy3,-ux3,-uy3,st2,ds2,o);
-      var lbl=(isD?'⌀':'R')+dimValStr(parseFloat(e.val)||0,st2);
-      var tm=isD?{x:e.cx,y:e.cy}:{x:(e.cx+e.ex)/2,y:(e.cy+e.ey)/2};
-      o.push(dimTextPrim(tm.x,tm.y,Math.atan2(uy3,ux3),lbl,st2,ds2,'above'));
-    } break;
-    case 'dima':{
-      var st3=dimStyleOf(e),ds3=st3.dimscale||1;
-      var a1=Math.atan2(e.y1-e.vy,e.x1-e.vx),a2=Math.atan2(e.y2-e.vy,e.x2-e.vx);
-      var R=0.6*Math.min(Math.hypot(e.x1-e.vx,e.y1-e.vy),Math.hypot(e.x2-e.vx,e.y2-e.vy));
-      o.push({k:'line',x1:e.vx,y1:e.vy,x2:e.x1,y2:e.y1},{k:'line',x1:e.vx,y1:e.vy,x2:e.x2,y2:e.y2});
-      var d=((a2-a1)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),sa=a1,ea=a2; if(d>Math.PI){sa=a2;ea=a1;d=2*Math.PI-d;}
-      if(R>1e-6){ o.push({k:'arc',cx:e.vx,cy:e.vy,r:R,sa:sa,ea:ea}); var ma=sa+d/2;
-        o.push({k:'text',x:e.vx+Math.cos(ma)*(R+(st3.txtGap||0.8)*ds3),y:e.vy+Math.sin(ma)*(R+(st3.txtGap||0.8)*ds3),h:(st3.txtH||2.5)*ds3,rot:0,txt:(e.val||'')+'°',align:'center'}); }
-    } break;
+    case 'dim':case 'dimr':case 'dimd':case 'dima':
+      dimPrims(e).forEach(function(p){
+        if(p.k==='box'){o.push({k:'poly',closed:true,pts:p.pts,role:p.role});}
+        else o.push(p);
+      }); break;
   }
   return o;
 }
@@ -4217,9 +4004,11 @@ function primsBox(list){
   var pts=[];
   list.forEach(function(p){
     if(p.k==='line'){pts.push({x:p.x1,y:p.y1},{x:p.x2,y:p.y2});}
-    else if(p.k==='poly'||p.k==='solid'){pts=pts.concat(p.pts);}
+    else if(p.k==='poly'||p.k==='solid'||p.k==='box'||p.k==='fillbox'){pts=pts.concat(p.pts);}
     else if(p.k==='circle'||p.k==='arc'){pts.push({x:p.cx-p.r,y:p.cy-p.r},{x:p.cx+p.r,y:p.cy+p.r});}
-    else if(p.k==='text'){pts=pts.concat(txtCorners({x:p.x,y:p.y,h:p.h,rot:p.rot,txt:p.txt}));}
+    else if(p.k==='text'){
+      var w=String(p.txt).length*p.h*.6,sh=p.align==='center'?w/2:p.align==='right'?w:0;
+      pts=pts.concat(txtCorners({x:p.x-Math.cos(p.rot||0)*sh,y:p.y-Math.sin(p.rot||0)*sh,h:p.h,rot:p.rot,txt:p.txt}));}
     else if(p.k==='point'){pts.push({x:p.x,y:p.y});}
   });
   return ptsBox(pts);
@@ -4231,9 +4020,16 @@ function collectExport(onlyVisible){
     var e=S.ents[i],ly=getLy(e.ly);
     if(onlyVisible&&ly&&!ly.vis) continue;
     var col=e.col||(ly&&ly.col)||'#dce4f5',lw=e.lw||(ly&&ly.lw)||.35,ld=e.ld||(ly&&ly.ld)||'solid';
-    if(e.tp==='dim'||e.tp==='dimr'||e.tp==='dimd'||e.tp==='dima'){var st=dimStyleOf(e);col=st.col||col;ld='solid';}
     if(e.tp==='hatch') ld='solid';
-    entPrims(e).forEach(function(p){items.push({p:p,e:e,ly:ly,col:col,lw:lw,ld:p.ld||ld,txtCol:(e.tp.indexOf('dim')===0?(dimStyleOf(e).txtCol||col):col)});});
+    if(isDim(e)){
+      var st=dimStyleOf(e);
+      entPrims(e).forEach(function(p){
+        var c=p.role==='ext'?st.extCol:p.role==='text'?st.txtCol:st.col;
+        items.push({p:p,e:e,ly:ly,col:c,lw:(p.role==='ext'?st.extLw:st.lw),ld:'solid',txtCol:st.txtCol,font:st.font});
+      });
+      continue;
+    }
+    entPrims(e).forEach(function(p){items.push({p:p,e:e,ly:ly,col:col,lw:lw,ld:p.ld||ld,txtCol:col});});
   }
   return items;
 }
@@ -4321,11 +4117,379 @@ function buildDXF(){
   g(0,'ENDSEC');g(0,'EOF');
   return out.join(NL)+NL;
 }
-function expDXF(){
-  var d=buildDXF();
-  downloadBlob(d,'application/dxf','educad.dxf');
-  log('DXF R12 exportado: '+S.ents.length+' objeto(s), todos os tipos.','ok');
+// Exportação DXF: ver='2000' (padrão, AutoCAD/ZWCAD) ou '12' (compatibilidade máxima)
+function dxfExportOpts(){
+  var d=document.getElementById('dxf-dims'),h=document.getElementById('dxf-hatch');
+  return {dims:d&&!d.checked?'exploded':'native',hatch:h&&!h.checked?'exploded':'native'};
 }
+function dxfBaseName(){
+  var t=(document.getElementById('ftitle').textContent||'').replace(/\.(json|dxf|dwg)$/i,'').trim();
+  if(!t||/^sem t[ií]tulo/i.test(t)) t='educad';
+  return t.replace(/[\\/:*?"<>|]+/g,'_');
+}
+function expDXF(ver,opt,fname){
+  ver=ver||'2000';
+  var d=ver==='12'?buildDXF():cp1252Encode(buildDXF2000(opt||dxfExportOpts()));
+  var name=fname||(dxfBaseName()+(ver==='12'?'_R12':'')+'.dxf');
+  downloadBlob(d,'application/dxf',name);
+  var nd=S.ents.filter(isDim).length;
+  log('DXF '+(ver==='12'?'R12':'2000 (AC1015)')+' exportado: '+name+' — '+S.ents.length+' objeto(s)'+(ver!=='12'&&nd?', '+nd+' cota(s) editável(is)':'')+'.','ok');
+  return name;
+}
+// DWG: formato fechado. Gera-se um DXF 2000 e orienta-se a conversão no CAD de destino.
+function expDWG(){
+  var name=expDXF('2000',dxfExportOpts(),dxfBaseName()+'_para_DWG.dxf');
+  document.getElementById('dwg-file').textContent=name;
+  document.getElementById('ov-dwg').classList.add('show');
+}
+/* ═══════════════════════════════════════════════════════════════════
+   v6.3 — DXF 2000 (AC1015)
+   Formato lido por AutoCAD 2000 ou superior, ZWCAD, BricsCAD, DraftSight,
+   LibreCAD, QCAD e QGIS. Diferente do R12, preserva:
+   - entidades nativas: LWPOLYLINE, ELLIPSE, SPLINE, HATCH e DIMENSION;
+   - cor verdadeira (RGB), espessura de linha e tipo de linha por objeto;
+   - estilos de cota (tabela DIMSTYLE) e cotas editáveis no CAD de destino;
+   - unidades do desenho (milímetros) e vista inicial ajustada ao desenho.
+   Textos com acentos usam a notação \U+XXXX (independe da página de código).
+   ═══════════════════════════════════════════════════════════════════ */
+var DXF_LW=[0,5,9,13,15,18,20,25,30,35,40,50,53,60,70,80,90,100,106,120,140,158,200,211];
+function dxfLw(mm){ var v=Math.round((parseFloat(mm)||0)*100),b=DXF_LW[0],bd=1e9; DXF_LW.forEach(function(w){var d=Math.abs(w-v);if(d<bd){bd=d;b=w;}}); return b; }
+function dxfTrueColor(h){ var m=/^#?([0-9a-f]{6})/i.exec(h||''); return m?parseInt(m[1],16):null; }
+// Nomes de tabela (estilos de cota) aceitos pelo AutoCAD: sem < > / \ " : ; ? * | = `
+function dxfSymName(nm){ return String(nm).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[<>\/\\":;?*|=`]/g,'_').replace(/[^\x20-\x7e]/g,'_').trim()||'Estilo'; }
+// Página de código Windows-1252 (declarada em $DWGCODEPAGE): acentos do português gravados
+// diretamente; caracteres fora dela vão como \U+XXXX (notação do próprio AutoCAD).
+var CP1252_EXTRA={0x20AC:0x80,0x201A:0x82,0x0192:0x83,0x201E:0x84,0x2026:0x85,0x2020:0x86,0x2021:0x87,0x02C6:0x88,0x2030:0x89,0x0160:0x8A,0x2039:0x8B,0x0152:0x8C,0x017D:0x8E,0x2018:0x91,0x2019:0x92,0x201C:0x93,0x201D:0x94,0x2022:0x95,0x2013:0x96,0x2014:0x97,0x02DC:0x98,0x2122:0x99,0x0161:0x9A,0x203A:0x9B,0x0153:0x9C,0x017E:0x9E,0x0178:0x9F};
+function cp1252Byte(code){ if(code<0x80) return code; if(code>=0xA0&&code<=0xFF) return code; return CP1252_EXTRA[code]; }
+function dxfStrCP(s){
+  return String(s).replace(/[\r\n]+/g,' ').replace(/°/g,'%%d').replace(/[⌀Ø]/g,'%%c').replace(/±/g,'%%p')
+    .replace(/[^\x20-\x7e]/g,function(c){var k=c.charCodeAt(0);if(cp1252Byte(k)!==undefined)return c;var h=k.toString(16).toUpperCase();while(h.length<4)h='0'+h;return '\\U+'+h;});
+}
+function cp1252Encode(str){ var b=new Uint8Array(str.length); for(var i=0;i<str.length;i++){ var v=cp1252Byte(str.charCodeAt(i)); b[i]=v===undefined?63:v; } return b; }
+function dxfInsUnits(){ var u=(S.units&&S.units.insertScale)||'mm'; return {mm:4,cm:5,m:6,'in':1,ft:2,km:7}[u]||4; }
+
+function buildDXF2000(opt){
+  opt=opt||{};
+  var dimsNative=opt.dims!=='exploded', hatchNative=opt.hatch!=='exploded';
+  var NL='\r\n',out=[];
+  function g(c,v){out.push(String(c),String(v));}
+  function n(v){var r=Math.round(v*1e8)/1e8;if(!isFinite(r))r=0;var s=String(r);return s.indexOf('.')<0&&s.indexOf('e')<0?s+'.0':s;}
+  var hnd=0x30; function H(){return (hnd++).toString(16).toUpperCase();}
+  var lmap=dxfLayerNames();
+  // ── handles fixos das tabelas e objetos
+  var hT={vport:H(),ltype:H(),layer:H(),style:H(),view:H(),ucs:H(),appid:H(),dimstyle:H(),brec:H()};
+  var hO={root:H(),group:H(),layout:H(),mlstyle:H(),plotset:H(),pstyle:H(),pnormal:H(),mlStd:H(),layModel:H(),layPaper:H()};
+  var hB={msRec:H(),psRec:H(),msBlk:H(),msEnd:H(),psBlk:H(),psEnd:H()};
+  var hStd=H(), hVp=H(), hApp=H();
+  // tipos de linha usados
+  var LTH={ByBlock:H(),ByLayer:H(),Continuous:H()};
+  Object.keys(DXF_LT).forEach(function(k){ if(DXF_LT[k]) LTH[DXF_LT[k].n]=H(); });
+  function ltName(ld){ var t=DXF_LT[ld]; return t?t.n:'Continuous'; }
+  // camadas
+  var layers=S.layers.slice(); if(!layers.some(function(l){return l.id===0;})) layers.unshift({id:0,nm:'0',col:'#ffffff',vis:true,lock:false,ld:'solid',lw:.25});
+  var LYH={}; layers.forEach(function(l){LYH[l.id]=H();}); var hDefp=H();
+  // estilos de cota
+  var DSH={},DSN={},usedDS={}; S.dimStyles.forEach(function(st){DSH[st.name]=H();var b=dxfSymName(st.name),nm=b,i=2;while(usedDS[nm.toUpperCase()])nm=b+'_'+(i++);usedDS[nm.toUpperCase()]=1;DSN[st.name]=nm;});
+  // blocos das cotas (*D1, *D2, ...)
+  var dimEnts=dimsNative?S.ents.filter(isDim):[];
+  var dimBlk=dimEnts.map(function(e,i){return {e:e,name:'*D'+(i+1),rec:H(),blk:H(),end:H()};});
+  var bb=primsBox(collectExport(false).map(function(it){return it.p;}))||{x:0,y:0,w:100,h:100};
+  var W=Math.max(bb.w,1),Hh=Math.max(bb.h,1),cx=bb.x+bb.w/2,cy=bb.y+bb.h/2;
+
+  // ── HEADER
+  g(0,'SECTION');g(2,'HEADER');
+  g(9,'$ACADVER');g(1,'AC1015');
+  g(9,'$DWGCODEPAGE');g(3,'ANSI_1252');
+  g(9,'$INSBASE');g(10,'0.0');g(20,'0.0');g(30,'0.0');
+  g(9,'$EXTMIN');g(10,n(bb.x));g(20,n(bb.y));g(30,'0.0');
+  g(9,'$EXTMAX');g(10,n(bb.x+bb.w));g(20,n(bb.y+bb.h));g(30,'0.0');
+  g(9,'$LIMMIN');g(10,'0.0');g(20,'0.0');
+  g(9,'$LIMMAX');g(10,'420.0');g(20,'297.0');
+  g(9,'$LTSCALE');g(40,'1.0');
+  g(9,'$CELTSCALE');g(40,'1.0');
+  g(9,'$TEXTSTYLE');g(7,'Standard');
+  g(9,'$CLAYER');g(8,'0');
+  g(9,'$CELTYPE');g(6,'ByLayer');
+  g(9,'$DIMSTYLE');g(2,DSN[S.dimCurrent]||'Standard');
+  g(9,'$LUNITS');g(70,2);
+  g(9,'$LUPREC');g(70,4);
+  g(9,'$AUNITS');g(70,0);
+  g(9,'$INSUNITS');g(70,dxfInsUnits());
+  g(9,'$MEASUREMENT');g(70,1);
+  g(9,'$LWDISPLAY');g(290,1);
+  g(9,'$PSTYLEMODE');g(290,1);
+  g(9,'$HANDSEED');var seedIdx=out.length;g(5,'FFFF');
+  g(0,'ENDSEC');
+  g(0,'SECTION');g(2,'CLASSES');g(0,'ENDSEC');
+
+  // ── TABLES
+  g(0,'SECTION');g(2,'TABLES');
+  function tbl(name,h,count,extra){g(0,'TABLE');g(2,name);g(5,h);g(330,0);g(100,'AcDbSymbolTable');g(70,count);if(extra)g(100,extra);}
+  function rec(type,h,owner,sub){g(0,type);g(type==='DIMSTYLE'?105:5,h);g(330,owner);g(100,'AcDbSymbolTableRecord');g(100,sub);}
+  // VPORT: vista inicial enquadrando o desenho
+  tbl('VPORT',hT.vport,1);
+  rec('VPORT',hVp,hT.vport,'AcDbViewportTableRecord');
+  g(2,'*Active');g(70,0);g(10,'0.0');g(20,'0.0');g(11,'1.0');g(21,'1.0');g(12,n(cx));g(22,n(cy));
+  g(13,'0.0');g(23,'0.0');g(14,'10.0');g(24,'10.0');g(15,'10.0');g(25,'10.0');
+  g(16,'0.0');g(26,'0.0');g(36,'1.0');g(17,'0.0');g(27,'0.0');g(37,'0.0');
+  g(40,n(Math.max(Hh,W/1.6)*1.15));g(41,'1.6');g(42,'50.0');g(43,'0.0');g(44,'0.0');g(50,'0.0');g(51,'0.0');
+  g(71,0);g(72,1000);g(73,1);g(74,3);g(75,0);g(76,0);g(77,0);g(78,0);g(281,0);g(65,1);
+  g(0,'ENDTAB');
+  // LTYPE
+  var ltKeys=Object.keys(LTH);
+  tbl('LTYPE',hT.ltype,ltKeys.length);
+  ltKeys.forEach(function(nm){
+    rec('LTYPE',LTH[nm],hT.ltype,'AcDbLinetypeTableRecord');
+    g(2,nm);g(70,0);
+    var def=null;Object.keys(DXF_LT).forEach(function(k){if(DXF_LT[k]&&DXF_LT[k].n===nm)def=DXF_LT[k];});
+    if(!def){g(3,nm==='Continuous'?'Solid line':'');g(72,65);g(73,0);g(40,'0.0');return;}
+    var tot=def.p.reduce(function(a,b){return a+Math.abs(b);},0);
+    g(3,def.d);g(72,65);g(73,def.p.length);g(40,n(tot));
+    def.p.forEach(function(v){g(49,n(v));g(74,0);});
+  });
+  g(0,'ENDTAB');
+  // LAYER
+  tbl('LAYER',hT.layer,layers.length+1);
+  layers.forEach(function(l){
+    rec('LAYER',LYH[l.id],hT.layer,'AcDbLayerTableRecord');
+    g(2,lmap[l.id]||'0');g(70,l.lock?4:0);g(62,(l.vis===false?-1:1)*hex2aci(l.col));
+    var tc=dxfTrueColor(l.col);if(tc!==null)g(420,tc);
+    g(6,ltName(l.ld));g(370,dxfLw(l.lw||.25));g(390,hO.pnormal);
+  });
+  rec('LAYER',hDefp,hT.layer,'AcDbLayerTableRecord');
+  g(2,'Defpoints');g(70,0);g(62,7);g(6,'Continuous');g(290,0);g(370,-3);g(390,hO.pnormal);
+  g(0,'ENDTAB');
+  // STYLE
+  tbl('STYLE',hT.style,1);
+  rec('STYLE',hStd,hT.style,'AcDbTextStyleTableRecord');
+  g(2,'Standard');g(70,0);g(40,'0.0');g(41,'1.0');g(50,'0.0');g(71,0);g(42,'2.5');g(3,'txt');g(4,'');
+  g(0,'ENDTAB');
+  tbl('VIEW',hT.view,0);g(0,'ENDTAB');
+  tbl('UCS',hT.ucs,0);g(0,'ENDTAB');
+  tbl('APPID',hT.appid,1);
+  rec('APPID',hApp,hT.appid,'AcDbRegAppTableRecord');g(2,'ACAD');g(70,0);
+  g(0,'ENDTAB');
+  // DIMSTYLE: cada estilo do DDIM vira um estilo de cota do AutoCAD
+  tbl('DIMSTYLE',hT.dimstyle,S.dimStyles.length,'AcDbDimStyleTable');
+  S.dimStyles.forEach(function(st){
+    rec('DIMSTYLE',DSH[st.name],hT.dimstyle,'AcDbDimStyleTableRecord');
+    var lfac=(st.scale||1)*({cm:0.1,m:0.001,'in':1/25.4}[st.unit]||1);
+    var post=(st.prefix||st.suffix)?(st.prefix||'')+'<>'+(st.suffix||''):'';
+    var apost=(st.altPrefix||st.altSuffix)?(st.altPrefix||'')+'[]'+(st.altSuffix||''):'';
+    var zin=(st.zLead?4:0)+(st.zTrail?8:0);
+    var tol=st.tolMethod==='symmetric'||st.tolMethod==='deviation';
+    g(2,DSN[st.name]);g(70,0);g(3,dxfStrCP(post));g(4,dxfStrCP(apost));
+    g(40,n(st.dimscale||1));g(41,n(st.arrowSize));g(42,n(st.extOrigin));g(43,'3.75');g(44,n(st.extDimline));
+    g(45,n(st.round||0));g(46,'0.0');g(47,n(st.tolUpper));g(48,n(st.tolMethod==='symmetric'?st.tolUpper:st.tolLower));
+    g(140,n(st.txtH));g(141,n(st.centerMark==='none'?0:st.centerMark==='line'?-st.centerSize:st.centerSize));
+    g(142,n(st.arrowType==='tick'?st.arrowSize*0.5:0));g(143,n(st.altMult));g(144,n(lfac));g(145,'0.0');
+    g(146,n(st.tolScale||0.7));g(147,n(st.tolMethod==='basic'?-st.txtGap:st.txtGap));g(148,'0.0');
+    g(71,tol?1:0);g(72,st.tolMethod==='limits'?1:0);
+    g(73,st.txtAlign==='horizontal'?1:0);g(74,st.txtAlign==='aligned'?0:1);
+    g(75,st.se1?1:0);g(76,st.se2?1:0);g(77,st.txtPos==='above'?1:st.txtPos==='below'?4:0);g(78,zin);g(79,st.angZTrail?2:0);
+    g(170,st.altOn?1:0);g(171,st.altPrec|0);g(172,st.forceLine?1:0);g(173,0);g(174,0);g(175,0);
+    g(176,hex2aci(st.col));g(177,hex2aci(st.extCol));g(178,hex2aci(st.txtCol));g(179,st.angPrec|0);
+    g(271,st.prec|0);g(272,st.tolPrec|0);g(273,2);g(274,st.tolPrec|0);
+    g(275,{deg:0,dms:1,grad:2,rad:3}[st.angFmt]||0);g(276,0);g(277,st.unitFmt==='scientific'?1:2);
+    g(278,(st.decSep||'.').charCodeAt(0));g(279,0);g(280,{center:0,ext1:1,ext2:2}[st.txtJust]||0);
+    g(281,st.sd1?1:0);g(282,st.sd2?1:0);g(283,1);g(284,zin);g(285,zin);g(286,zin);g(288,0);g(289,st.fit==='inside'?0:3);
+    g(340,hStd);g(371,dxfLw(st.lw));g(372,dxfLw(st.extLw));
+  });
+  g(0,'ENDTAB');
+  // BLOCK_RECORD
+  tbl('BLOCK_RECORD',hT.brec,2+dimBlk.length);
+  rec('BLOCK_RECORD',hB.msRec,hT.brec,'AcDbBlockTableRecord');g(2,'*Model_Space');g(340,hO.layModel);
+  rec('BLOCK_RECORD',hB.psRec,hT.brec,'AcDbBlockTableRecord');g(2,'*Paper_Space');g(340,hO.layPaper);
+  dimBlk.forEach(function(d){rec('BLOCK_RECORD',d.rec,hT.brec,'AcDbBlockTableRecord');g(2,d.name);});
+  g(0,'ENDTAB');
+  g(0,'ENDSEC');
+
+  // ── auxiliares de entidade
+  function ent(type,owner,lay,sub,st){
+    g(0,type);g(5,H());g(330,owner);g(100,'AcDbEntity');g(8,lay);
+    if(st){ if(st.lt&&st.lt!=='Continuous')g(6,st.lt); if(st.col){g(62,hex2aci(st.col));var tc=dxfTrueColor(st.col);if(tc!==null)g(420,tc);} if(st.lw!==undefined)g(370,dxfLw(st.lw)); }
+    g(100,sub);
+  }
+  function primToDxf(p,owner,lay,sty){
+    switch(p.k){
+      case 'line': ent('LINE',owner,lay,'AcDbLine',sty);g(10,n(p.x1));g(20,n(p.y1));g(30,'0.0');g(11,n(p.x2));g(21,n(p.y2));g(31,'0.0');break;
+      case 'arc': ent('ARC',owner,lay,'AcDbCircle',sty);g(10,n(p.cx));g(20,n(p.cy));g(30,'0.0');g(40,n(p.r));g(100,'AcDbArc');
+        g(50,n(((p.sa*180/Math.PI)%360+360)%360));g(51,n(((p.ea*180/Math.PI)%360+360)%360));break;
+      case 'circle':
+        if(p.fill){ // ponto cheio: polilinha com largura (técnica do comando DONUT)
+          ent('LWPOLYLINE',owner,lay,'AcDbPolyline',sty);g(90,2);g(70,1);g(43,n(p.r));
+          g(10,n(p.cx-p.r/2));g(20,n(p.cy));g(42,'1.0');g(10,n(p.cx+p.r/2));g(20,n(p.cy));g(42,'1.0');
+        } else { ent('CIRCLE',owner,lay,'AcDbCircle',sty);g(10,n(p.cx));g(20,n(p.cy));g(30,'0.0');g(40,n(p.r)); }
+        break;
+      case 'solid': ent('SOLID',owner,lay,'AcDbTrace',sty);var a=p.pts[0],b=p.pts[1],c=p.pts[2];
+        g(10,n(a.x));g(20,n(a.y));g(30,'0.0');g(11,n(b.x));g(21,n(b.y));g(31,'0.0');g(12,n(c.x));g(22,n(c.y));g(32,'0.0');g(13,n(c.x));g(23,n(c.y));g(33,'0.0');break;
+      case 'poly': case 'box': ent('LWPOLYLINE',owner,lay,'AcDbPolyline',sty);g(90,p.pts.length);g(70,(p.closed||p.k==='box')?1:0);
+        p.pts.forEach(function(v){g(10,n(v.x));g(20,n(v.y));});break;
+      case 'point': ent('POINT',owner,lay,'AcDbPoint',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');break;
+      case 'text': ent('TEXT',owner,lay,'AcDbText',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');g(40,n(p.h));g(1,dxfStrCP(p.txt));
+        if(p.rot)g(50,n(p.rot*180/Math.PI));g(7,'Standard');
+        if(p.align==='center'||p.align==='right'){g(72,p.align==='center'?1:2);g(11,n(p.x));g(21,n(p.y));g(31,'0.0');}
+        g(100,'AcDbText');break;
+      // 'fillbox' (fundo do texto) não tem equivalente simples em DXF 2000: omitido
+    }
+  }
+  function dimPrimStyle(p,st){
+    var c=p.role==='ext'?st.extCol:p.role==='text'?st.txtCol:st.col;
+    return {col:c,lw:p.role==='ext'?st.extLw:st.lw,lt:'Continuous'};
+  }
+
+  // ── BLOCKS
+  g(0,'SECTION');g(2,'BLOCKS');
+  function blockBegin(h,rec,name,anon){g(0,'BLOCK');g(5,h);g(330,rec);g(100,'AcDbEntity');g(8,'0');g(100,'AcDbBlockBegin');g(2,name);g(70,anon?1:0);g(10,'0.0');g(20,'0.0');g(30,'0.0');g(3,name);g(1,'');}
+  function blockEnd(h,rec){g(0,'ENDBLK');g(5,h);g(330,rec);g(100,'AcDbEntity');g(8,'0');g(100,'AcDbBlockEnd');}
+  blockBegin(hB.msBlk,hB.msRec,'*Model_Space');blockEnd(hB.msEnd,hB.msRec);
+  blockBegin(hB.psBlk,hB.psRec,'*Paper_Space');blockEnd(hB.psEnd,hB.psRec);
+  dimBlk.forEach(function(d){
+    var st=dimStyleOf(d.e);
+    blockBegin(d.blk,d.rec,d.name,true);
+    dimPrims(d.e,st).forEach(function(p){primToDxf(p,d.rec,'0',dimPrimStyle(p,st));});
+    blockEnd(d.end,d.rec);
+  });
+  g(0,'ENDSEC');
+
+  // ── ENTITIES
+  g(0,'SECTION');g(2,'ENTITIES');
+  var OW=hB.msRec;
+  var dimIdx=0;
+  S.ents.forEach(function(e){
+    var ly=getLy(e.ly),lay=lmap[e.ly]!==undefined?lmap[e.ly]:'0';
+    var sty={col:e.col||(ly&&ly.col)||'#ffffff',lw:e.lw!==undefined?e.lw:(ly&&ly.lw)||.25,lt:ltName(e.ld||(ly&&ly.ld)||'solid')};
+    switch(e.tp){
+      case 'line': case 'circ': case 'arc':
+        entPrims(e).forEach(function(p){primToDxf(p,OW,lay,sty);}); break;
+      case 'rect': case 'pl':
+        entPrims(e).forEach(function(p){primToDxf(p,OW,lay,sty);}); break;
+      case 'ell':{
+        var rx=e.rx,ry=e.ry,rot=e.rot||0;
+        if(ry>rx){var t=rx;rx=ry;ry=t;rot+=Math.PI/2;}
+        ent('ELLIPSE',OW,lay,'AcDbEllipse',sty);
+        g(10,n(e.cx));g(20,n(e.cy));g(30,'0.0');g(11,n(rx*Math.cos(rot)));g(21,n(rx*Math.sin(rot)));g(31,'0.0');
+        g(40,n(rx>0?ry/rx:1));g(41,'0.0');g(42,n(Math.PI*2));
+      } break;
+      case 'spline':{
+        // Catmull-Rom (como desenhado no EduCAD) convertida exatamente em B-spline cúbica
+        var P=e.pts; if(!P||P.length<2) break;
+        var cp=[{x:P[0].x,y:P[0].y}],kn=[0,0,0,0];
+        for(var i=0;i<P.length-1;i++){
+          var p0=P[i>0?i-1:0],p1=P[i],p2=P[i+1],p3=P[i+2<P.length?i+2:i+1];
+          cp.push({x:p1.x+(p2.x-p0.x)/6,y:p1.y+(p2.y-p0.y)/6},{x:p2.x-(p3.x-p1.x)/6,y:p2.y-(p3.y-p1.y)/6},{x:p2.x,y:p2.y});
+          if(i<P.length-2) kn.push(i+1,i+1,i+1);
+        }
+        kn.push(P.length-1,P.length-1,P.length-1,P.length-1);
+        ent('SPLINE',OW,lay,'AcDbSpline',sty);
+        g(210,'0.0');g(220,'0.0');g(230,'1.0');g(70,8);g(71,3);g(72,kn.length);g(73,cp.length);g(74,0);
+        g(42,'0.0000001');g(43,'0.0000001');
+        kn.forEach(function(k){g(40,n(k));});
+        cp.forEach(function(q){g(10,n(q.x));g(20,n(q.y));g(30,'0.0');});
+      } break;
+      case 'txt':
+        entPrims(e).forEach(function(p){primToDxf(p,OW,lay,sty);}); break;
+      case 'hatch':{
+        var ht=e.htype||'lines',spc=e.sp||5,ang=e.ang!==undefined?e.ang:45;
+        var hs={col:sty.col,lw:0.18,lt:'Continuous'};
+        // contorno (linha) como no EduCAD
+        primToDxf({k:'poly',closed:true,pts:[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}]},OW,lay,{col:sty.col,lw:sty.lw,lt:'Continuous'});
+        if(!hatchNative||ht==='zigzag'){ entPrims(e).slice(1).forEach(function(p){primToDxf(p,OW,lay,hs);}); break; }
+        // Padrões predefinidos do AutoCAD/ZWCAD (acadiso.pat), escalados para o espaçamento do EduCAD.
+        // As linhas do padrão também são gravadas, como exige o formato.
+        var pat,rot=0,kS,lines;
+        if(ht==='cross'||ht==='grid'){pat='NET';kS=spc/3.175;lines=[[0,[]],[90,[]]];}
+        else if(ht==='dots'){pat='DOTS';kS=spc/0.79375;lines=[[0,[0,-spc]]];}
+        else if(ht==='dotted'){pat='DOTS';kS=spc/0.79375;rot=ang;lines=[[ang,[0,-spc]]];}
+        else if(ht==='dashed'){pat='DASH';kS=spc/3.175;rot=ang;lines=[[ang,[spc,-spc]]];}
+        else {pat='ANSI31';kS=spc/3.175;rot=ang-45;lines=[[ang,[]]];}
+        ent('HATCH',OW,lay,'AcDbHatch',hs);
+        g(10,'0.0');g(20,'0.0');g(30,'0.0');g(210,'0.0');g(220,'0.0');g(230,'1.0');
+        g(2,pat);g(70,0);g(71,0);g(91,1);
+        g(92,3);g(72,0);g(73,1);g(93,4);
+        [[e.x,e.y],[e.x+e.w,e.y],[e.x+e.w,e.y+e.h],[e.x,e.y+e.h]].forEach(function(v){g(10,n(v[0]));g(20,n(v[1]));});
+        g(97,0);g(75,1);g(76,1);g(52,n(((rot%360)+360)%360));g(41,n(kS));g(77,0);
+        g(78,lines.length);
+        lines.forEach(function(L){
+          var a=L[0]*Math.PI/180,bx=0,by=0;
+          if(ht==='dots'){bx=spc/2;by=spc/2;}
+          g(53,n(L[0]));g(43,n(bx));g(44,n(by));g(45,n(-Math.sin(a)*spc));g(46,n(Math.cos(a)*spc));
+          g(79,L[1].length);L[1].forEach(function(d){g(49,n(d));});
+        });
+        g(98,0);
+      } break;
+      case 'dim':case 'dimr':case 'dimd':case 'dima':{
+        var st=dimStyleOf(e);
+        if(!dimsNative){ dimPrims(e,st).forEach(function(p){primToDxf(p,OW,lay,dimPrimStyle(p,st));}); break; }
+        var D=dimBlk[dimIdx++],pr=dimPrims(e,st),tx=null;
+        for(var j=0;j<pr.length;j++) if(pr[j].k==='text'){tx=pr[j];break;}
+        var tm=tx?{x:tx.x-Math.sin(tx.rot||0)*tx.h/2,y:tx.y+Math.cos(tx.rot||0)*tx.h/2}:{x:0,y:0};
+        var type,defp,sub=[],kind;
+        if(e.tp==='dim'){
+          var gl=dimLinePoints(e)||{d2x:e.x2,d2y:e.y2};
+          defp={x:gl.d2x,y:gl.d2y};
+          if(e.subtp==='aligned'){type=1;kind='aligned';}
+          else {type=0;kind='rotated';}
+        } else if(e.tp==='dimr'||e.tp==='dimd'){
+          var val=Math.abs(parseFloat(e.val))||0,rr=e.tp==='dimd'?val/2:val,dx=e.ex-e.cx,dy=e.ey-e.cy,dl=Math.hypot(dx,dy)||1;
+          var Pp={x:e.cx+dx/dl*rr,y:e.cy+dy/dl*rr};
+          if(e.tp==='dimr'){type=4;defp={x:e.cx,y:e.cy};kind='radial';D.p15=Pp;D.lead=Math.max(0,dl-rr);}
+          else {type=3;defp={x:2*e.cx-Pp.x,y:2*e.cy-Pp.y};kind='diam';D.p15=Pp;D.lead=Math.max(0,dl-rr);}
+        } else {
+          var G=dimAngGeom(e);
+          type=5;kind='ang3';
+          defp={x:e.vx+G.R*Math.cos(G.sa+G.sweep/2),y:e.vy+G.R*Math.sin(G.sa+G.sweep/2)};
+        }
+        ent('DIMENSION',OW,lay,'AcDbDimension',{col:st.col});
+        g(2,D.name);g(3,DSN[DSH[e.dimStyle]?e.dimStyle:S.dimCurrent]||'Standard');
+        g(10,n(defp.x));g(20,n(defp.y));g(30,'0.0');g(11,n(tm.x));g(21,n(tm.y));g(31,'0.0');
+        g(70,type+32+128);g(71,5);g(1,'<>');
+        if(kind==='rotated'||kind==='aligned'){
+          g(100,'AcDbAlignedDimension');g(13,n(e.x1));g(23,n(e.y1));g(33,'0.0');g(14,n(e.x2));g(24,n(e.y2));g(34,'0.0');
+          if(kind==='rotated'){g(50,e.dimDir==='v'?'90.0':'0.0');g(100,'AcDbRotatedDimension');}
+          else g(50,n(Math.atan2(e.y2-e.y1,e.x2-e.x1)*180/Math.PI)); // ângulo também na cota alinhada (leitores que medem pelo ângulo)
+        } else if(kind==='radial'){g(100,'AcDbRadialDimension');g(15,n(D.p15.x));g(25,n(D.p15.y));g(35,'0.0');g(40,n(D.lead));}
+        else if(kind==='diam'){g(100,'AcDbDiametricDimension');g(15,n(D.p15.x));g(25,n(D.p15.y));g(35,'0.0');g(40,n(D.lead));}
+        else {
+          var G2=dimAngGeom(e),p1=(Math.abs(G2.sa-Math.atan2(e.y1-e.vy,e.x1-e.vx))<1e-9)?[e.x1,e.y1,e.x2,e.y2]:[e.x2,e.y2,e.x1,e.y1];
+          g(100,'AcDb3PointAngularDimension');g(13,n(p1[0]));g(23,n(p1[1]));g(33,'0.0');g(14,n(p1[2]));g(24,n(p1[3]));g(34,'0.0');
+          g(15,n(e.vx));g(25,n(e.vy));g(35,'0.0');g(16,'0.0');g(26,'0.0');g(36,'0.0');
+        }
+      } break;
+    }
+  });
+  g(0,'ENDSEC');
+
+  // ── OBJECTS (dicionários mínimos exigidos pelo AutoCAD 2000+)
+  g(0,'SECTION');g(2,'OBJECTS');
+  g(0,'DICTIONARY');g(5,hO.root);g(330,0);g(100,'AcDbDictionary');g(281,1);
+  g(3,'ACAD_GROUP');g(350,hO.group);g(3,'ACAD_LAYOUT');g(350,hO.layout);g(3,'ACAD_MLINESTYLE');g(350,hO.mlstyle);
+  g(3,'ACAD_PLOTSETTINGS');g(350,hO.plotset);g(3,'ACAD_PLOTSTYLENAME');g(350,hO.pstyle);
+  g(0,'DICTIONARY');g(5,hO.group);g(330,hO.root);g(100,'AcDbDictionary');g(281,1);
+  g(0,'DICTIONARY');g(5,hO.layout);g(330,hO.root);g(100,'AcDbDictionary');g(281,1);g(3,'Model');g(350,hO.layModel);g(3,'Layout1');g(350,hO.layPaper);
+  g(0,'DICTIONARY');g(5,hO.mlstyle);g(330,hO.root);g(100,'AcDbDictionary');g(281,1);g(3,'Standard');g(350,hO.mlStd);
+  g(0,'DICTIONARY');g(5,hO.plotset);g(330,hO.root);g(100,'AcDbDictionary');g(281,1);
+  g(0,'ACDBDICTIONARYWDFLT');g(5,hO.pstyle);g(330,hO.root);g(100,'AcDbDictionary');g(281,1);g(3,'Normal');g(350,hO.pnormal);g(100,'AcDbDictionaryWithDefault');g(340,hO.pnormal);
+  g(0,'ACDBPLACEHOLDER');g(5,hO.pnormal);g(330,hO.pstyle);
+  g(0,'MLINESTYLE');g(5,hO.mlStd);g(102,'{ACAD_REACTORS');g(330,hO.mlstyle);g(102,'}');g(330,hO.mlstyle);g(100,'AcDbMlineStyle');
+  g(2,'Standard');g(70,0);g(3,'');g(62,256);g(51,'90.0');g(52,'90.0');g(71,2);g(49,'0.5');g(62,256);g(6,'BYLAYER');g(49,'-0.5');g(62,256);g(6,'BYLAYER');
+  function layout(h,name,tab,brec,isModel){
+    g(0,'LAYOUT');g(5,h);g(330,hO.layout);g(100,'AcDbPlotSettings');g(1,'');g(4,'A4');g(6,'');
+    g(40,'7.5');g(41,'20.0');g(42,'7.5');g(43,'20.0');g(44,'297.0');g(45,'210.0');g(46,'0.0');g(47,'0.0');g(48,'0.0');g(49,'0.0');
+    g(140,'0.0');g(141,'0.0');g(142,'1.0');g(143,'1.0');g(70,isModel?1024:0);g(72,1);g(73,0);g(74,5);g(7,'');g(75,16);g(76,0);g(77,2);g(78,300);
+    g(147,'1.0');g(148,'0.0');g(149,'0.0');
+    g(100,'AcDbLayout');g(1,name);g(70,1);g(71,tab);g(10,'0.0');g(20,'0.0');g(11,'420.0');g(21,'297.0');g(12,'0.0');g(22,'0.0');g(32,'0.0');
+    g(14,n(bb.x));g(24,n(bb.y));g(34,'0.0');g(15,n(bb.x+bb.w));g(25,n(bb.y+bb.h));g(35,'0.0');g(146,'0.0');
+    g(13,'0.0');g(23,'0.0');g(33,'0.0');g(16,'1.0');g(26,'0.0');g(36,'0.0');g(17,'0.0');g(27,'1.0');g(37,'0.0');g(76,1);g(330,brec);
+  }
+  layout(hO.layModel,'Model',0,hB.msRec,true);
+  layout(hO.layPaper,'Layout1',1,hB.psRec,false);
+  g(0,'ENDSEC');
+  g(0,'EOF');
+  out[seedIdx+1]=(hnd).toString(16).toUpperCase();
+  return out.join(NL)+NL;
+}
+
 
 // ── SVG: unidades em mm (abre em escala 1:1 no Inkscape/Illustrator)
 function buildSVG(){
@@ -4344,8 +4508,9 @@ function buildSVG(){
         b.push('<path d="M'+f(x1)+' '+f(-y1)+' A'+f(p.r)+' '+f(p.r)+' 0 '+(d>Math.PI?1:0)+' 0 '+f(x2)+' '+f(-y2)+'" '+st+'/>');}break;
       case 'poly': b.push('<'+(p.closed?'polygon':'polyline')+' points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" '+st+'/>');break;
       case 'solid': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="'+escHTML(safeCol(it.col))+'" stroke="none"/>');break;
+      case 'fillbox': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="#0a0a1a" stroke="none"/>');break;
       case 'point': b.push('<circle cx="'+f(p.x)+'" cy="'+f(-p.y)+'" r="0.3" fill="'+escHTML(safeCol(it.col))+'"/>');break;
-      case 'text': b.push('<text x="0" y="0" transform="translate('+f(p.x)+' '+f(-p.y)+') rotate('+f(-(p.rot||0)*180/Math.PI)+')" fill="'+escHTML(safeCol(it.txtCol))+'" font-size="'+f(p.h)+'" font-family="Consolas, monospace"'+(p.align==='center'?' text-anchor="middle"':'')+'>'+escHTML(p.txt)+'</text>');break;
+      case 'text': b.push('<text x="0" y="0" transform="translate('+f(p.x)+' '+f(-p.y)+') rotate('+f(-(p.rot||0)*180/Math.PI)+')" fill="'+escHTML(safeCol(it.txtCol))+'" font-size="'+f(p.h)+'" font-family="'+escHTML(it.font||'Consolas, monospace')+'"'+(p.align==='center'?' text-anchor="middle"':'')+'>'+escHTML(p.txt)+'</text>');break;
     }
   });
   return '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="'+f(W)+'mm" height="'+f(H)+'mm" viewBox="'+f(X)+' '+f(Y)+' '+f(W)+' '+f(H)+'">\n'+
@@ -4386,6 +4551,13 @@ function log(msg,type){var el=document.getElementById('cmdlog'),d=document.creat
 function logp(msg){log(msg,'p');document.getElementById('cmdlbl').textContent=msg;}
 
 // ── DEMO ─────────────────────────────────────────────────────
+// v6.2: o aplicativo inicia com um desenho novo e vazio (o exemplo continua disponível pelo comando DEMO)
+function startBlank(){
+  S.ents=[];S.sel=[];resetHistory();S.dirty=false;
+  S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};
+  document.getElementById('ftitle').textContent='Sem título';
+  updStatus();renderAll();
+}
 function loadDemo(){
   S.ents=[
     {id:'d1',tp:'rect',  x:-60,y:-40,w:120,h:80, col:'#dce4f5',lw:.7, ld:'solid', ly:0},
@@ -4395,7 +4567,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.1 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.3 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -4460,145 +4632,6 @@ function polyBuild(center,r,sides,method,startAng){
 }
 
 // ── DIM HELPERS ──────────────────────────────────────────────
-
-// Calcula o offset da cota linear (distância perpendicular ao segmento p1-p2)
-// O offset é armazenado como a coordenada Y da linha de cota (sistema mundo)
-// Para cotas horizontais: off = cursor.y (deslocamento vertical)
-// Para cotas verticais: off = cursor.x (deslocamento horizontal)
-// Para cotas oblíquas: projeção perpendicular
-function dimCalcOff(p1,p2,cursor){
-  // Vetor do segmento
-  var dx=p2.x-p1.x, dy=p2.y-p1.y;
-  var len=Math.hypot(dx,dy);
-  if(len<1e-9) return cursor.y;
-  // Vertor normal (perpendicular)
-  var nx=-dy/len, ny=dx/len;
-  // Offset = distância do cursor ao segmento na direção normal
-  var dot=(cursor.x-p1.x)*nx+(cursor.y-p1.y)*ny;
-  // Ponto na linha de cota = ponto médio + normal * offset
-  var midX=(p1.x+p2.x)/2+nx*dot;
-  var midY=(p1.y+p2.y)/2+ny*dot;
-  return {ox:midX,oy:midY,dot:dot};
-}
-
-// Preview cota LINEAR ortogonal (H ou V)
-function drawDimLinearPreview(ctx,p1,p2,cursor,col){
-  col=col||'#f0c040';
-  var dir=dimLinearDir(p1,p2,cursor);
-  // Construir as coordenadas da linha de cota ortogonal
-  var d1x,d1y,d2x,d2y,measuredVal;
-  if(dir==='h'){
-    // Linha de cota horizontal em y=cursor.y
-    d1x=p1.x; d1y=cursor.y;
-    d2x=p2.x; d2y=cursor.y;
-    measuredVal=Math.abs(p2.x-p1.x);
-  } else {
-    // Linha de cota vertical em x=cursor.x
-    d1x=cursor.x; d1y=p1.y;
-    d2x=cursor.x; d2y=p2.y;
-    measuredVal=Math.abs(p2.y-p1.y);
-  }
-
-  ctx.save();
-  ctx.strokeStyle=col;ctx.fillStyle=col;
-  ctx.lineWidth=0.8;ctx.setLineDash([]);ctx.globalAlpha=0.9;ctx.shadowBlur=0;
-
-  var sp1=w2s(p1.x,p1.y), sp2=w2s(p2.x,p2.y);
-  var sd1=w2s(d1x,d1y),   sd2=w2s(d2x,d2y);
-
-  // Extensões
-  var GAP=2, EXT=4;
-  function ext(ox,oy,tx,ty){
-    var ex2=tx-ox,ey2=ty-oy,el=Math.hypot(ex2,ey2);
-    if(el<0.5) return;
-    var eux=ex2/el,euy=ey2/el;
-    ctx.beginPath();ctx.moveTo(ox+eux*GAP,oy+euy*GAP);ctx.lineTo(tx+eux*EXT,ty+euy*EXT);ctx.stroke();
-  }
-  ext(sp1.x,sp1.y,sd1.x,sd1.y);
-  ext(sp2.x,sp2.y,sd2.x,sd2.y);
-
-  // Linha de cota
-  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
-
-  // Setas
-  var AW=7,AH=3,da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
-  function arr(px,py,a){
-    ctx.beginPath();ctx.moveTo(px,py);
-    ctx.lineTo(px-AW*Math.cos(a)+AH*Math.sin(a),py-AW*Math.sin(a)-AH*Math.cos(a));
-    ctx.lineTo(px-AW*Math.cos(a)-AH*Math.sin(a),py-AW*Math.sin(a)+AH*Math.cos(a));
-    ctx.closePath();ctx.fill();
-  }
-  arr(sd1.x,sd1.y,da+Math.PI);
-  arr(sd2.x,sd2.y,da);
-
-  // Valor + indicador H/V
-  var val=measuredVal.toFixed(2)+'mm';
-  var dirLbl=dir==='h'?' [H]':' [V]';
-  var mx=(sd1.x+sd2.x)/2, my=(sd1.y+sd2.y)/2;
-  var ta=da; if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
-  ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
-  ctx.font='bold 10px Consolas,monospace';ctx.textAlign='center';
-  var tw=ctx.measureText(val+dirLbl).width;
-  ctx.fillStyle='rgba(6,10,24,0.88)';ctx.fillRect(-tw/2-3,-14,tw+6,14);
-  ctx.fillStyle=col;ctx.fillText(val+dirLbl,0,-3);
-  ctx.restore();
-
-  ctx.restore();
-}
-
-// Preview cota ALINHADA (paralela ao segmento) — aceita cor opcional
-function drawDimPreview(ctx,p1,p2,cursor,col){
-  col=col||'#f0c040';
-  // Reutilizar dimLinePoints passando um objeto temporário com px,py = cursor
-  var tmp={x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:cursor.x,py:cursor.y,subtp:'aligned'};
-  var g=dimLinePoints(tmp); if(!g) return;
-  var d1x=g.d1x,d1y=g.d1y,d2x=g.d2x,d2y=g.d2y;
-  ctx.save();
-  ctx.strokeStyle=col;ctx.fillStyle=col;
-  ctx.lineWidth=0.8;ctx.setLineDash([]);ctx.globalAlpha=0.9;ctx.shadowBlur=0;
-
-  var sp1=w2s(p1.x,p1.y), sp2=w2s(p2.x,p2.y);
-  var sd1=w2s(d1x,d1y),   sd2=w2s(d2x,d2y);
-
-  // Extensões
-  var GAP=2,EXT=4;
-  function ext(ox,oy,tx,ty){
-    var ex=tx-ox,ey=ty-oy,el=Math.hypot(ex,ey);
-    if(el<0.5) return;
-    var eux=ex/el,euy=ey/el;
-    ctx.beginPath();ctx.moveTo(ox+eux*GAP,oy+euy*GAP);ctx.lineTo(tx+eux*EXT,ty+euy*EXT);ctx.stroke();
-  }
-  ext(sp1.x,sp1.y,sd1.x,sd1.y);
-  ext(sp2.x,sp2.y,sd2.x,sd2.y);
-
-  // Linha de cota
-  ctx.beginPath();ctx.moveTo(sd1.x,sd1.y);ctx.lineTo(sd2.x,sd2.y);ctx.stroke();
-
-  // Setas
-  var AW=7,AH=3,da=Math.atan2(sd2.y-sd1.y,sd2.x-sd1.x);
-  function arr(px,py,a){
-    ctx.beginPath();ctx.moveTo(px,py);
-    ctx.lineTo(px-AW*Math.cos(a)+AH*Math.sin(a),py-AW*Math.sin(a)-AH*Math.cos(a));
-    ctx.lineTo(px-AW*Math.cos(a)-AH*Math.sin(a),py-AW*Math.sin(a)+AH*Math.cos(a));
-    ctx.closePath();ctx.fill();
-  }
-  arr(sd1.x,sd1.y,da+Math.PI);
-  arr(sd2.x,sd2.y,da);
-
-  // Valor
-  var len=Math.hypot(p2.x-p1.x,p2.y-p1.y);
-  var val=len.toFixed(2)+'mm';
-  var mx=(sd1.x+sd2.x)/2,my=(sd1.y+sd2.y)/2;
-  var ta=da; if(ta>Math.PI/2||ta<-Math.PI/2) ta+=Math.PI;
-  ctx.save();ctx.translate(mx,my);ctx.rotate(ta);
-  ctx.font='bold 10px Consolas,monospace';ctx.textAlign='center';
-  var tw=ctx.measureText(val).width;
-  ctx.fillStyle='rgba(6,10,24,0.88)';ctx.fillRect(-tw/2-3,-14,tw+6,14);
-  ctx.fillStyle=col;ctx.fillText(val,0,-3);
-  ctx.restore();
-
-  ctx.restore();
-}
 
 // ── TRIM / EXTEND GEOMETRY ────────────────────────────────────
 
@@ -5484,304 +5517,742 @@ function confirmFillet(){
 }
 
 
-// ── DIMSTYLE ENGINE ─────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+// v6.2 — MOTOR DE COTAS + DIMSTYLE (DDIM)
+// Um único gerador de geometria (dimPrims) alimenta: tela, pré-visualização,
+// Layout, seleção, DXF e SVG. Assim, qualquer ajuste no estilo aparece igual
+// em todos os lugares. Tamanhos em mm do desenho × Escala global (DIMSCALE),
+// como no AutoCAD.
+// ═══════════════════════════════════════════════════════════════════════════
 
-// Estilo de cota padrão (Standard)
+var DIM_TYPES=['dim','dimr','dimd','dima'];
+function isDim(e){ return !!e && DIM_TYPES.indexOf(e.tp)>=0; }
+
+// Estilo padrão. Entre parênteses, a variável equivalente do AutoCAD.
 var DS_DEFAULT = {
-  name:'Standard',
-  col:'#f0c040', lw:0.5,
-  extBeyond:1.5,
-  extOrigin:0.625, extDimline:1.25,
-  extFixed:false, extFixLen:1,
-  arrowType:'filled', arrowSize:2.5,
-  centerMark:'none', centerSize:2,
-  font:'Consolas,monospace', txtH:2.5, txtCol:'#f0c040',
-  txtPos:'above', txtAlign:'aligned', txtGap:0.8,
-  unit:'mm', prec:2, scale:1, prefix:'', suffix:'', dimscale:1
+  name:'Standard', desc:'',
+  // Linhas
+  col:'#f0c040',      // cor da linha de cota (DIMCLRD)
+  lw:0.25,            // espessura da linha de cota, mm (DIMLWD)
+  sd1:false, sd2:false, // suprimir 1ª/2ª metade da linha de cota (DIMSD1/DIMSD2)
+  extCol:'#f0c040',   // cor das linhas de extensão (DIMCLRE)
+  extLw:0.25,         // espessura das linhas de extensão (DIMLWE)
+  se1:false, se2:false, // suprimir 1ª/2ª linha de extensão (DIMSE1/DIMSE2)
+  extDimline:1.25,    // prolongamento além da linha de cota (DIMEXE)
+  extOrigin:0.625,    // afastamento da origem (DIMEXO)
+  extFixed:false, extFixLen:1, // extensões de comprimento fixo (DIMFXLON/DIMFXL)
+  // Símbolos e setas
+  arrowType:'filled', // tipo de seta (DIMBLK)
+  arrowSize:2.5,      // tamanho da seta (DIMASZ)
+  centerMark:'mark',  // marca de centro: none | mark | line (DIMCEN)
+  centerSize:2.5,
+  // Texto
+  font:'Consolas,monospace', // estilo do texto (DIMTXSTY)
+  txtCol:'#f0c040',   // cor do texto (DIMCLRT)
+  txtH:2.5,           // altura do texto (DIMTXT)
+  txtFill:false,      // fundo do texto (DIMTFILL)
+  txtPos:'above',     // vertical: above | center | below (DIMTAD)
+  txtJust:'center',   // horizontal: center | ext1 | ext2 (DIMJUST)
+  txtGap:0.625,       // afastamento texto–linha (DIMGAP)
+  txtAlign:'aligned', // horizontal | aligned | iso (DIMTIH/DIMTOH)
+  // Ajuste
+  dimscale:1,         // escala global (DIMSCALE)
+  fit:'best',         // best | inside (DIMATFIT simplificado)
+  forceLine:true,     // linha de cota entre extensões mesmo com texto fora (DIMTOFL)
+  // Unidades primárias
+  unitFmt:'decimal',  // decimal | scientific (DIMLUNIT)
+  unit:'mm',          // unidade exibida: mm | cm | m | in
+  prec:2,             // casas decimais (DIMDEC)
+  decSep:'.',         // separador decimal (DIMDSEP)
+  round:0,            // arredondamento (DIMRND)
+  prefix:'', suffix:'', // prefixo/sufixo (DIMPOST)
+  scale:1,            // fator de escala das medidas (DIMLFAC)
+  zLead:false, zTrail:false, // supressão de zeros (DIMZIN)
+  angFmt:'deg',       // deg | dms | grad | rad (DIMAUNIT)
+  angPrec:1,          // (DIMADEC)
+  angZTrail:false,
+  // Unidades alternativas
+  altOn:false,        // (DIMALT)
+  altMult:0.0393701,  // (DIMALTF) — padrão: mm → polegadas
+  altPrec:3,          // (DIMALTD)
+  altPrefix:'', altSuffix:' in',
+  altPos:'after',     // after | below
+  // Tolerâncias
+  tolMethod:'none',   // none | symmetric | deviation | limits | basic (DIMTOL/DIMLIM)
+  tolUpper:0.1,       // (DIMTP)
+  tolLower:0.1,       // (DIMTM)
+  tolPrec:2,          // (DIMTDEC)
+  tolScale:0.7        // altura relativa (DIMTFAC)
 };
 
-// Banco de estilos e estilo corrente
-if(!S.dimStyles) S.dimStyles=[JSON.parse(JSON.stringify(DS_DEFAULT))];
+function dimDefaultStyles(){
+  var std=JSON.parse(JSON.stringify(DS_DEFAULT));
+  std.desc='Estilo padrão do EduCAD.';
+  var abnt=JSON.parse(JSON.stringify(DS_DEFAULT));
+  abnt.name='ABNT'; abnt.decSep=','; abnt.zTrail=true; abnt.txtAlign='aligned'; abnt.txtPos='above';
+  abnt.col=abnt.extCol=abnt.txtCol='#f0c040';
+  abnt.desc='Separador decimal vírgula e zeros finais suprimidos (convenção brasileira). Ajuste tamanhos e escala à folha usada.';
+  return [std,abnt];
+}
+
+// Completa campos ausentes e converte nomes antigos (v6.0/v6.1)
+function normDimStyle(st){
+  var o={};
+  for(var k in DS_DEFAULT) o[k]=DS_DEFAULT[k];
+  if(st) for(var k2 in st) if(st[k2]!==undefined) o[k2]=st[k2];
+  if(st){
+    if(st.extDimline===undefined && st.extBeyond!==undefined) o.extDimline=st.extBeyond;
+    if(st.extOrigin===undefined && st.extOffset!==undefined) o.extOrigin=st.extOffset;
+    if(st.extCol===undefined) o.extCol=o.col;
+    if(st.txtCol===undefined) o.txtCol=o.col;
+    if(st.extLw===undefined && st.lw!==undefined) o.extLw=st.lw;
+  }
+  delete o.extBeyond; delete o.extOffset;
+  o.name=String(o.name||'Estilo');
+  ['lw','extLw','extDimline','extOrigin','extFixLen','arrowSize','centerSize','txtH','txtGap','dimscale','prec','round','scale','angPrec','altMult','altPrec','tolUpper','tolLower','tolPrec','tolScale']
+    .forEach(function(k){ var v=parseFloat(o[k]); o[k]=isFinite(v)?v:DS_DEFAULT[k]; });
+  ['col','extCol','txtCol'].forEach(function(k){ o[k]=safeCol(o[k]); });
+  if(!(o.dimscale>0)) o.dimscale=1;
+  if(!(o.scale>0)) o.scale=1;
+  return o;
+}
+
+if(!S.dimStyles) S.dimStyles=dimDefaultStyles();
 if(!S.dimCurrent) S.dimCurrent='Standard';
-
-var _dspSel=null; // nome do estilo selecionado no manager
-
-function curDimStyle(){
-  for(var i=0;i<S.dimStyles.length;i++)
-    if(S.dimStyles[i].name===S.dimCurrent) return S.dimStyles[i];
-  return S.dimStyles[0]||DS_DEFAULT;
-}
-
-function showDimStyle(){
-  _dspSel=S.dimCurrent;
-  dspRenderList();
-  dspLoadFields(_dspSel);
-  document.getElementById('ov-dimstyle').classList.add('show');
-  dspDrawPreview();
-}
-
-function dspRenderList(){
-  var el=document.getElementById('dsp-list');
-  el.innerHTML='';
-  S.dimStyles.forEach(function(st){
-    var d=document.createElement('div');
-    d.className='dsp-item'+(st.name===_dspSel?' active':'');
-    d.innerHTML=(st.name===S.dimCurrent?'<span class="dsp-cur">★</span>':'')+
-                '<span>'+escHTML(st.name)+'</span>';
-    d.onclick=function(){_dspSel=st.name;dspRenderList();dspLoadFields(st.name);dspDrawPreview();};
-    el.appendChild(d);
-  });
-  // enable/disable delete (cannot delete last or Standard)
-  var btn=document.getElementById('dsp-btn-del');
-  if(btn) btn.disabled=(S.dimStyles.length<=1||_dspSel==='Standard');
-}
 
 function dspGetStyle(name){
   for(var i=0;i<S.dimStyles.length;i++) if(S.dimStyles[i].name===name) return S.dimStyles[i];
   return null;
 }
+function curDimStyle(){ return dspGetStyle(S.dimCurrent)||S.dimStyles[0]||normDimStyle(DS_DEFAULT); }
+function dimStyleOf(e){ return (e&&e.dimStyle&&dspGetStyle(e.dimStyle))||curDimStyle(); }
 
-function dspLoadFields(name){
-  var st=dspGetStyle(name)||DS_DEFAULT;
-  document.getElementById('dsp-col').value=st.col;
-  document.getElementById('dsp-lw').value=st.lw;
-  document.getElementById('dsp-ext-beyond').value=st.extBeyond!==undefined?st.extBeyond:1.5;
-  document.getElementById('dsp-ext-origin').value=st.extOrigin!==undefined?st.extOrigin:0.625;
-  document.getElementById('dsp-ext-dimline').value=st.extDimline!==undefined?st.extDimline:1.25;
-  document.getElementById('dsp-ext-fixed').checked=!!st.extFixed;
-  document.getElementById('dsp-ext-fixlen').value=st.extFixLen!==undefined?st.extFixLen:1;
-  dspExtToggle();
-  document.getElementById('dsp-arrow-type').value=st.arrowType;
-  document.getElementById('dsp-arrow-size').value=st.arrowSize;
-  document.getElementById('dsp-center-mark').value=st.centerMark;
-  document.getElementById('dsp-center-size').value=st.centerSize;
-  document.getElementById('dsp-font').value=st.font;
-  document.getElementById('dsp-txt-h').value=st.txtH;
-  document.getElementById('dsp-txt-col').value=st.txtCol;
-  document.getElementById('dsp-txt-pos').value=st.txtPos;
-  document.getElementById('dsp-txt-align').value=st.txtAlign;
-  document.getElementById('dsp-txt-gap').value=st.txtGap;
-  document.getElementById('dsp-unit').value=st.unit;
-  document.getElementById('dsp-prec').value=st.prec;
-  document.getElementById('dsp-scale').value=st.scale;
-  document.getElementById('dsp-prefix').value=st.prefix||'';
-  document.getElementById('dsp-suffix').value=st.suffix||'';
-  document.getElementById('dsp-dimscale').value=st.dimscale||1;
+// ── FORMATAÇÃO NUMÉRICA ────────────────────────────────────────────────────
+function dimFmtNum(v,prec,sep,zLead,zTrail,round){
+  if(round>0) v=Math.round(v/round)*round;
+  prec=Math.max(0,Math.min(8,prec|0));
+  var s=v.toFixed(prec);
+  if(/^-0\.?0*$/.test(s)) s=s.slice(1);
+  if(zTrail && s.indexOf('.')>=0) s=s.replace(/0+$/,'').replace(/\.$/,'');
+  if(zLead) s=s.replace(/^(-?)0\./,'$1.');
+  return s.replace('.',sep||'.');
 }
-
-function dspReadFields(){
-  return {
-    col:document.getElementById('dsp-col').value,
-    lw:parseFloat(document.getElementById('dsp-lw').value),
-    extBeyond:parseFloat(document.getElementById('dsp-ext-beyond').value)||1.5,
-    extOrigin:parseFloat(document.getElementById('dsp-ext-origin').value)||0,
-    extDimline:parseFloat(document.getElementById('dsp-ext-dimline').value)||0,
-    extFixed:document.getElementById('dsp-ext-fixed').checked,
-    extFixLen:parseFloat(document.getElementById('dsp-ext-fixlen').value)||1,
-    arrowType:document.getElementById('dsp-arrow-type').value,
-    arrowSize:parseFloat(document.getElementById('dsp-arrow-size').value),
-    centerMark:document.getElementById('dsp-center-mark').value,
-    centerSize:parseFloat(document.getElementById('dsp-center-size').value),
-    font:document.getElementById('dsp-font').value,
-    txtH:parseFloat(document.getElementById('dsp-txt-h').value),
-    txtCol:document.getElementById('dsp-txt-col').value,
-    txtPos:document.getElementById('dsp-txt-pos').value,
-    txtAlign:document.getElementById('dsp-txt-align').value,
-    txtGap:parseFloat(document.getElementById('dsp-txt-gap').value),
-    unit:document.getElementById('dsp-unit').value,
-    prec:parseInt(document.getElementById('dsp-prec').value),
-    scale:parseFloat(document.getElementById('dsp-scale').value)||1,
-    prefix:document.getElementById('dsp-prefix').value,
-    suffix:document.getElementById('dsp-suffix').value,
-    dimscale:parseFloat(document.getElementById('dsp-dimscale').value)||1
-  };
+function dimUnitConv(v,st){
+  if(st.unit==='cm') return v/10;
+  if(st.unit==='m') return v/1000;
+  if(st.unit==='in') return v/25.4;
+  return v;
 }
-
-// Habilita/desabilita campos Origin e Dimension line conforme Fixed length
-function dspExtToggle(){
-  var fixed=document.getElementById('dsp-ext-fixed').checked;
-  var row=document.getElementById('dsp-ext-fixed-row');
-  var origin=document.getElementById('dsp-ext-origin');
-  var dimline=document.getElementById('dsp-ext-dimline');
-  // Fixed ativado: Length habilitado, Origin e Dimension line desabilitados
-  row.style.opacity=fixed?'1':'0.35';
-  row.style.pointerEvents=fixed?'auto':'none';
-  origin.disabled=fixed;
-  dimline.disabled=fixed;
-  origin.style.opacity=fixed?'0.4':'1';
-  dimline.style.opacity=fixed?'0.4':'1';
+function dimFmtLinearNum(v,st){
+  if(st.unitFmt==='scientific') return v.toExponential(Math.max(0,Math.min(8,st.prec|0))).replace('.',st.decSep||'.');
+  return dimFmtNum(v,st.prec,st.decSep,st.zLead,st.zTrail,st.round);
 }
-
-function dspChange(){
-  // Salvar no estilo selecionado em tempo real
-  var st=dspGetStyle(_dspSel);
-  if(!st) return;
-  var f=dspReadFields();
-  Object.keys(f).forEach(function(k){st[k]=f[k];});
-  dspDrawPreview();
-  // Associatividade: re-renderizar cotas existentes
-  renderAll();
-}
-
-function dspTab(n){
-  document.querySelectorAll('.dsp-tab').forEach(function(t,i){t.classList.toggle('on',i===n);});
-  document.querySelectorAll('.dsp-pane').forEach(function(p,i){
-    p.classList.remove('on','show');
-    if(i===n) p.classList.add('on');
-  });
-}
-
-function dspNew(){
-  var name=prompt('Nome do novo estilo:','Estilo '+(S.dimStyles.length+1));
-  if(!name||!name.trim()) return;
-  if(dspGetStyle(name)){alert('Já existe um estilo com esse nome.');return;}
-  var base=dspGetStyle(_dspSel)||DS_DEFAULT;
-  var newSt=JSON.parse(JSON.stringify(base));
-  newSt.name=name.trim();
-  S.dimStyles.push(newSt);
-  _dspSel=newSt.name;
-  dspRenderList();
-  dspLoadFields(_dspSel);
-  dspDrawPreview();
-}
-
-function dspRename(){
-  var st=dspGetStyle(_dspSel);
-  if(!st||st.name==='Standard'){alert('O estilo Standard não pode ser renomeado.');return;}
-  var name=prompt('Novo nome:',st.name);
-  if(!name||!name.trim()) return;
-  if(dspGetStyle(name)){alert('Já existe um estilo com esse nome.');return;}
-  // Atualizar cotas que usam este estilo
-  S.ents.forEach(function(e){if((e.tp==='dim'||e.tp==='dimr'||e.tp==='dimd'||e.tp==='dima')&&e.dimStyle===st.name) e.dimStyle=name.trim();});
-  if(S.dimCurrent===st.name) S.dimCurrent=name.trim();
-  st.name=name.trim();
-  _dspSel=st.name;
-  dspRenderList();
-}
-
-function dspSetCurrent(){
-  if(!_dspSel) return;
-  S.dimCurrent=_dspSel;
-  dspRenderList();
-  log('Estilo de cota padrão: '+_dspSel,'ok');
-}
-
-function dspDelete(){
-  if(S.dimStyles.length<=1){alert('Não é possível excluir o único estilo.');return;}
-  if(_dspSel==='Standard'){alert('O estilo Standard não pode ser excluído.');return;}
-  if(!confirm('Excluir estilo "'+_dspSel+'"?')) return;
-  S.dimStyles=S.dimStyles.filter(function(s){return s.name!==_dspSel;});
-  if(S.dimCurrent===_dspSel) S.dimCurrent=S.dimStyles[0].name;
-  _dspSel=S.dimCurrent;
-  dspRenderList();
-  dspLoadFields(_dspSel);
-  dspDrawPreview();
-}
-
-function dspApply(){
-  dspChange();
-  S.dimCurrent=_dspSel;
-  renderAll();
-  closeOv('ov-dimstyle');
-  log('Estilo de cota aplicado: '+S.dimCurrent,'ok');
-}
-
-// Preview da cota no mini-canvas
-function dspDrawPreview(){
-  var cv=document.getElementById('dsp-preview');
-  if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var W=cv.width,H=cv.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#0a0c1a';ctx.fillRect(0,0,W,H);
-
-  var st=dspGetStyle(_dspSel)||DS_DEFAULT;
-  var ds=st.dimscale||1;
-  // Simular uma cota de 80px de comprimento no centro
-  var y=H/2, x1=60, x2=W-60, dimY=H*0.25;
-  var sc=2; // px por mm fictício para preview
-
-  // Linha do objeto (fina)
-  ctx.strokeStyle='#4d9ef760';ctx.lineWidth=1;ctx.setLineDash([]);
-  ctx.beginPath();ctx.moveTo(x1,y);ctx.lineTo(x2,y);ctx.stroke();
-
-  // Extensões
-  var beyond_px=(st.extDimline!==undefined?st.extDimline:st.extBeyond||1.5)*sc*ds;
-  var dir=dimY<y?-1:1; // direção das extensões
-  ctx.strokeStyle=st.col;ctx.lineWidth=st.lw*sc;ctx.setLineDash([]);
-  [[x1,y,x1,dimY],[x2,y,x2,dimY]].forEach(function(pts){
-    var ox=pts[0],oy=pts[1],tx=pts[2],ty=pts[3];
-    var dx=tx-ox,dy=ty-oy,l=Math.hypot(dx,dy);
-    if(l<1) return;
-    var ux=dx/l,uy=dy/l;
-    var sx2,sy2,ex2,ey2;
-    if(st.extFixed){
-      var fixPx2=(st.extFixLen||1)*sc*ds;
-      sx2=tx-ux*fixPx2; sy2=ty-uy*fixPx2;
-      ex2=tx+ux*beyond_px; ey2=ty+uy*beyond_px;
-    } else {
-      var gap2=(st.extOrigin!==undefined?st.extOrigin:st.extGap||1)*sc*ds;
-      sx2=ox+ux*gap2; sy2=oy+uy*gap2;
-      ex2=tx+ux*beyond_px; ey2=ty+uy*beyond_px;
-    }
-    ctx.beginPath();ctx.moveTo(sx2,sy2);ctx.lineTo(ex2,ey2);ctx.stroke();
-  });
-
-  // Linha de cota
-  ctx.beginPath();ctx.moveTo(x1,dimY);ctx.lineTo(x2,dimY);ctx.stroke();
-
-  // Setas
-  var aw=st.arrowSize*sc*ds, ah=aw*0.4;
-  function drawArrow(px,py,ang){
-    if(st.arrowType==='none') return;
-    if(st.arrowType==='tick'){
-      ctx.beginPath();ctx.moveTo(px-aw*0.7,py+aw*0.7);ctx.lineTo(px+aw*0.7,py-aw*0.7);ctx.stroke();return;
-    }
-    if(st.arrowType==='dot'){
-      ctx.beginPath();ctx.arc(px,py,aw*0.5,0,Math.PI*2);ctx.fillStyle=st.col;ctx.fill();return;
-    }
-    ctx.fillStyle=st.col;
-    ctx.beginPath();ctx.moveTo(px,py);
-    if(st.arrowType==='open'){
-      ctx.moveTo(px-aw*Math.cos(ang)+ah*Math.sin(ang),py-aw*Math.sin(ang)-ah*Math.cos(ang));
-      ctx.lineTo(px,py);
-      ctx.lineTo(px-aw*Math.cos(ang)-ah*Math.sin(ang),py-aw*Math.sin(ang)+ah*Math.cos(ang));
-      ctx.stroke();
-    } else {
-      ctx.lineTo(px-aw*Math.cos(ang)+ah*Math.sin(ang),py-aw*Math.sin(ang)-ah*Math.cos(ang));
-      ctx.lineTo(px-aw*Math.cos(ang)-ah*Math.sin(ang),py-aw*Math.sin(ang)+ah*Math.cos(ang));
-      ctx.closePath();ctx.fill();
+// Retorna {main, tolUp, tolLow, alt, basic}: o texto principal e partes empilhadas
+function dimLinearText(rawMM,st,pre){
+  var v=dimUnitConv(rawMM*(st.scale||1),st);
+  var r={main:'',tolUp:null,tolLow:null,alt:null,basic:st.tolMethod==='basic'};
+  var tp=st.tolPrec;
+  var num=dimFmtLinearNum(v,st);
+  if(st.tolMethod==='limits'){
+    r.tolUp=dimFmtNum(v+st.tolUpper,tp,st.decSep,st.zLead,st.zTrail,0);
+    r.tolLow=dimFmtNum(v-st.tolLower,tp,st.decSep,st.zLead,st.zTrail,0);
+    r.main=st.prefix?st.prefix:(pre||'');
+  } else {
+    r.main=(st.prefix?st.prefix:(pre||''))+num+(st.suffix||'');
+    if(st.tolMethod==='symmetric') r.main+='±'+dimFmtNum(st.tolUpper,tp,st.decSep,false,st.zTrail,0);
+    if(st.tolMethod==='deviation'){
+      r.tolUp='+'+dimFmtNum(st.tolUpper,tp,st.decSep,false,st.zTrail,0);
+      r.tolLow=(st.tolLower===0?'':'-')+dimFmtNum(Math.abs(st.tolLower),tp,st.decSep,false,st.zTrail,0);
     }
   }
-  drawArrow(x1,dimY,Math.PI);
-  drawArrow(x2,dimY,0);
+  if(st.altOn){
+    var av=rawMM*(st.scale||1)*(st.altMult||1);
+    r.alt='['+(st.altPrefix||'')+dimFmtNum(av,st.altPrec,st.decSep,st.zLead,st.zTrail,0)+(st.altSuffix||'')+']';
+  }
+  return r;
+}
+function dimAngText(deg,st){
+  var sep=st.decSep||'.',p=st.angPrec|0,zt=st.angZTrail;
+  if(st.angFmt==='rad') return dimFmtNum(deg*Math.PI/180,p,sep,false,zt,0)+'r';
+  if(st.angFmt==='grad') return dimFmtNum(deg*400/360,p,sep,false,zt,0)+'g';
+  if(st.angFmt==='dms'){
+    var tot=Math.round(deg*3600),d=Math.floor(tot/3600),m=Math.floor((tot%3600)/60),s=tot%60;
+    if(p<=0) return Math.round(deg)+'°';
+    if(p<=2) return d+'°'+Math.round(m+s/60)+"'";
+    return d+'°'+m+"'"+s+'"';
+  }
+  return dimFmtNum(deg,p,sep,false,zt,0)+'°';
+}
+// Compatibilidade com código anterior
+function dimValStr(rawMM,st){ return dimLinearText(rawMM,st||curDimStyle()).main; }
 
-  // Texto
-  var txtPx=(st.txtH||2.5)*sc*ds;
-  ctx.font=(txtPx>6?'bold ':'')+Math.max(8,txtPx)+'px '+st.font;
-  ctx.textAlign='center';
-  var valMM=((x2-x1)/sc/ds);
-  var val=dimValStr(valMM,st);
-  var txtGap=(st.txtGap||0.8)*sc*ds;
-  var txtY=dimY-(st.txtPos==='below'?(-txtGap):txtGap+txtPx*0.5);
-  if(st.txtPos==='center') txtY=dimY+txtPx*0.35;
-  ctx.fillStyle=st.txtCol;
-  ctx.fillText(val,(x1+x2)/2,txtY);
-  ctx.textAlign='left';
+// ── MEDIDAS (calculadas da geometria: cota acompanha o objeto) ───────────────
+function dimMeasure(e){
+  switch(e.tp){
+    case 'dim':
+      if(e.subtp==='aligned') return Math.hypot(e.x2-e.x1,e.y2-e.y1);
+      if(e.px===undefined) return Math.abs(e.x2-e.x1);
+      return e.dimDir==='v'?Math.abs(e.y2-e.y1):Math.abs(e.x2-e.x1);
+    case 'dimr': case 'dimd': return Math.abs(parseFloat(e.val))||0;
+    case 'dima': return dimAngGeom(e).sweep*180/Math.PI;
+  }
+  return 0;
+}
+function dimAngGeom(e){
+  var a1=Math.atan2(e.y1-e.vy,e.x1-e.vx),a2=Math.atan2(e.y2-e.vy,e.x2-e.vx);
+  var TWO=Math.PI*2,d=((a2-a1)%TWO+TWO)%TWO,sa=a1,sw=d;
+  if(e.px!==undefined){
+    var ap=Math.atan2(e.py-e.vy,e.px-e.vx),rel=((ap-a1)%TWO+TWO)%TWO;
+    if(rel>d){ sa=a2; sw=TWO-d; }
+  } else if(d>Math.PI){ sa=a2; sw=TWO-d; }
+  var L1=Math.hypot(e.x1-e.vx,e.y1-e.vy),L2=Math.hypot(e.x2-e.vx,e.y2-e.vy);
+  var R=e.px!==undefined?Math.hypot(e.px-e.vx,e.py-e.vy):0.6*Math.min(L1,L2);
+  return {sa:sa,sweep:sw,R:R};
 }
 
-// Formata o valor numérico conforme o estilo
-function dimValStr(rawMM, st){
-  st=st||curDimStyle();
-  var scale=st.scale||1, prec=st.prec!==undefined?st.prec:2;
-  var v=rawMM*scale;
-  if(st.unit==='cm') v/=10;
-  else if(st.unit==='m') v/=1000;
-  else if(st.unit==='in') v/=25.4;
-  var prefix=st.prefix||'', suffix=st.suffix!==undefined?st.suffix:st.unit||'';
-  return prefix+v.toFixed(prec)+suffix;
+// ── GEOMETRIA DAS COTAS (primitivas no mundo, em mm) ───────────────────────
+// Primitivas: line | arc | solid | circle(fill) | text | fillbox | box
+// role: 'dim' (linha de cota/setas), 'ext' (extensões), 'cen' (marca de centro), 'text'
+function dimTextW(txt,h,st){ var f=(st.font||'').toLowerCase(),k=/consolas|courier|mono/.test(f)?0.6:0.55; return String(txt).length*h*k; }
+function dimArrow(out,tx,ty,dx,dy,st,ds){
+  var AW=st.arrowSize*ds,AH=AW*0.3,t=st.arrowType,px=-dy,py=dx;
+  if(t==='none'||AW<=0) return;
+  if(t==='tick'){ var k=AW*0.5; out.push({k:'line',role:'dim',x1:tx-k*(dx+px),y1:ty-k*(dy+py),x2:tx+k*(dx+px),y2:ty+k*(dy+py),bold:true}); return; }
+  if(t==='dot'){ out.push({k:'circle',role:'dim',cx:tx,cy:ty,r:AW*0.25,fill:true}); return; }
+  var b1={x:tx-dx*AW+px*AH,y:ty-dy*AW+py*AH},b2={x:tx-dx*AW-px*AH,y:ty-dy*AW-py*AH};
+  if(t==='open'){ out.push({k:'line',role:'dim',x1:b1.x,y1:b1.y,x2:tx,y2:ty},{k:'line',role:'dim',x1:tx,y1:ty,x2:b2.x,y2:b2.y}); return; }
+  if(t==='open90'){ var c=AW*0.7071; b1={x:tx-dx*c+px*c,y:ty-dy*c+py*c};b2={x:tx-dx*c-px*c,y:ty-dy*c-py*c};
+    out.push({k:'line',role:'dim',x1:b1.x,y1:b1.y,x2:tx,y2:ty},{k:'line',role:'dim',x1:tx,y1:ty,x2:b2.x,y2:b2.y}); return; }
+  out.push({k:'solid',role:'dim',pts:[{x:tx,y:ty},b1,b2]});
+}
+// Bloco de texto: texto principal + tolerâncias empilhadas + alternativas.
+// (cx,cy) = centro horizontal do bloco na linha de base; ang = rotação; retorna largura.
+function dimTextBlock(out,cx,cy,ang,T,st,ds,vAlign){
+  var H=st.txtH*ds,Hs=H*(st.tolScale||0.7),gap=st.txtGap*ds;
+  var main=T.main+(T.alt&&st.altPos!=='below'?' '+T.alt:'');
+  var wm=main?dimTextW(main,H,st):0, stack=(T.tolUp!==null||T.tolLow!==null);
+  var ws=stack?Math.max(dimTextW(T.tolUp||'',Hs,st),dimTextW(T.tolLow||'',Hs,st)):0;
+  var W=wm+(stack?(wm?gap*0.5:0)+ws:0);
+  var c=Math.cos(ang),s=Math.sin(ang),nx=-s,ny=c;
+  // deslocamento vertical da linha de base
+  var off=vAlign==='above'?gap:vAlign==='below'?-(gap+H):-H/2;
+  var bx=cx+nx*off,by=cy+ny*off;
+  var x0=bx-c*W/2,y0=by-s*W/2; // início do bloco
+  if(st.txtFill){
+    var pad=gap*0.5,p1={x:x0-c*pad-nx*pad,y:y0-s*pad-ny*pad},L=W+2*pad,Hh=H+2*pad;
+    out.push({k:'fillbox',role:'text',pts:[p1,{x:p1.x+c*L,y:p1.y+s*L},{x:p1.x+c*L+nx*Hh,y:p1.y+s*L+ny*Hh},{x:p1.x+nx*Hh,y:p1.y+ny*Hh}]});
+  }
+  if(main) out.push({k:'text',role:'text',x:x0+c*wm/2,y:y0+s*wm/2,h:H,rot:ang,txt:main,align:'center'});
+  if(T.basic&&main){
+    var q=gap*0.5,a={x:x0-c*q-nx*q,y:y0-s*q-ny*q},Lw=wm+2*q,Hb=H+2*q;
+    out.push({k:'box',role:'dim',pts:[a,{x:a.x+c*Lw,y:a.y+s*Lw},{x:a.x+c*Lw+nx*Hb,y:a.y+s*Lw+ny*Hb},{x:a.x+nx*Hb,y:a.y+ny*Hb}]});
+  }
+  if(stack){
+    var sx=x0+c*(W-ws),sy=y0+s*(W-ws);
+    if(T.tolUp) out.push({k:'text',role:'text',x:sx+nx*(H-Hs),y:sy+ny*(H-Hs),h:Hs,rot:ang,txt:T.tolUp,align:'left'});
+    if(T.tolLow) out.push({k:'text',role:'text',x:sx-nx*(Hs*0.15),y:sy-ny*(Hs*0.15),h:Hs,rot:ang,txt:T.tolLow,align:'left'});
+  }
+  if(T.alt&&st.altPos==='below'){
+    var boff=-(gap+H)-(vAlign==='below'?H+gap:0);
+    out.push({k:'text',role:'text',x:cx+nx*boff,y:cy+ny*boff,h:H,rot:ang,txt:T.alt,align:'center'});
+  }
+  return W;
+}
+function readableAng(a){ while(a>Math.PI/2+1e-9) a-=Math.PI; while(a<-Math.PI/2-1e-9) a+=Math.PI; return a; }
+function dimCenterMark(out,cx,cy,r,st,ds){
+  if(st.centerMark==='none') return;
+  var m=st.centerSize*ds;
+  out.push({k:'line',role:'cen',x1:cx-m,y1:cy,x2:cx+m,y2:cy},{k:'line',role:'cen',x1:cx,y1:cy-m,x2:cx,y2:cy+m});
+  if(st.centerMark==='line'&&r>2*m){
+    var e=r+m;
+    out.push({k:'line',role:'cen',x1:cx+2*m,y1:cy,x2:cx+e,y2:cy},{k:'line',role:'cen',x1:cx-2*m,y1:cy,x2:cx-e,y2:cy},
+             {k:'line',role:'cen',x1:cx,y1:cy+2*m,x2:cx,y2:cy+e},{k:'line',role:'cen',x1:cx,y1:cy-2*m,x2:cx,y2:cy-e});
+  }
+}
+function dimPrims(e,stOverride){
+  var st=stOverride||dimStyleOf(e),ds=st.dimscale||1,o=[];
+  var asz=st.arrowSize*ds,gap=st.txtGap*ds,H=st.txtH*ds;
+  if(e.tp==='dim'){
+    var g=dimLinePoints(e); if(!g) return o;
+    var d1={x:g.d1x,y:g.d1y},d2={x:g.d2x,y:g.d2y};
+    var L=Math.hypot(d2.x-d1.x,d2.y-d1.y); if(L<1e-9) return o;
+    var ux=(d2.x-d1.x)/L,uy=(d2.y-d1.y)/L;
+    // linhas de extensão
+    var exo=st.extOrigin*ds,exe=st.extDimline*ds;
+    [[e.x1,e.y1,d1,st.se1],[e.x2,e.y2,d2,st.se2]].forEach(function(q){
+      if(q[3]) return;
+      var dx=q[2].x-q[0],dy=q[2].y-q[1],l=Math.hypot(dx,dy),vx,vy;
+      if(l<1e-9){ vx=-uy; vy=ux; } else { vx=dx/l; vy=dy/l; }
+      var sx=st.extFixed?q[2].x-vx*st.extFixLen*ds:q[0]+vx*exo, sy=st.extFixed?q[2].y-vy*st.extFixLen*ds:q[1]+vy*exo;
+      if(l>1e-9||st.extFixed) o.push({k:'line',role:'ext',x1:sx,y1:sy,x2:q[2].x+vx*exe,y2:q[2].y+vy*exe});
+    });
+    // texto e ajuste (Fit)
+    var T=dimLinearText(dimMeasure(e),st);
+    var Wt=dimTextW(T.main+(T.alt&&st.altPos!=='below'?' '+T.alt:''),H,st)+((T.tolUp||T.tolLow)?dimTextW(T.tolUp||T.tolLow,H*st.tolScale,st)+gap*0.5:0);
+    var arrowsIn=true,textIn=true;
+    if(st.fit!=='inside'&&L<2*asz+Wt+2*gap){
+      if(L>=Wt+2*gap){ arrowsIn=false; }            // só o texto cabe: setas para fora
+      else if(L>=2*asz+gap){ textIn=false; }         // só as setas cabem: texto para fora
+      else { arrowsIn=false; textIn=false; }
+    }
+    var horizTxt=st.txtAlign==='horizontal'||(st.txtAlign==='iso'&&!textIn);
+    var ta=horizTxt?0:readableAng(Math.atan2(uy,ux));
+    var lineHoriz=Math.abs(uy)<1e-6;
+    var vAl=st.txtPos;
+    if(horizTxt&&!lineHoriz) vAl='center';
+    // posição do texto ao longo da linha (parâmetro "along" a partir de d1)
+    var along;
+    if(textIn){
+      along=L/2;
+      if(st.txtJust==='ext1') along=Math.min(L/2,(arrowsIn?asz:0)+gap+Wt/2);
+      if(st.txtJust==='ext2') along=Math.max(L/2,L-((arrowsIn?asz:0)+gap+Wt/2));
+    } else along=L+(arrowsIn?0:2*asz)+gap+Wt/2;
+    var tc={x:d1.x+ux*along,y:d1.y+uy*along};
+    // linha de cota
+    var lo=arrowsIn?0:-2*asz, hi=arrowsIn?L:L+2*asz;
+    var segs=(arrowsIn||st.forceLine)?[[lo,hi]]:[[lo,0],[L,hi]];
+    var half=(horizTxt&&!lineHoriz)?(Math.abs(ux)>1e-6?Math.min(Wt/2/Math.abs(ux),H/2/Math.abs(uy)):H/2/Math.abs(uy)):Wt/2;
+    if(!textIn){
+      var last=segs[segs.length-1];
+      last[1]=Math.max(last[1],vAl==='center'?along-half-gap:along+Wt/2);
+    } else if(vAl==='center'){
+      var ns=[];
+      segs.forEach(function(sg){ if(along-half-gap>sg[0]) ns.push([sg[0],Math.min(sg[1],along-half-gap)]); if(along+half+gap<sg[1]) ns.push([Math.max(sg[0],along+half+gap),sg[1]]); });
+      segs=ns;
+    }
+    segs.forEach(function(sg){
+      var a0=st.sd1?Math.max(sg[0],L/2):sg[0], a1=st.sd2?Math.min(sg[1],L/2):sg[1];
+      if(a1-a0>1e-9) o.push({k:'line',role:'dim',x1:d1.x+ux*a0,y1:d1.y+uy*a0,x2:d1.x+ux*a1,y2:d1.y+uy*a1});
+    });
+    if(!st.sd1) dimArrow(o,d1.x,d1.y,arrowsIn?-ux:ux,arrowsIn?-uy:uy,st,ds);
+    if(!st.sd2) dimArrow(o,d2.x,d2.y,arrowsIn?ux:-ux,arrowsIn?uy:-uy,st,ds);
+    dimTextBlock(o,tc.x,tc.y,ta,T,st,ds,vAl);
+    return o;
+  }
+  if(e.tp==='dimr'||e.tp==='dimd'){
+    var isD=e.tp==='dimd',val=Math.abs(parseFloat(e.val))||0,r=isD?val/2:val;
+    var dx=e.ex-e.cx,dy=e.ey-e.cy,dl=Math.hypot(dx,dy),ux2=dl>1e-9?dx/dl:1,uy2=dl>1e-9?dy/dl:0;
+    var P={x:e.cx+ux2*r,y:e.cy+uy2*r},Q={x:e.cx-ux2*r,y:e.cy-uy2*r};
+    var T2=dimLinearText(val,st,isD?'⌀':'R');
+    var Wt2=dimTextW(T2.main,H,st);
+    dimCenterMark(o,e.cx,e.cy,r,st,ds);
+    var outside=dl>r+1e-9;
+    if(!outside){
+      // texto dentro do círculo
+      var A=isD?Q:{x:e.cx,y:e.cy};
+      o.push({k:'line',role:'dim',x1:A.x,y1:A.y,x2:P.x,y2:P.y});
+      dimArrow(o,P.x,P.y,ux2,uy2,st,ds);
+      if(isD) dimArrow(o,Q.x,Q.y,-ux2,-uy2,st,ds);
+      var mid={x:(A.x+P.x)/2,y:(A.y+P.y)/2};
+      var ta2=st.txtAlign==='horizontal'?0:readableAng(Math.atan2(uy2,ux2));
+      dimTextBlock(o,mid.x,mid.y,ta2,T2,st,ds,st.txtAlign==='horizontal'?'center':st.txtPos);
+    } else {
+      // texto fora: seta apontando para o contorno + linha até o texto
+      var start=isD?(st.forceLine?Q:P):(st.forceLine?{x:e.cx,y:e.cy}:P);
+      o.push({k:'line',role:'dim',x1:start.x,y1:start.y,x2:e.ex,y2:e.ey});
+      if(isD&&st.forceLine){ dimArrow(o,P.x,P.y,ux2,uy2,st,ds); dimArrow(o,Q.x,Q.y,-ux2,-uy2,st,ds); }
+      else dimArrow(o,P.x,P.y,-ux2,-uy2,st,ds);
+      if(st.txtAlign==='aligned'){
+        var ta3=readableAng(Math.atan2(uy2,ux2)),flip=Math.abs(ta3-Math.atan2(uy2,ux2))>1e-6;
+        var tcx=e.ex+ux2*(gap+Wt2/2),tcy=e.ey+uy2*(gap+Wt2/2);
+        o.push({k:'line',role:'dim',x1:e.ex,y1:e.ey,x2:e.ex+ux2*(2*gap+Wt2),y2:e.ey+uy2*(2*gap+Wt2)});
+        dimTextBlock(o,tcx,tcy,ta3,T2,st,ds,st.txtPos==='center'?'above':st.txtPos);
+      } else {
+        var sgn=ux2>=0?1:-1,land=asz;
+        o.push({k:'line',role:'dim',x1:e.ex,y1:e.ey,x2:e.ex+sgn*land,y2:e.ey});
+        dimTextBlock(o,e.ex+sgn*(land+gap+Wt2/2),e.ey,0,T2,st,ds,'center');
+      }
+    }
+    return o;
+  }
+  if(e.tp==='dima'){
+    var G=dimAngGeom(e); if(G.R<1e-9||G.sweep<1e-9) return o;
+    var v={x:e.vx,y:e.vy},R=G.R,sa=G.sa,ea=G.sa+G.sweep;
+    // extensões (quando o arco passa além das pernas)
+    var exo2=st.extOrigin*ds,exe2=st.extDimline*ds;
+    [[e.x1,e.y1,st.se1],[e.x2,e.y2,st.se2]].forEach(function(q){
+      if(q[2]) return;
+      var dx=q[0]-v.x,dy=q[1]-v.y,l=Math.hypot(dx,dy); if(l<1e-9) return;
+      var ax=dx/l,ay=dy/l;
+      if(R>l+exo2) o.push({k:'line',role:'ext',x1:q[0]+ax*exo2,y1:q[1]+ay*exo2,x2:v.x+ax*(R+exe2),y2:v.y+ay*(R+exe2)});
+    });
+    o.push({k:'arc',role:'dim',cx:v.x,cy:v.y,r:R,sa:sa,ea:ea});
+    var aSz=asz,arcLen=R*G.sweep;
+    var inside=st.fit==='inside'||arcLen>=2*aSz+gap;
+    var t1={x:v.x+R*Math.cos(sa),y:v.y+R*Math.sin(sa)},t2={x:v.x+R*Math.cos(ea),y:v.y+R*Math.sin(ea)};
+    var tg1={x:Math.sin(sa),y:-Math.cos(sa)},tg2={x:-Math.sin(ea),y:Math.cos(ea)}; // para fora do arco
+    dimArrow(o,t1.x,t1.y,inside?tg1.x:-tg1.x,inside?tg1.y:-tg1.y,st,ds);
+    dimArrow(o,t2.x,t2.y,inside?tg2.x:-tg2.x,inside?tg2.y:-tg2.y,st,ds);
+    var ma=sa+G.sweep/2,T3={main:dimAngText(G.sweep*180/Math.PI,st),tolUp:null,tolLow:null,alt:null,basic:st.tolMethod==='basic'};
+    var mx=v.x+R*Math.cos(ma),my=v.y+R*Math.sin(ma);
+    if(st.txtAlign==='horizontal'){
+      var Wt3=dimTextW(T3.main,H,st),k3=gap+Math.abs(Math.cos(ma))*Wt3/2+Math.abs(Math.sin(ma))*H/2;
+      dimTextBlock(o,mx+Math.cos(ma)*k3,my+Math.sin(ma)*k3,0,T3,st,ds,'center');
+    } else {
+      var tang=readableAng(ma-Math.PI/2),outward=Math.abs(tang-(ma-Math.PI/2))<1e-6||Math.abs(tang-(ma-Math.PI/2)+2*Math.PI)<1e-6;
+      var vA=st.txtPos;
+      if(!outward){ vA=vA==='above'?'below':vA==='below'?'above':vA; }
+      dimTextBlock(o,mx,my,tang,T3,st,ds,vA);
+    }
+    return o;
+  }
+  return o;
 }
 
+// ── DESENHO DAS PRIMITIVAS (tela, Layout, pré-visualização) ────────────────
+// map(x,y) → {x,y} em pixels; pxmm = pixels por mm; opt.sel destaca; opt.minTxt = altura mínima
+function renderDimPrims(ctx,prims,st,map,pxmm,opt){
+  opt=opt||{};
+  ctx.save();ctx.setLineDash([]);ctx.shadowBlur=opt.sel?8:0;ctx.shadowColor=opt.sel?'#4d9ef7':'transparent';
+  if(opt.alpha) ctx.globalAlpha=opt.alpha;
+  function colOf(role){ if(opt.sel) return '#60b8ff'; if(opt.color) return opt.color; return role==='ext'?st.extCol:role==='text'?st.txtCol:st.col; }
+  function lwOf(role){ return Math.max(opt.minLw||0.6,(role==='ext'?st.extLw:st.lw)*pxmm); }
+  for(var i=0;i<prims.length;i++){
+    var p=prims[i],c=colOf(p.role);
+    ctx.strokeStyle=c;ctx.fillStyle=c;ctx.lineWidth=lwOf(p.role)*(p.bold?1.6:1);
+    switch(p.k){
+      case 'line':{var a=map(p.x1,p.y1),b=map(p.x2,p.y2);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();break;}
+      case 'arc':{var cc=map(p.cx,p.cy);ctx.beginPath();ctx.arc(cc.x,cc.y,p.r*pxmm,-p.sa,-p.ea,true);ctx.stroke();break;}
+      case 'solid':case 'fillbox':case 'box':{
+        if(p.k==='fillbox'){ if(opt.noFill) break; ctx.fillStyle=opt.bg||'#0a0a1a'; }
+        ctx.beginPath();for(var j=0;j<p.pts.length;j++){var q=map(p.pts[j].x,p.pts[j].y);if(j)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);}ctx.closePath();
+        if(p.k==='box') ctx.stroke(); else ctx.fill(); break;}
+      case 'circle':{var c2=map(p.cx,p.cy);ctx.beginPath();ctx.arc(c2.x,c2.y,Math.max(1,p.r*pxmm),0,Math.PI*2);if(p.fill)ctx.fill();else ctx.stroke();break;}
+      case 'text':{
+        var tp=map(p.x,p.y),fs=Math.max(opt.minTxt||0,p.h*pxmm);
+        if(fs<0.5) break;
+        ctx.save();ctx.translate(tp.x,tp.y);ctx.rotate(-p.rot);
+        ctx.font=fs+'px '+(st.font||'Consolas,monospace');ctx.textAlign=p.align||'center';ctx.textBaseline='alphabetic';
+        ctx.fillText(p.txt,0,0);ctx.restore();break;}
+    }
+  }
+  ctx.restore();
+}
+function drawDimEnt(ctx,e,sel){
+  var st=dimStyleOf(e);
+  renderDimPrims(ctx,dimPrims(e,st),st,w2s,S.vp.sc,{sel:sel,minTxt:6});
+}
+// Pré-visualização durante a criação de uma cota (mesma geometria da cota final)
+function drawDimTemp(ctx,e){
+  var st=curDimStyle();
+  renderDimPrims(ctx,dimPrims(e,st),st,w2s,S.vp.sc,{alpha:0.85,minTxt:6});
+}
+// Seleção pelo desenho real da cota (linhas, arcos e texto)
+function dimHit(e,wx,wy,t){
+  var P=dimPrims(e);
+  for(var i=0;i<P.length;i++){
+    var p=P[i];
+    if(p.k==='line'&&segD(wx,wy,p.x1,p.y1,p.x2,p.y2)<t) return true;
+    if(p.k==='arc'&&Math.abs(Math.hypot(wx-p.cx,wy-p.cy)-p.r)<t&&arcHas(Math.atan2(wy-p.cy,wx-p.cx),p.sa,p.ea)) return true;
+    if(p.k==='text'){
+      var w=dimTextW(p.txt,p.h,dimStyleOf(e)),x0=p.align==='center'?-w/2:0,lp=ellLocal({cx:p.x,cy:p.y,rot:p.rot},wx,wy);
+      if(lp.x>=x0-t&&lp.x<=x0+w+t&&lp.y>=-t&&lp.y<=p.h+t) return true;
+    }
+    if(p.k==='solid'&&segD(wx,wy,p.pts[0].x,p.pts[0].y,(p.pts[1].x+p.pts[2].x)/2,(p.pts[1].y+p.pts[2].y)/2)<t) return true;
+  }
+  return false;
+}
+function dimBox(e){ return primsBox(dimPrims(e)); }
+function dimUseCount(name){ return S.ents.filter(function(e){return isDim(e)&&(e.dimStyle||S.dimCurrent)===name;}).length; }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DIÁLOGOS DDIM: Gerenciador (lista + pré-visualização) e Editor (abas)
+// ═══════════════════════════════════════════════════════════════════════════
+var DDIM={ sel:null, edit:null, editName:null, isNew:false, tab:0, filter:'all' };
+
+// Esquema do editor: cada campo indica a variável equivalente do AutoCAD
+var DDIM_TABS=[
+  {t:'Linhas',sec:[
+    {h:'Linhas de cota',f:[
+      {k:'col',l:'Cor',ty:'color',v:'DIMCLRD'},
+      {k:'lw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70'],['1','1,00']],num:1,v:'DIMLWD'},
+      {k:'sd1',l:'Suprimir 1ª metade',ty:'chk',v:'DIMSD1'},
+      {k:'sd2',l:'Suprimir 2ª metade',ty:'chk',v:'DIMSD2'}]},
+    {h:'Linhas de extensão',f:[
+      {k:'extCol',l:'Cor',ty:'color',v:'DIMCLRE'},
+      {k:'extLw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70']],num:1,v:'DIMLWE'},
+      {k:'se1',l:'Suprimir extensão 1',ty:'chk',v:'DIMSE1'},
+      {k:'se2',l:'Suprimir extensão 2',ty:'chk',v:'DIMSE2'},
+      {k:'extDimline',l:'Além da linha de cota',ty:'num',min:0,max:50,st:0.125,v:'DIMEXE'},
+      {k:'extOrigin',l:'Afastamento da origem',ty:'num',min:0,max:50,st:0.125,v:'DIMEXO'},
+      {k:'extFixed',l:'Comprimento fixo',ty:'chk',v:'DIMFXLON'},
+      {k:'extFixLen',l:'Comprimento',ty:'num',min:0.1,max:100,st:0.5,v:'DIMFXL',dep:'extFixed'}]}]},
+  {t:'Símbolos e setas',sec:[
+    {h:'Pontas de seta',f:[
+      {k:'arrowType',l:'Tipo',ty:'sel',o:[['filled','Preenchida fechada'],['open','Aberta'],['open90','Aberta 90°'],['tick','Traço oblíquo (arquitetônico)'],['dot','Ponto'],['none','Nenhuma']],v:'DIMBLK'},
+      {k:'arrowSize',l:'Tamanho',ty:'num',min:0,max:50,st:0.25,v:'DIMASZ'}]},
+    {h:'Marca de centro (raio/diâmetro)',f:[
+      {k:'centerMark',l:'Tipo',ty:'sel',o:[['none','Nenhuma'],['mark','Marca'],['line','Linha de centro']],v:'DIMCEN'},
+      {k:'centerSize',l:'Tamanho',ty:'num',min:0.1,max:50,st:0.25,v:'DIMCEN'}]}]},
+  {t:'Texto',sec:[
+    {h:'Aparência',f:[
+      {k:'font',l:'Fonte',ty:'sel',o:[['Consolas,monospace','Consolas'],['Arial,sans-serif','Arial'],["'Courier New',monospace",'Courier New'],["'Times New Roman',serif",'Times New Roman'],['system-ui,sans-serif','Sistema']],v:'DIMTXSTY'},
+      {k:'txtCol',l:'Cor do texto',ty:'color',v:'DIMCLRT'},
+      {k:'txtH',l:'Altura do texto',ty:'num',min:0.1,max:100,st:0.25,v:'DIMTXT'},
+      {k:'txtFill',l:'Fundo sob o texto',ty:'chk',v:'DIMTFILL'}]},
+    {h:'Posicionamento',f:[
+      {k:'txtPos',l:'Vertical',ty:'sel',o:[['above','Acima da linha'],['center','Centralizado'],['below','Abaixo da linha']],v:'DIMTAD'},
+      {k:'txtJust',l:'Horizontal',ty:'sel',o:[['center','Centralizado'],['ext1','Junto à extensão 1'],['ext2','Junto à extensão 2']],v:'DIMJUST'},
+      {k:'txtGap',l:'Afastamento da linha',ty:'num',min:0,max:20,st:0.125,v:'DIMGAP'}]},
+    {h:'Alinhamento',f:[
+      {k:'txtAlign',l:'Texto',ty:'sel',o:[['horizontal','Horizontal'],['aligned','Alinhado à linha de cota'],['iso','Padrão ISO']],v:'DIMTIH/DIMTOH'}]}]},
+  {t:'Ajuste',sec:[
+    {h:'Quando não houver espaço entre as extensões',f:[
+      {k:'fit',l:'Opção',ty:'sel',o:[['best','Melhor ajuste (setas e/ou texto para fora)'],['inside','Manter sempre dentro']],v:'DIMATFIT'},
+      {k:'forceLine',l:'Linha de cota entre extensões',ty:'chk',v:'DIMTOFL'}]},
+    {h:'Escala dos elementos',f:[
+      {k:'dimscale',l:'Escala global',ty:'num',min:0.001,max:10000,st:0.5,v:'DIMSCALE',hint:'Multiplica setas, textos e afastamentos. Ex.: desenho em 1:50 → 50.'}]}]},
+  {t:'Unidades primárias',sec:[
+    {h:'Cotas lineares',f:[
+      {k:'unitFmt',l:'Formato',ty:'sel',o:[['decimal','Decimal'],['scientific','Científico']],v:'DIMLUNIT'},
+      {k:'unit',l:'Unidade exibida',ty:'sel',o:[['mm','mm (sem conversão)'],['cm','cm (÷10)'],['m','m (÷1000)'],['in','pol. (÷25,4)']],v:''},
+      {k:'prec',l:'Precisão',ty:'sel',o:[['0','0'],['1','0.0'],['2','0.00'],['3','0.000'],['4','0.0000'],['5','0.00000'],['6','0.000000']],num:1,v:'DIMDEC'},
+      {k:'decSep',l:'Separador decimal',ty:'sel',o:[['.','Ponto ( . )'],[',','Vírgula ( , )'],[' ','Espaço']],v:'DIMDSEP'},
+      {k:'round',l:'Arredondar para',ty:'num',min:0,max:1000,st:0.05,v:'DIMRND'},
+      {k:'prefix',l:'Prefixo',ty:'txt',v:'DIMPOST'},
+      {k:'suffix',l:'Sufixo',ty:'txt',v:'DIMPOST'},
+      {k:'scale',l:'Fator de escala da medida',ty:'num',min:0.0001,max:100000,st:0.1,v:'DIMLFAC',hint:'Ex.: desenho feito em escala 1:100 com medidas reais → 100.'},
+      {k:'zLead',l:'Suprimir zero à esquerda',ty:'chk',v:'DIMZIN'},
+      {k:'zTrail',l:'Suprimir zeros à direita',ty:'chk',v:'DIMZIN'}]},
+    {h:'Cotas angulares',f:[
+      {k:'angFmt',l:'Formato',ty:'sel',o:[['deg','Graus decimais'],['dms','Graus/min/seg'],['grad','Grados'],['rad','Radianos']],v:'DIMAUNIT'},
+      {k:'angPrec',l:'Precisão',ty:'sel',o:[['0','0'],['1','0.0'],['2','0.00'],['3','0.000'],['4','0.0000']],num:1,v:'DIMADEC'},
+      {k:'angZTrail',l:'Suprimir zeros à direita',ty:'chk',v:'DIMAZIN'}]}]},
+  {t:'Unidades alternativas',sec:[
+    {h:'Exibição',f:[
+      {k:'altOn',l:'Mostrar unidades alternativas',ty:'chk',v:'DIMALT'},
+      {k:'altMult',l:'Multiplicador',ty:'num',min:0.000001,max:100000,st:0.001,v:'DIMALTF',dep:'altOn',hint:'0,03937 = mm → pol.; 0,1 = mm → cm.'},
+      {k:'altPrec',l:'Precisão',ty:'sel',o:[['0','0'],['1','0.0'],['2','0.00'],['3','0.000'],['4','0.0000']],num:1,v:'DIMALTD',dep:'altOn'},
+      {k:'altPrefix',l:'Prefixo',ty:'txt',v:'DIMAPOST',dep:'altOn'},
+      {k:'altSuffix',l:'Sufixo',ty:'txt',v:'DIMAPOST',dep:'altOn'},
+      {k:'altPos',l:'Posição',ty:'sel',o:[['after','Após o valor primário'],['below','Abaixo do valor primário']],v:'',dep:'altOn'}]}]},
+  {t:'Tolerâncias',sec:[
+    {h:'Formato da tolerância (cotas lineares, raio e diâmetro)',f:[
+      {k:'tolMethod',l:'Método',ty:'sel',o:[['none','Nenhuma'],['symmetric','Simétrica (±)'],['deviation','Desvio (+/−)'],['limits','Limites (máx./mín.)'],['basic','Básica (em caixa)']],v:'DIMTOL/DIMLIM'},
+      {k:'tolPrec',l:'Precisão',ty:'sel',o:[['0','0'],['1','0.0'],['2','0.00'],['3','0.000'],['4','0.0000']],num:1,v:'DIMTDEC',dep:'tolMethod'},
+      {k:'tolUpper',l:'Valor superior',ty:'num',min:0,max:1000,st:0.01,v:'DIMTP',dep:'tolMethod'},
+      {k:'tolLower',l:'Valor inferior',ty:'num',min:0,max:1000,st:0.01,v:'DIMTM',dep:'tolMethod'},
+      {k:'tolScale',l:'Altura relativa',ty:'num',min:0.1,max:2,st:0.05,v:'DIMTFAC',dep:'tolMethod'}]}]}
+];
+
+function showDimStyle(){
+  S.dimStyles=S.dimStyles.map(normDimStyle);
+  if(!DDIM.sel||!dspGetStyle(DDIM.sel)) DDIM.sel=S.dimCurrent;
+  ddimRenderManager();
+  document.getElementById('ov-dimstyle').classList.add('show');
+  log('DDIM: Gerenciador de estilos de cota.','inf');
+}
+function ddimRenderManager(){
+  var cur=document.getElementById('ddim-cur'); cur.textContent=S.dimCurrent;
+  var list=document.getElementById('ddim-list'); list.textContent='';
+  var flt=document.getElementById('ddim-filter').value;
+  S.dimStyles.forEach(function(st){
+    var n=dimUseCount(st.name);
+    if(flt==='used'&&n===0&&st.name!==S.dimCurrent) return;
+    var d=document.createElement('div');
+    d.className='ddim-item'+(st.name===DDIM.sel?' active':'');
+    var star=document.createElement('span');star.className='ddim-star';star.textContent=st.name===S.dimCurrent?'★':'';
+    var nm=document.createElement('span');nm.className='ddim-nm';nm.textContent=st.name;
+    var ct=document.createElement('span');ct.className='ddim-ct';ct.textContent=n?n+' cota'+(n>1?'s':''):'';
+    d.appendChild(star);d.appendChild(nm);d.appendChild(ct);
+    d.addEventListener('click',function(){DDIM.sel=st.name;ddimRenderManager();});
+    d.addEventListener('dblclick',function(){DDIM.sel=st.name;ddimModify();});
+    list.appendChild(d);
+  });
+  var st=dspGetStyle(DDIM.sel)||curDimStyle();
+  document.getElementById('ddim-prev-title').textContent='Pré-visualização: '+st.name;
+  document.getElementById('ddim-desc').textContent=ddimDescribe(st);
+  ddimDrawPreview(document.getElementById('ddim-preview'),st);
+  var nsel=S.sel.filter(function(id){return isDim(findE(id));}).length;
+  var ap=document.getElementById('ddim-apply');ap.disabled=!nsel;ap.textContent='Aplicar à seleção'+(nsel?' ('+nsel+')':'');
+  document.getElementById('ddim-del').disabled=(st.name==='Standard'||st.name===S.dimCurrent||dimUseCount(st.name)>0);
+  document.getElementById('ddim-setcur').disabled=(st.name===S.dimCurrent);
+}
+function ddimDescribe(st){
+  var arr={filled:'preenchidas',open:'abertas',open90:'abertas 90°',tick:'traço oblíquo',dot:'ponto',none:'sem seta'}[st.arrowType]||st.arrowType;
+  var sep=st.decSep===','?'vírgula':st.decSep===' '?'espaço':'ponto';
+  var tol={none:'sem tolerância',symmetric:'tolerância simétrica',deviation:'tolerância por desvio',limits:'limites',basic:'cota básica'}[st.tolMethod];
+  return (st.desc?st.desc+'\n':'')+'Texto '+dimFmtNum(st.txtH,3,',',false,true,0)+' mm · setas '+arr+' '+dimFmtNum(st.arrowSize,3,',',false,true,0)+' mm · escala global '+dimFmtNum(st.dimscale,3,',',false,true,0)+
+    '\nPrecisão '+(st.prec>0?'0.'+'0'.repeat(st.prec):'0')+' · separador '+sep+(st.unit!=='mm'?' · em '+st.unit:'')+' · ângulos '+dimAngText(45,st)+' · '+tol+(st.altOn?' · unidades alternativas':'');
+}
+// Pré-visualização: peça de exemplo com cotas linear, alinhada, raio, diâmetro e angular
+function ddimSample(){
+  var fil=[];for(var i=0;i<=12;i++){var t=-Math.PI/2+i/12*Math.PI/2;fil.push([51+9*Math.cos(t),9+9*Math.sin(t)]);}
+  return {
+    geom:[{k:'poly',pts:[[0,0],[51,0]].concat(fil).concat([[60,25],[45,40],[0,40],[0,0]])},{k:'circle',cx:18,cy:20,r:8}],
+    dims:[
+      {tp:'dim',subtp:'linear',dimDir:'h',x1:0,y1:0,x2:60,y2:9,px:30,py:-12},
+      {tp:'dim',subtp:'linear',dimDir:'v',x1:0,y1:0,x2:0,y2:40,px:-12,py:20},
+      {tp:'dim',subtp:'aligned',x1:60,y1:25,x2:45,y2:40,px:59,py:39},
+      {tp:'dimd',cx:18,cy:20,ex:36,ey:33,val:'16'},
+      {tp:'dimr',cx:51,cy:9,ex:68,ey:-6,val:'9'},
+      {tp:'dima',vx:60,vy:25,x1:60,y1:9,x2:45,y2:40,px:54,py:24}
+    ]};
+}
+function ddimDrawPreview(cv,st){
+  if(!cv) return;
+  var dpr=window.devicePixelRatio||1,W=cv.clientWidth||cv.width,H=cv.clientHeight||cv.height;
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
+  var ctx=cv.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.fillStyle='#080b18';ctx.fillRect(0,0,W,H);
+  var smp=ddimSample(),ds=st.dimscale||1;
+  // a pré-visualização mostra o estilo em escala relativa: tamanhos ÷ escala global
+  var st2=JSON.parse(JSON.stringify(st));st2.dimscale=1;
+  var all=[];smp.dims.forEach(function(d){all=all.concat(dimPrims(d,st2));});
+  var bb=primsBox(all.concat([{k:'line',x1:0,y1:0,x2:60,y2:40}]))||{x:-10,y:-10,w:80,h:60};
+  var k=Math.min((W-20)/bb.w,(H-20)/bb.h),ox=(W-bb.w*k)/2-bb.x*k,oy=(H+bb.h*k)/2+bb.y*k;
+  function map(x,y){return{x:x*k+ox,y:-y*k+oy};}
+  ctx.strokeStyle='#dce4f5';ctx.lineWidth=1.2;
+  smp.geom.forEach(function(g){
+    ctx.beginPath();
+    if(g.k==='poly'){g.pts.forEach(function(p,i){var q=map(p[0],p[1]);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);});}
+    if(g.k==='circle'){var c=map(g.cx,g.cy);ctx.arc(c.x,c.y,g.r*k,0,Math.PI*2);}
+    if(g.k==='arc'){var c2=map(g.cx,g.cy);ctx.arc(c2.x,c2.y,g.r*k,-g.sa,-g.ea,true);}
+    ctx.stroke();
+  });
+  smp.dims.forEach(function(d){renderDimPrims(ctx,dimPrims(d,st2),st2,map,k,{minLw:0.8,bg:'#080b18'});});
+  if(ds!==1){ctx.fillStyle='#546e7a';ctx.font='9px Consolas';ctx.textAlign='right';ctx.fillText('escala global ×'+dimFmtNum(ds,3,',',false,true,0)+' aplicada no desenho',W-6,H-6);}
+}
+function ddimSetCurrent(){
+  var st=dspGetStyle(DDIM.sel);if(!st) return;
+  S.dimCurrent=st.name;S.dirty=true;updDimStyleSel();ddimRenderManager();
+  log('DIMSTYLE: estilo atual = "'+st.name+'".','ok');
+}
+function ddimNew(){
+  var base=document.getElementById('ddimn-base');base.textContent='';
+  S.dimStyles.forEach(function(st){var o=document.createElement('option');o.value=st.name;o.textContent=st.name;if(st.name===DDIM.sel)o.selected=true;base.appendChild(o);});
+  var i=1,nm;do{nm='Cópia de '+DDIM.sel+(i>1?' ('+i+')':'');i++;}while(dspGetStyle(nm));
+  document.getElementById('ddimn-name').value=nm;
+  document.getElementById('ddimn-cur').checked=false;
+  document.getElementById('ov-ddimnew').classList.add('show');
+  setTimeout(function(){var n=document.getElementById('ddimn-name');n.focus();n.select();},30);
+}
+function ddimNewContinue(){
+  var nm=document.getElementById('ddimn-name').value.trim();
+  if(!nm){alert('Informe um nome para o estilo.');return;}
+  if(dspGetStyle(nm)){alert('Já existe um estilo chamado "'+nm+'".');return;}
+  var base=dspGetStyle(document.getElementById('ddimn-base').value)||curDimStyle();
+  DDIM.edit=normDimStyle(JSON.parse(JSON.stringify(base)));DDIM.edit.name=nm;DDIM.edit.desc='';
+  DDIM.isNew=true;DDIM.editName=nm;DDIM.makeCur=document.getElementById('ddimn-cur').checked;
+  closeOv('ov-ddimnew');ddimOpenEditor('Novo estilo de cota: '+nm);
+}
+function ddimModify(){
+  var st=dspGetStyle(DDIM.sel);if(!st) return;
+  DDIM.edit=normDimStyle(JSON.parse(JSON.stringify(st)));DDIM.isNew=false;DDIM.editName=st.name;DDIM.makeCur=false;
+  ddimOpenEditor('Modificar estilo de cota: '+st.name);
+}
+function ddimOpenEditor(title){
+  document.getElementById('ddime-title').textContent=title;
+  DDIM.tab=DDIM.tab||0;ddimBuildTabs();ddimBuildPane();
+  document.getElementById('ov-dimedit').classList.add('show');
+  ddimEditPreview();
+}
+function ddimBuildTabs(){
+  var tb=document.getElementById('ddime-tabs');tb.textContent='';
+  DDIM_TABS.forEach(function(t,i){
+    var d=document.createElement('div');d.className='ddim-tab'+(i===DDIM.tab?' on':'');d.textContent=t.t;
+    d.addEventListener('click',function(){DDIM.tab=i;ddimBuildTabs();ddimBuildPane();});
+    tb.appendChild(d);
+  });
+}
+function ddimBuildPane(){
+  var pane=document.getElementById('ddime-pane');pane.textContent='';
+  var st=DDIM.edit,tab=DDIM_TABS[DDIM.tab];
+  tab.sec.forEach(function(sec){
+    var fs=document.createElement('fieldset');fs.className='ddim-sec';
+    var lg=document.createElement('legend');lg.textContent=sec.h;fs.appendChild(lg);
+    sec.f.forEach(function(f){
+      var row=document.createElement('div');row.className='ddim-row';row.setAttribute('data-k',f.k);
+      var lb=document.createElement('label');lb.textContent=f.l;lb.htmlFor='ddf-'+f.k;
+      var inp;
+      if(f.ty==='sel'){inp=document.createElement('select');f.o.forEach(function(o){var op=document.createElement('option');op.value=o[0];op.textContent=o[1];inp.appendChild(op);});inp.value=String(st[f.k]);
+        if(inp.selectedIndex<0&&f.num){var op2=document.createElement('option');op2.value=String(st[f.k]);op2.textContent=String(st[f.k]);inp.appendChild(op2);inp.value=String(st[f.k]);}}
+      else if(f.ty==='chk'){inp=document.createElement('input');inp.type='checkbox';inp.checked=!!st[f.k];}
+      else if(f.ty==='color'){inp=document.createElement('input');inp.type='color';inp.value=safeCol(st[f.k]);}
+      else if(f.ty==='txt'){inp=document.createElement('input');inp.type='text';inp.maxLength=20;inp.value=st[f.k]||'';}
+      else {inp=document.createElement('input');inp.type='number';inp.min=f.min;inp.max=f.max;inp.step=f.st;inp.value=st[f.k];}
+      inp.id='ddf-'+f.k;inp.className='ddim-inp';
+      var ev=(f.ty==='sel'||f.ty==='chk'||f.ty==='color')?'change':'input';
+      inp.addEventListener(ev,function(){
+        var v;
+        if(f.ty==='chk') v=inp.checked;
+        else if(f.ty==='num'||f.num){v=parseFloat(String(inp.value).replace(',','.'));if(!isFinite(v)){inp.classList.add('bad');return;}
+          if(f.min!==undefined&&v<f.min){inp.classList.add('bad');return;} if(f.max!==undefined&&v>f.max){inp.classList.add('bad');return;}}
+        else v=inp.value;
+        inp.classList.remove('bad');st[f.k]=v;ddimDeps();ddimEditPreview();
+      });
+      if(f.ty==='color') inp.addEventListener('input',function(){st[f.k]=inp.value;ddimEditPreview();});
+      row.appendChild(lb);row.appendChild(inp);
+      if(f.v){var vv=document.createElement('span');vv.className='ddim-var';vv.textContent=f.v;vv.title='Variável equivalente no AutoCAD';row.appendChild(vv);}
+      if(f.hint) row.title=f.hint;
+      fs.appendChild(row);
+      if(f.hint){var hh=document.createElement('div');hh.className='ddim-hint';hh.textContent=f.hint;fs.appendChild(hh);}
+    });
+    pane.appendChild(fs);
+  });
+  ddimDeps();
+}
+// Campos dependentes ficam esmaecidos quando a opção-mãe está desligada
+function ddimDeps(){
+  var st=DDIM.edit;
+  DDIM_TABS.forEach(function(t){t.sec.forEach(function(sec){sec.f.forEach(function(f){
+    if(!f.dep) return;
+    var row=document.querySelector('#ddime-pane .ddim-row[data-k="'+f.k+'"]');if(!row) return;
+    var on=f.dep==='tolMethod'?(st.tolMethod!=='none'&&!(st.tolMethod==='symmetric'&&f.k==='tolLower')&&!(st.tolMethod==='basic'&&f.k!=='tolPrec')&&!((st.tolMethod==='symmetric')&&f.k==='tolScale')):!!st[f.dep];
+    if(st.tolMethod==='basic'&&f.dep==='tolMethod') on=false;
+    row.classList.toggle('off',!on);
+  });});});
+}
+function ddimEditPreview(){ ddimDrawPreview(document.getElementById('ddime-preview'),DDIM.edit); }
+function ddimEditOK(){
+  var bad=document.querySelector('#ddime-pane .ddim-inp.bad');
+  if(bad){alert('Corrija o valor destacado antes de salvar.');bad.focus();return;}
+  var st=normDimStyle(DDIM.edit);
+  if(DDIM.isNew){ S.dimStyles.push(st); if(DDIM.makeCur) S.dimCurrent=st.name; log('DIMSTYLE: estilo "'+st.name+'" criado.','ok'); }
+  else { for(var i=0;i<S.dimStyles.length;i++) if(S.dimStyles[i].name===DDIM.editName) S.dimStyles[i]=st; log('DIMSTYLE: estilo "'+st.name+'" atualizado ('+dimUseCount(st.name)+' cota(s) redesenhada(s)).','ok'); }
+  DDIM.sel=st.name;DDIM.edit=null;S.dirty=true;
+  closeOv('ov-dimedit');updDimStyleSel();ddimRenderManager();renderAll();
+  if(LY&&LY.active==='layout') layoutRender();
+}
+function ddimEditCancel(){ DDIM.edit=null; closeOv('ov-dimedit'); }
+function ddimRename(){
+  var st=dspGetStyle(DDIM.sel);if(!st) return;
+  if(st.name==='Standard'){alert('O estilo Standard não pode ser renomeado.');return;}
+  var nm=prompt('Novo nome para o estilo "'+st.name+'":',st.name);if(nm===null) return;nm=nm.trim();
+  if(!nm||nm===st.name) return;
+  if(dspGetStyle(nm)){alert('Já existe um estilo chamado "'+nm+'".');return;}
+  S.ents.forEach(function(e){if(isDim(e)&&e.dimStyle===st.name) e.dimStyle=nm;});
+  if(S.dimCurrent===st.name) S.dimCurrent=nm;
+  st.name=nm;DDIM.sel=nm;S.dirty=true;updDimStyleSel();ddimRenderManager();
+}
+function ddimDelete(){
+  var st=dspGetStyle(DDIM.sel);if(!st) return;
+  if(st.name==='Standard'){alert('O estilo Standard não pode ser excluído.');return;}
+  if(st.name===S.dimCurrent){alert('O estilo atual não pode ser excluído. Defina outro estilo como atual primeiro.');return;}
+  var n=dimUseCount(st.name);
+  if(n){alert('O estilo "'+st.name+'" está em uso por '+n+' cota(s) e não pode ser excluído.');return;}
+  if(!confirm('Excluir o estilo "'+st.name+'"?')) return;
+  S.dimStyles=S.dimStyles.filter(function(s){return s!==st;});DDIM.sel=S.dimCurrent;S.dirty=true;updDimStyleSel();ddimRenderManager();
+}
+function ddimApplySel(){
+  var st=dspGetStyle(DDIM.sel);if(!st) return;
+  var ids=S.sel.filter(function(id){return isDim(findE(id));});if(!ids.length) return;
+  snapshot();ids.forEach(function(id){findE(id).dimStyle=st.name;});
+  renderAll();ddimRenderManager();log('DIMSTYLE: "'+st.name+'" aplicado a '+ids.length+' cota(s).','ok');
+}
+// Seletor de estilo no painel de propriedades
+function updDimStyleSel(){
+  var sel=document.getElementById('propDS');if(!sel) return;
+  sel.textContent='';
+  S.dimStyles.forEach(function(st){var o=document.createElement('option');o.value=st.name;o.textContent=st.name;if(st.name===S.dimCurrent)o.selected=true;sel.appendChild(o);});
+}
+function propDimStyleChange(v){
+  if(!dspGetStyle(v)) return;
+  var ids=S.sel.filter(function(id){return isDim(findE(id));});
+  if(ids.length){ snapshot(); ids.forEach(function(id){findE(id).dimStyle=v;}); log('Estilo "'+v+'" aplicado a '+ids.length+' cota(s) selecionada(s).','ok'); }
+  S.dimCurrent=v;S.dirty=true;renderAll();
+  log('Estilo de cota atual: '+v,'ok');
+}
 
 
 // ── UNITS ENGINE ─────────────────────────────────────────────────────────────
@@ -6375,159 +6846,11 @@ function layoutRender(){
         if(e.rot){ctx.save();ctx.translate(tp.x,tp.y);ctx.rotate(-e.rot);ctx.fillText(e.txt,0,0);ctx.restore();}
         else ctx.fillText(e.txt,tp.x,tp.y); break;
       }
-      case 'dim':{
+      case 'dim':case 'dimr':case 'dimd':case 'dima':{
         ctx.setLineDash([]);
-        // Calcular pontos da linha de cota (equivalente a dimLinePoints do Model)
-        var _dx=e.x2-e.x1,_dy=e.y2-e.y1,_len=Math.hypot(_dx,_dy);
-        if(_len<0.001) break;
-        var _d1x,_d1y,_d2x,_d2y;
-        var _aligned=(e.subtp==='aligned');
-        if(_aligned){
-          var _ux=_dx/_len,_uy=_dy/_len,_nx=-_uy,_ny=_ux;
-          if(e.px!==undefined&&e.py!==undefined){
-            var _dot=(e.px-e.x1)*_nx+(e.py-e.y1)*_ny;
-            _d1x=e.x1+_nx*_dot;_d1y=e.y1+_ny*_dot;_d2x=e.x2+_nx*_dot;_d2y=e.y2+_ny*_dot;
-          } else {
-            var _midY=(e.y1+e.y2)/2,_dot2=_ny!==0?(e.off-_midY)/_ny:0;
-            _d1x=e.x1+_nx*_dot2;_d1y=e.y1+_ny*_dot2;_d2x=e.x2+_nx*_dot2;_d2y=e.y2+_ny*_dot2;
-          }
-        } else {
-          if(e.px!==undefined&&e.py!==undefined){
-            var _horiz=(e.dimDir==='h');
-            if(_horiz){_d1x=e.x1;_d1y=e.py;_d2x=e.x2;_d2y=e.py;}
-            else{_d1x=e.px;_d1y=e.y1;_d2x=e.px;_d2y=e.y2;}
-          } else {_d1x=e.x1;_d1y=e.off;_d2x=e.x2;_d2y=e.off;}
-        }
-        // Converter todos os pontos para canvas do layout
-        var _sp1=m2l(e.x1,e.y1),_sp2=m2l(e.x2,e.y2);
-        var _sd1=m2l(_d1x,_d1y),_sd2=m2l(_d2x,_d2y);
-        // Linhas de extensão (com gap e beyond)
-        var _scPx=sc*px; // escala em px/mm
-        var _beyond=1.5*_scPx,_gap=0.5*_scPx;
-        function _drawExt2(ox,oy,tx,ty){
-          var _edx=tx-ox,_edy=ty-oy,_el=Math.hypot(_edx,_edy);
-          if(_el<0.5) return;
-          var _eux=_edx/_el,_euy=_edy/_el;
-          ctx.beginPath();
-          ctx.moveTo(ox+_eux*_gap,oy+_euy*_gap);
-          ctx.lineTo(tx+_eux*_beyond,ty+_euy*_beyond);
-          ctx.stroke();
-        }
-        _drawExt2(_sp1.x,_sp1.y,_sd1.x,_sd1.y);
-        _drawExt2(_sp2.x,_sp2.y,_sd2.x,_sd2.y);
-        // Linha de cota
-        ctx.beginPath();ctx.moveTo(_sd1.x,_sd1.y);ctx.lineTo(_sd2.x,_sd2.y);ctx.stroke();
-        // Setas (filled)
-        var _aw=2.5*_scPx,_ah=_aw*0.4;
-        var _da=Math.atan2(_sd2.y-_sd1.y,_sd2.x-_sd1.x);
-        function _arrow2(px2,py2,ang){
-          ctx.beginPath();
-          ctx.moveTo(px2,py2);
-          ctx.lineTo(px2-_aw*Math.cos(ang)+_ah*Math.sin(ang),py2-_aw*Math.sin(ang)-_ah*Math.cos(ang));
-          ctx.lineTo(px2-_aw*Math.cos(ang)-_ah*Math.sin(ang),py2-_aw*Math.sin(ang)+_ah*Math.cos(ang));
-          ctx.closePath();ctx.fill();
-        }
-        _arrow2(_sd1.x,_sd1.y,_da+Math.PI);
-        _arrow2(_sd2.x,_sd2.y,_da);
-        // Texto
-        var _fs=Math.max(7,2.5*_scPx);
-        ctx.font='bold '+_fs+'px Consolas,monospace';
-        ctx.fillStyle=col;ctx.textAlign='center';
-        var _tmx=(_sd1.x+_sd2.x)/2,_tmy=(_sd1.y+_sd2.y)/2;
-        var _ta=Math.atan2(_sd2.y-_sd1.y,_sd2.x-_sd1.x);
-        if(_ta>Math.PI/2||_ta<-Math.PI/2) _ta+=Math.PI;
-        ctx.save();ctx.translate(_tmx,_tmy);ctx.rotate(_ta);
-        ctx.fillText((e.val||'')+''+(e.unit||''),0,-(_fs*0.3+0.5*_scPx));
-        ctx.restore();ctx.textAlign='left'; break;
-      }
-      case 'dimali':{
-        ctx.setLineDash([]);
-        // Cota alinhada – mesma lógica acima mas subtp='aligned'
-        var _dx2=e.x2-e.x1,_dy2=e.y2-e.y1,_len2=Math.hypot(_dx2,_dy2);
-        if(_len2<0.001) break;
-        var _ux2=_dx2/_len2,_uy2=_dy2/_len2,_nx2=-_uy2,_ny2=_ux2;
-        var _d1x2,_d1y2,_d2x2,_d2y2;
-        if(e.px!==undefined&&e.py!==undefined){
-          var _dot3=(e.px-e.x1)*_nx2+(e.py-e.y1)*_ny2;
-          _d1x2=e.x1+_nx2*_dot3;_d1y2=e.y1+_ny2*_dot3;_d2x2=e.x2+_nx2*_dot3;_d2y2=e.y2+_ny2*_dot3;
-        } else {
-          var _midY2=(e.y1+e.y2)/2,_dot4=_ny2!==0?(e.off-_midY2)/_ny2:0;
-          _d1x2=e.x1+_nx2*_dot4;_d1y2=e.y1+_ny2*_dot4;_d2x2=e.x2+_nx2*_dot4;_d2y2=e.y2+_ny2*_dot4;
-        }
-        var _sp1a=m2l(e.x1,e.y1),_sp2a=m2l(e.x2,e.y2);
-        var _sd1a=m2l(_d1x2,_d1y2),_sd2a=m2l(_d2x2,_d2y2);
-        var _scPx2=sc*px,_bey2=1.5*_scPx2,_gp2=0.5*_scPx2;
-        function _drawExtA(ox,oy,tx,ty){
-          var _e2dx=tx-ox,_e2dy=ty-oy,_e2l=Math.hypot(_e2dx,_e2dy);
-          if(_e2l<0.5) return;
-          var _e2ux=_e2dx/_e2l,_e2uy=_e2dy/_e2l;
-          ctx.beginPath();ctx.moveTo(ox+_e2ux*_gp2,oy+_e2uy*_gp2);ctx.lineTo(tx+_e2ux*_bey2,ty+_e2uy*_bey2);ctx.stroke();
-        }
-        _drawExtA(_sp1a.x,_sp1a.y,_sd1a.x,_sd1a.y);
-        _drawExtA(_sp2a.x,_sp2a.y,_sd2a.x,_sd2a.y);
-        ctx.beginPath();ctx.moveTo(_sd1a.x,_sd1a.y);ctx.lineTo(_sd2a.x,_sd2a.y);ctx.stroke();
-        var _awa=2.5*_scPx2,_aha=_awa*0.4,_daa=Math.atan2(_sd2a.y-_sd1a.y,_sd2a.x-_sd1a.x);
-        function _arrowA(px2,py2,ang){
-          ctx.beginPath();ctx.moveTo(px2,py2);
-          ctx.lineTo(px2-_awa*Math.cos(ang)+_aha*Math.sin(ang),py2-_awa*Math.sin(ang)-_aha*Math.cos(ang));
-          ctx.lineTo(px2-_awa*Math.cos(ang)-_aha*Math.sin(ang),py2-_awa*Math.sin(ang)+_aha*Math.cos(ang));
-          ctx.closePath();ctx.fill();
-        }
-        _arrowA(_sd1a.x,_sd1a.y,_daa+Math.PI);_arrowA(_sd2a.x,_sd2a.y,_daa);
-        var _fsa=Math.max(7,2.5*_scPx2);
-        ctx.font='bold '+_fsa+'px Consolas,monospace';ctx.fillStyle=col;ctx.textAlign='center';
-        var _tmxa=(_sd1a.x+_sd2a.x)/2,_tmya=(_sd1a.y+_sd2a.y)/2;
-        var _taa=Math.atan2(_sd2a.y-_sd1a.y,_sd2a.x-_sd1a.x);
-        if(_taa>Math.PI/2||_taa<-Math.PI/2) _taa+=Math.PI;
-        ctx.save();ctx.translate(_tmxa,_tmya);ctx.rotate(_taa);
-        ctx.fillText((e.val||'')+(e.unit||''),0,-(_fsa*0.3+0.5*_scPx2));
-        ctx.restore();ctx.textAlign='left'; break;
-      }
-      case 'dimr':{
-        ctx.setLineDash([]);
-        var _cr=m2l(e.cx,e.cy),_epr=m2l(e.ex,e.ey);
-        ctx.beginPath();ctx.moveTo(_cr.x,_cr.y);ctx.lineTo(_epr.x,_epr.y);ctx.stroke();
-        var _awr=2.5*sc*px,_ahr=_awr*0.4;
-        var _dar=Math.atan2(_epr.y-_cr.y,_epr.x-_cr.x);
-        ctx.beginPath();ctx.moveTo(_epr.x,_epr.y);
-        ctx.lineTo(_epr.x-_awr*Math.cos(_dar)+_ahr*Math.sin(_dar),_epr.y-_awr*Math.sin(_dar)-_ahr*Math.cos(_dar));
-        ctx.lineTo(_epr.x-_awr*Math.cos(_dar)-_ahr*Math.sin(_dar),_epr.y-_awr*Math.sin(_dar)+_ahr*Math.cos(_dar));
-        ctx.closePath();ctx.fill();
-        var _fsr=Math.max(7,2.5*sc*px);
-        ctx.font='bold '+_fsr+'px Consolas,monospace';ctx.fillStyle=col;
-        ctx.fillText('R'+(e.val||''),_epr.x+_fsr*0.4,_epr.y-_fsr*0.4); break;
-      }
-      case 'dimd':{
-        ctx.setLineDash([]);
-        var _cd=m2l(e.cx,e.cy),_epd=m2l(e.ex,e.ey),_opd=m2l(2*e.cx-e.ex,2*e.cy-e.ey);
-        ctx.beginPath();ctx.moveTo(_opd.x,_opd.y);ctx.lineTo(_epd.x,_epd.y);ctx.stroke();
-        var _awd=2.5*sc*px,_ahd=_awd*0.4,_dad=Math.atan2(_epd.y-_opd.y,_epd.x-_opd.x);
-        function _arrowD(px2,py2,ang){
-          ctx.beginPath();ctx.moveTo(px2,py2);
-          ctx.lineTo(px2-_awd*Math.cos(ang)+_ahd*Math.sin(ang),py2-_awd*Math.sin(ang)-_ahd*Math.cos(ang));
-          ctx.lineTo(px2-_awd*Math.cos(ang)-_ahd*Math.sin(ang),py2-_awd*Math.sin(ang)+_ahd*Math.cos(ang));
-          ctx.closePath();ctx.fill();
-        }
-        _arrowD(_epd.x,_epd.y,_dad);_arrowD(_opd.x,_opd.y,_dad+Math.PI);
-        var _fsd=Math.max(7,2.5*sc*px);
-        ctx.font='bold '+_fsd+'px Consolas,monospace';ctx.fillStyle=col;ctx.textAlign='center';
-        ctx.fillText('⌀'+(e.val||''),(_opd.x+_epd.x)/2,(_opd.y+_epd.y)/2-_fsd*0.5);
-        ctx.textAlign='left'; break;
-      }
-      case 'dima':{
-        ctx.setLineDash([]);
-        var _va=m2l(e.vx,e.vy),_p1a2=m2l(e.x1,e.y1),_p2a2=m2l(e.x2,e.y2);
-        ctx.beginPath();ctx.moveTo(_va.x,_va.y);ctx.lineTo(_p1a2.x,_p1a2.y);ctx.stroke();
-        ctx.beginPath();ctx.moveTo(_va.x,_va.y);ctx.lineTo(_p2a2.x,_p2a2.y);ctx.stroke();
-        var _ra=Math.hypot(_p1a2.x-_va.x,_p1a2.y-_va.y);
-        var _a1a=Math.atan2(_p1a2.y-_va.y,_p1a2.x-_va.x);
-        var _a2a=Math.atan2(_p2a2.y-_va.y,_p2a2.x-_va.x);
-        ctx.beginPath();ctx.arc(_va.x,_va.y,_ra,_a1a,_a2a);ctx.stroke();
-        var _fsa2=Math.max(7,2.5*sc*px);
-        ctx.font='bold '+_fsa2+'px Consolas,monospace';ctx.fillStyle=col;ctx.textAlign='center';
-        var _maa=(_a1a+_a2a)/2;
-        ctx.fillText((e.val||'')+'°',_va.x+Math.cos(_maa)*(_ra+_fsa2),_va.y+Math.sin(_maa)*(_ra+_fsa2));
-        ctx.textAlign='left'; break;
+        var _dst=dimStyleOf(e);
+        renderDimPrims(ctx,dimPrims(e,_dst),_dst,m2l,sc*px,{minLw:0.5,bg:'#ffffff',noFill:false});
+        ctx.beginPath(); break;
       }
       case 'hatch':{
         ctx.setLineDash([]);

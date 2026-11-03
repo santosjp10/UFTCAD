@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v6.5</title>
+<title>EduCAD 2D v6.6</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -198,6 +198,20 @@ input.lc-inp{width:52px;}
 }
 
 /* ── DIMSTYLE MODAL ───────────────────────────────────────── */
+/* v6.6: cartão do desenvolvedor (Sobre) */
+.dev-card{background:var(--bg3);border-radius:4px;border-left:3px solid var(--acc);padding:10px 12px}
+.dev-hdr{font-weight:700;color:var(--t0);margin-bottom:8px}
+.dev-body{display:flex;gap:12px;align-items:flex-start}
+.dev-avatar{flex-shrink:0;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font:700 14px var(--mono);color:#04101f;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 0 2px rgba(0,200,255,.15)}
+.dev-info{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dev-name{font-size:14px;font-weight:700;color:var(--acc);letter-spacing:.2px}
+.dev-role{font-size:11px;color:var(--t0)}
+.dev-inst{display:flex;flex-direction:column;margin-top:4px;padding-left:8px;border-left:2px solid var(--bdr);font-size:10.5px;color:var(--t1);line-height:1.55}
+.dev-inst span:nth-child(2){color:var(--t0);font-weight:600}
+.dev-contact{margin-top:7px;font-size:10px;color:var(--t2)}
+.dev-contact a{color:var(--acc);text-decoration:none;margin-left:2px}
+.dev-contact a:hover{text-decoration:underline}
 /* v6.5: tela cheia, tela limpa e tela de abertura */
 .tb-btn{background:none;border:1px solid var(--bdr);color:var(--t1);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;margin-right:4px}
 .tb-btn:hover{color:var(--acc);border-color:var(--acc)}
@@ -401,7 +415,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.5 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.6 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
@@ -711,7 +725,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.5 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.6 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1118,7 +1132,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.5 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.6 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1160,12 +1174,22 @@ table#lg-tbl input:focus{background:#1a2a3a;}
       ✗ Não deve ser comercializado ou vendido</span>
     </div>
 
-    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--acc);">
-      <b style="color:var(--t0);">Desenvolvedor</b><br>
-      <span style="color:var(--t1);">Dúvidas, sugestões ou contribuições:<br>
-      <a href="/cdn-cgi/l/email-protection#0a796b647e6579607a3b3a4a6d676b636624696567" style="color:var(--acc);text-decoration:none;">
-        ✉ <span class="__cf_email__" data-cfemail="3e4d5f504a514d544e0f0e7e59535f5752105d5153">[email&#160;protected]</span>
-      </a></span>
+    <div class="dev-card">
+      <div class="dev-hdr">Desenvolvedor</div>
+      <div class="dev-body">
+        <div class="dev-avatar" aria-hidden="true">JP</div>
+        <div class="dev-info">
+          <div class="dev-name">Jacinto Pereira Santos</div>
+          <div class="dev-role">Professor da disciplina de Desenho Técnico</div>
+          <div class="dev-inst">
+            <span>Curso de Agronomia</span>
+            <span>Universidade Federal do Tocantins (UFT)</span>
+            <span>Campus de Gurupi – TO</span>
+          </div>
+          <div class="dev-contact">Dúvidas, sugestões ou contribuições:
+            <a href="mailto:santosjp10@gmail.com">✉ santosjp10@gmail.com</a></div>
+        </div>
+      </div>
     </div>
 
     <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #9d6fff;text-align:center;">
@@ -1234,7 +1258,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v6.5 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v6.6 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1308,7 +1332,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v6.5 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v6.6 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -3909,7 +3933,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'6.5',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function saveDoc(){var d={v:'6.6',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima'];
 function validateDoc(d){
@@ -4584,7 +4608,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.5 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.6 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }

@@ -3,7 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v6.3</title>
+<title>EduCAD 2D v6.5</title>
+<!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a0a1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -46,6 +54,9 @@ canvas{position:absolute;top:0;left:0;display:block}
 #snaplbl{position:absolute;z-index:11;pointer-events:none;background:#0f111acc;border:1px solid var(--acc);padding:2px 7px;font:10px var(--mono);color:var(--acc);border-radius:2px;display:none;white-space:nowrap}
 /* RIGHT PANEL */
 #rp{width:210px;background:linear-gradient(180deg,#0d1525,#0a1020);border-left:1px solid var(--bdr);display:flex;flex-direction:column;flex-shrink:0;font-size:11px}
+/* v6.4: painel direito rola em vez de espremer as seções */
+#rp{overflow-y:auto;overflow-x:hidden;scrollbar-width:thin}
+#rp>*{flex-shrink:0}
 .rph{padding:5px 10px;font-size:9px;color:var(--t2);text-transform:uppercase;letter-spacing:.08em;background:var(--bg2);border-bottom:1px solid var(--bdr)}
 #coordbox{padding:5px 10px;font:11px var(--mono);color:var(--acc);background:var(--bg2);border-bottom:1px solid var(--bdr)}
 #lylist{max-height:160px;overflow-y:auto}
@@ -187,6 +198,31 @@ input.lc-inp{width:52px;}
 }
 
 /* ── DIMSTYLE MODAL ───────────────────────────────────────── */
+/* v6.5: tela cheia, tela limpa e tela de abertura */
+.tb-btn{background:none;border:1px solid var(--bdr);color:var(--t1);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;margin-right:4px}
+.tb-btn:hover{color:var(--acc);border-color:var(--acc)}
+.tb-btn.on{color:var(--bg);background:var(--acc);border-color:var(--acc)}
+body.clean #ribbon,body.clean #rp{display:none!important}
+#startscr{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#14203a 0%,#070b16 70%);display:flex;align-items:center;justify-content:center}
+.ss-box{display:flex;flex-direction:column;align-items:center;gap:12px;padding:32px 40px;border:1px solid var(--bdr);border-radius:8px;background:rgba(13,21,37,.85);max-width:92vw}
+.ss-logo{font-size:34px;font-weight:700;letter-spacing:1px;color:var(--acc)}
+.ss-logo b{color:var(--acc2)}
+.ss-sub{font-size:12px;color:var(--t2);margin-bottom:10px}
+.ss-main{font-size:15px;padding:12px 26px;border-radius:6px;border:none;background:var(--acc);color:#04101f;font-weight:700;cursor:pointer}
+.ss-main:hover{filter:brightness(1.1)}
+.ss-sec{font-size:11px;padding:6px 14px;border-radius:4px;border:1px solid var(--bdr);background:transparent;color:var(--t1);cursor:pointer}
+.ss-chk{font-size:10px;color:var(--t2);display:flex;gap:6px;align-items:center;cursor:pointer;margin-top:4px}
+.ss-note{font-size:10px;color:var(--t2);max-width:420px;text-align:center;line-height:1.5}
+/* v6.4: propriedades e geometria */
+#prop-panel.editing-sel{background:rgba(77,158,247,.06);box-shadow:inset 3px 0 0 var(--acc)}
+#propCol.bylayer{opacity:.45}
+.geo-tbl{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.geo-row{display:flex;align-items:center;gap:6px}
+.geo-l{flex:1;font-size:9px;color:var(--t2)}
+.geo-in{width:84px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 4px;border-radius:2px}
+.geo-in.bad{border-color:var(--red);background:#3f1e1e}
+.geo-ro{width:84px;font:10px var(--mono);color:var(--t1);padding:2px 4px}
+.geo-hint{font-size:9px;color:var(--t2);margin-top:5px;line-height:1.4}
 /* Exportação (v6.3) */
 .ef-opts{margin:2px 0 8px;padding:6px 8px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px}
 .ef-chk{display:flex!important;align-items:center;gap:6px;cursor:pointer;color:var(--t1)!important;margin:3px 0!important}
@@ -350,11 +386,25 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 </style>
 </head>
 <body>
+<!-- v6.5: tela de abertura — o clique do usuário permite ao navegador entrar em tela cheia -->
+<div id="startscr" role="dialog" aria-labelledby="ss-title" style="display:none">
+  <div class="ss-box">
+    <div class="ss-logo">Edu<b>CAD</b> 2D</div>
+    <div class="ss-sub" id="ss-title">Desenho técnico assistido por computador</div>
+    <button class="ss-main" id="ss-go" onclick="startApp(true)">⛶ Abrir aplicativo CAD em tela cheia</button>
+    <button class="ss-sec" onclick="startApp(false)">Continuar na janela do navegador</button>
+    <label class="ss-chk"><input type="checkbox" id="ss-skip"> Não mostrar esta tela novamente (abrir direto na janela)</label>
+    <div class="ss-note" id="ss-note"></div>
+  </div>
+</div>
 
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.3 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.5 · Uso Educacional</span>
+  <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
+  <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
+  <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
   <button onclick="showAbout()" style="background:none;border:1px solid var(--bdr);color:var(--t2);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;" title="Sobre / Licença">ⓘ Sobre</button>
 </div>
 
@@ -570,19 +620,21 @@ table#lg-tbl input:focus{background:#1a2a3a;}
       <button class="btn s" onclick="showAddLayer()" style="flex:1;font-size:10px">+ Nova</button>
       <button class="btn s" onclick="delLayer()" style="font-size:10px">✕</button>
     </div>
-    <div class="rph">⚙ PROPRIEDADES</div>
-    <div style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
-      <div class="prow"><span class="plbl">Camada:</span><select class="ps" id="propLy" onchange="S.curLy=parseInt(this.value);updStatus()"></select></div>
-      <div class="prow"><span class="plbl">Cor:</span><input type="color" class="cp" id="propCol" value="#dce4f5" onchange="S.style.col=this.value"></div>
+    <div class="rph" id="prop-hdr">⚙ PROPRIEDADES</div>
+    <div id="prop-panel" style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
+      <div class="prow"><span class="plbl">Camada:</span><select class="ps" id="propLy" onchange="propLayerChange(this.value)"></select></div>
+      <div class="prow"><span class="plbl">Cor:</span><span style="display:flex;gap:4px;align-items:center">
+        <select class="ps" id="propColMode" onchange="propColModeChange(this.value)" style="max-width:82px"><option value="">ByLayer</option><option value="custom">Escolher</option></select>
+        <input type="color" class="cp" id="propCol" value="#dce4f5" onchange="propColChange(this.value)"></span></div>
       <div class="prow"><span class="plbl">Espessura:</span>
-        <select class="ps" id="propLW" onchange="S.style.lw=parseFloat(this.value)">
-          <option value=".35">.35</option><option value=".5">.5</option><option value=".7" selected>.7</option>
-          <option value="1">1.0</option><option value="1.4">1.4</option><option value="2">2.0</option>
+        <select class="ps" id="propLW" onchange="propLwChange(this.value)">
+          <option value="">ByLayer</option><option value=".13">0,13</option><option value=".18">0,18</option><option value=".25">0,25</option><option value=".35">0,35</option><option value=".5">0,50</option><option value=".7">0,70</option>
+          <option value="1">1,00</option><option value="1.4">1,40</option><option value="2">2,00</option>
         </select>
       </div>
       <div class="prow"><span class="plbl">Linha:</span>
-        <select class="ps" id="propLD" onchange="S.style.ld=this.value">
-          <option value="solid">Contínua</option><option value="dashed">Tracejada</option>
+        <select class="ps" id="propLD" onchange="propLdChange(this.value)">
+          <option value="">ByLayer</option><option value="solid">Contínua</option><option value="dashed">Tracejada</option>
           <option value="dotted">Pontilhada</option><option value="center">Centro</option>
           <option value="phantom">Fantasma</option><option value="divide">Divide</option>
           <option value="hidden">Oculta</option><option value="dashdot">Traço-Ponto</option>
@@ -606,6 +658,12 @@ table#lg-tbl input:focus{background:#1a2a3a;}
       <div class="tg on" id="tg-mid"   onclick="toggleMode('mid')">MIDPOINT</div>
       <div class="tg on" id="tg-int"   onclick="toggleMode('int')">INTERSECT</div>
       <div class="tg on" id="tg-cen"   onclick="toggleMode('cen')">CENTER</div>
+      <div class="tg on" id="tg-quad"  onclick="toggleMode('quad')">QUADRANT</div>
+      <div class="tg on" id="tg-per"   onclick="toggleMode('per')">PERPEND.</div>
+      <div class="tg"    id="tg-tan"   onclick="toggleMode('tan')">TANGENT</div>
+      <div class="tg"    id="tg-nea"   onclick="toggleMode('nea')">NEAREST</div>
+      <div class="tg on" id="tg-osnap" onclick="toggleMode('osnap')" title="Liga/desliga todos os snaps de objeto">OSNAP F3</div>
+      <div class="tg on" id="tg-grips" onclick="toggleMode('grips')" title="Alças de edição dos objetos selecionados">GRIPS</div>
     </div>
     <div class="rph">▦ GRADE</div>
     <div style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
@@ -653,7 +711,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.3 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.5 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1060,7 +1118,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.3 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.5 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1176,7 +1234,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v6.3 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v6.5 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1190,7 +1248,8 @@ var S = {
     {id:3,nm:'Hachura',   col:'#6080a0',vis:true,lock:false,ld:'solid', lw:.35},
   ],
   curLy: 0,
-  style: {col:'#dce4f5', lw:.7, ld:'solid'},
+  style: {col:null, lw:null, ld:null}, // null = ByLayer
+  grip: null, gripHover: null, snapOverride: null,
   hatchPat: {name:'Linhas 45°',ang:45,sp:5,type:'lines'},
   vp: {x:0, y:0, sc:2},  // world→screen: sx = wx*sc + vp.x
   sel: [],
@@ -1210,7 +1269,7 @@ var S = {
   modes: {
     grid:true, snap:true, ortho:false, polar:true,
     gridSz:10, snapSz:5,
-    end:true, mid:true, int:true,  cen:true,
+    osnap:true, end:true, mid:true, int:true, cen:true, quad:true, per:true, tan:false, nea:false, grips:true,
     didactic:true, showcoords:false, showangles:false,
   },
   // canvas refs (set in init)
@@ -1236,6 +1295,8 @@ window.addEventListener('load', function() {
   bindEv();
   diInit();
   startBlank();
+  S.style={col:null,lw:null,ld:null}; updPropsPanel();
+  registerSW(); showStartScreen(false);
   updLayerUI();
   updLayerSel();
   // Popular selector de tipos de linha no painel de propriedades
@@ -1247,7 +1308,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v6.3 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v6.5 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -1267,67 +1328,14 @@ function w2s(wx,wy){ return {x: wx*S.vp.sc + S.vp.x, y: -wy*S.vp.sc + S.vp.y}; }
 function s2w(sx,sy){ return {x: (sx-S.vp.x)/S.vp.sc, y: -(sy-S.vp.y)/S.vp.sc}; }
 
 // ── SNAP ─────────────────────────────────────────────────────
-function doSnap(sx,sy) {
-  var raw = s2w(sx,sy);
-  var best = {x:raw.x, y:raw.y, st:null};
-  var objSnap = false;
-  if(S.modes.snap){
-    var tol = 12/S.vp.sc, bd=tol;
-    function tryP(px,py,st) { var d=Math.hypot(px-raw.x,py-raw.y); if(d<bd){bd=d;best={x:px,y:py,st:st};} }
-    // v6.1: só entidades cujo bbox está próximo do cursor participam (evita O(n²) global)
-    var near=[];
-    for(var i=0;i<S.ents.length;i++){
-      var e=S.ents[i], ly=getLy(e.ly);
-      if(ly&&!ly.vis) continue;
-      var bb=bbox(e);
-      if(bb && (raw.x<bb.x-tol||raw.x>bb.x+bb.w+tol||raw.y<bb.y-tol||raw.y>bb.y+bb.h+tol)) continue;
-      near.push(e);
-    }
-    // OSNAP: endpoint, midpoint, center
-    for(var n=0;n<near.length;n++){
-      var sps=snapPts(near[n]);
-      for(var j=0;j<sps.length;j++){ var sp=sps[j]; if(S.modes[sp.st]) tryP(sp.x,sp.y,sp.st); }
-    }
-    // OSNAP: interseção (apenas entre entidades próximas)
-    if(S.modes['int']){
-      for(var ii=0;ii<near.length;ii++){
-        for(var jj=ii+1;jj<near.length;jj++){
-          var ipts=entIntersectSnap(near[ii],near[jj]);
-          for(var kk=0;kk<ipts.length;kk++) tryP(ipts[kk].x,ipts[kk].y,'int');
-        }
-      }
-    }
-    objSnap = best.st!==null;
-    // Snap de grade: só quando nenhum OSNAP foi encontrado (no AutoCAD o OSNAP tem prioridade)
-    if(!objSnap && S.modes.grid){ var gs=S.modes.snapSz; tryP(Math.round(raw.x/gs)*gs, Math.round(raw.y/gs)*gs,'grid'); }
-  }
-  // v6.1: ORTHO/POLAR não sobrepõem um OSNAP ativo (comportamento AutoCAD)
-  if(!objSnap && S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
-    var ref=S.ds.pts[S.ds.pts.length-1];
-    var adx=Math.abs(best.x-ref.x), ady=Math.abs(best.y-ref.y);
-    best={x:(adx>ady?best.x:ref.x), y:(adx>ady?ref.y:best.y), st:'ortho'};
-  }
-  if(!objSnap && S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
-    var ref2=S.ds.pts[S.ds.pts.length-1];
-    var ang=Math.atan2(best.y-ref2.y,best.x-ref2.x)*180/Math.PI;
-    var snp=Math.round(ang/15)*15;
-    if(Math.abs(ang-snp)<2.5){
-      var r=Math.hypot(best.x-ref2.x,best.y-ref2.y);
-      var rad=snp*Math.PI/180;
-      best={x:ref2.x+r*Math.cos(rad), y:ref2.y+r*Math.sin(rad), st:'polar'};
-    }
-  }
-  return best;
-}
-
 function snapPts(e) {
   var pts=[], ep=function(x,y){return{x:x,y:y,st:'end'};}, mp=function(x,y){return{x:x,y:y,st:'mid'};}, cp=function(x,y){return{x:x,y:y,st:'cen'};};
   switch(e.tp) {
     case 'line':  pts.push(ep(e.x1,e.y1),ep(e.x2,e.y2),mp((e.x1+e.x2)/2,(e.y1+e.y2)/2)); break;
-    case 'circ':  pts.push(cp(e.cx,e.cy),ep(e.cx+e.r,e.cy),ep(e.cx-e.r,e.cy),ep(e.cx,e.cy+e.r),ep(e.cx,e.cy-e.r)); break;
+    case 'circ':  pts.push(cp(e.cx,e.cy)); break; // quadrantes: OSNAP QUADRANT
     case 'arc':   pts.push(cp(e.cx,e.cy),ep(e.cx+e.r*Math.cos(e.sa),e.cy+e.r*Math.sin(e.sa)),ep(e.cx+e.r*Math.cos(e.ea),e.cy+e.r*Math.sin(e.ea))); break;
     case 'rect':  pts.push(ep(e.x,e.y),ep(e.x+e.w,e.y),ep(e.x,e.y+e.h),ep(e.x+e.w,e.y+e.h),mp(e.x+e.w/2,e.y),mp(e.x+e.w/2,e.y+e.h),mp(e.x,e.y+e.h/2),mp(e.x+e.w,e.y+e.h/2),cp(e.x+e.w/2,e.y+e.h/2)); break;
-    case 'ell':   pts.push(cp(e.cx,e.cy));[0,Math.PI/2,Math.PI,Math.PI*1.5].forEach(function(t){var q=ellPt(e,t);pts.push(ep(q.x,q.y));}); break;
+    case 'ell':   pts.push(cp(e.cx,e.cy)); break;
     case 'spline':case 'pl':
       for(var i=0;i<e.pts.length;i++){pts.push(ep(e.pts[i].x,e.pts[i].y));if(i>0)pts.push(mp((e.pts[i].x+e.pts[i-1].x)/2,(e.pts[i].y+e.pts[i-1].y)/2));}
       break;
@@ -2199,6 +2207,7 @@ function showAbout(){
 }
 
 function cancelTool(){
+  if(S.grip){ gripEnd(); return; }  // 1º Esc cancela o grip; o 2º limpa a seleção
   S.ds=null;S.sel=[];S.isWin=false;S.winFrom=null;
   document.getElementById('cmdinput').removeAttribute('tabindex');
   DI.active=false; // forçar DI inativo antes de diHide para evitar re-trigger
@@ -2289,16 +2298,18 @@ function drawScene(){
     if(S.modes.didactic) drawDidactic(ctx,e);
     if(S.modes.showcoords) drawCoords(ctx,e);
   }
-  if(S.ds) drawPreview(ctx);
+  if(S.tool==='select') drawGrips(ctx);
+  if(S.grip) drawGripPreview(ctx);
+  else if(S.ds) drawPreview(ctx);
   if(S.isWin&&S.winFrom&&S.hover) drawWinSel(ctx);
 }
 
 function applyStyle(ctx,e,sel){
   var ly=getLy(e.ly);
-  ctx.strokeStyle=sel?'#60b8ff':(e.col||ly&&ly.col||'#dce4f5');
+  ctx.strokeStyle=sel?'#60b8ff':effCol(e);
   ctx.fillStyle=ctx.strokeStyle;
-  ctx.lineWidth=e.lw||ly&&ly.lw||.7;
-  setDash(ctx,e.ld||ly&&ly.ld||'solid');
+  ctx.lineWidth=effLw(e);
+  setDash(ctx,effLd(e));
   ctx.shadowBlur=sel?8:0;ctx.shadowColor=sel?'#4d9ef7':'transparent';
 }
 function setDash(ctx,ld){
@@ -2355,13 +2366,13 @@ function drawE(ctx,e,sel){
         ctx.fillStyle='#ffffff';
         ctx.fillRect(p.x-pad2,p.y-th2-pad2,tw2+pad2*2,th2+pad2*2);
       }
-      ctx.fillStyle=sel?'#60b8ff':(e.col||'#dce4f5');
+      ctx.fillStyle=sel?'#60b8ff':effCol(e);
       ctx.fillText(e.txt,p.x,p.y);
       break;
     }
     case 'hatch':{
       var a=w2s(e.x,e.y),pw=e.w*sc,ph=e.h*sc;
-      var hcol=e.col||'#6080a0';
+      var hcol=sel?'#60b8ff':effCol(e);
       ctx.save();ctx.beginPath();ctx.rect(a.x,a.y-ph,pw,ph);ctx.clip();
       ctx.strokeStyle=hcol;ctx.lineWidth=.5;ctx.setLineDash([]);
       var sp2=Math.max(1,e.sp*sc),rad=(e.ang||45)*Math.PI/180;
@@ -2404,7 +2415,7 @@ function drawE(ctx,e,sel){
   }
   ctx.restore();
 }
-function drawH(ctx,sx,sy){ctx.save();ctx.setLineDash([]);ctx.shadowBlur=0;ctx.fillStyle='#4d9ef7';ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.fillRect(sx-4,sy-4,8,8);ctx.strokeRect(sx-4,sy-4,8,8);ctx.restore();}
+function drawH(ctx,sx,sy){ /* v6.4: alças substituídas pelos grips (drawGrips) */ }
 function dimLinePoints(e){
   // Retorna {d1x,d1y,d2x,d2y}: os dois extremos da linha de cota.
   // e.subtp: 'linear'(default) = cota ortogonal (H ou V)  |  'aligned' = paralela ao segmento
@@ -2945,21 +2956,6 @@ function drawWinSel(ctx){
   ctx.save();ctx.fillStyle=isR?'#4d9ef710':'#4ec87a10';ctx.strokeStyle=isR?'#4d9ef7':'#4ec87a';ctx.lineWidth=1;ctx.setLineDash(isR?[]:[4,3]);ctx.beginPath();ctx.rect(x,y,w,h);ctx.fill();ctx.stroke();ctx.restore();
 }
 
-function drawOver(){
-  S.gO.clearRect(0,0,S.cO.width,S.cO.height);
-  var sm=document.getElementById('snapmark'),sl=document.getElementById('snaplbl');
-  if(!S.hover||S.tool==='pan'||!S.hover.st||S.hover.st==='grid'){sm.style.display='none';sl.style.display='none';return;}
-  var sp=w2s(S.hover.x,S.hover.y),st=S.hover.st;
-  var col={end:'#4ec87a',mid:'#f0c040',cen:'#4d9ef7',int:'#ff9020',polar:'#e85050',ortho:'#e85050'}[st]||'#4d9ef7';
-  sm.style.left=sp.x+'px';sm.style.top=sp.y+'px';sm.style.display='block';
-  if(st==='end') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><rect x="-5" y="-5" width="10" height="10" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
-  else if(st==='mid') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><polygon points="0,-6 6,5 -6,5" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
-  else if(st==='cen') sm.innerHTML='<svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" fill="none" stroke="'+col+'" stroke-width="1.5"/><line x1="-7" y1="0" x2="7" y2="0" stroke="'+col+'" stroke-width="1"/><line x1="0" y1="-7" x2="0" y2="7" stroke="'+col+'" stroke-width="1"/></svg>';
-  else if(st==='int') sm.innerHTML='<svg width="14" height="14" viewBox="-7 -7 14 14"><line x1="-6" y1="-6" x2="6" y2="6" stroke="'+col+'" stroke-width="1.8"/><line x1="6" y1="-6" x2="-6" y2="6" stroke="'+col+'" stroke-width="1.8"/></svg>';
-  else sm.innerHTML='<svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="4" fill="none" stroke="'+col+'" stroke-width="1.5"/></svg>';
-  sl.textContent=st.toUpperCase();sl.style.left=(sp.x+14)+'px';sl.style.top=(sp.y-20)+'px';sl.style.display='block';sl.style.color=col;sl.style.borderColor=col;
-}
-
 // ── EVENTS ───────────────────────────────────────────────────
 function bindEv(){
   var w=S.wrap;
@@ -2994,6 +2990,7 @@ function onMM(e){
   }
   // No SELECT: usar doSnap para detectar pontos de snap e mostrar markers
   if(S.tool==='select'){
+    if(!S.grip) S.gripHover=gripAt(p.sx,p.sy);
     S.hover=doSnap(p.sx,p.sy);
     document.getElementById('coordbox').textContent='X: '+S.hover.x.toFixed(3)+'   Y: '+S.hover.y.toFixed(3);
     // Garantir que o DI está oculto no SELECT
@@ -3045,6 +3042,8 @@ function onMD(e){
     return;
   }
 
+  if(S.tool==='select'&&S.grip){ S.gripDragFrom=null; gripCommit(pt); return; }
+  if(S.tool==='select'&&!S.isWin){ var _g=gripAt(p.sx,p.sy); if(_g){ S.gripDragFrom={x:p.sx,y:p.sy}; gripStart(_g); return; } }
   if(S.tool==='select'){
     var hit=null,rawSel=s2w(p.sx,p.sy);
     for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],rawSel.x,rawSel.y)){hit=S.ents[i];break;}}
@@ -3060,10 +3059,12 @@ function onMD(e){
     renderAll();updSelInfo();return;
   }
   handleClick(pt);
+  S.snapOverride=null;
 }
 
 function onMU(e){
   if(S.isPan){S.isPan=false;return;}
+  if(S.grip&&S.gripDragFrom){ var _p=ev2xy(e),_d=Math.hypot(_p.sx-S.gripDragFrom.x,_p.sy-S.gripDragFrom.y); S.gripDragFrom=null; if(_d>5&&S.hover){ gripCommit(S.hover); } return; }
   if(S.isWin&&S.hover) finishWin();
 }
 
@@ -3116,6 +3117,8 @@ function onKey(e){
   var ci=document.getElementById('cmdinput');
   var activeEl=document.activeElement;
   var inDI=DI.el&&DI.el.contains(activeEl);
+  // v6.5: com a tela de abertura visível, as teclas ficam com os botões dela
+  var _ss=document.getElementById('startscr'); if(_ss&&_ss.style.display!=='none') return;
   // v6.1: digitação em diálogos/painéis (texto, camadas, cotas...) não dispara atalhos
   if(activeEl!==ci && !inDI && isTypingTarget(activeEl)) return;
   // v6.1: com um diálogo aberto, ignorar atalhos do desenho (exceto Esc fecha o diálogo)
@@ -3179,6 +3182,7 @@ function onKey(e){
   if(activeEl===ci) return;
   var k=e.key;
   if(k==='Escape'){
+    if(S.grip){ gripEnd(); return; }
     if(S.tool==='line'&&S.ds){
       // Esc = finalizar LINE mantendo segmentos criados → volta SELECT (padrão AutoCAD)
       finishLine();
@@ -3221,9 +3225,12 @@ function onKey(e){
   if(e.ctrlKey&&k==='a'){e.preventDefault();selAll();return;}
   if(e.ctrlKey&&k==='s'){e.preventDefault();saveDoc();return;}
   if(e.ctrlKey&&k==='n'){e.preventDefault();newDoc();return;}
+  if(k==='F3'){e.preventDefault();toggleMode('osnap');return;}
+  if(e.ctrlKey&&(k==='0'||e.code==='Digit0'||e.code==='Numpad0')){e.preventDefault();toggleCleanScreen();return;}
   if(k==='F7'){toggleMode('grid');return;}
   if(k==='F8'){toggleMode('ortho');return;}
   if(k==='F9'){toggleMode('snap');return;}
+  if(k==='Enter'&&S.grip){ e.preventDefault(); gripCycle(); return; }
   if(k==='Enter'){
     e.preventDefault();e.stopPropagation();
     // ── Padrão AutoCAD: Enter finaliza comando ativo;
@@ -3338,6 +3345,7 @@ function onCmdKey(e){
   e.stopPropagation();
   if(e.key==='Escape'){
     document.getElementById('cmdinput').value='';
+    if(S.grip){ gripEnd(); return; }
     if(S.tool==='line'&&S.ds){
       // Esc no LINE: finalizar mantendo segmentos → SELECT
       finishLine();
@@ -3354,6 +3362,8 @@ function onCmdKey(e){
   var ci=document.getElementById('cmdinput');
   var v=ci.value.trim();
   ci.value='';
+  if(S.grip){ if(trySnapOverride(v)) return; if(v) gripTyped(v); else gripCycle(); return; }
+  if(v&&trySnapOverride(v)) return;
 
   // Enter vazio: finaliza comando ativo OU repete último comando (padrão AutoCAD)
   if(!v){
@@ -3475,6 +3485,7 @@ function onCmdKey(e){
     'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
+    'TELACHEIA':'fullscreen','FULLSCREEN':'fullscreen','FS':'fullscreen','LIMPA':'cleanscreen','CLEANSCREENON':'cleanscreen','CLEANSCREENOFF':'cleanscreen','INSTALAR':'install',
     'DXFOUT':'dxfout','DWGOUT':'dwgout','EXPORT':'export','EXP':'export',
     'DDIM':'ddim','DIMSTYLE':'ddim','DST':'ddim','DIMSTY':'ddim','DEMO':'demo',
     'UN':'units','UNITS':'units','DDUNITS':'units',
@@ -3502,6 +3513,9 @@ function onCmdKey(e){
     case 'array':showArrayDlg();break;
     case 'ddim':showDimStyle();break;
     case 'dxfout':expDXF('2000');break;
+    case 'fullscreen':toggleFullscreen();break;
+    case 'cleanscreen':toggleCleanScreen();break;
+    case 'install':appInstall();break;
     case 'dwgout':expDWG();break;
     case 'export':showExport();break;
     case 'demo':if(S.ents.length&&!confirm('Carregar o desenho de exemplo substitui o desenho atual. Continuar?'))break;loadDemo();updLayerUI();break;
@@ -3527,6 +3541,9 @@ function onCmdKey(e){
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
       log('MEDIR: DI=Distância  AA=Área','inf');
+      log('TELA: TELACHEIA (⛶) | LIMPA ou Ctrl+0 = tela limpa | INSTALAR = aplicativo do computador','inf');
+      log('OSNAP: F3 liga/desliga | durante um comando digite END MID CEN INT QUA PER TAN NEA ou NON para forçar o próximo ponto','inf');
+      log('GRIPS: selecione e clique numa alça azul | Espaço alterna STRETCH/MOVE/ROTATE/SCALE/MIRROR | C=copiar B=base X=sair','inf');
       log('CONFIG: UN=Unidades  DDIM/DIMSTYLE/DST=Estilos de cota  LAYER/LA=Camadas  DEMO=Exemplo','inf');
       log('DIM:  D DAL DR DD DA (Linear Alinhada Raio Diâm Ângulo)  |  DDIM = estilos de cota','inf');
       log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
@@ -3873,7 +3890,8 @@ function updLayerUI(){
     d.className='lyrow'+(l.id===S.curLy?' cur':'');
     d.setAttribute('data-id',l.id);
     d.innerHTML='<div class="lydot" style="background:'+safeCol(l.col)+'"></div><div class="lyname">'+escHTML(l.nm)+'</div>'+'<span class="lyico'+(l.vis?'':' dim')+'" onclick="event.stopPropagation();togVis('+l.id+')">'+(l.vis?'👁':'🚫')+'</span>'+'<span class="lyico'+(l.lock?'':' dim')+'" onclick="event.stopPropagation();togLock('+l.id+')">'+(l.lock?'🔒':'🔓')+'</span>';
-    d.onclick=function(){var id=parseInt(this.getAttribute('data-id'));S.curLy=id;updLayerUI();updLayerSel();updStatus();};
+    d.onclick=function(){var id=parseInt(this.getAttribute('data-id'));S.curLy=id;updLayerUI();updLayerSel();updStatus();updPropsPanel();};
+    (function(id){var dot=d.querySelector('.lydot');dot.title='Clique para mudar a cor da camada';dot.style.cursor='pointer';dot.addEventListener('click',function(ev){ev.stopPropagation();layerColorEdit(id);});})(l.id);
     el.appendChild(d);
   }
 }
@@ -3889,10 +3907,9 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 
 // ── STATUS ───────────────────────────────────────────────────
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
-function updSelInfo(){var el=document.getElementById('selinfo');if(!S.sel.length){el.textContent='Nenhum objeto';return;}var t={};for(var i=0;i<S.sel.length;i++){var e=findE(S.sel[i]);if(e)t[e.tp]=(t[e.tp]||0)+1;}el.innerHTML='<b style="color:var(--acc)">'+S.sel.length+' objeto(s)</b><br>'+Object.keys(t).map(function(k){return k+': '+t[k];}).join('<br>');}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'6.3',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function saveDoc(){var d={v:'6.5',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima'];
 function validateDoc(d){
@@ -4307,7 +4324,7 @@ function buildDXF2000(opt){
   // ── auxiliares de entidade
   function ent(type,owner,lay,sub,st){
     g(0,type);g(5,H());g(330,owner);g(100,'AcDbEntity');g(8,lay);
-    if(st){ if(st.lt&&st.lt!=='Continuous')g(6,st.lt); if(st.col){g(62,hex2aci(st.col));var tc=dxfTrueColor(st.col);if(tc!==null)g(420,tc);} if(st.lw!==undefined)g(370,dxfLw(st.lw)); }
+    if(st){ if(st.lt)g(6,st.lt); if(st.col){g(62,hex2aci(st.col));var tc=dxfTrueColor(st.col);if(tc!==null)g(420,tc);} if(st.lw!==undefined)g(370,dxfLw(st.lw)); }
     g(100,sub);
   }
   function primToDxf(p,owner,lay,sty){
@@ -4358,7 +4375,7 @@ function buildDXF2000(opt){
   var dimIdx=0;
   S.ents.forEach(function(e){
     var ly=getLy(e.ly),lay=lmap[e.ly]!==undefined?lmap[e.ly]:'0';
-    var sty={col:e.col||(ly&&ly.col)||'#ffffff',lw:e.lw!==undefined?e.lw:(ly&&ly.lw)||.25,lt:ltName(e.ld||(ly&&ly.ld)||'solid')};
+    var sty={col:isByLayer(e.col)?undefined:e.col,lw:isByLayer(e.lw)?undefined:e.lw,lt:isByLayer(e.ld)?undefined:ltName(e.ld)}; // ByLayer = grupos omitidos
     switch(e.tp){
       case 'line': case 'circ': case 'arc':
         entPrims(e).forEach(function(p){primToDxf(p,OW,lay,sty);}); break;
@@ -4567,7 +4584,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.3 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.5 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -6254,6 +6271,588 @@ function propDimStyleChange(v){
   log('Estilo de cota atual: '+v,'ok');
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════
+   v6.4 — EDIÇÃO E PRECISÃO
+   1) ByLayer: cor, espessura e tipo de linha nulos = herdados da camada.
+   2) Painel de propriedades contextual: sem seleção define os valores dos
+      novos objetos; com seleção, edita os objetos selecionados (com undo).
+   3) Geometria editável do objeto selecionado (painel SELEÇÃO).
+   4) OSNAP: quadrante, perpendicular, tangente e próximo; F3 liga/desliga;
+      substituições pela linha de comando (END, MID, CEN, INT, QUA, PER, TAN, NEA, NON).
+   5) Grips (alças) no estilo AutoCAD: STRETCH → MOVE → ROTATE → SCALE → MIRROR
+      (Espaço/Enter alterna), opções Base, Copiar e Sair.
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ── 1. ByLayer ────────────────────────────────────────────────────────────
+function isByLayer(v){ return v===null||v===undefined||v===''||v==='BYLAYER'; }
+function effCol(e){ var ly=getLy(e.ly); return !isByLayer(e.col)?e.col:(ly&&ly.col)||'#dce4f5'; }
+function effLw(e){ var ly=getLy(e.ly); return !isByLayer(e.lw)?e.lw:(ly&&ly.lw)||.7; }
+function effLd(e){ var ly=getLy(e.ly); return !isByLayer(e.ld)?e.ld:(ly&&ly.ld)||'solid'; }
+
+// ── 2. Painel de propriedades contextual ────────────────────────────────────
+var PROP_VARIES='__varies__';
+function selEnts(){ return S.sel.map(findE).filter(Boolean); }
+function commonVal(list,fn){ if(!list.length) return undefined; var v=fn(list[0]); for(var i=1;i<list.length;i++){ if(fn(list[i])!==v) return PROP_VARIES; } return v; }
+function setSelectVal(sel,v,variesLabel){
+  var old=sel.querySelector('option[data-varies]'); if(old) old.remove();
+  if(v===PROP_VARIES){ var o=document.createElement('option');o.value=PROP_VARIES;o.textContent=variesLabel||'*VARIA*';o.setAttribute('data-varies','1');sel.insertBefore(o,sel.firstChild);sel.value=PROP_VARIES;return; }
+  sel.value=(v===null||v===undefined)?'':String(v);
+  if(sel.selectedIndex<0&&v!==null&&v!==undefined){ var o2=document.createElement('option');o2.value=String(v);o2.textContent=String(v);sel.appendChild(o2);sel.value=String(v); }
+}
+function updPropsPanel(){
+  var ents=selEnts(),has=ents.length>0;
+  var hdr=document.getElementById('prop-hdr');
+  if(hdr) hdr.textContent=has?('⚙ PROPRIEDADES — '+ents.length+' selecionado'+(ents.length>1?'s':'')):'⚙ PROPRIEDADES — novos objetos';
+  var panel=document.getElementById('prop-panel'); if(panel) panel.classList.toggle('editing-sel',has);
+  updLayerSel();
+  var ly=document.getElementById('propLy'),cm=document.getElementById('propColMode'),cp=document.getElementById('propCol'),lw=document.getElementById('propLW'),ld=document.getElementById('propLD');
+  if(!ly||!cm) return;
+  if(has){
+    setSelectVal(ly,commonVal(ents,function(e){return e.ly;}));
+    var cv=commonVal(ents,function(e){return isByLayer(e.col)?'':e.col;});
+    setSelectVal(cm,cv===PROP_VARIES?PROP_VARIES:(cv===''?'':'custom'));
+    cp.value=safeCol(cv&&cv!==PROP_VARIES?cv:effCol(ents[0]));
+    setSelectVal(lw,commonVal(ents,function(e){return isByLayer(e.lw)?'':String(e.lw);}));
+    setSelectVal(ld,commonVal(ents,function(e){return isByLayer(e.ld)?'':e.ld;}));
+  } else {
+    setSelectVal(ly,S.curLy);
+    setSelectVal(cm,isByLayer(S.style.col)?'':'custom');
+    var cl=getLy(S.curLy); cp.value=safeCol(isByLayer(S.style.col)?(cl&&cl.col):S.style.col);
+    setSelectVal(lw,isByLayer(S.style.lw)?'':String(S.style.lw));
+    setSelectVal(ld,isByLayer(S.style.ld)?'':S.style.ld);
+  }
+  cp.classList.toggle('bylayer',cm.value==='');
+}
+// Aplica uma propriedade à seleção (com undo) ou ao estilo dos novos objetos
+function propSet(key,val){
+  if(val===PROP_VARIES) return;
+  var ents=selEnts();
+  if(ents.length){
+    snapshot();
+    ents.forEach(function(e){ if(key==='ly') e.ly=val; else e[key]=val; });
+    log('Propriedade alterada em '+ents.length+' objeto(s).','ok');
+    renderAll(); if(LY&&LY.active==='layout') layoutRender();
+  } else {
+    if(key==='ly'){ S.curLy=val; updStatus(); }
+    else S.style[key]=val;
+  }
+  updPropsPanel();
+}
+function propLayerChange(v){ if(v===PROP_VARIES) return; var id=isNaN(parseInt(v,10))?v:parseInt(v,10); propSet('ly',id); }
+function propColModeChange(v){ if(v===PROP_VARIES) return; if(v===''){ propSet('col',null); } else { propSet('col',document.getElementById('propCol').value); } }
+function propColChange(v){ document.getElementById('propColMode').value='custom'; propSet('col',v); }
+function propLwChange(v){ if(v===PROP_VARIES) return; propSet('lw',v===''?null:parseFloat(v)); }
+function propLdChange(v){ if(v===PROP_VARIES) return; propSet('ld',v===''?null:v); }
+
+// ── 3. Geometria editável (painel SELEÇÃO) ──────────────────────────────────
+function gNum(v){ if(!isFinite(v)) return ''; var s=(Math.round(v*10000)/10000).toString(); return s; }
+var DEG=180/Math.PI;
+function geomFields(e){
+  var F=[],R=function(l,v){F.push({l:l,v:v,ro:true});};
+  switch(e.tp){
+    case 'line':{var L=Math.hypot(e.x2-e.x1,e.y2-e.y1),A=Math.atan2(e.y2-e.y1,e.x2-e.x1)*DEG;
+      F.push({l:'Início X',k:'x1'},{l:'Início Y',k:'y1'},{l:'Fim X',k:'x2'},{l:'Fim Y',k:'y2'},
+        {l:'Comprimento',v:L,set:function(e,v){if(!(v>0))return false;var a=Math.atan2(e.y2-e.y1,e.x2-e.x1);e.x2=e.x1+v*Math.cos(a);e.y2=e.y1+v*Math.sin(a);}},
+        {l:'Ângulo (°)',v:A,set:function(e,v){var l=Math.hypot(e.x2-e.x1,e.y2-e.y1),a=v/DEG;e.x2=e.x1+l*Math.cos(a);e.y2=e.y1+l*Math.sin(a);}});}break;
+    case 'circ':
+      F.push({l:'Centro X',k:'cx'},{l:'Centro Y',k:'cy'},{l:'Raio',k:'r',pos:1},
+        {l:'Diâmetro',v:2*e.r,set:function(e,v){if(!(v>0))return false;e.r=v/2;}});
+      R('Perímetro',2*Math.PI*e.r);R('Área',Math.PI*e.r*e.r);break;
+    case 'arc':{var sw=((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+      F.push({l:'Centro X',k:'cx'},{l:'Centro Y',k:'cy'},{l:'Raio',k:'r',pos:1},
+        {l:'Âng. inicial (°)',v:e.sa*DEG,set:function(e,v){e.sa=v/DEG;}},{l:'Âng. final (°)',v:e.ea*DEG,set:function(e,v){e.ea=v/DEG;}});
+      R('Ângulo total (°)',sw*DEG);R('Comprimento',e.r*sw);}break;
+    case 'rect':
+      F.push({l:'Canto X',k:'x'},{l:'Canto Y',k:'y'},{l:'Largura',k:'w',pos:1},{l:'Altura',k:'h',pos:1});
+      R('Perímetro',2*(e.w+e.h));R('Área',e.w*e.h);break;
+    case 'ell':
+      F.push({l:'Centro X',k:'cx'},{l:'Centro Y',k:'cy'},{l:'Semieixo 1',k:'rx',pos:1},{l:'Semieixo 2',k:'ry',pos:1},
+        {l:'Rotação (°)',v:(e.rot||0)*DEG,set:function(e,v){e.rot=v/DEG;}});
+      R('Área',Math.PI*e.rx*e.ry);break;
+    case 'txt':
+      F.push({l:'Conteúdo',k:'txt',str:1},{l:'Altura',k:'h',pos:1},{l:'Rotação (°)',v:(e.rot||0)*DEG,set:function(e,v){e.rot=v/DEG;}},{l:'Posição X',k:'x'},{l:'Posição Y',k:'y'});break;
+    case 'pl':case 'spline':{
+      var P=e.tp==='spline'?splinePoints(e,10):e.pts,len=0;for(var i=1;i<P.length;i++)len+=Math.hypot(P[i].x-P[i-1].x,P[i].y-P[i-1].y);
+      if(e.tp==='pl'&&e.closed&&P.length>2&&Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y)>1e-9) len+=Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y);
+      R('Vértices',e.pts.length-((e.closed&&e.pts.length>2&&Math.hypot(e.pts[0].x-e.pts[e.pts.length-1].x,e.pts[0].y-e.pts[e.pts.length-1].y)<1e-9)?1:0));
+      R('Comprimento',len);
+      if(e.tp==='pl'){
+        F.push({l:'Fechada',chk:1,v:!!e.closed,set:function(e,v){
+          var P2=e.pts,dup=P2.length>2&&Math.hypot(P2[0].x-P2[P2.length-1].x,P2[0].y-P2[P2.length-1].y)<1e-9;
+          if(v&&!dup) P2.push({x:P2[0].x,y:P2[0].y}); if(!v&&dup) P2.pop(); e.closed=!!v;}});
+        if(e.closed) R('Área',Math.abs(plSignedArea(e.pts[e.pts.length-1].x===e.pts[0].x&&e.pts[e.pts.length-1].y===e.pts[0].y?e.pts:e.pts.concat([e.pts[0]]))));
+      }
+    }break;
+    case 'hatch':
+      F.push({l:'Ângulo (°)',k:'ang'},{l:'Espaçamento',k:'sp',pos:1},{l:'Largura',k:'w',pos:1},{l:'Altura',k:'h',pos:1});break;
+    case 'dim':case 'dimr':case 'dimd':case 'dima':
+      R('Medida',dimMeasure(e));
+      F.push({l:'Estilo',sel:S.dimStyles.map(function(s){return s.name;}),v:e.dimStyle||S.dimCurrent,set:function(e,v){e.dimStyle=v;}});
+      break;
+  }
+  return F;
+}
+var TP_NAMES={line:'Linha',circ:'Círculo',arc:'Arco',rect:'Retângulo',ell:'Elipse',pl:'Polilinha',spline:'Spline',txt:'Texto',hatch:'Hachura',dim:'Cota linear',dimr:'Cota de raio',dimd:'Cota de diâmetro',dima:'Cota angular'};
+function updSelInfo(){
+  var el=document.getElementById('selinfo');
+  updPropsPanel();
+  if(!S.sel.length){el.textContent='Nenhum objeto';return;}
+  el.textContent='';
+  var ents=selEnts();
+  if(ents.length!==1){
+    var t={};ents.forEach(function(e){t[e.tp]=(t[e.tp]||0)+1;});
+    var b=document.createElement('b');b.style.color='var(--acc)';b.textContent=ents.length+' objetos';el.appendChild(b);
+    Object.keys(t).forEach(function(k){var d=document.createElement('div');d.textContent=(TP_NAMES[k]||k)+': '+t[k];el.appendChild(d);});
+    var h=document.createElement('div');h.className='geo-hint';h.textContent='Selecione um único objeto para editar a geometria.';el.appendChild(h);
+    return;
+  }
+  var e=ents[0];
+  var b2=document.createElement('b');b2.style.color='var(--acc)';b2.textContent=TP_NAMES[e.tp]||e.tp;el.appendChild(b2);
+  var tbl=document.createElement('div');tbl.className='geo-tbl';
+  geomFields(e).forEach(function(f){
+    var row=document.createElement('div');row.className='geo-row';
+    var lb=document.createElement('span');lb.className='geo-l';lb.textContent=f.l;row.appendChild(lb);
+    var cur=f.k!==undefined?e[f.k]:f.v,inp;
+    if(f.ro){inp=document.createElement('span');inp.className='geo-ro';inp.textContent=typeof cur==='number'?gNum(cur):String(cur);}
+    else if(f.chk){inp=document.createElement('input');inp.type='checkbox';inp.checked=!!cur;}
+    else if(f.sel){inp=document.createElement('select');inp.className='geo-in';f.sel.forEach(function(o){var op=document.createElement('option');op.value=o;op.textContent=o;inp.appendChild(op);});inp.value=cur;}
+    else {inp=document.createElement('input');inp.className='geo-in';inp.type=f.str?'text':'text';inp.value=f.str?String(cur):gNum(cur);inp.inputMode=f.str?'text':'decimal';}
+    if(!f.ro){
+      var apply=function(){
+        var v;
+        if(f.chk) v=inp.checked; else if(f.sel||f.str) v=inp.value;
+        else { v=parseFloat(String(inp.value).replace(',','.')); if(!isFinite(v)||(f.pos&&!(v>0))){inp.classList.add('bad');return;} }
+        inp.classList.remove('bad');
+        var test=JSON.parse(JSON.stringify(e));
+        var r=f.set?f.set(test,v):(test[f.k]=v);
+        if(r===false){inp.classList.add('bad');return;}
+        snapshot();
+        if(f.set) f.set(e,v); else e[f.k]=v;
+        renderAll();updSelInfo();
+      };
+      inp.addEventListener('change',apply);
+      if(!f.chk&&!f.sel) inp.addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();apply();}});
+    }
+    row.appendChild(inp);tbl.appendChild(row);
+  });
+  el.appendChild(tbl);
+  var ly=getLy(e.ly),inf=document.createElement('div');inf.className='geo-hint';
+  inf.textContent='Camada '+(ly?ly.nm:e.ly)+' · cor '+(isByLayer(e.col)?'ByLayer':e.col)+' · id '+e.id;
+  el.appendChild(inf);
+}
+
+// ── 4. OSNAP: quadrante, perpendicular, tangente e próximo ──────────────────
+var OSNAP_LABEL={end:'ENDPOINT',mid:'MIDPOINT',cen:'CENTER',int:'INTERSECTION',quad:'QUADRANT',per:'PERPENDICULAR',tan:'TANGENT',nea:'NEAREST',grip:'GRIP',grid:'GRID',polar:'POLAR',ortho:'ORTHO'};
+var OSNAP_OVR={END:'end',ENDP:'end',MID:'mid',CEN:'cen',INT:'int',QUA:'quad',QUAD:'quad',PER:'per',PERP:'per',TAN:'tan',NEA:'nea',NEAR:'nea',NON:'none',NONE:'none'};
+function quadPts(e){
+  var o=[];
+  if(e.tp==='circ'){ for(var k=0;k<4;k++) o.push({x:e.cx+e.r*Math.cos(k*Math.PI/2),y:e.cy+e.r*Math.sin(k*Math.PI/2)}); }
+  else if(e.tp==='arc'){ for(var k2=0;k2<4;k2++){var a=k2*Math.PI/2;if(arcHas(a,e.sa,e.ea))o.push({x:e.cx+e.r*Math.cos(a),y:e.cy+e.r*Math.sin(a)});} }
+  else if(e.tp==='ell'){ [0,Math.PI/2,Math.PI,1.5*Math.PI].forEach(function(t){o.push(ellPt(e,t));}); }
+  return o;
+}
+// Segmentos retos de uma entidade (para perpendicular e próximo)
+function entSegs(e){
+  var s=[],P;
+  switch(e.tp){
+    case 'line': s.push([e.x1,e.y1,e.x2,e.y2]); break;
+    case 'rect': P=[[e.x,e.y],[e.x+e.w,e.y],[e.x+e.w,e.y+e.h],[e.x,e.y+e.h]]; for(var i=0;i<4;i++){var a=P[i],b=P[(i+1)%4];s.push([a[0],a[1],b[0],b[1]]);} break;
+    case 'pl': P=e.pts; for(var j=1;j<P.length;j++) s.push([P[j-1].x,P[j-1].y,P[j].x,P[j].y]);
+      if(e.closed&&P.length>2&&Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y)>1e-9) s.push([P[P.length-1].x,P[P.length-1].y,P[0].x,P[0].y]); break;
+    case 'spline': P=splinePoints(e,12); for(var k=1;k<P.length;k++) s.push([P[k-1].x,P[k-1].y,P[k].x,P[k].y]); break;
+    case 'ell': P=ellPoints(e,96); for(var m=1;m<P.length;m++) s.push([P[m-1].x,P[m-1].y,P[m].x,P[m].y]); break;
+  }
+  return s;
+}
+function footOnSeg(px,py,s,clamp){
+  var dx=s[2]-s[0],dy=s[3]-s[1],l2=dx*dx+dy*dy; if(l2<1e-18) return null;
+  var t=((px-s[0])*dx+(py-s[1])*dy)/l2;
+  if(clamp) t=Math.max(0,Math.min(1,t)); else if(t<-1e-9||t>1+1e-9) return null;
+  return {x:s[0]+t*dx,y:s[1]+t*dy};
+}
+function perPts(e,R){
+  var o=[];
+  if(e.tp==='circ'||e.tp==='arc'){
+    var d=Math.hypot(R.x-e.cx,R.y-e.cy); if(d<1e-9) return o;
+    [1,-1].forEach(function(sg){var a=Math.atan2(R.y-e.cy,R.x-e.cx)+(sg<0?Math.PI:0),q={x:e.cx+e.r*Math.cos(a),y:e.cy+e.r*Math.sin(a)};
+      if(e.tp==='circ'||arcHas(a,e.sa,e.ea)) o.push(q);});
+    return o;
+  }
+  if(e.tp==='spline'||e.tp==='ell') return o;
+  entSegs(e).forEach(function(s){var f=footOnSeg(R.x,R.y,s,false);if(f&&Math.hypot(f.x-R.x,f.y-R.y)>1e-9)o.push(f);});
+  return o;
+}
+function tanPts(e,R){
+  var o=[];if(e.tp!=='circ'&&e.tp!=='arc') return o;
+  var d=Math.hypot(R.x-e.cx,R.y-e.cy); if(d<=e.r+1e-9) return o;
+  var base=Math.atan2(R.y-e.cy,R.x-e.cx),al=Math.acos(e.r/d);
+  [base+al,base-al].forEach(function(a){ if(e.tp==='circ'||arcHas(a,e.sa,e.ea)) o.push({x:e.cx+e.r*Math.cos(a),y:e.cy+e.r*Math.sin(a)}); });
+  return o;
+}
+function nearestOn(e,x,y){
+  if(e.tp==='circ'||e.tp==='arc'){
+    var a=Math.atan2(y-e.cy,x-e.cx);
+    if(e.tp==='arc'&&!arcHas(a,e.sa,e.ea)){
+      var p1={x:e.cx+e.r*Math.cos(e.sa),y:e.cy+e.r*Math.sin(e.sa)},p2={x:e.cx+e.r*Math.cos(e.ea),y:e.cy+e.r*Math.sin(e.ea)};
+      return Math.hypot(p1.x-x,p1.y-y)<Math.hypot(p2.x-x,p2.y-y)?p1:p2;
+    }
+    return {x:e.cx+e.r*Math.cos(a),y:e.cy+e.r*Math.sin(a)};
+  }
+  var best=null,bd=1e18;
+  entSegs(e).forEach(function(s){var f=footOnSeg(x,y,s,true);if(f){var d=Math.hypot(f.x-x,f.y-y);if(d<bd){bd=d;best=f;}}});
+  return best;
+}
+function osnapOn(mode){ if(S.snapOverride) return S.snapOverride===mode; return S.modes.osnap!==false&&!!S.modes[mode]; }
+
+function doSnap(sx,sy) {
+  var raw = s2w(sx,sy);
+  var best = {x:raw.x, y:raw.y, st:null};
+  var objSnap = false;
+  var tol = 12/S.vp.sc, bd=tol;
+  function tryP(px,py,st) { var d=Math.hypot(px-raw.x,py-raw.y); if(d<bd){bd=d;best={x:px,y:py,st:st};} }
+  // grips do objeto selecionado atraem o cursor (como no AutoCAD)
+  if(S.tool==='select'&&S.gripHover&&!S.grip){ return {x:S.gripHover.x,y:S.gripHover.y,st:'grip'}; }
+  var ovr=S.snapOverride;
+  if(ovr!=='none' && (ovr || S.modes.osnap!==false)){
+    var near=[];
+    for(var i=0;i<S.ents.length;i++){
+      var e=S.ents[i], ly=getLy(e.ly);
+      if(ly&&!ly.vis) continue;
+      var bb=bbox(e);
+      if(bb && (raw.x<bb.x-tol||raw.x>bb.x+bb.w+tol||raw.y<bb.y-tol||raw.y>bb.y+bb.h+tol)) continue;
+      near.push(e);
+    }
+    var R=cmdRefPt()||(S.grip?S.grip.base:null);
+    for(var n=0;n<near.length;n++){
+      var en=near[n],sps=snapPts(en);
+      for(var j=0;j<sps.length;j++){ var sp=sps[j]; if(osnapOn(sp.st)) tryP(sp.x,sp.y,sp.st); }
+      if(osnapOn('quad')) quadPts(en).forEach(function(q){tryP(q.x,q.y,'quad');});
+      if(R&&osnapOn('per')) perPts(en,R).forEach(function(q){tryP(q.x,q.y,'per');});
+      if(R&&osnapOn('tan')) tanPts(en,R).forEach(function(q){tryP(q.x,q.y,'tan');});
+    }
+    if(osnapOn('int')){
+      for(var ii=0;ii<near.length;ii++){
+        for(var jj=ii+1;jj<near.length;jj++){
+          var ipts=entIntersectSnap(near[ii],near[jj]);
+          for(var kk=0;kk<ipts.length;kk++) tryP(ipts[kk].x,ipts[kk].y,'int');
+        }
+      }
+    }
+    // NEAREST tem a menor prioridade: só vale se nenhum outro OSNAP foi encontrado
+    if(best.st===null && osnapOn('nea')){
+      for(var m=0;m<near.length;m++){ var q=nearestOn(near[m],raw.x,raw.y); if(q) tryP(q.x,q.y,'nea'); }
+    }
+    objSnap = best.st!==null;
+  }
+  if(!objSnap && !ovr && S.modes.snap && S.modes.grid){ var gs=S.modes.snapSz; tryP(Math.round(raw.x/gs)*gs, Math.round(raw.y/gs)*gs,'grid'); }
+  // ORTHO/POLAR não sobrepõem um OSNAP ativo (comportamento AutoCAD)
+  if(!objSnap && S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
+    var ref=S.ds.pts[S.ds.pts.length-1];
+    var adx=Math.abs(best.x-ref.x), ady=Math.abs(best.y-ref.y);
+    best={x:(adx>ady?best.x:ref.x), y:(adx>ady?ref.y:best.y), st:'ortho'};
+  }
+  if(!objSnap && S.modes.polar && !S.modes.ortho && S.ds && S.ds.pts && S.ds.pts.length>0){
+    var ref2=S.ds.pts[S.ds.pts.length-1];
+    var ang=Math.atan2(best.y-ref2.y,best.x-ref2.x)*180/Math.PI;
+    var snp=Math.round(ang/15)*15;
+    if(Math.abs(ang-snp)<2.5){
+      var r=Math.hypot(best.x-ref2.x,best.y-ref2.y), rad=snp*Math.PI/180;
+      best={x:ref2.x+r*Math.cos(rad), y:ref2.y+r*Math.sin(rad), st:'polar'};
+    }
+  }
+  return best;
+}
+function snapMarkerSVG(st,col){
+  var a='fill="none" stroke="'+col+'" stroke-width="1.6"';
+  switch(st){
+    case 'end': return '<svg width="14" height="14" viewBox="-7 -7 14 14"><rect x="-5" y="-5" width="10" height="10" '+a+'/></svg>';
+    case 'mid': return '<svg width="14" height="14" viewBox="-7 -7 14 14"><polygon points="0,-6 6,5 -6,5" '+a+'/></svg>';
+    case 'cen': return '<svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" '+a+'/><line x1="-7" y1="0" x2="7" y2="0" stroke="'+col+'"/><line x1="0" y1="-7" x2="0" y2="7" stroke="'+col+'"/></svg>';
+    case 'int': return '<svg width="14" height="14" viewBox="-7 -7 14 14"><line x1="-6" y1="-6" x2="6" y2="6" stroke="'+col+'" stroke-width="1.8"/><line x1="6" y1="-6" x2="-6" y2="6" stroke="'+col+'" stroke-width="1.8"/></svg>';
+    case 'quad': return '<svg width="16" height="16" viewBox="-8 -8 16 16"><polygon points="0,-6 6,0 0,6 -6,0" '+a+'/></svg>';
+    case 'per': return '<svg width="16" height="16" viewBox="-8 -8 16 16"><polyline points="-6,-6 -6,6 6,6" '+a+'/><polyline points="-6,0 0,0 0,6" '+a+'/></svg>';
+    case 'tan': return '<svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="4.5" cy="1" '+a+'/><line x1="-7" y1="-4.5" x2="7" y2="-4.5" stroke="'+col+'" stroke-width="1.6"/></svg>';
+    case 'nea': return '<svg width="16" height="16" viewBox="-8 -8 16 16"><polygon points="-5,-5 5,-5 -5,5 5,5" '+a+'/></svg>';
+    case 'grip': return '<svg width="14" height="14" viewBox="-7 -7 14 14"><rect x="-5" y="-5" width="10" height="10" fill="'+col+'" stroke="#fff" stroke-width="1"/></svg>';
+  }
+  return '<svg width="12" height="12" viewBox="-6 -6 12 12"><circle r="4" '+a+'/></svg>';
+}
+function drawOver(){
+  S.gO.clearRect(0,0,S.cO.width,S.cO.height);
+  var sm=document.getElementById('snapmark'),sl=document.getElementById('snaplbl');
+  if(!S.hover||S.tool==='pan'||!S.hover.st||S.hover.st==='grid'){sm.style.display='none';sl.style.display='none';return;}
+  var sp=w2s(S.hover.x,S.hover.y),st=S.hover.st;
+  var col={end:'#4ec87a',mid:'#f0c040',cen:'#4d9ef7',int:'#ff9020',quad:'#4ec87a',per:'#c879ff',tan:'#c879ff',nea:'#58d6d6',grip:'#ff7aa0',polar:'#e85050',ortho:'#e85050'}[st]||'#4d9ef7';
+  sm.style.left=sp.x+'px';sm.style.top=sp.y+'px';sm.style.display='block';
+  sm.innerHTML=snapMarkerSVG(st,col);
+  sl.textContent=(OSNAP_LABEL[st]||st.toUpperCase())+(S.snapOverride&&S.snapOverride!=='none'?' (forçado)':'');
+  sl.style.left=(sp.x+14)+'px';sl.style.top=(sp.y-20)+'px';sl.style.display='block';sl.style.color=col;sl.style.borderColor=col;
+}
+// Substituição de OSNAP digitada na linha de comando (vale para o próximo ponto)
+function trySnapOverride(v){
+  var k=OSNAP_OVR[String(v).trim().toUpperCase()];
+  if(!k) return false;
+  var needsPoint=(S.tool!=='select'&&S.ds)||S.grip;
+  if(!needsPoint){ log('Substituição de OSNAP só vale durante um comando que pede um ponto.','inf'); return true; }
+  S.snapOverride=k;
+  log(k==='none'?'OSNAP desativado para o próximo ponto.':'OSNAP forçado: '+OSNAP_LABEL[k]+' de','inf');
+  return true;
+}
+
+// ── 5. GRIPS ────────────────────────────────────────────────────────────────
+var GRIP_MAX=100, GRIP_MODES=['stretch','move','rotate','scale','mirror'];
+var GRIP_PROMPT={stretch:'** STRETCH ** Especifique o ponto de estiramento ou [Base/Copiar/Desfazer/Sair]:',
+  move:'** MOVE ** Especifique o ponto de destino ou [Base/Copiar/Desfazer/Sair]:',
+  rotate:'** ROTATE ** Especifique o ângulo de rotação ou [Base/Copiar/Desfazer/Sair]:',
+  scale:'** SCALE ** Especifique o fator de escala ou [Base/Copiar/Desfazer/Sair]:',
+  mirror:'** MIRROR ** Especifique o segundo ponto do eixo ou [Base/Copiar/Desfazer/Sair]:'};
+function plDup(e){ var P=e.pts; return e.closed&&P.length>2&&Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y)<1e-9; }
+function getGrips(e){
+  var G=[],add=function(x,y,k){G.push({x:x,y:y,key:k});};
+  switch(e.tp){
+    case 'line': add(e.x1,e.y1,'p1');add((e.x1+e.x2)/2,(e.y1+e.y2)/2,'mid');add(e.x2,e.y2,'p2');break;
+    case 'circ': add(e.cx,e.cy,'c');[0,1,2,3].forEach(function(k){add(e.cx+e.r*Math.cos(k*Math.PI/2),e.cy+e.r*Math.sin(k*Math.PI/2),'q');});break;
+    case 'arc':{var sw=((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),ma=e.sa+sw/2;
+      add(e.cx,e.cy,'c');add(e.cx+e.r*Math.cos(e.sa),e.cy+e.r*Math.sin(e.sa),'s');add(e.cx+e.r*Math.cos(ma),e.cy+e.r*Math.sin(ma),'m');add(e.cx+e.r*Math.cos(e.ea),e.cy+e.r*Math.sin(e.ea),'e');}break;
+    case 'rect':case 'hatch':
+      add(e.x,e.y,'c0');add(e.x+e.w,e.y,'c1');add(e.x+e.w,e.y+e.h,'c2');add(e.x,e.y+e.h,'c3');
+      add(e.x+e.w/2,e.y,'e0');add(e.x+e.w,e.y+e.h/2,'e1');add(e.x+e.w/2,e.y+e.h,'e2');add(e.x,e.y+e.h/2,'e3');break;
+    case 'pl':case 'spline':{
+      var P=e.pts,n=P.length-(e.tp==='pl'&&plDup(e)?1:0);
+      for(var i=0;i<n;i++) add(P[i].x,P[i].y,'v'+i);
+      if(e.tp==='pl') for(var j=1;j<P.length;j++) add((P[j-1].x+P[j].x)/2,(P[j-1].y+P[j].y)/2,'m'+(j-1));
+    }break;
+    case 'ell': add(e.cx,e.cy,'c');[0,Math.PI].forEach(function(t){var q=ellPt(e,t);add(q.x,q.y,'a');});[Math.PI/2,1.5*Math.PI].forEach(function(t){var q=ellPt(e,t);add(q.x,q.y,'b');});break;
+    case 'txt': add(e.x,e.y,'p');break;
+    case 'dim':{var g=dimLinePoints(e);add(e.x1,e.y1,'p1');add(e.x2,e.y2,'p2');if(g)add((g.d1x+g.d2x)/2,(g.d1y+g.d2y)/2,'dl');}break;
+    case 'dimr':case 'dimd': add(e.cx,e.cy,'c');add(e.ex,e.ey,'t');break;
+    case 'dima':{var G2=dimAngGeom(e),ma2=G2.sa+G2.sweep/2;add(e.vx,e.vy,'v');add(e.x1,e.y1,'p1');add(e.x2,e.y2,'p2');add(e.vx+G2.R*Math.cos(ma2),e.vy+G2.R*Math.sin(ma2),'a');}break;
+  }
+  return G;
+}
+function gripEnts(){
+  if(S.tool!=='select'||S.modes.grips===false||!S.sel.length||S.sel.length>GRIP_MAX) return [];
+  return selEnts().filter(function(e){var ly=getLy(e.ly);return !(ly&&(!ly.vis||ly.lock));});
+}
+function allGrips(){ var o=[]; gripEnts().forEach(function(e){getGrips(e).forEach(function(g){o.push({x:g.x,y:g.y,key:g.key,id:e.id});});}); return o; }
+function gripAt(sx,sy){
+  var best=null,bd=7;
+  allGrips().forEach(function(g){var p=w2s(g.x,g.y),d=Math.max(Math.abs(p.x-sx),Math.abs(p.y-sy));if(d<=bd){bd=d;best=g;}});
+  return best;
+}
+function drawGrips(ctx){
+  var G=allGrips(); if(!G.length) return;
+  ctx.save();ctx.setLineDash([]);ctx.shadowBlur=0;
+  G.forEach(function(g){
+    var p=w2s(g.x,g.y),hot=S.grip&&Math.hypot(g.x-S.grip.base.x,g.y-S.grip.base.y)<1e-9&&S.grip.targets.some(function(t){return t.id===g.id&&t.key===g.key;}),
+        hov=!S.grip&&S.gripHover&&Math.hypot(g.x-S.gripHover.x,g.y-S.gripHover.y)<1e-9;
+    ctx.fillStyle=hot?'#e85050':hov?'#ff7aa0':'#4d9ef7';ctx.strokeStyle='#0a0a1a';ctx.lineWidth=1;
+    ctx.fillRect(p.x-4,p.y-4,8,8);ctx.strokeRect(p.x-4.5,p.y-4.5,9,9);
+  });
+  ctx.restore();
+}
+// Estira um grip de uma entidade (base → pt)
+function stretchGrip(e,key,base,pt){
+  var dx=pt.x-base.x,dy=pt.y-base.y;
+  switch(e.tp){
+    case 'line': if(key==='p1'){e.x1+=dx;e.y1+=dy;} else if(key==='p2'){e.x2+=dx;e.y2+=dy;} else transl(e,dx,dy); break;
+    case 'circ': if(key==='c') transl(e,dx,dy); else e.r=Math.max(1e-6,Math.hypot(pt.x-e.cx,pt.y-e.cy)); break;
+    case 'arc': if(key==='c') transl(e,dx,dy); else if(key==='m') e.r=Math.max(1e-6,Math.hypot(pt.x-e.cx,pt.y-e.cy));
+      else if(key==='s') e.sa=Math.atan2(pt.y-e.cy,pt.x-e.cx); else if(key==='e') e.ea=Math.atan2(pt.y-e.cy,pt.x-e.cx); break;
+    case 'rect':case 'hatch':{
+      var x0=e.x,y0=e.y,x1=e.x+e.w,y1=e.y+e.h;
+      if(key==='c0'){x0+=dx;y0+=dy;} if(key==='c1'){x1+=dx;y0+=dy;} if(key==='c2'){x1+=dx;y1+=dy;} if(key==='c3'){x0+=dx;y1+=dy;}
+      if(key==='e0')y0+=dy; if(key==='e1')x1+=dx; if(key==='e2')y1+=dy; if(key==='e3')x0+=dx;
+      e.x=Math.min(x0,x1);e.y=Math.min(y0,y1);e.w=Math.max(1e-6,Math.abs(x1-x0));e.h=Math.max(1e-6,Math.abs(y1-y0));
+    }break;
+    case 'pl':case 'spline':{
+      var P=e.pts,dup=e.tp==='pl'&&plDup(e),mv=function(i){P[i].x+=dx;P[i].y+=dy;if(dup&&i===0){P[P.length-1].x+=dx;P[P.length-1].y+=dy;}};
+      if(key[0]==='v') mv(parseInt(key.slice(1),10));
+      else if(key[0]==='m'){var i2=parseInt(key.slice(1),10);mv(i2);if(!(dup&&i2+1===P.length-1))mv(i2+1);else if(i2+1===P.length-1){/* já movido via dup */}}
+    }break;
+    case 'ell': if(key==='c') transl(e,dx,dy); else if(key==='a') e.rx=Math.max(1e-6,Math.hypot(pt.x-e.cx,pt.y-e.cy)); else e.ry=Math.max(1e-6,Math.hypot(pt.x-e.cx,pt.y-e.cy)); break;
+    case 'txt': transl(e,dx,dy); break;
+    case 'dim': normDimLegacy(e); if(key==='p1'){e.x1+=dx;e.y1+=dy;} else if(key==='p2'){e.x2+=dx;e.y2+=dy;} else {e.px+=dx;e.py+=dy;} break;
+    case 'dimr':case 'dimd': if(key==='c') transl(e,dx,dy); else {e.ex+=dx;e.ey+=dy;} break;
+    case 'dima': if(key==='v'){e.vx+=dx;e.vy+=dy;} else if(key==='p1'){e.x1+=dx;e.y1+=dy;} else if(key==='p2'){e.x2+=dx;e.y2+=dy;}
+      else { var G=dimAngGeom(e),ma=G.sa+G.sweep/2; if(e.px===undefined){e.px=e.vx+G.R*Math.cos(ma);e.py=e.vy+G.R*Math.sin(ma);} e.px+=dx;e.py+=dy; } break;
+  }
+}
+// Calcula o resultado do grip para um ponto (ou valor digitado). Retorna lista de entidades novas/alteradas.
+function gripCompute(pt,typed){
+  var g=S.grip,base=g.base,out=[];
+  var src=g.ids.map(findE).filter(Boolean).map(function(e){return JSON.parse(JSON.stringify(e));}); // cópia com o mesmo id
+  if(g.mode==='stretch'){
+    src.forEach(function(e,i){ g.targets.forEach(function(t){ if(t.id===g.ids[i]) stretchGrip(e,t.key,base,pt); }); out.push(e); });
+    // somente as entidades que têm grip ativo mudam
+    return out.filter(function(e,i){return g.targets.some(function(t){return t.id===g.ids[i];});}).map(function(e){return e;});
+  }
+  src.forEach(function(e){
+    if(g.mode==='move') transl(e,pt.x-base.x,pt.y-base.y);
+    else if(g.mode==='rotate'){ var a=typed!==undefined?typed/DEG:Math.atan2(pt.y-base.y,pt.x-base.x); rotat(e,base,a); }
+    else if(g.mode==='scale'){ var f=typed!==undefined?typed:Math.hypot(pt.x-base.x,pt.y-base.y)/(g.refLen||1); if(!(f>0)) f=1e-6; scalE(e,base,f); }
+    else if(g.mode==='mirror'){ if(Math.hypot(pt.x-base.x,pt.y-base.y)>1e-9) mirr(e,base,pt); }
+    out.push(e);
+  });
+  return out;
+}
+function gripStart(g){
+  var targets=[];
+  allGrips().forEach(function(q){ if(Math.hypot(q.x-g.x,q.y-g.y)<1e-9*Math.max(1,Math.abs(g.x)+Math.abs(g.y))+1e-9) targets.push({id:q.id,key:q.key}); });
+  S.grip={base:{x:g.x,y:g.y},targets:targets,ids:gripEnts().map(function(e){return e.id;}),mode:'stretch',copy:false,refLen:1,baseNext:false};
+  S.ds={pts:[{x:g.x,y:g.y}],grip:true};
+  S.gripHover=null;
+  logp(GRIP_PROMPT.stretch);
+  renderAll();
+}
+function gripCycle(){
+  if(!S.grip) return;
+  var i=GRIP_MODES.indexOf(S.grip.mode);S.grip.mode=GRIP_MODES[(i+1)%GRIP_MODES.length];
+  if(S.grip.mode==='scale'){ var h=S.hover||S.grip.base; S.grip.refLen=Math.max(Math.hypot(h.x-S.grip.base.x,h.y-S.grip.base.y),10/S.vp.sc); }
+  logp(GRIP_PROMPT[S.grip.mode]+(S.grip.copy?' (cópias múltiplas)':''));
+  renderAll();
+}
+function gripCommit(pt,typed){
+  var g=S.grip; if(!g) return;
+  if(g.baseNext){ g.base={x:pt.x,y:pt.y}; g.baseNext=false; S.ds={pts:[g.base],grip:true}; logp(GRIP_PROMPT[g.mode]); S.snapOverride=null; renderAll(); return; }
+  var res=gripCompute(pt,typed);
+  snapshot();
+  if(g.copy){ res.forEach(function(e){e.id=uid();S.ents.push(e);}); log('Grip '+g.mode.toUpperCase()+': '+res.length+' cópia(s).','ok'); }
+  else {
+    if(g.mode==='stretch'){ res.forEach(function(e){ for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===e.id) S.ents[i]=e; }); }
+    else res.forEach(function(e){ for(var i=0;i<S.ents.length;i++) if(S.ents[i].id===e.id) S.ents[i]=e; });
+    log('Grip '+g.mode.toUpperCase()+' aplicado.','ok');
+  }
+  S.snapOverride=null;
+  if(g.copy){ renderAll(); updSelInfo(); return; }  // continua em modo cópia até Esc/Sair
+  gripEnd(); updSelInfo();
+}
+function gripEnd(){ S.grip=null; S.ds=null; S.gripHover=null; S.snapOverride=null; logp('SELECT: clique ou janela.'); renderAll(); updStatus(); }
+function gripTyped(v){
+  var g=S.grip,u=String(v).trim().toUpperCase();
+  if(u==='C'||u==='COPIAR'||u==='COPY'){ g.copy=!g.copy; logp(GRIP_PROMPT[g.mode]+(g.copy?' (cópias múltiplas)':'')); return; }
+  if(u==='B'||u==='BASE'){ g.baseNext=true; logp('Especifique o novo ponto base:'); return; }
+  if(u==='X'||u==='SAIR'||u==='EXIT'){ gripEnd(); return; }
+  if(u==='U'||u==='DESFAZER'){ if(g.copy){ undo(); } return; }
+  var num=parseFloat(String(v).replace(',','.'));
+  if(/^-?[\d.,]+$/.test(String(v).trim())&&isFinite(num)){
+    if(g.mode==='rotate'||g.mode==='scale'){ if(g.mode==='scale'&&!(num>0)){log('Fator deve ser positivo.','er');return;} gripCommit(g.base,num); return; }
+    var h=S.hover||{x:g.base.x+1,y:g.base.y},dx=h.x-g.base.x,dy=h.y-g.base.y,l=Math.hypot(dx,dy)||1;
+    gripCommit({x:g.base.x+dx/l*num,y:g.base.y+dy/l*num}); return;
+  }
+  var pt=parseCoord(v); if(pt){ gripCommit(pt); return; }
+  log('Entrada inválida para o grip.','er');
+}
+function drawGripPreview(ctx){
+  var g=S.grip,h=S.hover; if(!g||!h) return;
+  var b=w2s(g.base.x,g.base.y),c=w2s(h.x,h.y);
+  ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle='#e85050';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.stroke();ctx.restore();
+  if(g.baseNext) return;
+  var res=gripCompute(h);
+  ctx.save();ctx.globalAlpha=0.75;
+  res.forEach(function(e){drawE(ctx,e,true);});
+  ctx.restore();
+  if(g.mode==='rotate'){ctx.save();ctx.fillStyle='#e85050';ctx.font='10px Consolas';ctx.fillText(gNum(Math.atan2(h.y-g.base.y,h.x-g.base.x)*DEG)+'°',c.x+12,c.y+14);ctx.restore();}
+  if(g.mode==='scale'){ctx.save();ctx.fillStyle='#e85050';ctx.font='10px Consolas';ctx.fillText('×'+gNum(Math.hypot(h.x-g.base.x,h.y-g.base.y)/(g.refLen||1)),c.x+12,c.y+14);ctx.restore();}
+}
+
+// ── Edição da cor de camada (clique na bolinha) ─────────────────────────────
+function layerColorEdit(id){
+  var l=getLy(id); if(!l) return;
+  var inp=document.createElement('input');inp.type='color';inp.value=safeCol(l.col);
+  inp.style.position='fixed';inp.style.left='-100px';document.body.appendChild(inp);
+  inp.addEventListener('change',function(){ l.col=inp.value; S.dirty=true; updLayerUI(); renderAll(); updPropsPanel(); log('Cor da camada "'+l.nm+'" alterada (objetos ByLayer atualizados).','ok'); inp.remove(); });
+  inp.addEventListener('blur',function(){ setTimeout(function(){ if(inp.parentNode) inp.remove(); },500); });
+  inp.click();
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v6.5 — TELA CHEIA, TELA LIMPA E APLICATIVO INSTALÁVEL
+   Por segurança, nenhum navegador permite que uma página entre em tela cheia
+   sozinha: é preciso um clique ou tecla do usuário. Por isso o EduCAD abre
+   com uma tela inicial cujo botão faz exatamente isso.
+   No Chrome/Edge a tecla Esc é "travada" (Keyboard Lock) durante a tela
+   cheia, para continuar cancelando comandos; para sair, segura-se o Esc.
+   ═══════════════════════════════════════════════════════════════════ */
+var APP={installEvt:null,escLocked:false};
+function fsSupported(){var d=document.documentElement;return !!(d.requestFullscreen||d.webkitRequestFullscreen);}
+function isFullscreen(){return !!(document.fullscreenElement||document.webkitFullscreenElement);}
+function isStandalone(){try{return window.matchMedia('(display-mode: standalone)').matches||window.matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;}catch(e){return false;}}
+function enterFullscreen(){
+  var d=document.documentElement,p;
+  try{ p=d.requestFullscreen?d.requestFullscreen({navigationUI:'hide'}):(d.webkitRequestFullscreen&&d.webkitRequestFullscreen()); }
+  catch(err){ log('Tela cheia não permitida: '+err.message,'er'); return; }
+  if(p&&p.then) p.then(lockEsc).catch(function(err){log('O navegador recusou a tela cheia ('+err.message+'). Use F11.','er');});
+  else lockEsc();
+}
+function exitFullscreen(){
+  try{ if(navigator.keyboard&&navigator.keyboard.unlock) navigator.keyboard.unlock(); }catch(e){}
+  APP.escLocked=false;
+  if(document.exitFullscreen) document.exitFullscreen().catch(function(){}); else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+}
+function toggleFullscreen(){ if(!fsSupported()){log('Este navegador não oferece tela cheia por botão. Use F11.','er');return;} if(isFullscreen()) exitFullscreen(); else enterFullscreen(); }
+function lockEsc(){
+  if(navigator.keyboard&&navigator.keyboard.lock){
+    navigator.keyboard.lock(['Escape']).then(function(){APP.escLocked=true;fsMsg();}).catch(function(){APP.escLocked=false;fsMsg();});
+  } else fsMsg();
+}
+function fsMsg(){
+  if(!isFullscreen()) return;
+  log(APP.escLocked?'Tela cheia. Esc continua cancelando comandos; para sair, mantenha Esc pressionado ou use o botão ⛶ / comando TELACHEIA.'
+                    :'Tela cheia. Neste navegador a tecla Esc também sai da tela cheia; para cancelar comandos use o botão direito do mouse.','inf');
+}
+function onFsChange(){
+  var on=isFullscreen(),b=document.getElementById('btn-fs');
+  if(b){b.classList.toggle('on',on);b.textContent=on?'⛶ Sair da tela cheia':'⛶ Tela cheia';}
+  if(!on){ APP.escLocked=false; try{ if(navigator.keyboard&&navigator.keyboard.unlock) navigator.keyboard.unlock(); }catch(e){} }
+  setTimeout(resize,60);
+}
+document.addEventListener('fullscreenchange',onFsChange);
+document.addEventListener('webkitfullscreenchange',onFsChange);
+// Tela limpa (como CLEANSCREENON/Ctrl+0 do AutoCAD): oculta faixa de opções e painel direito
+function toggleCleanScreen(){
+  var on=document.body.classList.toggle('clean');
+  var b=document.getElementById('btn-clean'); if(b) b.classList.toggle('on',on);
+  resize();
+  log(on?'Tela limpa: faixa de opções e painéis ocultos (Ctrl+0 ou comando LIMPA para voltar). Os comandos continuam pela linha de comando.':'Tela limpa desativada.','inf');
+}
+// Tela de abertura
+function startPref(){ try{return localStorage.getItem('educad.inicio');}catch(e){return null;} }
+function showStartScreen(force){
+  var q=/[?&](fullscreen|telacheia)=1/.test(location.search);
+  if(!force){
+    if(navigator.webdriver) return false;          // testes automatizados
+    if(isStandalone()) return false;               // já instalado como aplicativo
+    if(!fsSupported()) return false;
+    if(startPref()==='janela'&&!q) return false;
+  }
+  var n=document.getElementById('ss-note');
+  n.textContent=(isStandalone()?'':'Dica: no Chrome ou no Edge, use “⬇ Instalar” na barra superior para ter o EduCAD como um aplicativo do computador, em janela própria e com ícone na área de trabalho. ')+'Na tela cheia, o F11 do navegador e o botão ⛶ também alternam o modo.';
+  document.getElementById('startscr').style.display='flex';
+  setTimeout(function(){var g=document.getElementById('ss-go');if(g)g.focus();},50);
+  return true;
+}
+function startApp(full){
+  try{ if(document.getElementById('ss-skip').checked) localStorage.setItem('educad.inicio','janela'); }catch(e){}
+  document.getElementById('startscr').style.display='none';
+  if(full) enterFullscreen();
+  setTimeout(resize,60);
+}
+// Instalação como aplicativo (Chrome/Edge em https ou localhost)
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); APP.installEvt=e; var b=document.getElementById('btn-install'); if(b) b.style.display=''; });
+window.addEventListener('appinstalled',function(){ APP.installEvt=null; var b=document.getElementById('btn-install'); if(b) b.style.display='none'; log('EduCAD instalado como aplicativo. Abra pelo ícone na área de trabalho ou no menu Iniciar.','ok'); });
+function appInstall(){
+  if(!APP.installEvt){ log('Instalação: use o menu do navegador (⋮ → Instalar EduCAD / Aplicativos → Instalar este site).','inf'); return; }
+  APP.installEvt.prompt(); APP.installEvt.userChoice.then(function(){ APP.installEvt=null; });
+}
+function registerSW(){
+  if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    navigator.serviceWorker.register('sw.js').catch(function(err){ console.warn('Service worker não registrado:',err); });
+  }
+}
 
 // ── UNITS ENGINE ─────────────────────────────────────────────────────────────
 // Estado global de unidades do desenho

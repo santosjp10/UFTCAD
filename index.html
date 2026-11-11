@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v6.6</title>
+<title>EduCAD 2D v7.0</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -415,7 +415,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v6.6 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.0 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
@@ -725,7 +725,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v6.6 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.0 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1132,7 +1132,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v6.6 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.0 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1258,7 +1258,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v6.6 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v7.0 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1332,11 +1332,11 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v6.6 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v7.0 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
-  log('Atalhos: L C R A E PL T D M CO RO MI SC O TR EX F CHA AR  |  F7=Grade F8=Ortho F9=Snap','inf');
+  log('Comandos (digite + Enter/Espaço): L C REC A EL PL POL T H | E M CO RO SC MI O TR EX F CHA AR X | DLI DAL DRA DDI DAN  D=DDIM | F3=OSNAP F7=Grade F8=Ortho F9=Snap','inf');
   setTool('select');
 });
 
@@ -1410,6 +1410,7 @@ function arcHas(a,sa,ea){var n=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(
 // ── CLICK HANDLER ────────────────────────────────────────────
 function handleClick(pt) {
   var ds=S.ds, tool=S.tool;
+  if(ncIs(tool)){ ncClick(pt); return; } // v7.0: motor de comandos
   switch(tool) {
 
     /* ─── DRAW TOOLS ─────────────────────── */
@@ -1849,101 +1850,11 @@ function handleClick(pt) {
       }
       break;
 
-    /* ─── TRIM ───────────────────────────────────────────────── */
-    case 'trim':
-      if(!S.ds){
-        // Sem ds: clique inicia seleção de borda
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
-        if(hit){
-          S.ds={phase:'cut',cutters:[hit.id]};
-          S.sel=[hit.id];
-          log('[TRIM] Borda: '+hit.tp,'ok');
-          logp('TRIM: selecione mais bordas ou Enter para confirmar:');
-        } else {
-          log('Clique em uma borda de corte, ou pressione Enter para usar todos os objetos.','inf');
-        }
-      } else if(S.ds.phase==='cut'){
-        // Adicionar mais bordas de corte
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)&&S.ds.cutters.indexOf(S.ents[i].id)<0){hit=S.ents[i];break;}}
-        if(hit){S.ds.cutters.push(hit.id);S.sel.push(hit.id);log('[TRIM] +Borda: '+hit.tp,'ok');}
-      } else if(S.ds.phase==='trim'){
-        // Executar o corte no objeto clicado
-        // No modo rápido (allMode) qualquer objeto pode ser alvo — inclusive os que são borda
-        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
-          var e=S.ents[i];
-          var isTargetType=(e.tp==='line'||e.tp==='arc'||e.tp==='circ'||e.tp==='pl');
-          var notCutter=!S.ds.allMode&&S.ds.cutters.indexOf(e.id)<0;
-          var isCutterAllMode=S.ds.allMode;
-          if(isTargetType&&(notCutter||isCutterAllMode)&&hitEnt(e,pt.x,pt.y)){tgt=e;break;}
-        }
-        if(tgt){
-          // No modo rápido, as bordas são todos exceto o próprio alvo
-          var cutters=S.ds.allMode
-            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
-            : S.ds.cutters;
-          var result=doTrim(tgt,pt,cutters);
-          if(!result) log('Sem interseção com as bordas definidas.','inf');
-        } else {
-          log('Clique sobre o trecho que deseja remover.','inf');
-        }
-      }
-      break;
+    /* ─── TRIM / EXTEND (v6.8: modo Rápido do AutoCAD) ────────── */
+    case 'trim':case 'extend': teClick(pt); break;
 
-    /* ─── EXTEND ─────────────────────────────────────────────── */
-    case 'extend':
-      if(!S.ds){
-        // Primeiro clique: iniciar seleção de limites
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)){hit=S.ents[i];break;}}
-        if(hit){
-          S.ds={phase:'bnd',bounds:[hit.id],allMode:false};S.sel=[hit.id];
-          log('[EXTEND] Limite: '+hit.tp,'ok');
-          logp('EXTEND: selecione mais limites ou Enter para confirmar:');
-        } else {
-          log('Clique em um limite ou pressione Enter para usar todos os objetos.','inf');
-        }
-      } else if(S.ds.phase==='bnd'){
-        // Adicionar mais limites
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){if(hitEnt(S.ents[i],pt.x,pt.y)&&S.ds.bounds.indexOf(S.ents[i].id)<0){hit=S.ents[i];break;}}
-        if(hit){S.ds.bounds.push(hit.id);S.sel.push(hit.id);log('[EXTEND] +Limite: '+hit.tp,'ok');}
-      } else if(S.ds.phase==='ext'){
-        // Executar extensão no objeto clicado
-        var tgt=null;for(var i=S.ents.length-1;i>=0;i--){
-          var e=S.ents[i];
-          var isTargetType=(e.tp==='line'||e.tp==='arc'||e.tp==='pl');
-          var notBound=!S.ds.allMode&&S.ds.bounds.indexOf(e.id)<0;
-          var isBoundAllMode=S.ds.allMode;
-          if(isTargetType&&(notBound||isBoundAllMode)&&hitEnt(e,pt.x,pt.y)){tgt=e;break;}
-        }
-        if(tgt){
-          var bounds=S.ds.allMode
-            ? S.ents.filter(function(e){return e.id!==tgt.id;}).map(function(e){return e.id;})
-            : S.ds.bounds;
-          var result=doExtend(tgt,pt,bounds);
-          if(!result) log('Sem interseção para estender.','inf');
-        } else {
-          log('Clique próximo à extremidade do objeto a estender.','inf');
-        }
-      }
-      break;
-
-    /* ─── FILLET ─────────────────────────────────────────────── */
-    case 'fillet':
-      if(!S.ds){
-        S.ds={phase:'l1',r:S.filletR||5};
-        document.getElementById('fillet-title').textContent='Fillet — Raio atual: '+S.ds.r+'mm';
-        document.getElementById('fillet-lbl').textContent='Raio (mm, 0=canto vivo):';
-        document.getElementById('fillet-note').textContent='Após OK, clique na primeira linha, depois na segunda.';
-        document.getElementById('ov-fillet').classList.add('show');
-      } else if(S.ds.phase==='l1'){
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if(e.tp==='line'&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
-        if(hit){S.ds.e1=hit;S.ds.pt1={x:pt.x,y:pt.y};S.ds.phase='l2';log('[FILLET] 1ª linha: '+hit.id,'ok');logp('FILLET: clique na 2ª linha:');}
-        else log('FILLET (v6.1): clique em uma linha. Arcos/círculos previstos para a v7.','inf');
-      } else if(S.ds.phase==='l2'){
-        var hit=null;for(var i=S.ents.length-1;i>=0;i--){var e=S.ents[i];if(e.tp==='line'&&e.id!==S.ds.e1.id&&hitEnt(e,pt.x,pt.y)){hit=e;break;}}
-        if(hit){doFillet(S.ds.e1,hit,S.ds.r,S.ds.pt1,{x:pt.x,y:pt.y});S.ds=null;logp('FILLET: 1ª linha:');}
-        else log('Clique em uma 2ª linha diferente.','inf');
-      }
-      break;
+    /* ─── FILLET (v6.7: fluxo do AutoCAD) ─────────────────────── */
+    case 'fillet': filletClick(pt); break;
 
     /* ─── CHAMFER ────────────────────────────────────────────── */
     case 'chamfer':
@@ -2548,6 +2459,8 @@ function drawCoords(ctx,e){
 }
 
 function drawPreview(ctx){
+  if((S.tool==='trim'||S.tool==='extend')&&S.ds){ drawTrimExtPreview(ctx,S.hover||{x:0,y:0}); return; } // v6.8
+  if(ncIs(S.tool)&&S.ds){ ncPreview(ctx,S.hover||{x:0,y:0}); return; } // v7.0
   if(!S.hover) return;
   var ds=S.ds,hp=S.hover,sc=S.vp.sc;
   ctx.save();ctx.strokeStyle='#4d9ef7';ctx.lineWidth=.7;ctx.setLineDash([5,4]);ctx.globalAlpha=.75;ctx.shadowBlur=0;
@@ -2926,15 +2839,7 @@ function drawPreview(ctx){
         }
       }
       break;
-    case 'fillet':
-      if(ds&&ds.phase==='l2'&&ds.e1){
-        // show first line highlighted
-        ctx.globalAlpha=.7;ctx.strokeStyle='#f5a623';ctx.lineWidth=1.5;drawE(ctx,ds.e1,false);
-        // show radius hint
-        ctx.setLineDash([]);ctx.globalAlpha=1;ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';
-        var sp2=w2s(hp.x,hp.y);ctx.fillText('r='+ds.r.toFixed(1),sp2.x+15,sp2.y-10);
-      }
-      break;
+    case 'fillet': drawFilletPreview(ctx,hp); break;
     case 'chamfer':
       if(ds&&ds.phase==='l2'&&ds.e1){
         ctx.globalAlpha=.7;ctx.strokeStyle='#f5a623';ctx.lineWidth=1.5;drawE(ctx,ds.e1,false);
@@ -3000,6 +2905,9 @@ function bindEv(){
 function ev2xy(e){var r=S.wrap.getBoundingClientRect();return{sx:e.clientX-r.left,sy:e.clientY-r.top};}
 
 function onMM(e){
+  S.shiftDown=!!e.shiftKey;
+  if(S.teFence){ var _q=ev2xy(e),_w=s2w(_q.sx,_q.sy); if(Math.hypot(_q.sx-S.teFence.sx,_q.sy-S.teFence.sy)>5) S.teFence.moved=true;
+    var _l=S.teFence.path[S.teFence.path.length-1]; if(Math.hypot(_w.x-_l.x,_w.y-_l.y)*S.vp.sc>3) S.teFence.path.push(_w); }
   var p=ev2xy(e);
   if(S.isPan){S.vp.x+=p.sx-S.panFrom.x;S.vp.y+=p.sy-S.panFrom.y;S.panFrom={x:p.sx,y:p.sy};renderAll();return;}
   // Na fase de posicionamento de cotas, usar posição raw
@@ -3040,6 +2948,7 @@ function onMM(e){
 }
 
 function onMD(e){
+  S.shiftDown=!!e.shiftKey;
   // Filtrar cliques fora do canvas — exceto offset pick e dynInput
   var inCanvas = S.wrap.contains(e.target);
   var inDI = document.getElementById('dynInput').contains(e.target);
@@ -3066,6 +2975,7 @@ function onMD(e){
     return;
   }
 
+  if((S.tool==='trim'||S.tool==='extend')&&S.ds&&S.ds.phase==='main'&&e.button===0){ S.teFence={sx:p.sx,sy:p.sy,path:[{x:pt.x,y:pt.y}],moved:false,pt:{x:pt.x,y:pt.y}}; return; }
   if(S.tool==='select'&&S.grip){ S.gripDragFrom=null; gripCommit(pt); return; }
   if(S.tool==='select'&&!S.isWin){ var _g=gripAt(p.sx,p.sy); if(_g){ S.gripDragFrom={x:p.sx,y:p.sy}; gripStart(_g); return; } }
   if(S.tool==='select'){
@@ -3088,6 +2998,7 @@ function onMD(e){
 
 function onMU(e){
   if(S.isPan){S.isPan=false;return;}
+  if(S.teFence){ var _f=S.teFence; S.teFence=null; if(_f.moved&&_f.path.length>1) teFence(_f.path); else teClick(_f.pt); renderAll(); return; }
   if(S.grip&&S.gripDragFrom){ var _p=ev2xy(e),_d=Math.hypot(_p.sx-S.gripDragFrom.x,_p.sy-S.gripDragFrom.y); S.gripDragFrom=null; if(_d>5&&S.hover){ gripCommit(S.hover); } return; }
   if(S.isWin&&S.hover) finishWin();
 }
@@ -3150,6 +3061,9 @@ function onKey(e){
   if(openOv){ if(e.key==='Escape'){ openOv.classList.remove('show'); if(S.tool==='text') S.ds=null; } return; }
   // v6.1: Espaço = Enter fora de campos de texto (padrão AutoCAD)
   if(e.key===' ' && activeEl!==ci && !inDI){ e.preventDefault(); return onKey({key:'Enter',preventDefault:function(){},stopPropagation:function(){},ctrlKey:false,altKey:false,shiftKey:false}); }
+  // v6.7: durante o FILLET as letras vão para a linha de comando (opções R, T, M, P, U), como no AutoCAD
+  // v7.0: como no AutoCAD, toda digitação vai para a linha de comando (comandos e opções executam com Enter/Espaço)
+  if(activeEl!==ci&&e.key&&e.key.length===1&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&!(DI.active&&diShouldShow()&&/[0-9.,@<\-]/.test(e.key))){ e.preventDefault(); ci.value+=e.key; ci.focus(); return; }
 
   // Se o DI está visível e o foco NÃO está num campo do DI nem no cmdinput:
   // capturar digitação e redirecionar para o campo ativo do DI
@@ -3255,6 +3169,9 @@ function onKey(e){
   if(k==='F8'){toggleMode('ortho');return;}
   if(k==='F9'){toggleMode('snap');return;}
   if(k==='Enter'&&S.grip){ e.preventDefault(); gripCycle(); return; }
+  if(k==='Enter'&&S.tool==='fillet'&&S.ds){ e.preventDefault(); filletInput(''); return; }
+  if(k==='Enter'&&(S.tool==='trim'||S.tool==='extend')&&S.ds){ e.preventDefault(); teInput(''); return; }
+  if(k==='Enter'&&ncIs(S.tool)&&S.ds){ e.preventDefault(); ncInput(''); return; }
   if(k==='Enter'){
     e.preventDefault();e.stopPropagation();
     // ── Padrão AutoCAD: Enter finaliza comando ativo;
@@ -3360,13 +3277,13 @@ function onKey(e){
     logp('Próximo ponto ('+S.ds.segs+' seg):');
     renderAll();return;
   }
-  var map={l:'line',c:'circle',r:'rectangle',a:'arc',e:'ellipse',t:'text',d:'dim',m:'move',p:'pan',s:'select',z:'fit',f:'fillet'};
-  var sk=k.toLowerCase();
-  if(map[sk]&&!e.ctrlKey&&!e.altKey){if(sk==='z')zoomFit();else setTool(map[sk]);}
 }
 
 function onCmdKey(e){
   e.stopPropagation();
+  // v7.0: Espaço = Enter na linha de comando (exceto para digitar "ZOOM E" etc.)
+  if(e.key===' '){ var _ci=document.getElementById('cmdinput'),_v=_ci.value.trim().toUpperCase();
+    if(S.ds||_v===''||(!/\s/.test(_v)&&_v!=='ZOOM'&&_v!=='Z')){ e.preventDefault(); return onCmdKey({key:'Enter',stopPropagation:function(){},preventDefault:function(){}}); } }
   if(e.key==='Escape'){
     document.getElementById('cmdinput').value='';
     if(S.grip){ gripEnd(); return; }
@@ -3387,6 +3304,9 @@ function onCmdKey(e){
   var v=ci.value.trim();
   ci.value='';
   if(S.grip){ if(trySnapOverride(v)) return; if(v) gripTyped(v); else gripCycle(); return; }
+  if(S.tool==='fillet'&&S.ds&&filletInput(v)){ ci.blur(); return; }
+  if((S.tool==='trim'||S.tool==='extend')&&S.ds&&teInput(v)){ ci.blur(); return; }
+  if(ncIs(S.tool)&&S.ds&&ncInput(v)){ ci.blur(); return; }
   if(v&&trySnapOverride(v)) return;
 
   // Enter vazio: finaliza comando ativo OU repete último comando (padrão AutoCAD)
@@ -3497,18 +3417,19 @@ function onCmdKey(e){
   // Tentar como comando
   var up=v.toUpperCase().trim(),cmd=up.split(' ')[0];
   var map={
-    'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','R':'rectangle','RECT':'rectangle',
-    'A':'arc','ARC':'arc','E':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
+    'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','REC':'rectangle','RECT':'rectangle','RECTANG':'rectangle','R':'redraw','RE':'redraw','REDRAW':'redraw','REGEN':'redraw',
+    'A':'arc','ARC':'arc','E':'erase','EL':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
     'PL':'polyline','POLYLINE':'polyline','SPL':'spline','SPLINE':'spline','H':'hatch','HATCH':'hatch',
-    'D':'dim','DIM':'dim','DLI':'dim','DIMLINEAR':'dim',
+    'D':'ddim','DIM':'dim','DLI':'dim','DIMLINEAR':'dim',
     'DAL':'dimali','DIMALIGNED':'dimali',
-    'DR':'dimr','DD':'dimd','DA':'dima',
-    'M':'move','MOVE':'move','CO':'copy','COPY':'copy',
+    'DR':'dimr','DD':'dimd','DA':'dima','DRA':'dimr','DIMRADIUS':'dimr','DDI':'dimd','DIMDIAMETER':'dimd','DAN':'dima','DIMANGULAR':'dima',
+    'M':'move','MOVE':'move','CO':'copy','CP':'copy','COPY':'copy',
     'RO':'rotate','ROTATE':'rotate','SC':'scale','SCALE':'scale',
     'MI':'mirror','MIRROR':'mirror','O':'offset','OFFSET':'offset',
     'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
+    'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'TELACHEIA':'fullscreen','FULLSCREEN':'fullscreen','FS':'fullscreen','LIMPA':'cleanscreen','CLEANSCREENON':'cleanscreen','CLEANSCREENOFF':'cleanscreen','INSTALAR':'install',
     'DXFOUT':'dxfout','DWGOUT':'dwgout','EXPORT':'export','EXP':'export',
     'DDIM':'ddim','DIMSTYLE':'ddim','DST':'ddim','DIMSTY':'ddim','DEMO':'demo',
@@ -3516,7 +3437,7 @@ function onCmdKey(e){
     'LT':'linetype','LINETYPE':'linetype','LTYPE':'linetype',
     'AR':'array','ARRAY':'array',
     'DI':'dist','DIST':'dist','DISTANCE':'dist','AA':'area','AREA':'area',
-    'P':'pan','PAN':'pan','S':'select','SELECT':'select',
+    'P':'pan','PAN':'pan','S':'stretch','STRETCH':'stretch','SELECT':'select',
     'U':'undo','UNDO':'undo','REDO':'redo',
     'Z':'zf','ZE':'zf','ZOOM':'zoom',
     'DEL':'del','ERASE':'del',
@@ -3530,7 +3451,7 @@ function onCmdKey(e){
   switch(act){
     case 'line':case 'circle':case 'rectangle':case 'arc':case 'ellipse':
     case 'text':case 'polyline':case 'spline':case 'hatch':case 'dim':case 'dimali':case 'dimr':case 'dimd':case 'dima':
-    case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':
+    case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':case 'erase':
     case 'trim':case 'extend':case 'fillet':case 'chamfer':
       setTool(act);break;
     case 'polygon':startPolygon();break;
@@ -3538,6 +3459,7 @@ function onCmdKey(e){
     case 'ddim':showDimStyle();break;
     case 'dxfout':expDXF('2000');break;
     case 'fullscreen':toggleFullscreen();break;
+    case 'explode':explodeSel();break;
     case 'cleanscreen':toggleCleanScreen();break;
     case 'install':appInstall();break;
     case 'dwgout':expDWG();break;
@@ -3551,7 +3473,9 @@ function onCmdKey(e){
     case 'select':setTool('select');break;
     case 'undo':undo();break;
     case 'redo':redo();break;
-    case 'del':delSel();break;
+    case 'del':setTool('erase');break;
+    case 'redraw':renderAll();log('REDRAW: tela redesenhada.','inf');break;
+    case 'stretch':log('STRETCH: previsto para o pacote 2 da v7. Por enquanto, use os grips (selecione e arraste uma alça).','inf');break;
     case 'zf':zoomFit();break;
     case 'zoom':{var zv=up.split(' ')[1];if(zv==='E'||zv==='FIT')zoomFit();else if(zv==='IN')doZoom(1.5);else if(zv==='OUT')doZoom(.67);}break;
     case 'ortho':toggleMode('ortho');break;
@@ -3565,6 +3489,9 @@ function onCmdKey(e){
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
       log('MEDIR: DI=Distância  AA=Área','inf');
+      log('EDIÇÃO (v7): E M CO RO SC MI O CHA — selecione dentro do comando (clique, janela →, cruzando ←, Todos) ou antes dele | opções entre [ ] pela letra maiúscula','inf');
+      log('TRIM (TR) / EXTEND (EX): clique no trecho | arraste = cerca | área vazia = janela | Shift inverte | T=arestas C=cruzando O=modo R=apagar U=desfazer','inf');
+      log('FILLET (F): 1º objeto, 2º objeto | R=raio T=aparar M=múltiplo P=polilinha U=desfazer | Shift+clique = canto vivo  —  X = EXPLODE','inf');
       log('TELA: TELACHEIA (⛶) | LIMPA ou Ctrl+0 = tela limpa | INSTALAR = aplicativo do computador','inf');
       log('OSNAP: F3 liga/desliga | durante um comando digite END MID CEN INT QUA PER TAN NEA ou NON para forçar o próximo ponto','inf');
       log('GRIPS: selecione e clique numa alça azul | Espaço alterna STRETCH/MOVE/ROTATE/SCALE/MIRROR | C=copiar B=base X=sair','inf');
@@ -3764,6 +3691,8 @@ function diHighlight(){
 // Decide se o DI deve aparecer para o tool/fase atual
 function diShouldShow(){
   var t=S.tool;
+  // v7.0: nos comandos do motor novo, o DI só aparece nas fases que pedem um ponto
+  if(typeof ncIs==='function'&&ncIs(t)){ var ph=S.ds&&S.ds.phase; return !!(S.ds&&['base','dest','p1','p2','arrpt','arrfit','dist2','newp1','newp2'].indexOf(ph)>=0); }
   if(t==='select'||t==='pan') return false;
   // Ferramentas de desenho com entrada de ponto
   if(t==='line'||t==='polyline'||t==='rectangle'||t==='circle'||
@@ -3891,16 +3820,11 @@ function setTool(tool){
   document.getElementById('stool').textContent=tool.toUpperCase();
   S.wrap.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
   // Offset usa cursor quadrado customizado quando fase pick está ativa — atualizado dinamicamente em onMM
-  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIMLINEAR: 1º ponto:',dimali:'DIMALIGNED: 1º ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM: clique na borda de corte (Enter=todos, Enter novamente=cortar):',extend:'EXTEND: clique na borda limite (Enter=concluir, depois clique objeto):',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
+  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIMLINEAR: 1º ponto:',dimali:'DIMALIGNED: 1º ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM',extend:'EXTEND',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
   logp(prmpts[tool]||tool);
   // Offset: focar cmd input imediatamente
   if(tool==='offset'){
     setTimeout(function(){document.getElementById('cmdinput').focus();},50);
-  }
-  // COPY: se já há seleção, iniciar direto na fase pickbase
-  if(tool==='copy'&&S.sel.length>0){
-    S.ds={phase:'pickbase',copies:0};
-    logp('COPY: '+S.sel.length+' obj. Clique no ponto base:');
   }
   // Esconder DI ao trocar ferramenta para select/pan
   if(tool==='select'||tool==='pan'){DI.active=false;diHide();}
@@ -3933,7 +3857,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'6.6',ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function saveDoc(){var d={v:'7.0',offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima'];
 function validateDoc(d){
@@ -3969,7 +3893,7 @@ function loadDimStyles(d){
   updDimStyleSel();
 }
 function openDoc(){document.getElementById('fileInput').click();}
-function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
+function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);if(typeof d.filletR==='number'&&d.filletR>=0)S.filletR=d.filletR;if(typeof d.filletTrim==='boolean')S.filletTrim=d.filletTrim;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
 function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};loadDimStyles({});renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
 function showExport(){expFmtChange();document.getElementById('ov-export').classList.add('show');}
 function doExport(){var fmt=document.getElementById('ef').value;closeOv('ov-export');switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':case 'dxf2k':expDXF('2000');break;case 'dxf12':expDXF('12');break;case 'dwg':expDWG();break;case 'png':expPNG();break;}}
@@ -4608,7 +4532,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v6.6 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.0 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -6531,6 +6455,9 @@ function osnapOn(mode){ if(S.snapOverride) return S.snapOverride===mode; return 
 
 function doSnap(sx,sy) {
   var raw = s2w(sx,sy);
+  if(S.tool==='fillet'&&S.ds&&S.ds.phase!=='radius') return {x:raw.x,y:raw.y,st:null}; // seleção de objetos (pickbox)
+  if((S.tool==='trim'||S.tool==='extend')&&S.ds) return {x:raw.x,y:raw.y,st:null};
+  if(ncIs(S.tool)&&S.ds&&NC_RAW[S.ds.phase]) return {x:raw.x,y:raw.y,st:null};
   var best = {x:raw.x, y:raw.y, st:null};
   var objSnap = false;
   var tol = 12/S.vp.sc, bd=tol;
@@ -6877,6 +6804,946 @@ function registerSW(){
     navigator.serviceWorker.register('sw.js').catch(function(err){ console.warn('Service worker não registrado:',err); });
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   v6.7 — FILLET (CONCORDÂNCIA) NO ESTILO AUTOCAD
+   Sequência: "Selecione o primeiro objeto ou [Desfazer/Polilinha/Raio/Aparar/Múltiplo]"
+   → "Selecione o segundo objeto ou Shift+clique para canto vivo ou [Raio]".
+   Objetos: linhas, arcos, círculos e segmentos de polilinhas e retângulos,
+   em qualquer combinação. Pré-visualização ao passar sobre o 2º objeto,
+   raio e modo de aparar persistentes, linhas paralelas (semicírculo),
+   raio 0 (canto vivo), opção Polilinha (todos os vértices) e Múltiplo.
+   ═══════════════════════════════════════════════════════════════════ */
+if(S.filletR===undefined) S.filletR=5;
+if(S.filletTrim===undefined) S.filletTrim=true;
+var FIL_TYPES=['line','arc','circ','pl','rect'];
+
+// Segmentos retos de polilinha/retângulo (mesma ordem usada no EXPLODE)
+function plSegList(e){
+  var P;
+  if(e.tp==='rect') P=[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h},{x:e.x,y:e.y}];
+  else { P=e.pts.slice(); if(e.closed&&P.length>2&&Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y)>1e-9) P.push({x:P[0].x,y:P[0].y}); }
+  var o=[]; for(var i=1;i<P.length;i++){ if(Math.hypot(P[i].x-P[i-1].x,P[i].y-P[i-1].y)>1e-9) o.push({x1:P[i-1].x,y1:P[i-1].y,x2:P[i].x,y2:P[i].y}); }
+  return o;
+}
+function explodeToLines(e){
+  return plSegList(e).map(function(s){ return {id:uid(),tp:'line',x1:s.x1,y1:s.y1,x2:s.x2,y2:s.y2,ly:e.ly,col:e.col,lw:e.lw,ld:e.ld}; });
+}
+// EXPLODE (X): polilinhas e retângulos → linhas
+function explodeSel(){
+  var ids=S.sel.slice(); if(!ids.length){ log('EXPLODE: selecione polilinhas ou retângulos e digite X.','inf'); return; }
+  var n=0,out=[]; snapshot();
+  S.ents=S.ents.filter(function(e){
+    if(ids.indexOf(e.id)>=0&&(e.tp==='pl'||e.tp==='rect')){ var L=explodeToLines(e); out=out.concat(L); n++; return false; }
+    return true;
+  });
+  if(!n){ S.undos.pop(); log('EXPLODE: nenhum objeto explodível na seleção (polilinha ou retângulo).','inf'); return; }
+  S.ents=S.ents.concat(out); S.sel=out.map(function(e){return e.id;});
+  log('EXPLODE: '+n+' objeto(s) convertido(s) em '+out.length+' linha(s).','ok'); renderAll(); updSelInfo();
+}
+
+// ── seleção de objeto para o FILLET ─────────────────────────────────────────
+function filletHit(pt){
+  for(var i=S.ents.length-1;i>=0;i--){
+    var e=S.ents[i]; if(FIL_TYPES.indexOf(e.tp)<0) continue;
+    var ly=getLy(e.ly); if(ly&&(!ly.vis||ly.lock)) continue;
+    if(!hitEnt(e,pt.x,pt.y)) continue;
+    var h={e:e,seg:null,pick:{x:pt.x,y:pt.y}};
+    if(e.tp==='pl'||e.tp==='rect'){
+      var S2=plSegList(e),bi=-1,bd=1e18;
+      S2.forEach(function(s,k){var d=segD(pt.x,pt.y,s.x1,s.y1,s.x2,s.y2);if(d<bd){bd=d;bi=k;}});
+      if(bi<0) continue; h.seg=bi; h.curve={kind:'line',x1:S2[bi].x1,y1:S2[bi].y1,x2:S2[bi].x2,y2:S2[bi].y2};
+    } else if(e.tp==='line') h.curve={kind:'line',x1:e.x1,y1:e.y1,x2:e.x2,y2:e.y2};
+    else h.curve={kind:'circ',cx:e.cx,cy:e.cy,r:e.r,arc:e.tp==='arc'?{sa:e.sa,ea:e.ea}:null};
+    return h;
+  }
+  return null;
+}
+// ── geometria ──────────────────────────────────────────────────────────────
+function _lineUnit(c){var dx=c.x2-c.x1,dy=c.y2-c.y1,l=Math.hypot(dx,dy);return {ux:dx/l,uy:dy/l,nx:-dy/l,ny:dx/l,l:l};}
+function _lcInt(L,cx,cy,r){
+  var u=_lineUnit(L),fx=L.x1-cx,fy=L.y1-cy,b=fx*u.ux+fy*u.uy,c=fx*fx+fy*fy-r*r,disc=b*b-c;
+  if(disc<-1e-12) return []; disc=Math.sqrt(Math.max(0,disc));
+  return [-b-disc,-b+disc].map(function(t){return {x:L.x1+u.ux*t,y:L.y1+u.uy*t};});
+}
+function _ccInt(x1,y1,r1,x2,y2,r2){
+  var d=Math.hypot(x2-x1,y2-y1); if(d<1e-12||d>r1+r2+1e-9||d<Math.abs(r1-r2)-1e-9) return [];
+  var a=(r1*r1-r2*r2+d*d)/(2*d),h=Math.sqrt(Math.max(0,r1*r1-a*a)),mx=x1+a*(x2-x1)/d,my=y1+a*(y2-y1)/d;
+  return [{x:mx+h*(y2-y1)/d,y:my-h*(x2-x1)/d},{x:mx-h*(y2-y1)/d,y:my+h*(x2-x1)/d}];
+}
+function _curveInt(a,b){
+  if(a.kind==='line'&&b.kind==='line'){var r=lineLineInt(a.x1,a.y1,a.x2,a.y2,b.x1,b.y1,b.x2,b.y2);return r?[{x:r.x,y:r.y}]:[];}
+  if(a.kind==='line') return _lcInt(a,b.cx,b.cy,b.r);
+  if(b.kind==='line') return _lcInt(b,a.cx,a.cy,a.r);
+  return _ccInt(a.cx,a.cy,a.r,b.cx,b.cy,b.r);
+}
+function _offsets(c,R){
+  if(c.kind==='line'){var u=_lineUnit(c);return [1,-1].map(function(s){return {kind:'line',x1:c.x1+u.nx*R*s,y1:c.y1+u.ny*R*s,x2:c.x2+u.nx*R*s,y2:c.y2+u.ny*R*s};});}
+  var o=[{kind:'circ',cx:c.cx,cy:c.cy,r:c.r+R}]; if(c.r-R>1e-9) o.push({kind:'circ',cx:c.cx,cy:c.cy,r:c.r-R}); return o;
+}
+function _tangent(c,P){
+  if(c.kind==='line'){var f=footOnSeg(P.x,P.y,[c.x1,c.y1,c.x2,c.y2],false)||(function(){var u=_lineUnit(c),t=(P.x-c.x1)*u.ux+(P.y-c.y1)*u.uy;return {x:c.x1+u.ux*t,y:c.y1+u.uy*t};})();return f;}
+  var d=Math.hypot(P.x-c.cx,P.y-c.cy); if(d<1e-12) return null; return {x:c.cx+(P.x-c.cx)/d*c.r,y:c.cy+(P.y-c.cy)/d*c.r};
+}
+function _lineParam(c,P){var dx=c.x2-c.x1,dy=c.y2-c.y1;return ((P.x-c.x1)*dx+(P.y-c.y1)*dy)/(dx*dx+dy*dy);}
+function _arcBetween(C,R,T1,T2,mid){
+  var a1=Math.atan2(T1.y-C.y,T1.x-C.x),a2=Math.atan2(T2.y-C.y,T2.x-C.x);
+  var sw=((a2-a1)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+  if(mid){ var am=Math.atan2(mid.y-C.y,mid.x-C.x); return arcHas(am,a1,a2)?{cx:C.x,cy:C.y,r:R,sa:a1,ea:a2}:{cx:C.x,cy:C.y,r:R,sa:a2,ea:a1}; }
+  return sw<=Math.PI?{cx:C.x,cy:C.y,r:R,sa:a1,ea:a2}:{cx:C.x,cy:C.y,r:R,sa:a2,ea:a1};
+}
+// Novo trecho de uma curva após aparar/estender até T, mantendo o lado do clique
+function _trimTo(h,T,isLineLine,corner){
+  var c=h.curve,p=h.pick;
+  if(c.kind==='line'){
+    var t=_lineParam(c,T),tp=_lineParam(c,p),s=tp>=t?1:-1;
+    if(isLineLine&&corner){ var tc=_lineParam(c,corner); if((tc-tp)*(t-tp)<-1e-9) return {err:'big'}; }
+    var end=endToTrim(t,s);
+    return end===1?{x1:T.x,y1:T.y,x2:c.x2,y2:c.y2}:{x1:c.x1,y1:c.y1,x2:T.x,y2:T.y};
+  }
+  if(!c.arc) return null; // círculo: não é aparado (como no AutoCAD)
+  var aT=Math.atan2(T.y-c.cy,T.x-c.cx),ap=Math.atan2(p.y-c.cy,p.x-c.cx);
+  var A={sa:aT,ea:c.arc.ea},B={sa:c.arc.sa,ea:aT},sw=function(o){return ((o.ea-o.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);};
+  var inA=arcHas(ap,A.sa,A.ea),inB=arcHas(ap,B.sa,B.ea);
+  if(inA&&inB) return sw(A)<=sw(B)?A:B;
+  return inA?A:(inB?B:A);
+}
+// Calcula a concordância (sem alterar o desenho)
+function filletCompute(h1,h2,R){
+  var c1=h1.curve,c2=h2.curve,p1=h1.pick,p2=h2.pick,res={arc:null,m1:null,m2:null};
+  if(h1.e===h2.e&&(h1.seg===null||h1.seg===h2.seg)) return {err:'Não é possível concordar um objeto com ele mesmo.'};
+  var LL=c1.kind==='line'&&c2.kind==='line';
+  var corner=null;
+  if(LL){ var I=lineLineInt(c1.x1,c1.y1,c1.x2,c1.y2,c2.x1,c2.y1,c2.x2,c2.y2); corner=I?{x:I.x,y:I.y}:null; }
+  // Linhas paralelas: semicírculo ligando as duas (o raio informado é ignorado, como no AutoCAD)
+  if(LL&&!corner){
+    var u=_lineUnit(c1),dist=Math.abs((c2.x1-c1.x1)*u.nx+(c2.y1-c1.y1)*u.ny);
+    if(dist<1e-9) return {err:'As linhas são colineares.'};
+    var e1a={x:c1.x1,y:c1.y1},e1b={x:c1.x2,y:c1.y2},T1=Math.hypot(e1a.x-p1.x,e1a.y-p1.y)<Math.hypot(e1b.x-p1.x,e1b.y-p1.y)?e1a:e1b,O=T1===e1a?e1b:e1a;
+    var sg=((c2.x1-c1.x1)*u.nx+(c2.y1-c1.y1)*u.ny)>0?1:-1,Cc={x:T1.x+u.nx*sg*dist/2,y:T1.y+u.ny*sg*dist/2};
+    var T2=_tangent(c2,Cc),out={x:T1.x-O.x,y:T1.y-O.y},ol=Math.hypot(out.x,out.y);
+    res.arc=_arcBetween(Cc,dist/2,T1,T2,{x:Cc.x+out.x/ol*dist/2,y:Cc.y+out.y/ol*dist/2});
+    res.m1=null; var t2=_lineParam(c2,T2),q=_lineParam(c2,p2);
+    res.m2=Math.abs(t2-0)<Math.abs(t2-1)?{x1:T2.x,y1:T2.y,x2:c2.x2,y2:c2.y2}:{x1:c2.x1,y1:c2.y1,x2:T2.x,y2:T2.y};
+    res.parallel=true; return res;
+  }
+  if(!(R>1e-9)){
+    // Raio 0: canto vivo na interseção mais próxima dos cliques
+    var I0=_curveInt(c1,c2); if(!I0.length) return {err:'Os objetos não se cruzam nem se prolongam até um ponto comum.'};
+    var bi=null,bs=1e18; I0.forEach(function(q){var sc=Math.hypot(q.x-p1.x,q.y-p1.y)+Math.hypot(q.x-p2.x,q.y-p2.y);if(sc<bs){bs=sc;bi=q;}});
+    res.m1=_trimTo(h1,bi,LL,corner); res.m2=_trimTo(h2,bi,LL,corner);
+    if((res.m1&&res.m1.err)||(res.m2&&res.m2.err)) return {err:'Raio muito grande.'};
+    res.corner=bi; return res;
+  }
+  // Centros candidatos: interseções das curvas deslocadas de R
+  var cands=[];
+  _offsets(c1,R).forEach(function(o1){ _offsets(c2,R).forEach(function(o2){ _curveInt(o1,o2).forEach(function(C){
+    var T1=_tangent(c1,C),T2=_tangent(c2,C); if(!T1||!T2) return;
+    if(Math.abs(Math.hypot(C.x-T1.x,C.y-T1.y)-R)>1e-6*(1+R)||Math.abs(Math.hypot(C.x-T2.x,C.y-T2.y)-R)>1e-6*(1+R)) return;
+    cands.push({C:C,T1:T1,T2:T2,sc:Math.hypot(T1.x-p1.x,T1.y-p1.y)+Math.hypot(T2.x-p2.x,T2.y-p2.y)});
+  });});});
+  if(!cands.length) return {err:'Raio muito grande para estes objetos.'};
+  cands.sort(function(a,b){return a.sc-b.sc;});
+  var k=cands[0];
+  res.m1=_trimTo(h1,k.T1,LL,corner); res.m2=_trimTo(h2,k.T2,LL,corner);
+  if((res.m1&&res.m1.err)||(res.m2&&res.m2.err)) return {err:'Raio muito grande.'};
+  res.arc=_arcBetween(k.C,R,k.T1,k.T2,null);
+  return res;
+}
+// Aplica no desenho (um único passo de desfazer)
+function filletApply(h1,h2,R,noSnap){
+  var r=filletCompute(h1,h2,R); if(r.err){ log('FILLET: '+r.err,'er'); return false; }
+  if(!noSnap) snapshot();
+  var exploded={};
+  function target(h){
+    if(h.seg===null) return h.e;
+    if(!exploded[h.e.id]){
+      var L=explodeToLines(h.e),idx=S.ents.indexOf(h.e);
+      if(idx>=0) S.ents.splice.apply(S.ents,[idx,1].concat(L));
+      exploded[h.e.id]=L;
+    }
+    return exploded[h.e.id][h.seg];
+  }
+  var t1=target(h1),t2=target(h2);
+  if(S.filletTrim){
+    [[t1,r.m1],[t2,r.m2]].forEach(function(q){ var e=q[0],m=q[1]; if(!e||!m) return;
+      if(e.tp==='line'){e.x1=m.x1;e.y1=m.y1;e.x2=m.x2;e.y2=m.y2;} else if(e.tp==='arc'){e.sa=m.sa;e.ea=m.ea;} });
+  }
+  if(r.arc&&r.arc.r>1e-9){
+    var same=h1.e.ly===h2.e.ly,src=h1.e;
+    addE({tp:'arc',cx:r.arc.cx,cy:r.arc.cy,r:r.arc.r,sa:r.arc.sa,ea:r.arc.ea,ly:same?src.ly:S.curLy,
+      col:same?src.col:S.style.col,lw:same?src.lw:S.style.lw,ld:same?src.ld:S.style.ld},true);
+  }
+  var ex=Object.keys(exploded).length;
+  log('FILLET: '+(r.parallel?'linhas paralelas unidas por semicírculo':(r.arc?'concordância R='+gNum(R)+' criada':'canto vivo criado'))+(S.filletTrim?'':' (sem aparar)')+(ex?' — polilinha/retângulo convertido em linhas (polilinhas com arcos: v7)':'')+'.','ok');
+  return true;
+}
+// Opção Polilinha: concorda todos os vértices
+function filletPolyline(e){
+  if(e.tp!=='pl'&&e.tp!=='rect'){ log('FILLET: o objeto não é uma polilinha nem um retângulo.','er'); return; }
+  var closed=e.tp==='rect'||!!e.closed,R=S.filletR;
+  snapshot();
+  var L=explodeToLines(e),idx=S.ents.indexOf(e); S.ents.splice.apply(S.ents,[idx,1].concat(L));
+  var ok=0,fail=0,n=L.length,pairs=closed?n:n-1;
+  for(var i=0;i<pairs;i++){
+    var a=L[i],b=L[(i+1)%n];
+    var ha={e:a,seg:null,pick:{x:(a.x1+a.x2)/2,y:(a.y1+a.y2)/2},curve:{kind:'line',x1:a.x1,y1:a.y1,x2:a.x2,y2:a.y2}};
+    var hb={e:b,seg:null,pick:{x:(b.x1+b.x2)/2,y:(b.y1+b.y2)/2},curve:{kind:'line',x1:b.x1,y1:b.y1,x2:b.x2,y2:b.y2}};
+    var r=filletCompute(ha,hb,R);
+    if(r.err||r.parallel){fail++;continue;}
+    var save=S.filletTrim; S.filletTrim=true; var did=filletApply(ha,hb,R,true); S.filletTrim=save;
+    if(did) ok++; else fail++;
+  }
+  log('FILLET Polilinha: '+ok+' vértice(s) concordado(s)'+(fail?', '+fail+' segmento(s) curto(s) demais para o raio':'')+'.',ok?'ok':'er');
+  renderAll();
+}
+// ── fluxo do comando ───────────────────────────────────────────────────────
+function filletPrompt(){
+  var ds=S.ds; if(!ds) return;
+  var txt={first:'FILLET Selecione o primeiro objeto ou [Desfazer/Polilinha/Raio/Aparar/Múltiplo]:',
+    second:'Selecione o segundo objeto, ou Shift+clique para canto vivo, ou [Raio]:',
+    radius:'Especifique o raio de concordância <'+gNum(S.filletR)+'> (valor ou dois pontos):',
+    trim:'Modo de aparar [Aparar/Não aparar] <'+(S.filletTrim?'Aparar':'Não aparar')+'>:',
+    poly:'Selecione a polilinha 2D ou [Raio]:'}[ds.phase];
+  logp(txt+(ds.multi&&ds.phase==='first'?'  (múltiplo)':''));
+}
+function filletStart(){
+  S.ds={phase:'first',multi:false,done:0,ret:'first'};
+  log('Configurações atuais: Modo = '+(S.filletTrim?'APARAR':'NÃO APARAR')+', Raio = '+gNum(S.filletR),'inf');
+  filletPrompt(); renderAll();
+}
+function filletAfter(){
+  var ds=S.ds; ds.done++; ds.e1=null; ds.phase='first'; renderAll(); updSelInfo();
+  if(ds.multi) filletPrompt(); else setTool('select');
+}
+function filletClick(pt){
+  var ds=S.ds; if(!ds){ filletStart(); return; }
+  if(ds.phase==='radius'){
+    if(!ds.rp){ ds.rp={x:pt.x,y:pt.y}; logp('Especifique o segundo ponto:'); return; }
+    S.filletR=Math.hypot(pt.x-ds.rp.x,pt.y-ds.rp.y); ds.rp=null; log('Raio de concordância = '+gNum(S.filletR),'ok');
+    ds.phase=ds.ret; filletPrompt(); renderAll(); return;
+  }
+  var h=filletHit(pt);
+  if(ds.phase==='poly'){ if(!h){log('Nenhuma polilinha no ponto.','inf');return;} filletPolyline(h.e); filletAfter(); return; }
+  if(!h){ log('Nenhum objeto válido no ponto (linha, arco, círculo, polilinha ou retângulo).','inf'); return; }
+  if(ds.phase==='first'){ ds.e1=h; ds.phase='second'; filletPrompt(); renderAll(); return; }
+  if(ds.phase==='second'){
+    var R=S.shiftDown?0:S.filletR;
+    if(filletApply(ds.e1,h,R)) filletAfter(); else renderAll();
+  }
+}
+// Entradas digitadas (linha de comando ou Enter/Espaço). Retorna true se consumiu.
+function filletInput(v){
+  var ds=S.ds; if(!ds) return false;
+  var u=String(v).trim().toUpperCase();
+  if(ds.phase==='radius'){
+    if(u===''){ ds.phase=ds.ret; filletPrompt(); return true; }
+    var r=parseFloat(u.replace(',','.'));
+    if(!isFinite(r)||r<0){ log('Requer um número não negativo ou dois pontos.','er'); return true; }
+    S.filletR=r; ds.rp=null; log('Raio de concordância = '+gNum(r),'ok'); ds.phase=ds.ret; filletPrompt(); renderAll(); return true;
+  }
+  if(ds.phase==='trim'){
+    if(u==='A'||u==='T'||u==='APARAR'||u==='TRIM') S.filletTrim=true;
+    else if(u==='N'||u==='NAO'||u==='NÃO'||u==='NAO APARAR'||u==='NOTRIM') S.filletTrim=false;
+    else if(u!==''){ log('Opção inválida: use A (Aparar) ou N (Não aparar).','er'); return true; }
+    log('Modo = '+(S.filletTrim?'APARAR':'NÃO APARAR'),'ok'); ds.phase=ds.ret; filletPrompt(); return true;
+  }
+  if(u==='R'||u==='RAIO'||u==='RADIUS'){ ds.ret=ds.phase; ds.phase='radius'; ds.rp=null; filletPrompt(); return true; }
+  if(ds.phase==='second'){
+    if(u===''){ ds.e1=null; ds.phase='first'; if(ds.multi) filletPrompt(); else setTool('select'); renderAll(); return true; }
+    log('Opção inválida. Selecione o segundo objeto ou digite R.','er'); return true;
+  }
+  if(ds.phase==='poly'){ if(u===''){ds.phase='first';filletPrompt();return true;} log('Selecione uma polilinha ou digite R.','er'); return true; }
+  // fase 'first'
+  if(u===''){ setTool('select'); return true; }
+  if(u==='P'||u==='POLILINHA'||u==='POLYLINE'){ ds.phase='poly'; filletPrompt(); return true; }
+  if(u==='T'||u==='A'||u==='APARAR'||u==='TRIM'){ ds.ret='first'; ds.phase='trim'; filletPrompt(); return true; }
+  if(u==='M'||u==='MULTIPLO'||u==='MÚLTIPLO'||u==='MULTIPLE'){ ds.multi=true; log('Modo múltiplo: Enter encerra.','inf'); filletPrompt(); return true; }
+  if(u==='U'||u==='D'||u==='DESFAZER'||u==='UNDO'){
+    if(ds.done>0){ undo(); ds.done--; S.ds=ds; log('Última concordância desfeita.','ok'); filletPrompt(); }
+    else log('Nada para desfazer neste comando.','inf');
+    return true;
+  }
+  log('Opção inválida: [Desfazer/Polilinha/Raio/Aparar/Múltiplo].','er'); return true;
+}
+// Pré-visualização: destaca o 1º objeto e mostra o resultado ao passar sobre o 2º
+function drawFilletPreview(ctx,hp){
+  var ds=S.ds; if(!ds) return;
+  function hi(e,col){ ctx.save();ctx.globalAlpha=.85;ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash([]);drawE(ctx,e,false);ctx.restore(); }
+  var h=(ds.phase==='first'||ds.phase==='second'||ds.phase==='poly')?filletHit(hp):null;
+  if(ds.phase==='first'||ds.phase==='poly'){ if(h&&(ds.phase==='first'||h.e.tp==='pl'||h.e.tp==='rect')) hi(h.e,'#f5a623'); return; }
+  if(ds.phase!=='second'||!ds.e1) return;
+  hi(ds.e1.e,'#f5a623');
+  var sp=w2s(hp.x,hp.y);
+  if(!h){ ctx.save();ctx.fillStyle='#f5a623';ctx.font='bold 10px Consolas';ctx.fillText('R='+gNum(S.shiftDown?0:S.filletR),sp.x+15,sp.y-10);ctx.restore(); return; }
+  var R=S.shiftDown?0:S.filletR,r=filletCompute(ds.e1,h,R);
+  ctx.save();ctx.font='bold 10px Consolas';
+  if(r.err){ ctx.fillStyle='#e85050'; ctx.fillText(r.err,sp.x+15,sp.y-10); ctx.restore(); return; }
+  ctx.strokeStyle='#4ec87a';ctx.lineWidth=2;ctx.setLineDash([]);
+  function seg(m,base){ if(!m) return; if(m.x1!==undefined){var a=w2s(m.x1,m.y1),b=w2s(m.x2,m.y2);ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+    else if(base&&base.kind==='circ'){var c=w2s(base.cx,base.cy);ctx.beginPath();ctx.arc(c.x,c.y,base.r*S.vp.sc,-m.sa,-m.ea,true);ctx.stroke();} }
+  if(S.filletTrim){ seg(r.m1,ds.e1.curve); seg(r.m2,h.curve); }
+  if(r.arc){ var c=w2s(r.arc.cx,r.arc.cy); ctx.beginPath(); ctx.arc(c.x,c.y,r.arc.r*S.vp.sc,-r.arc.sa,-r.arc.ea,true); ctx.stroke(); }
+  ctx.fillStyle='#4ec87a'; ctx.fillText(r.parallel?'semicírculo':(R>0?'R='+gNum(R):'canto vivo'),sp.x+15,sp.y-10);
+  ctx.restore();
+}
+var _setTool_v67=setTool;
+setTool=function(tool){ _setTool_v67(tool); if(tool==='fillet') filletStart(); };
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v6.8 — TRIM e EXTEND no estilo do AutoCAD 2021+ (modo Rápido)
+   • Todos os objetos funcionam como arestas, sem seleção prévia.
+   • Clique no trecho a remover (TRIM) ou perto da ponta a prolongar (EXTEND);
+     Shift+clique inverte a operação (TRIM ↔ EXTEND).
+   • Arrastar = cerca à mão livre: tudo o que ela cruzar é aparado/estendido.
+   • Clique em área vazia = janela "Cruzando" (dois cantos).
+   • TRIM rápido: objeto sem nenhuma interseção é apagado (como no AutoCAD).
+   • Pré-visualização: o trecho que sai fica vermelho; o que fica, verde.
+   • Opções: aresTas (modo Padrão), Cruzando, mOdo, apagaR (TRIM), Desfazer.
+   ═══════════════════════════════════════════════════════════════════ */
+if(!S.teMode) S.teMode='quick';
+var TE_TYPES={trim:['line','arc','circ','pl'],extend:['line','arc','pl']};
+
+function teIsOpEnt(e,op){
+  if(TE_TYPES[op].indexOf(e.tp)<0) return false;
+  var ly=getLy(e.ly); return !(ly&&(!ly.vis||ly.lock));
+}
+function teHit(pt,op){
+  for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(teIsOpEnt(e,op)&&hitEnt(e,pt.x,pt.y)) return e; }
+  return null;
+}
+function teBounds(tgt){
+  var ds=S.ds,ids;
+  if(ds&&ds.mode==='standard'&&ds.cutters&&ds.cutters.length) ids=ds.cutters.slice();
+  else ids=S.ents.filter(function(e){var ly=getLy(e.ly);return !(ly&&!ly.vis);}).map(function(e){return e.id;});
+  return ids.filter(function(id){return id!==tgt.id;});
+}
+function teHasAnyInt(tgt){
+  for(var i=0;i<S.ents.length;i++){ var o=S.ents[i]; if(o===tgt) continue; var ly=getLy(o.ly); if(ly&&!ly.vis) continue;
+    try{ if(entIntersect(tgt,o).length) return true; }catch(err){} }
+  return false;
+}
+// Executa uma operação sobre um alvo (já dentro de um lote com snapshot único)
+function teApplyOne(tgt,pick,op){
+  if(op==='trim'){
+    var r=doTrim(tgt,pick,teBounds(tgt));
+    if(r) return 'trim';
+    // modo Rápido: se não há trecho delimitado a remover, o objeto inteiro sai (como no AutoCAD)
+    if(S.ds&&S.ds.mode==='quick'){ S.ents=S.ents.filter(function(e){return e!==tgt;}); return 'erase'; }
+    return null;
+  }
+  if(TE_TYPES.extend.indexOf(tgt.tp)<0) return null;
+  return doExtend(tgt,pick,teBounds(tgt))?'extend':null;
+}
+// Lote com um único passo de desfazer e mensagens resumidas
+function teBatch(fn){
+  var before=JSON.stringify(S.ents);
+  snapshot();
+  var s0=snapshot,l0=log,r0=renderAll,res;
+  snapshot=function(){}; log=function(){}; renderAll=function(){};
+  try{ res=fn(); } finally { snapshot=s0; log=l0; renderAll=r0; }
+  if(JSON.stringify(S.ents)===before){ S.undos.pop(); return {changed:false,res:res}; }
+  if(S.ds) S.ds.done=(S.ds.done||0)+1;
+  return {changed:true,res:res};
+}
+// Simulação sem alterar o desenho (para a pré-visualização)
+function teSimulate(tgtId,pick,op){
+  var saved={ents:S.ents,snap:snapshot,lg:log,ren:renderAll,sel:S.sel,us:updStatus,ui:updSelInfo};
+  var id0=_id,out=null;
+  S.ents=JSON.parse(JSON.stringify(S.ents));
+  snapshot=function(){}; log=function(){}; renderAll=function(){}; updStatus=function(){}; updSelInfo=function(){};
+  try{ var t=findE(tgtId); if(t&&teApplyOne(t,pick,op)) out=S.ents; }catch(err){ out=null; }
+  finally{ S.ents=saved.ents; snapshot=saved.snap; log=saved.lg; renderAll=saved.ren; S.sel=saved.sel; updStatus=saved.us; updSelInfo=saved.ui; _id=id0; }
+  return out;
+}
+// ── fluxo do comando ───────────────────────────────────────────────────────
+function tePrompt(){
+  var ds=S.ds; if(!ds) return;
+  var T=ds.cmd==='trim';
+  var txt={
+    main:T?'TRIM Selecione o objeto a aparar ou Shift+seleção para estender ou [aresTas de corte/Cruzando/mOdo/apagaR/Desfazer]:'
+          :'EXTEND Selecione o objeto a estender ou Shift+seleção para aparar ou [aresTas de contorno/Cruzando/mOdo/Desfazer]:',
+    edges:T?'Selecione as arestas de corte <todos os objetos>:':'Selecione as arestas de contorno <todos os objetos>:',
+    crossing:'Especifique o canto oposto:',
+    crossing1:'Especifique o primeiro canto:',
+    mode:'Modo [Rápido/Padrão] <'+(ds.mode==='quick'?'Rápido':'Padrão')+'>:',
+    erase:'Selecione os objetos a apagar (Enter para voltar):'}[ds.phase];
+  logp(txt);
+}
+function teStart(cmd){
+  S.ds={cmd:cmd,phase:S.teMode==='standard'?'edges':'main',mode:S.teMode,cutters:[],done:0};
+  log('Configurações atuais: Modo = '+(S.teMode==='quick'?'Rápido (todos os objetos são arestas)':'Padrão')+'.','inf');
+  tePrompt(); renderAll();
+}
+function teOp(){ var T=S.ds.cmd==='trim'; return (T!==!!S.shiftDown)?'trim':'extend'; }
+function teClick(pt){
+  var ds=S.ds; if(!ds){ teStart(S.tool); return; }
+  if(ds.phase==='edges'){
+    var h=null; for(var i=S.ents.length-1;i>=0;i--){ if(hitEnt(S.ents[i],pt.x,pt.y)){h=S.ents[i];break;} }
+    if(!h){ log('Nenhum objeto no ponto. Enter usa todos os objetos.','inf'); return; }
+    var k=ds.cutters.indexOf(h.id); if(k<0) ds.cutters.push(h.id); else ds.cutters.splice(k,1);
+    S.sel=ds.cutters.slice(); log((ds.cmd==='trim'?'Arestas de corte: ':'Arestas de contorno: ')+ds.cutters.length,'inf'); renderAll(); return;
+  }
+  if(ds.phase==='erase'){
+    var he=null; for(var j=S.ents.length-1;j>=0;j--){ if(hitEnt(S.ents[j],pt.x,pt.y)){he=S.ents[j];break;} }
+    if(he){ snapshot(); S.ents=S.ents.filter(function(e){return e!==he;}); ds.done++; log('Objeto apagado.','ok'); renderAll(); }
+    return;
+  }
+  if(ds.phase==='crossing1'){ ds.c1={x:pt.x,y:pt.y}; ds.phase='crossing'; tePrompt(); return; }
+  if(ds.phase==='crossing'){ teCrossing(ds.c1,pt); ds.c1=null; ds.phase='main'; tePrompt(); renderAll(); return; }
+  if(ds.phase==='mode') return;
+  // fase principal
+  var op=teOp(),tgt=teHit(pt,op);
+  if(!tgt){ ds.c1={x:pt.x,y:pt.y}; ds.phase='crossing'; tePrompt(); return; } // área vazia → janela Cruzando
+  var r=teBatch(function(){ return teApplyOne(tgt,pt,op); });
+  if(r.changed) log(r.res==='erase'?'TRIM: objeto sem interseções apagado.':(op==='trim'?'Trecho removido.':'Objeto estendido.'),'ok');
+  else log(op==='trim'?'Nada a aparar neste ponto.':'Nenhuma aresta de contorno na direção da ponta clicada.','inf');
+  renderAll(); updSelInfo();
+}
+// Primeiro ponto de cruzamento de um caminho (cerca) com uma entidade
+function teFenceHit(path,e){
+  for(var i=1;i<path.length;i++){
+    var tmp={tp:'line',x1:path[i-1].x,y1:path[i-1].y,x2:path[i].x,y2:path[i].y},pts=[];
+    try{ pts=entIntersectSnap(tmp,e)||[]; }catch(err){ pts=[]; }
+    if(pts.length){ var a=path[i-1]; pts.sort(function(p,q){return Math.hypot(p.x-a.x,p.y-a.y)-Math.hypot(q.x-a.x,q.y-a.y);}); return {x:pts[0].x,y:pts[0].y}; }
+  }
+  return null;
+}
+function teApplyMany(list,op){
+  var n=0;
+  var r=teBatch(function(){
+    list.forEach(function(it){ var t=findE(it.id); if(t&&teApplyOne(t,it.pick,op)) n++; });
+    return n;
+  });
+  log(r.changed?(n+' objeto(s) '+(op==='trim'?'aparado(s)':'estendido(s)')+'.'):'Nenhum objeto alterado.',r.changed?'ok':'inf');
+  renderAll(); updSelInfo();
+}
+function teFence(path){
+  var op=teOp(),list=[];
+  S.ents.forEach(function(e){ if(!teIsOpEnt(e,op)) return; var p=teFenceHit(path,e); if(p) list.push({id:e.id,pick:p}); });
+  if(!list.length){ log('A cerca não cruzou nenhum objeto.','inf'); return; }
+  teApplyMany(list,op);
+}
+function teCrossing(a,b){
+  var op=teOp(),r={x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(a.x-b.x),h:Math.abs(a.y-b.y)},list=[];
+  function inR(p){return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h;}
+  S.ents.forEach(function(e){
+    if(!teIsOpEnt(e,op)) return; var pick=null;
+    if(e.tp==='line'){ var c=clipSegRect(e.x1,e.y1,e.x2,e.y2,r); if(c) pick={x:(c[0]+c[2])/2,y:(c[1]+c[3])/2}; }
+    else if(e.tp==='pl'){ for(var i=1;i<e.pts.length&&!pick;i++){ var c2=clipSegRect(e.pts[i-1].x,e.pts[i-1].y,e.pts[i].x,e.pts[i].y,r); if(c2) pick={x:(c2[0]+c2[2])/2,y:(c2[1]+c2[3])/2}; } }
+    else { var sw=e.tp==='circ'?2*Math.PI:((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),s0=e.tp==='circ'?0:e.sa;
+      for(var k=0;k<=96&&!pick;k++){ var a2=s0+sw*k/96,q={x:e.cx+e.r*Math.cos(a2),y:e.cy+e.r*Math.sin(a2)}; if(inR(q)) pick=q; } }
+    if(pick) list.push({id:e.id,pick:pick});
+  });
+  if(!list.length){ log('A janela não cruzou nenhum objeto.','inf'); return; }
+  teApplyMany(list,op);
+}
+// Entradas digitadas. Retorna true se consumiu.
+function teInput(v){
+  var ds=S.ds; if(!ds) return false;
+  var u=String(v).trim().toUpperCase();
+  if(ds.phase==='mode'){
+    if(u==='R'||u==='RAPIDO'||u==='RÁPIDO'||u==='Q'||u==='QUICK') ds.mode='quick';
+    else if(u==='P'||u==='PADRAO'||u==='PADRÃO'||u==='S'||u==='STANDARD') ds.mode='standard';
+    else if(u!==''){ log('Use R (Rápido) ou P (Padrão).','er'); return true; }
+    S.teMode=ds.mode; log('Modo = '+(ds.mode==='quick'?'Rápido':'Padrão'),'ok');
+    ds.phase=ds.mode==='standard'?'edges':'main'; ds.cutters=[]; S.sel=[]; tePrompt(); renderAll(); return true;
+  }
+  if(ds.phase==='edges'){
+    if(u===''){ if(!ds.cutters.length) log('Todos os objetos serão usados como arestas.','inf'); S.sel=[]; ds.phase='main'; tePrompt(); renderAll(); return true; }
+    if(u==='O'||u==='MODO'||u==='MODE'){ ds.phase='mode'; tePrompt(); return true; }
+    log('Selecione objetos ou pressione Enter (O = mudar o modo).','inf'); return true;
+  }
+  if(ds.phase==='erase'){ if(u===''){ ds.phase='main'; tePrompt(); } return true; }
+  if(ds.phase==='crossing'||ds.phase==='crossing1'){ if(u===''){ ds.phase='main'; ds.c1=null; tePrompt(); renderAll(); } return true; }
+  // fase principal
+  if(u===''){ setTool('select'); return true; }
+  if(u==='T'||u==='B'||u==='ARESTAS'){ ds.mode='standard'; S.teMode='standard'; ds.cutters=[]; ds.phase='edges'; log('Modo Padrão: selecione as arestas.','inf'); tePrompt(); return true; }
+  if(u==='C'||u==='CRUZANDO'||u==='CROSSING'){ ds.phase='crossing1'; tePrompt(); return true; }
+  if(u==='O'||u==='MODO'||u==='MODE'){ ds.phase='mode'; tePrompt(); return true; }
+  if((u==='R'||u==='APAGAR'||u==='ERASE')&&ds.cmd==='trim'){ ds.phase='erase'; tePrompt(); return true; }
+  if(u==='U'||u==='D'||u==='DESFAZER'||u==='UNDO'){
+    if(ds.done>0){ undo(); ds.done--; S.ds=ds; log('Última operação desfeita.','ok'); tePrompt(); } else log('Nada para desfazer neste comando.','inf');
+    return true;
+  }
+  log('Opção inválida.','er'); return true;
+}
+// ── pré-visualização ───────────────────────────────────────────────────────
+var TE_CACHE={key:null,res:null};
+function drawTrimExtPreview(ctx,hp){
+  var ds=S.ds; if(!ds) return;
+  ctx.save(); ctx.setLineDash([]);
+  if(ds.phase==='edges'&&ds.cutters.length){ ds.cutters.forEach(function(id){var e=findE(id);if(e){ctx.strokeStyle='#f5a623';ctx.lineWidth=2;drawE(ctx,e,false);}}); }
+  if(ds.phase==='crossing'&&ds.c1){
+    var a=w2s(ds.c1.x,ds.c1.y),b=w2s(hp.x,hp.y);
+    ctx.setLineDash([5,4]); ctx.strokeStyle='#4ec87a'; ctx.fillStyle='rgba(78,200,122,.08)'; ctx.lineWidth=1;
+    ctx.fillRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y)); ctx.strokeRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y));
+  }
+  if(S.teFence&&S.teFence.moved){
+    ctx.setLineDash([4,3]); ctx.strokeStyle='#4ec87a'; ctx.lineWidth=1.5; ctx.beginPath();
+    S.teFence.path.forEach(function(p,i){var q=w2s(p.x,p.y);if(i)ctx.lineTo(q.x,q.y);else ctx.moveTo(q.x,q.y);}); ctx.stroke();
+  }
+  if(ds.phase==='main'&&!(S.teFence&&S.teFence.moved)){
+    var op=teOp(),t=teHit(hp,op);
+    if(t){
+      var key=t.id+'|'+op+'|'+Math.round(hp.x*S.vp.sc/3)+','+Math.round(hp.y*S.vp.sc/3)+'|'+S.ents.length+'|'+(S.undos.length);
+      if(TE_CACHE.key!==key){ TE_CACHE.key=key; TE_CACHE.res=teSimulate(t.id,{x:hp.x,y:hp.y},op); }
+      var res=TE_CACHE.res,orig2={}; S.ents.forEach(function(e){orig2[e.id]=1;});
+      if(res){
+        var orig={}; S.ents.forEach(function(e){orig[e.id]=1;});
+        var tr=JSON.parse(JSON.stringify(t)); tr.col='#e85050'; tr.lw=3; tr.ld='solid'; ctx.globalAlpha=.9; drawE(ctx,tr,false);
+        ctx.globalAlpha=1; ctx.strokeStyle='#4ec87a'; ctx.lineWidth=2;
+        res.forEach(function(e){ if(e.id===t.id||!orig[e.id]){ var e2=JSON.parse(JSON.stringify(e)); e2.col='#4ec87a'; e2.lw=2; e2.ld='solid'; drawE(ctx,e2,false); } });
+      }
+      var sp=w2s(hp.x,hp.y); ctx.fillStyle=res?'#4ec87a':'#8a94a8'; ctx.font='bold 10px Consolas';
+      var kept=res?res.filter(function(e){return e.id===t.id||!orig2[e.id];}).length:0;
+      ctx.fillText(res?(op==='trim'?(kept?'aparar':'apagar objeto'):'estender'):(op==='trim'?'sem corte':'sem contorno'),sp.x+14,sp.y-10);
+    }
+  }
+  ctx.restore();
+}
+var _setTool_v68=setTool;
+setTool=function(tool){ S.teFence=null; _setTool_v68(tool); if(tool==='trim'||tool==='extend') teStart(tool); };
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v7.0 — MOTOR DE COMANDOS NO ESTILO AUTOCAD
+   Cada comando é uma máquina de fases com prompt "[opções] <padrão>",
+   seleção de objetos dentro do comando (ou pré-seleção), pontos com OSNAP,
+   ORTHO/POLAR, coordenadas digitadas e pré-visualização.
+   Comandos: ERASE, MOVE, COPY, ROTATE, SCALE, MIRROR, OFFSET, CHAMFER.
+   ═══════════════════════════════════════════════════════════════════ */
+var NC={};
+var NC_RAW={sel:1,selwin:1,pick:1,first:1,second:1,poly:1};
+if(S.offDist===undefined) S.offDist=5;
+if(S.offThrough===undefined) S.offThrough=false;
+if(S.offErase===undefined) S.offErase=false;
+if(S.offLayer===undefined) S.offLayer='source';
+if(S.chamD1===undefined) S.chamD1=5;
+if(S.chamD2===undefined) S.chamD2=5;
+if(S.chamMethod===undefined) S.chamMethod='dist';
+if(S.chamLen===undefined) S.chamLen=5;
+if(S.chamAng===undefined) S.chamAng=45;
+
+function ncIs(t){ return !!NC[t]; }
+function ncEditable(e){ var ly=getLy(e.ly); return !(ly&&(!ly.vis||ly.lock)); }
+function ncNum(u){ var s=String(u).trim(); if(!/^[-+]?[\d]*[.,]?\d+(e[-+]?\d+)?$/i.test(s)) return null; var v=parseFloat(s.replace(',','.')); return isFinite(v)?v:null; }
+function ncPrompt(){ var ds=S.ds; if(!ds||!NC[ds.cmd]) return;
+  if(ds.phase==='sel') return logp('Selecione objetos'+(ds.ids&&ds.ids.length?' ('+ds.ids.length+' encontrado'+(ds.ids.length>1?'s':'')+')':'')+' ou [Todos] — Enter conclui:');
+  if(ds.phase==='selwin') return logp('Especifique o canto oposto (→ janela, ← cruzando):');
+  logp(NC[ds.cmd].prompt(ds)); }
+function ncStart(tool){
+  var def=NC[tool],ds={cmd:tool,phase:null,done:0};
+  S.ds=ds;
+  if(def.init) def.init(ds);
+  if(def.needSel){
+    var pre=selEnts().filter(ncEditable);
+    if(pre.length){ ds.ids=pre.map(function(e){return e.id;}); S.sel=ds.ids.slice(); log(ds.ids.length+' objeto(s) pré-selecionado(s).','inf'); def.afterSel(ds); }
+    else { ds.phase='sel'; ds.ids=[]; S.sel=[]; }
+  }
+  if(S.ds===ds){ ncPrompt(); renderAll(); }
+}
+function ncEnd(clearSel){ if(clearSel!==false) S.sel=[]; setTool('select'); updSelInfo(); }
+function ncSnapshotApply(fn){ snapshot(); fn(); if(S.ds) S.ds.done=(S.ds.done||0)+1; renderAll(); }
+function ncClones(ids){ return ids.map(findE).filter(Boolean).map(function(e){return JSON.parse(JSON.stringify(e));}); }
+function ncGhost(ctx,ids,fn){
+  ctx.save(); ctx.globalAlpha=.75;
+  ncClones(ids).forEach(function(c){ fn(c); drawE(ctx,c,true); });
+  ctx.restore();
+}
+function ncRubber(ctx,a,b){ if(!a||!b) return; var p=w2s(a.x,a.y),q=w2s(b.x,b.y); ctx.save(); ctx.setLineDash([4,4]); ctx.strokeStyle='#e85050'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); ctx.restore(); }
+function ncLabel(ctx,hp,txt,col){ var s=w2s(hp.x,hp.y); ctx.save(); ctx.fillStyle=col||'#e85050'; ctx.font='bold 10px Consolas'; ctx.fillText(txt,s.x+14,s.y+16); ctx.restore(); }
+// Ponto digitado: coordenada (x,y @dx,dy @d<a) ou distância direta na direção do cursor
+function ncPointFrom(v,base){
+  var n=ncNum(v);
+  if(n!==null&&base){ var h=S.hover||{x:base.x+1,y:base.y},dx=h.x-base.x,dy=h.y-base.y,l=Math.hypot(dx,dy)||1; return {x:base.x+dx/l*n,y:base.y+dy/l*n}; }
+  return parseCoord(v);
+}
+// ── seleção dentro do comando ──────────────────────────────────────────────
+function ncSelClick(ds,pt){
+  if(ds.phase==='selwin'){
+    var a=ds.w1,win=pt.x>=a.x,r={x:Math.min(a.x,pt.x),y:Math.min(a.y,pt.y),w:Math.abs(a.x-pt.x),h:Math.abs(a.y-pt.y)},n=0;
+    S.ents.forEach(function(e){ if(!ncEditable(e)) return; var b=bbox(e); if(!b) return;
+      var inside=b.x>=r.x&&b.y>=r.y&&b.x+b.w<=r.x+r.w&&b.y+b.h<=r.y+r.h;
+      var cross=!(b.x>r.x+r.w||b.x+b.w<r.x||b.y>r.y+r.h||b.y+b.h<r.y);
+      if((win?inside:cross)&&ds.ids.indexOf(e.id)<0){ ds.ids.push(e.id); n++; } });
+    ds.phase='sel'; S.sel=ds.ids.slice(); log(n+' encontrado(s)'+(win?' (janela)':' (cruzando)')+', total '+ds.ids.length+'.','inf'); ncPrompt(); renderAll(); return;
+  }
+  var hit=null; for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(ncEditable(e)&&hitEnt(e,pt.x,pt.y)){hit=e;break;} }
+  if(!hit){ ds.w1={x:pt.x,y:pt.y}; ds.phase='selwin'; ncPrompt(); return; }
+  var k=ds.ids.indexOf(hit.id);
+  if(S.shiftDown){ if(k>=0) ds.ids.splice(k,1); } else if(k<0) ds.ids.push(hit.id);
+  S.sel=ds.ids.slice(); ncPrompt(); renderAll();
+}
+function ncSelInput(ds,u){
+  if(u===''){ if(!ds.ids.length){ log('Nenhum objeto selecionado.','inf'); ncEnd(); return true; } NC[ds.cmd].afterSel(ds); if(S.ds===ds){ ncPrompt(); renderAll(); } return true; }
+  if(u==='TODOS'||u==='ALL'||u==='T'){ ds.ids=S.ents.filter(ncEditable).map(function(e){return e.id;}); S.sel=ds.ids.slice(); log(ds.ids.length+' encontrado(s).','inf'); ncPrompt(); renderAll(); return true; }
+  log('Selecione objetos, digite Todos ou pressione Enter.','inf'); return true;
+}
+// ── despacho ────────────────────────────────────────────────────────────────
+function ncClick(pt){
+  var ds=S.ds; if(!ds){ ncStart(S.tool); return; }
+  if(!ds.cmd) ds.cmd=S.tool;
+  if(ds.phase==='sel'||ds.phase==='selwin'){ ncSelClick(ds,pt); return; }
+  NC[ds.cmd].click(ds,pt); if(S.ds===ds){ ncPrompt(); renderAll(); }
+}
+function ncInput(v){
+  var ds=S.ds; if(!ds||!NC[ds.cmd]) return false;
+  var u=String(v).trim().toUpperCase();
+  if(ds.phase==='sel'||ds.phase==='selwin'){ if(ds.phase==='selwin'&&u===''){ds.phase='sel';ncPrompt();return true;} return ncSelInput(ds,u); }
+  var r=NC[ds.cmd].input(ds,u,String(v).trim());
+  if(r===false) log('Opção ou valor inválido.','er');
+  if(S.ds===ds){ ncPrompt(); renderAll(); }
+  return true;
+}
+function ncPreview(ctx,hp){
+  var ds=S.ds; if(!ds) return;
+  if(ds.phase==='selwin'&&ds.w1){
+    var a=w2s(ds.w1.x,ds.w1.y),b=w2s(hp.x,hp.y),win=hp.x>=ds.w1.x;
+    ctx.save(); ctx.setLineDash(win?[]:[5,4]); ctx.strokeStyle=win?'#4d9ef7':'#4ec87a'; ctx.fillStyle=win?'rgba(77,158,247,.08)':'rgba(78,200,122,.08)';
+    ctx.fillRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y)); ctx.strokeRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y)); ctx.restore(); return;
+  }
+  if(NC[ds.cmd].preview) NC[ds.cmd].preview(ctx,ds,hp);
+}
+
+// ── ERASE ───────────────────────────────────────────────────────────────────
+NC.erase={needSel:true,prompt:function(){return '';},
+  afterSel:function(ds){ var ids=ds.ids.slice(); snapshot(); S.ents=S.ents.filter(function(e){return ids.indexOf(e.id)<0;}); log('ERASE: '+ids.length+' objeto(s) apagado(s).','ok'); ncEnd(); },
+  click:function(){},input:function(){return true;}};
+
+// ── MOVE / COPY ─────────────────────────────────────────────────────────────
+function mcAfterSel(ds){ ds.phase='base'; }
+function mcBaseInput(ds,u,raw){
+  if(u===''||u==='D'||u==='DESLOCAMENTO'){ ds.phase='disp'; return true; }
+  var p=parseCoord(raw); if(!p) return false; ds.base=p; ds.pts=[p]; ds.phase='dest'; return true;
+}
+function mcDispVec(raw){ var m=/^@?\s*(-?[\d.,]+)\s*[;,]\s*(-?[\d.,]+)\s*$/.exec(raw.replace(/,(?=\d+\s*[;,])/,'.')); if(m){ return {x:parseFloat(m[1].replace(',','.')),y:parseFloat(m[2].replace(',','.'))}; }
+  var p=parseCoord(raw); return p?{x:p.x,y:p.y}:null; }
+function mcApply(ds,dx,dy,copy){
+  ncSnapshotApply(function(){
+    if(copy){ ncClones(ds.ids).forEach(function(c){ c.id=uid(); transl(c,dx,dy); S.ents.push(c); }); }
+    else ds.ids.map(findE).forEach(function(e){ if(e) transl(e,dx,dy); });
+  });
+}
+NC.move={needSel:true,afterSel:mcAfterSel,
+  prompt:function(ds){ return {base:'MOVE Especifique o ponto base ou [Deslocamento] <Deslocamento>:',dest:'Especifique o segundo ponto ou <usar o primeiro ponto como deslocamento>:',disp:'Especifique o deslocamento <0,0>:'}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; ds.pts=[ds.base]; ds.phase='dest'; return; }
+    if(ds.phase==='dest'){ mcApply(ds,pt.x-ds.base.x,pt.y-ds.base.y,false); log('MOVE: '+ds.ids.length+' objeto(s) movido(s).','ok'); ncEnd(); }
+  },
+  input:function(ds,u,raw){
+    if(ds.phase==='base') return mcBaseInput(ds,u,raw);
+    if(ds.phase==='disp'){ if(u===''){ ncEnd(); return true; } var d=mcDispVec(raw); if(!d) return false; mcApply(ds,d.x,d.y,false); log('MOVE: deslocamento '+gNum(d.x)+','+gNum(d.y)+'.','ok'); ncEnd(); return true; }
+    if(ds.phase==='dest'){
+      if(u===''){ mcApply(ds,ds.base.x,ds.base.y,false); ncEnd(); return true; }
+      var p=ncPointFrom(raw,ds.base); if(!p) return false; this.click(ds,p); return true;
+    }
+    return false;
+  },
+  preview:function(ctx,ds,hp){ if(ds.phase!=='dest') return; ncRubber(ctx,ds.base,hp); ncGhost(ctx,ds.ids,function(c){transl(c,hp.x-ds.base.x,hp.y-ds.base.y);}); }
+};
+NC.copy={needSel:true,afterSel:mcAfterSel,
+  prompt:function(ds){ return {base:'COPY Especifique o ponto base ou [Deslocamento/mOdo] <Deslocamento>:',dest:'Especifique o segundo ponto ou [Matriz/Sair/Desfazer] <Sair>:',disp:'Especifique o deslocamento <0,0>:',arrn:'Número de itens da matriz <2>:',arrpt:'Especifique o segundo ponto (espaçamento) ou [Ajustar]:',arrfit:'Especifique o último ponto (itens distribuídos até ele):'}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; ds.pts=[ds.base]; ds.phase='dest'; return; }
+    if(ds.phase==='dest'){ mcApply(ds,pt.x-ds.base.x,pt.y-ds.base.y,true); log('COPY: cópia '+ds.done+'.','ok'); return; }
+    if(ds.phase==='arrpt'||ds.phase==='arrfit'){
+      var n=ds.arrN,dx=pt.x-ds.base.x,dy=pt.y-ds.base.y; if(ds.phase==='arrfit'){ dx/=(n-1); dy/=(n-1); }
+      ncSnapshotApply(function(){ for(var k=1;k<n;k++) ncClones(ds.ids).forEach(function(c){ c.id=uid(); transl(c,dx*k,dy*k); S.ents.push(c); }); });
+      log('COPY Matriz: '+(n-1)+' cópia(s).','ok'); ds.phase='dest'; return;
+    }
+  },
+  input:function(ds,u,raw){
+    if(ds.phase==='base'){ if(u==='O'||u==='MODO') { log('Modo de cópia: Múltiplo (padrão do AutoCAD).','inf'); return true; } return mcBaseInput(ds,u,raw); }
+    if(ds.phase==='disp'){ if(u===''){ ncEnd(); return true; } var d=mcDispVec(raw); if(!d) return false; mcApply(ds,d.x,d.y,true); ncEnd(); return true; }
+    if(ds.phase==='dest'){
+      if(u===''||u==='S'||u==='SAIR'||u==='X'||u==='E'||u==='EXIT'){ log('COPY: '+ds.done+' cópia(s).','ok'); ncEnd(); return true; }
+      if(u==='U'||u==='D'||u==='DESFAZER'){ if(ds.done>0){ undo(); ds.done--; S.ds=ds; S.sel=ds.ids.slice(); log('Última cópia desfeita.','ok'); } else log('Nada para desfazer.','inf'); return true; }
+      if(u==='M'||u==='A'||u==='MATRIZ'||u==='ARRAY'){ ds.phase='arrn'; return true; }
+      var p=ncPointFrom(raw,ds.base); if(!p) return false; this.click(ds,p); return true;
+    }
+    if(ds.phase==='arrn'){ var n=u===''?2:ncNum(u); if(!(n>=2)||n!==Math.floor(n)) return false; ds.arrN=n; ds.phase='arrpt'; return true; }
+    if(ds.phase==='arrpt'||ds.phase==='arrfit'){
+      if(ds.phase==='arrpt'&&(u==='A'||u==='F'||u==='AJUSTAR'||u==='FIT')){ ds.phase='arrfit'; return true; }
+      var p2=ncPointFrom(raw,ds.base); if(!p2) return false; this.click(ds,p2); return true;
+    }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    if(ds.phase==='dest'){ ncRubber(ctx,ds.base,hp); ncGhost(ctx,ds.ids,function(c){transl(c,hp.x-ds.base.x,hp.y-ds.base.y);}); }
+    if(ds.phase==='arrpt'||ds.phase==='arrfit'){ var n=ds.arrN,dx=hp.x-ds.base.x,dy=hp.y-ds.base.y; if(ds.phase==='arrfit'){dx/=(n-1);dy/=(n-1);}
+      ncRubber(ctx,ds.base,hp); for(var k=1;k<n;k++) ncGhost(ctx,ds.ids,function(c){transl(c,dx*k,dy*k);}); }
+  }
+};
+
+// ── ROTATE ──────────────────────────────────────────────────────────────────
+function angOf(a,b){ return Math.atan2(b.y-a.y,b.x-a.x); }
+NC.rotate={needSel:true,afterSel:function(ds){ ds.phase='base'; ds.copy=false; },
+  prompt:function(ds){ return {base:'ROTATE Especifique o ponto base:',ang:'Especifique o ângulo de rotação ou [Cópia/Referência] <0>:'+(ds.copy?' (cópia)':''),
+    refa:ds.rp?'Especifique o segundo ponto:':'Especifique o ângulo de referência <0>:',newa:'Especifique o novo ângulo ou [Pontos] <0>:',newp1:'Especifique o primeiro ponto:',newp2:'Especifique o segundo ponto:'}[ds.phase]; },
+  apply:function(ds,rad){
+    ncSnapshotApply(function(){
+      if(ds.copy) ncClones(ds.ids).forEach(function(c){ c.id=uid(); rotat(c,ds.base,rad); S.ents.push(c); });
+      else ds.ids.map(findE).forEach(function(e){ if(e) rotat(e,ds.base,rad); });
+    });
+    log('ROTATE: '+gNum(rad*180/Math.PI)+'°'+(ds.copy?' (cópia)':'')+'.','ok'); ncEnd();
+  },
+  click:function(ds,pt){
+    if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; ds.pts=[ds.base]; ds.phase='ang'; return; }
+    if(ds.phase==='ang'){ this.apply(ds,angOf(ds.base,pt)); return; }
+    if(ds.phase==='refa'){ if(!ds.rp){ ds.rp={x:pt.x,y:pt.y}; return; } ds.ref=angOf(ds.rp,pt); ds.rp=null; ds.phase='newa'; return; }
+    if(ds.phase==='newa'){ this.apply(ds,angOf(ds.base,pt)-ds.ref); return; }
+    if(ds.phase==='newp1'){ ds.np={x:pt.x,y:pt.y}; ds.phase='newp2'; return; }
+    if(ds.phase==='newp2'){ this.apply(ds,angOf(ds.np,pt)-ds.ref); return; }
+  },
+  input:function(ds,u,raw){
+    var n=ncNum(u);
+    if(ds.phase==='base'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='ang'){
+      if(u===''){ log('Rotação 0°: nada alterado.','inf'); ncEnd(); return true; }
+      if(u==='C'||u==='COPIA'||u==='CÓPIA'||u==='COPY'){ ds.copy=!ds.copy; log(ds.copy?'Girando uma cópia dos objetos selecionados.':'Girando os próprios objetos.','inf'); return true; }
+      if(u==='R'||u==='REFERENCIA'||u==='REFERÊNCIA'||u==='REFERENCE'){ ds.phase='refa'; ds.rp=null; return true; }
+      if(n===null) return false; this.apply(ds,n*Math.PI/180); return true;
+    }
+    if(ds.phase==='refa'){ if(u===''){ ds.ref=0; ds.phase='newa'; return true; } if(n===null) return false; ds.ref=n*Math.PI/180; ds.phase='newa'; return true; }
+    if(ds.phase==='newa'){ if(u==='P'||u==='PONTOS'||u==='POINTS'){ ds.phase='newp1'; return true; } if(u===''){ this.apply(ds,-ds.ref); return true; } if(n===null) return false; this.apply(ds,n*Math.PI/180-ds.ref); return true; }
+    if(ds.phase==='newp1'||ds.phase==='newp2'){ var q=parseCoord(raw); if(!q) return false; this.click(ds,q); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    var a=null;
+    if(ds.phase==='ang') a=angOf(ds.base,hp);
+    if(ds.phase==='newa') a=angOf(ds.base,hp)-ds.ref;
+    if(ds.phase==='newp2') a=angOf(ds.np,hp)-ds.ref;
+    if(a===null) return;
+    ncRubber(ctx,ds.base,hp); ncGhost(ctx,ds.ids,function(c){rotat(c,ds.base,a);}); ncLabel(ctx,hp,gNum(a*180/Math.PI)+'°');
+  }
+};
+
+// ── SCALE ───────────────────────────────────────────────────────────────────
+NC.scale={needSel:true,afterSel:function(ds){ ds.phase='base'; ds.copy=false; },
+  prompt:function(ds){ return {base:'SCALE Especifique o ponto base:',fac:'Especifique o fator de escala ou [Cópia/Referência] <1>:'+(ds.copy?' (cópia)':''),
+    refl:ds.rp?'Especifique o segundo ponto:':'Especifique o comprimento de referência <1>:',newl:'Especifique o novo comprimento ou [Pontos] <1>:',newp1:'Especifique o primeiro ponto:',newp2:'Especifique o segundo ponto:'}[ds.phase]; },
+  apply:function(ds,f){
+    if(!(f>0)){ log('O fator de escala deve ser positivo.','er'); return; }
+    ncSnapshotApply(function(){
+      if(ds.copy) ncClones(ds.ids).forEach(function(c){ c.id=uid(); scalE(c,ds.base,f); S.ents.push(c); });
+      else ds.ids.map(findE).forEach(function(e){ if(e) scalE(e,ds.base,f); });
+    });
+    log('SCALE: fator '+gNum(f)+(ds.copy?' (cópia)':'')+'.','ok'); ncEnd();
+  },
+  click:function(ds,pt){
+    var d=function(a,b){return Math.hypot(b.x-a.x,b.y-a.y);};
+    if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; ds.pts=[ds.base]; ds.phase='fac'; return; }
+    if(ds.phase==='fac'){ this.apply(ds,d(ds.base,pt)); return; }
+    if(ds.phase==='refl'){ if(!ds.rp){ ds.rp={x:pt.x,y:pt.y}; return; } ds.ref=d(ds.rp,pt); ds.rp=null; if(!(ds.ref>0)){log('Comprimento de referência inválido.','er');return;} ds.phase='newl'; return; }
+    if(ds.phase==='newl'){ this.apply(ds,d(ds.base,pt)/ds.ref); return; }
+    if(ds.phase==='newp1'){ ds.np={x:pt.x,y:pt.y}; ds.phase='newp2'; return; }
+    if(ds.phase==='newp2'){ this.apply(ds,d(ds.np,pt)/ds.ref); return; }
+  },
+  input:function(ds,u,raw){
+    var n=ncNum(u);
+    if(ds.phase==='base'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='fac'){
+      if(u===''){ log('Fator 1: nada alterado.','inf'); ncEnd(); return true; }
+      if(u==='C'||u==='COPIA'||u==='CÓPIA'||u==='COPY'){ ds.copy=!ds.copy; log(ds.copy?'Escalando uma cópia.':'Escalando os próprios objetos.','inf'); return true; }
+      if(u==='R'||u==='REFERENCIA'||u==='REFERÊNCIA'||u==='REFERENCE'){ ds.phase='refl'; ds.rp=null; return true; }
+      if(n===null) return false; this.apply(ds,n); return true;
+    }
+    if(ds.phase==='refl'){ if(u===''){ ds.ref=1; ds.phase='newl'; return true; } if(!(n>0)) return false; ds.ref=n; ds.phase='newl'; return true; }
+    if(ds.phase==='newl'){ if(u==='P'||u==='PONTOS'||u==='POINTS'){ ds.phase='newp1'; return true; } if(u===''){ this.apply(ds,1/ds.ref); return true; } if(!(n>0)) return false; this.apply(ds,n/ds.ref); return true; }
+    if(ds.phase==='newp1'||ds.phase==='newp2'){ var q=parseCoord(raw); if(!q) return false; this.click(ds,q); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    if(!ds.base) return; var f=null,d=Math.hypot(hp.x-ds.base.x,hp.y-ds.base.y);
+    if(ds.phase==='fac') f=d;
+    if(ds.phase==='newl') f=d/ds.ref;
+    if(ds.phase==='newp2') f=Math.hypot(hp.x-ds.np.x,hp.y-ds.np.y)/ds.ref;
+    if(!(f>0)) return;
+    ncRubber(ctx,ds.base,hp); ncGhost(ctx,ds.ids,function(c){scalE(c,ds.base,f);}); ncLabel(ctx,hp,'×'+gNum(f));
+  }
+};
+
+// ── MIRROR ──────────────────────────────────────────────────────────────────
+NC.mirror={needSel:true,afterSel:function(ds){ ds.phase='p1'; },
+  prompt:function(ds){ return {p1:'MIRROR Especifique o primeiro ponto da linha de espelhamento:',p2:'Especifique o segundo ponto da linha de espelhamento:',del:'Apagar os objetos de origem? [Sim/Não] <Não>:'}[ds.phase]; },
+  apply:function(ds,erase){
+    ncSnapshotApply(function(){
+      ncClones(ds.ids).forEach(function(c){ c.id=uid(); mirr(c,ds.a,ds.b); S.ents.push(c); });
+      if(erase) S.ents=S.ents.filter(function(e){return ds.ids.indexOf(e.id)<0;});
+    });
+    log('MIRROR: '+ds.ids.length+' objeto(s) espelhado(s)'+(erase?', originais apagados':'')+'.','ok'); ncEnd();
+  },
+  click:function(ds,pt){
+    if(ds.phase==='p1'){ ds.a={x:pt.x,y:pt.y}; ds.pts=[ds.a]; ds.phase='p2'; return; }
+    if(ds.phase==='p2'){ if(Math.hypot(pt.x-ds.a.x,pt.y-ds.a.y)<1e-9){log('Os pontos devem ser diferentes.','er');return;} ds.b={x:pt.x,y:pt.y}; ds.phase='del'; return; }
+  },
+  input:function(ds,u,raw){
+    if(ds.phase==='del'){ if(u===''||u==='N'||u==='NAO'||u==='NÃO'||u==='NO'){ this.apply(ds,false); return true; } if(u==='S'||u==='SIM'||u==='Y'||u==='YES'){ this.apply(ds,true); return true; } return false; }
+    var p=ncPointFrom(raw,ds.phase==='p2'?ds.a:null); if(!p) return false; this.click(ds,p); return true;
+  },
+  preview:function(ctx,ds,hp){
+    var b=ds.phase==='p2'?hp:(ds.phase==='del'?ds.b:null); if(!b||Math.hypot(b.x-ds.a.x,b.y-ds.a.y)<1e-9) return;
+    ncRubber(ctx,ds.a,b); ncGhost(ctx,ds.ids,function(c){mirr(c,ds.a,b);});
+  }
+};
+
+// ── OFFSET ──────────────────────────────────────────────────────────────────
+function offThroughDist(e,p){
+  if(e.tp==='circ'||e.tp==='arc') return Math.abs(Math.hypot(p.x-e.cx,p.y-e.cy)-e.r);
+  if(e.tp==='line'){ var dx=e.x2-e.x1,dy=e.y2-e.y1,l=Math.hypot(dx,dy); return Math.abs((p.x-e.x1)*dy-(p.y-e.y1)*dx)/l; }
+  var q=nearestOn(e,p.x,p.y); return q?Math.hypot(p.x-q.x,p.y-q.y):0;
+}
+function offMake(src,pt){
+  var d=S.offThrough?offThroughDist(src,pt):S.offDist; if(!(d>1e-9)) return null;
+  var c=clon(src); if(!offsE(c,offsetSide(src,pt.x,pt.y,d))) return null;
+  if(S.offLayer==='current'){ c.ly=S.curLy; }
+  return c;
+}
+NC.offset={
+  init:function(ds){ ds.phase='dist'; ds.multi=false; log('Configurações atuais: Apagar origem='+(S.offErase?'Sim':'Não')+'  Camada='+(S.offLayer==='current'?'Atual':'Origem'),'inf'); },
+  prompt:function(ds){ return {dist:'OFFSET Especifique a distância de deslocamento ou [Através/apaGar/Camada] <'+(S.offThrough?'Através':gNum(S.offDist))+'>:',
+    dist2:'Especifique o segundo ponto:',ers:'Apagar o objeto de origem após o deslocamento? [Sim/Não] <'+(S.offErase?'Sim':'Não')+'>:',lay:'Opção de camada para os objetos deslocados [Atual/Origem] <'+(S.offLayer==='current'?'Atual':'Origem')+'>:',
+    pick:'Selecione o objeto a deslocar ou [Sair/Desfazer] <Sair>:',side:(S.offThrough?'Especifique o ponto de passagem':'Especifique um ponto no lado a deslocar')+' ou [Sair/Múltiplo/Desfazer] <Sair>:'+(ds.multi?' (múltiplo)':'')}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='dist'){ ds.dp={x:pt.x,y:pt.y}; ds.pts=[ds.dp]; ds.phase='dist2'; return; }
+    if(ds.phase==='dist2'){ var d=Math.hypot(pt.x-ds.dp.x,pt.y-ds.dp.y); if(!(d>0)) return; S.offDist=d; S.offThrough=false; ds.pts=null; ds.phase='pick'; log('Distância = '+gNum(d),'ok'); return; }
+    if(ds.phase==='pick'){
+      var h=null; for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(OFFSET_TYPES.indexOf(e.tp)>=0&&ncEditable(e)&&hitEnt(e,pt.x,pt.y)){h=e;break;} }
+      if(!h){ log('Selecione linha, círculo, arco, retângulo, elipse ou polilinha.','inf'); return; }
+      ds.src=h.id; S.sel=[h.id]; ds.phase='side'; return;
+    }
+    if(ds.phase==='side'){
+      var src=findE(ds.src); if(!src){ ds.phase='pick'; return; }
+      var c=offMake(src,pt); if(!c){ log('Não é possível deslocar com essa distância ou nesse lado.','er'); return; }
+      ncSnapshotApply(function(){ S.ents.push(c); if(S.offErase) S.ents=S.ents.filter(function(e){return e.id!==src.id;}); });
+      if(ds.multi){ ds.src=c.id; S.sel=[c.id]; } else { ds.phase='pick'; S.sel=[]; }
+      return;
+    }
+  },
+  input:function(ds,u,raw){
+    var n=ncNum(u);
+    if(ds.phase==='dist'){
+      if(u===''){ ds.phase='pick'; return true; }
+      if(u==='A'||u==='T'||u==='ATRAVES'||u==='ATRAVÉS'||u==='THROUGH'){ S.offThrough=true; ds.phase='pick'; return true; }
+      if(u==='G'||u==='E'||u==='APAGAR'||u==='ERASE'){ ds.phase='ers'; return true; }
+      if(u==='C'||u==='L'||u==='CAMADA'||u==='LAYER'){ ds.phase='lay'; return true; }
+      if(!(n>0)) return false; S.offDist=n; S.offThrough=false; ds.phase='pick'; return true;
+    }
+    if(ds.phase==='dist2'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='ers'){ if(u==='S'||u==='Y'||u==='SIM') S.offErase=true; else if(u==='N'||u==='NAO'||u==='NÃO') S.offErase=false; else if(u!=='') return false; ds.phase='dist'; return true; }
+    if(ds.phase==='lay'){ if(u==='A'||u==='C'||u==='ATUAL'||u==='CURRENT') S.offLayer='current'; else if(u==='O'||u==='S'||u==='ORIGEM'||u==='SOURCE') S.offLayer='source'; else if(u!=='') return false; ds.phase='dist'; return true; }
+    if(u===''||u==='S'||u==='SAIR'||u==='X'||u==='E'||u==='EXIT'){ ncEnd(); return true; }
+    if(u==='U'||u==='D'||u==='DESFAZER'||u==='UNDO'){ if(ds.done>0){ undo(); ds.done--; S.ds=ds; ds.phase='pick'; S.sel=[]; log('Último deslocamento desfeito.','ok'); } else log('Nada para desfazer.','inf'); return true; }
+    if(ds.phase==='side'&&(u==='M'||u==='MULTIPLO'||u==='MÚLTIPLO'||u==='MULTIPLE')){ ds.multi=true; return true; }
+    if(ds.phase==='side'){ var q=parseCoord(raw); if(!q) return false; this.click(ds,q); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    if(ds.phase==='dist2'){ ncRubber(ctx,ds.dp,hp); ncLabel(ctx,hp,gNum(Math.hypot(hp.x-ds.dp.x,hp.y-ds.dp.y))); return; }
+    if(ds.phase==='pick'){ for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(OFFSET_TYPES.indexOf(e.tp)>=0&&ncEditable(e)&&hitEnt(e,hp.x,hp.y)){ var c0=JSON.parse(JSON.stringify(e)); c0.col='#f5a623'; c0.lw=2; drawE(ctx,c0,false); break; } } return; }
+    if(ds.phase==='side'){ var src=findE(ds.src); if(!src) return; var c=offMake(src,hp); if(!c) return;
+      c.col='#4ec87a'; c.ld='dashed'; drawE(ctx,c,false); if(S.offThrough) ncLabel(ctx,hp,'d='+gNum(offThroughDist(src,hp)),'#4ec87a'); }
+  }
+};
+
+// ── CHAMFER (mesma sequência do FILLET) ─────────────────────────────────────
+function chamCompute(h1,h2,zero){
+  if(h1.curve.kind!=='line'||h2.curve.kind!=='line') return {err:'CHAMFER funciona com linhas, polilinhas e retângulos.'};
+  if(h1.e===h2.e&&(h1.seg===null||h1.seg===h2.seg)) return {err:'Não é possível chanfrar um objeto com ele mesmo.'};
+  var c1=h1.curve,c2=h2.curve,I=lineLineInt(c1.x1,c1.y1,c1.x2,c1.y2,c2.x1,c2.y1,c2.x2,c2.y2);
+  if(!I) return {err:'As linhas são paralelas.'};
+  I={x:I.x,y:I.y};
+  function side(c,p){ var dx=c.x2-c.x1,dy=c.y2-c.y1,l=Math.hypot(dx,dy),u={x:dx/l,y:dy/l},s=((p.x-I.x)*u.x+(p.y-I.y)*u.y)>=0?1:-1; u={x:u.x*s,y:u.y*s};
+    var e1=(c.x1-I.x)*u.x+(c.y1-I.y)*u.y,e2=(c.x2-I.x)*u.x+(c.y2-I.y)*u.y,far=e1>=e2?{x:c.x1,y:c.y1,d:e1}:{x:c.x2,y:c.y2,d:e2}; return {u:u,far:far}; }
+  var s1=side(c1,h1.pick),s2=side(c2,h2.pick),d1,d2;
+  if(zero){ d1=0; d2=0; }
+  else if(S.chamMethod==='angle'){
+    d1=S.chamLen; var P1=I.x!==undefined?{x:I.x+s1.u.x*d1,y:I.y+s1.u.y*d1}:null,best=null;
+    [1,-1].forEach(function(sg){ var a=S.chamAng*Math.PI/180*sg,bx=-s1.u.x,by=-s1.u.y,w={x:bx*Math.cos(a)-by*Math.sin(a),y:bx*Math.sin(a)+by*Math.cos(a)};
+      var r=lineLineInt(P1.x,P1.y,P1.x+w.x,P1.y+w.y,I.x,I.y,I.x+s2.u.x,I.y+s2.u.y); if(r&&r.t>1e-9&&r.u>1e-9&&(best===null||r.u<best)) best=r.u; });
+    if(best===null) return {err:'Ângulo de chanfro impossível para estas linhas.'}; d2=best;
+  } else { d1=S.chamD1; d2=S.chamD2; }
+  if(d1>s1.far.d+1e-9||d2>s2.far.d+1e-9) return {err:'Distância de chanfro grande demais.'};
+  var P={x:I.x+s1.u.x*d1,y:I.y+s1.u.y*d1},Q={x:I.x+s2.u.x*d2,y:I.y+s2.u.y*d2};
+  return {m1:{x1:P.x,y1:P.y,x2:s1.far.x,y2:s1.far.y},m2:{x1:Q.x,y1:Q.y,x2:s2.far.x,y2:s2.far.y},seg:(d1>1e-9||d2>1e-9)?{x1:P.x,y1:P.y,x2:Q.x,y2:Q.y}:null};
+}
+function chamApply(h1,h2,zero,noSnap){
+  var r=chamCompute(h1,h2,zero); if(r.err){ log('CHAMFER: '+r.err,'er'); return false; }
+  if(!noSnap) snapshot();
+  var ex={};
+  function tgt(h){ if(h.seg===null) return h.e; if(!ex[h.e.id]){ var L=explodeToLines(h.e),i=S.ents.indexOf(h.e); if(i>=0) S.ents.splice.apply(S.ents,[i,1].concat(L)); ex[h.e.id]=L; } return ex[h.e.id][h.seg]; }
+  var t1=tgt(h1),t2=tgt(h2);
+  if(S.filletTrim){ [[t1,r.m1],[t2,r.m2]].forEach(function(q){ if(q[0]){ q[0].x1=q[1].x1;q[0].y1=q[1].y1;q[0].x2=q[1].x2;q[0].y2=q[1].y2; } }); }
+  if(r.seg){ var same=h1.e.ly===h2.e.ly,src=h1.e; addE({tp:'line',x1:r.seg.x1,y1:r.seg.y1,x2:r.seg.x2,y2:r.seg.y2,ly:same?src.ly:S.curLy,col:same?src.col:S.style.col,lw:same?src.lw:S.style.lw,ld:same?src.ld:S.style.ld},true); }
+  log('CHAMFER: '+(r.seg?'chanfro criado':'canto vivo criado')+(S.filletTrim?'':' (sem aparar)')+(Object.keys(ex).length?' — polilinha/retângulo convertido em linhas':'')+'.','ok');
+  return true;
+}
+NC.chamfer={
+  init:function(ds){ ds.phase='first'; ds.multi=false;
+    log('(Modo '+(S.filletTrim?'APARAR':'NÃO APARAR')+') '+(S.chamMethod==='angle'?'Comprimento = '+gNum(S.chamLen)+', Ângulo = '+gNum(S.chamAng)+'°':'Distância1 = '+gNum(S.chamD1)+', Distância2 = '+gNum(S.chamD2)),'inf'); },
+  prompt:function(ds){ return {first:'CHAMFER Selecione a primeira linha ou [Desfazer/Polilinha/Distância/Ângulo/Aparar/mÉtodo/Múltiplo]:'+(ds.multi?' (múltiplo)':''),
+    second:'Selecione a segunda linha, ou Shift+clique para canto vivo:',d1:'Especifique a primeira distância de chanfro <'+gNum(S.chamD1)+'>:',d2:'Especifique a segunda distância de chanfro <'+gNum(S.chamD1)+'>:',
+    alen:'Especifique o comprimento do chanfro na primeira linha <'+gNum(S.chamLen)+'>:',aang:'Especifique o ângulo do chanfro a partir da primeira linha <'+gNum(S.chamAng)+'>:',
+    trim:'Modo de aparar [Aparar/Não aparar] <'+(S.filletTrim?'Aparar':'Não aparar')+'>:',method:'Método [Distância/Ângulo] <'+(S.chamMethod==='angle'?'Ângulo':'Distância')+'>:',poly:'Selecione a polilinha 2D:'}[ds.phase]; },
+  after:function(ds){ ds.done++; ds.e1=null; ds.phase='first'; if(!ds.multi) ncEnd(); },
+  click:function(ds,pt){
+    var h=filletHit(pt);
+    if(ds.phase==='poly'){
+      if(!h||(h.e.tp!=='pl'&&h.e.tp!=='rect')){ log('Selecione uma polilinha ou retângulo.','inf'); return; }
+      var e=h.e,closed=e.tp==='rect'||!!e.closed; snapshot();
+      var L=explodeToLines(e),i=S.ents.indexOf(e); S.ents.splice.apply(S.ents,[i,1].concat(L));
+      var ok=0,n=L.length,pairs=closed?n:n-1,save=S.filletTrim; S.filletTrim=true;
+      for(var k=0;k<pairs;k++){ var a=L[k],b=L[(k+1)%n];
+        var ha={e:a,seg:null,pick:{x:(a.x1+a.x2)/2,y:(a.y1+a.y2)/2},curve:{kind:'line',x1:a.x1,y1:a.y1,x2:a.x2,y2:a.y2}};
+        var hb={e:b,seg:null,pick:{x:(b.x1+b.x2)/2,y:(b.y1+b.y2)/2},curve:{kind:'line',x1:b.x1,y1:b.y1,x2:b.x2,y2:b.y2}};
+        if(chamApply(ha,hb,false,true)) ok++; }
+      S.filletTrim=save; log('CHAMFER Polilinha: '+ok+' vértice(s) chanfrado(s).',ok?'ok':'er'); this.after(ds); return;
+    }
+    if(!h){ log('Nenhuma linha no ponto.','inf'); return; }
+    if(h.curve.kind!=='line'){ log('CHAMFER funciona com linhas, polilinhas e retângulos.','er'); return; }
+    if(ds.phase==='first'){ ds.e1=h; ds.phase='second'; return; }
+    if(ds.phase==='second'){ if(chamApply(ds.e1,h,!!S.shiftDown)) this.after(ds); }
+  },
+  input:function(ds,u,raw){
+    var n=ncNum(u);
+    if(ds.phase==='d1'){ if(u!==''){ if(!(n>=0)) return false; S.chamD1=n; } ds.phase='d2'; return true; }
+    if(ds.phase==='d2'){ if(u===''){ S.chamD2=S.chamD1; } else { if(!(n>=0)) return false; S.chamD2=n; } S.chamMethod='dist'; ds.phase=ds.ret||'first'; return true; }
+    if(ds.phase==='alen'){ if(u!==''){ if(!(n>=0)) return false; S.chamLen=n; } ds.phase='aang'; return true; }
+    if(ds.phase==='aang'){ if(u!==''){ if(!(n>0&&n<180)) return false; S.chamAng=n; } S.chamMethod='angle'; ds.phase=ds.ret||'first'; return true; }
+    if(ds.phase==='trim'){ if(u==='A'||u==='T') S.filletTrim=true; else if(u==='N') S.filletTrim=false; else if(u!=='') return false; ds.phase='first'; return true; }
+    if(ds.phase==='method'){ if(u==='D') S.chamMethod='dist'; else if(u==='A') S.chamMethod='angle'; else if(u!=='') return false; ds.phase='first'; return true; }
+    if(ds.phase==='poly'){ if(u===''){ ds.phase='first'; return true; } return false; }
+    if(ds.phase==='second'){ if(u===''){ ds.e1=null; ds.phase='first'; if(!ds.multi) ncEnd(); return true; } return false; }
+    if(u===''){ ncEnd(); return true; }
+    if(u==='D'||u==='DISTANCIA'||u==='DISTÂNCIA'){ ds.ret='first'; ds.phase='d1'; return true; }
+    if(u==='A'||u==='ANGULO'||u==='ÂNGULO'){ ds.ret='first'; ds.phase='alen'; return true; }
+    if(u==='T'||u==='APARAR'){ ds.phase='trim'; return true; }
+    if(u==='E'||u==='METODO'||u==='MÉTODO'){ ds.phase='method'; return true; }
+    if(u==='M'||u==='MULTIPLO'||u==='MÚLTIPLO'){ ds.multi=true; return true; }
+    if(u==='P'||u==='POLILINHA'){ ds.phase='poly'; return true; }
+    if(u==='U'||u==='DESFAZER'){ if(ds.done>0){ undo(); ds.done--; S.ds=ds; log('Último chanfro desfeito.','ok'); } else log('Nada para desfazer.','inf'); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    var h=filletHit(hp);
+    function hi(e,col){ var c=JSON.parse(JSON.stringify(e)); c.col=col; c.lw=2; c.ld='solid'; drawE(ctx,c,false); }
+    if(ds.phase==='first'||ds.phase==='poly'){ if(h&&(ds.phase==='first'?h.curve.kind==='line':(h.e.tp==='pl'||h.e.tp==='rect'))) hi(h.e,'#f5a623'); return; }
+    if(ds.phase!=='second'||!ds.e1) return;
+    hi(ds.e1.e,'#f5a623'); if(!h||h.curve.kind!=='line') return;
+    var r=chamCompute(ds.e1,h,!!S.shiftDown);
+    if(r.err){ ncLabel(ctx,hp,r.err); return; }
+    ctx.save(); ctx.strokeStyle='#4ec87a'; ctx.lineWidth=2; ctx.setLineDash([]);
+    [S.filletTrim?r.m1:null,S.filletTrim?r.m2:null,r.seg].forEach(function(m){ if(!m) return; var a=w2s(m.x1,m.y1),b=w2s(m.x2,m.y2); ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); });
+    ctx.restore(); ncLabel(ctx,hp,r.seg?'chanfro':'canto vivo','#4ec87a');
+  }
+};
+
+var _setTool_v70=setTool;
+setTool=function(tool){ _setTool_v70(tool); if(ncIs(tool)) ncStart(tool); };
+
 
 // ── UNITS ENGINE ─────────────────────────────────────────────────────────────
 // Estado global de unidades do desenho

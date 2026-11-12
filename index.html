@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v7.0</title>
+<title>EduCAD 2D v7.2</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -415,7 +415,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.0 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.2 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
@@ -725,7 +725,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.0 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.2 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1132,7 +1132,7 @@ table#lg-tbl input:focus{background:#1a2a3a;}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.0 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.2 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1254,11 +1254,25 @@ table#lg-tbl input:focus{background:#1a2a3a;}
   <div class="mact"><button class="btn s" onclick="closeOv('ov-fillet')">Cancelar</button><button class="btn p" onclick="confirmFillet()">OK</button></div>
 </div></div>
 
-<input type="file" id="fileInput" accept=".json" onchange="loadFile(event)">
+<input type="file" id="fileInput" accept=".json,.dxf" onchange="loadFile(event)">
+<!-- v7.2: editor de texto (MTEXT, LEADER, edição) -->
+<div class="ov" id="ov-mtext"><div class="modal" style="min-width:420px;max-width:92vw">
+  <h3 id="mted-title">Editor de texto</h3>
+  <textarea id="mted-txt" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:12px Consolas,monospace;padding:6px;border-radius:3px;resize:vertical" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();mtEditorOK();}"></textarea>
+  <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+    <label id="mted-row-h" style="display:flex;align-items:center;gap:6px">Altura <input id="mted-h" style="width:70px;margin:0"></label>
+    <label id="mted-row-att" style="display:flex;align-items:center;gap:6px">Justificação <select id="mted-att" style="width:auto;margin:0">
+      <option value="1">Topo esquerda</option><option value="2">Topo centro</option><option value="3">Topo direita</option>
+      <option value="4">Meio esquerda</option><option value="5">Meio centro</option><option value="6">Meio direita</option>
+      <option value="7">Base esquerda</option><option value="8">Base centro</option><option value="9">Base direita</option></select></label>
+  </div>
+  <div style="font-size:9px;color:var(--t2);margin-top:6px">Enter quebra a linha · Ctrl+Enter confirma</div>
+  <div class="mact"><button class="btn s" onclick="mtEditorCancel()">Cancelar</button><button class="btn p" onclick="mtEditorOK()">OK</button></div>
+</div></div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v7.0 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v7.2 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1332,7 +1346,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v7.0 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v7.2 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -1411,6 +1425,7 @@ function arcHas(a,sa,ea){var n=function(v){return((v%(Math.PI*2))+(Math.PI*2))%(
 function handleClick(pt) {
   var ds=S.ds, tool=S.tool;
   if(ncIs(tool)){ ncClick(pt); return; } // v7.0: motor de comandos
+  if(tool==='polyline'&&ds&&ds.arcMode&&ds.pts&&ds.pts.length){ plineClick(pt); return; } // v7.1
   switch(tool) {
 
     /* ─── DRAW TOOLS ─────────────────────── */
@@ -2134,7 +2149,6 @@ function confirmHatch(){
   };
   closeOv('ov-hatch');
   setTool('hatch');
-  logp('HATCH "'+name+'": 1º canto:');
 }
 
 function showAbout(){
@@ -2461,6 +2475,7 @@ function drawCoords(ctx,e){
 function drawPreview(ctx){
   if((S.tool==='trim'||S.tool==='extend')&&S.ds){ drawTrimExtPreview(ctx,S.hover||{x:0,y:0}); return; } // v6.8
   if(ncIs(S.tool)&&S.ds){ ncPreview(ctx,S.hover||{x:0,y:0}); return; } // v7.0
+  if(S.tool==='polyline'&&S.ds&&S.ds.pts&&S.ds.pts.length&&(S.ds.arcMode||S.ds.pts.some(function(p){return p.b;}))){ drawPlinePreview(ctx,S.hover||S.ds.pts[0]); return; } // v7.1
   if(!S.hover) return;
   var ds=S.ds,hp=S.hover,sc=S.vp.sc;
   ctx.save();ctx.strokeStyle='#4d9ef7';ctx.lineWidth=.7;ctx.setLineDash([5,4]);ctx.globalAlpha=.75;ctx.shadowBlur=0;
@@ -3021,7 +3036,7 @@ function finishWin(){
     var e=S.ents[i],ly=getLy(e.ly);if(ly&&!ly.vis)continue;
     var bb=bbox(e);if(!bb)continue;
     var inside=bb.x>=x0&&bb.y>=y0&&(bb.x+bb.w)<=x1&&(bb.y+bb.h)<=y1;
-    var touches=!(bb.x>x1||(bb.x+bb.w)<x0||bb.y>y1||(bb.y+bb.h)<y0);
+    var touches=!(bb.x>x1||(bb.x+bb.w)<x0||bb.y>y1||(bb.y+bb.h)<y0)&&(inside||entCrossesRect(e,{x:x0,y:y0,w:x1-x0,h:y1-y0})); // v7.2
     if((isR?inside:touches)&&S.sel.indexOf(e.id)<0) S.sel.push(e.id);
   }
   S.isWin=false;S.winFrom=null;
@@ -3307,6 +3322,7 @@ function onCmdKey(e){
   if(S.tool==='fillet'&&S.ds&&filletInput(v)){ ci.blur(); return; }
   if((S.tool==='trim'||S.tool==='extend')&&S.ds&&teInput(v)){ ci.blur(); return; }
   if(ncIs(S.tool)&&S.ds&&ncInput(v)){ ci.blur(); return; }
+  if(S.tool==='polyline'&&S.ds&&S.ds.pts&&S.ds.pts.length&&plineOption(v)){ ci.blur(); return; }
   if(v&&trySnapOverride(v)) return;
 
   // Enter vazio: finaliza comando ativo OU repete último comando (padrão AutoCAD)
@@ -3418,7 +3434,9 @@ function onCmdKey(e){
   var up=v.toUpperCase().trim(),cmd=up.split(' ')[0];
   var map={
     'L':'line','LINE':'line','C':'circle','CIRCLE':'circle','REC':'rectangle','RECT':'rectangle','RECTANG':'rectangle','R':'redraw','RE':'redraw','REDRAW':'redraw','REGEN':'redraw',
-    'A':'arc','ARC':'arc','E':'erase','EL':'ellipse','ELLIPSE':'ellipse','T':'text','TEXT':'text',
+    'A':'arc','ARC':'arc','E':'erase','EL':'ellipse','ELLIPSE':'ellipse','T':'mtext','MT':'mtext','MTEXT':'mtext','DT':'text','TEXT':'text','ED':'textedit','TEXTEDIT':'textedit','DDEDIT':'textedit',
+     'LE':'leader','LEADER':'leader','QLEADER':'leader','MLD':'leader','MLEADER':'leader','B':'block','BLOCK':'block','BLOCO':'block','I':'insert','INSERT':'insert','INSERIR':'insert',
+     'BH':'hatch','BHATCH':'hatch','DXFIN':'dxfin','ABRIRDXF':'dxfin','IMPORTDXF':'dxfmerge','ANEXARDXF':'dxfmerge',
     'PL':'polyline','POLYLINE':'polyline','SPL':'spline','SPLINE':'spline','H':'hatch','HATCH':'hatch',
     'D':'ddim','DIM':'dim','DLI':'dim','DIMLINEAR':'dim',
     'DAL':'dimali','DIMALIGNED':'dimali',
@@ -3437,7 +3455,7 @@ function onCmdKey(e){
     'LT':'linetype','LINETYPE':'linetype','LTYPE':'linetype',
     'AR':'array','ARRAY':'array',
     'DI':'dist','DIST':'dist','DISTANCE':'dist','AA':'area','AREA':'area',
-    'P':'pan','PAN':'pan','S':'stretch','STRETCH':'stretch','SELECT':'select',
+    'P':'pan','PAN':'pan','S':'stretch','STRETCH':'stretch','SELECT':'select','J':'join','JOIN':'join','UNIR':'join','PE':'pedit','PEDIT':'pedit','BR':'break','BREAK':'break','INTERROMPER':'break',
     'U':'undo','UNDO':'undo','REDO':'redo',
     'Z':'zf','ZE':'zf','ZOOM':'zoom',
     'DEL':'del','ERASE':'del',
@@ -3453,7 +3471,11 @@ function onCmdKey(e){
     case 'text':case 'polyline':case 'spline':case 'hatch':case 'dim':case 'dimali':case 'dimr':case 'dimd':case 'dima':
     case 'move':case 'copy':case 'rotate':case 'scale':case 'mirror':case 'offset':case 'erase':
     case 'trim':case 'extend':case 'fillet':case 'chamfer':
+    case 'stretch':case 'join':case 'pedit':case 'break':
+    case 'mtext':case 'leader':case 'block':case 'insert':case 'textedit':
       setTool(act);break;
+    case 'dxfin':dxfIn(false);break;
+    case 'dxfmerge':dxfIn(true);break;
     case 'polygon':startPolygon();break;
     case 'array':showArrayDlg();break;
     case 'ddim':showDimStyle();break;
@@ -3475,7 +3497,6 @@ function onCmdKey(e){
     case 'redo':redo();break;
     case 'del':setTool('erase');break;
     case 'redraw':renderAll();log('REDRAW: tela redesenhada.','inf');break;
-    case 'stretch':log('STRETCH: previsto para o pacote 2 da v7. Por enquanto, use os grips (selecione e arraste uma alça).','inf');break;
     case 'zf':zoomFit();break;
     case 'zoom':{var zv=up.split(' ')[1];if(zv==='E'||zv==='FIT')zoomFit();else if(zv==='IN')doZoom(1.5);else if(zv==='OUT')doZoom(.67);}break;
     case 'ortho':toggleMode('ortho');break;
@@ -3489,6 +3510,8 @@ function onCmdKey(e){
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
       log('MEDIR: DI=Distância  AA=Área','inf');
+      log('ANOTAÇÃO E BLOCOS (v7.2): T/MT=MTEXT DT=TEXT ED=editar LE=LEADER | B=BLOCK I=INSERT | H=HATCH por ponto interno | DXFIN=abrir DXF IMPORTDXF=anexar','inf');
+      log('POLILINHAS (v7.1): PL com [Arco/Linha/Fechar/Desfazer] | PE=PEDIT J=JOIN BR=BREAK S=STRETCH X=EXPLODE | FILLET/CHAMFER em polilinha mantêm um único objeto','inf');
       log('EDIÇÃO (v7): E M CO RO SC MI O CHA — selecione dentro do comando (clique, janela →, cruzando ←, Todos) ou antes dele | opções entre [ ] pela letra maiúscula','inf');
       log('TRIM (TR) / EXTEND (EX): clique no trecho | arraste = cerca | área vazia = janela | Shift inverte | T=arestas C=cruzando O=modo R=apagar U=desfazer','inf');
       log('FILLET (F): 1º objeto, 2º objeto | R=raio T=aparar M=múltiplo P=polilinha U=desfazer | Shift+clique = canto vivo  —  X = EXPLODE','inf');
@@ -3820,7 +3843,7 @@ function setTool(tool){
   document.getElementById('stool').textContent=tool.toUpperCase();
   S.wrap.style.cursor=tool==='pan'?'grab':tool==='select'?'default':'crosshair';
   // Offset usa cursor quadrado customizado quando fase pick está ativa — atualizado dinamicamente em onMM
-  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE: 1° ponto (Enter/dblclk=fim):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIMLINEAR: 1º ponto:',dimali:'DIMALIGNED: 1º ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM',extend:'EXTEND',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
+  var prmpts={line:'LINE: 1º ponto | clique | coord (x,y) | @dx,dy | @dist<ang:',polyline:'PLINE Especifique o ponto inicial — depois [Arco/Linha/Fechar/Desfazer] (Enter conclui):',rectangle:'RECTANG: 1° canto:',circle:'CIRCLE: centro:',arc:'ARC: 1° ponto (3-pontos):',ellipse:'ELLIPSE: centro:',text:'TEXT: ponto de inserção:',hatch:'HATCH: 1° canto:',dim:'DIMLINEAR: 1º ponto:',dimali:'DIMALIGNED: 1º ponto:',dimr:'DIMRADIUS: centro:',dimd:'DIMDIAMETER: centro:',dima:'DIMANGULAR: vértice:',move:'MOVE: sel obj → base point:',copy:'COPY: clique no ponto base (ou selecione objetos primeiro):',rotate:'ROTATE: sel obj → pivot:',mirror:'MIRROR: 1° ponto do eixo:',scale:'SCALE: sel obj → base:',offset:'OFFSET: informe a distância na linha de comando:',select:'SELECT: clique ou janela.',pan:'PAN: arraste | scroll=zoom',trim:'TRIM',extend:'EXTEND',fillet:'FILLET: clique para configurar raio, depois 2 linhas:',polygon:'POLYGON: configure no diálogo que abriu:',chamfer:'CHAMFER: clique para configurar distâncias, depois 2 linhas:'};
   logp(prmpts[tool]||tool);
   // Offset: focar cmd input imediatamente
   if(tool==='offset'){
@@ -3857,9 +3880,9 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'7.0',offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function saveDoc(){var d={v:'7.2',blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
-var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima'];
+var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
 function validateDoc(d){
   if(!d||typeof d!=='object') return 'conteúdo não é um objeto JSON';
   var ents=d.ents||d.entities;
@@ -3893,8 +3916,8 @@ function loadDimStyles(d){
   updDimStyleSel();
 }
 function openDoc(){document.getElementById('fileInput').click();}
-function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);if(typeof d.filletR==='number'&&d.filletR>=0)S.filletR=d.filletR;if(typeof d.filletTrim==='boolean')S.filletTrim=d.filletTrim;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
-function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};loadDimStyles({});renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
+function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);S.blocks=(d.blocks&&typeof d.blocks==='object'&&!Array.isArray(d.blocks))?d.blocks:{};if(typeof d.filletR==='number'&&d.filletR>=0)S.filletR=d.filletR;if(typeof d.filletTrim==='boolean')S.filletTrim=d.filletTrim;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
+function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:S.cD.width/2,y:S.cD.height/2,sc:2};loadDimStyles({});S.blocks={};renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
 function showExport(){expFmtChange();document.getElementById('ov-export').classList.add('show');}
 function doExport(){var fmt=document.getElementById('ef').value;closeOv('ov-export');switch(fmt){case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':case 'dxf2k':expDXF('2000');break;case 'dxf12':expDXF('12');break;case 'dwg':expDWG();break;case 'png':expPNG();break;}}
 var EXP_NOTES={
@@ -4068,7 +4091,7 @@ function buildDXF(){
       case 'arc': g(0,'ARC');common();g(10,n(p.cx));g(20,n(p.cy));g(30,0);g(40,n(p.r));
         g(50,n(((p.sa*180/Math.PI)%360+360)%360));g(51,n(((p.ea*180/Math.PI)%360+360)%360));break;
       case 'poly': g(0,'POLYLINE');common();g(66,1);g(10,0);g(20,0);g(30,0);g(70,p.closed?1:0);
-        p.pts.forEach(function(v){g(0,'VERTEX');g(8,lay);g(10,n(v.x));g(20,n(v.y));g(30,0);});
+        p.pts.forEach(function(v,vi){g(0,'VERTEX');g(8,lay);g(10,n(v.x));g(20,n(v.y));g(30,0);if(p.b&&Math.abs(p.b[vi]||0)>1e-12)g(42,n(p.b[vi]));});
         g(0,'SEQEND');g(8,lay);break;
       case 'solid': g(0,'SOLID');common();var s0=p.pts[0],s1=p.pts[1],s2=p.pts[2];
         g(10,n(s0.x));g(20,n(s0.y));g(30,0);g(11,n(s1.x));g(21,n(s1.y));g(31,0);g(12,n(s2.x));g(22,n(s2.y));g(32,0);g(13,n(s2.x));g(23,n(s2.y));g(33,0);break;
@@ -4289,7 +4312,7 @@ function buildDXF2000(opt){
       case 'solid': ent('SOLID',owner,lay,'AcDbTrace',sty);var a=p.pts[0],b=p.pts[1],c=p.pts[2];
         g(10,n(a.x));g(20,n(a.y));g(30,'0.0');g(11,n(b.x));g(21,n(b.y));g(31,'0.0');g(12,n(c.x));g(22,n(c.y));g(32,'0.0');g(13,n(c.x));g(23,n(c.y));g(33,'0.0');break;
       case 'poly': case 'box': ent('LWPOLYLINE',owner,lay,'AcDbPolyline',sty);g(90,p.pts.length);g(70,(p.closed||p.k==='box')?1:0);
-        p.pts.forEach(function(v){g(10,n(v.x));g(20,n(v.y));});break;
+        p.pts.forEach(function(v,vi){g(10,n(v.x));g(20,n(v.y));if(p.b&&Math.abs(p.b[vi]||0)>1e-12)g(42,n(p.b[vi]));});break;
       case 'point': ent('POINT',owner,lay,'AcDbPoint',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');break;
       case 'text': ent('TEXT',owner,lay,'AcDbText',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');g(40,n(p.h));g(1,dxfStrCP(p.txt));
         if(p.rot)g(50,n(p.rot*180/Math.PI));g(7,'Standard');
@@ -4358,8 +4381,8 @@ function buildDXF2000(opt){
         var ht=e.htype||'lines',spc=e.sp||5,ang=e.ang!==undefined?e.ang:45;
         var hs={col:sty.col,lw:0.18,lt:'Continuous'};
         // contorno (linha) como no EduCAD
-        primToDxf({k:'poly',closed:true,pts:[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}]},OW,lay,{col:sty.col,lw:sty.lw,lt:'Continuous'});
-        if(!hatchNative||ht==='zigzag'){ entPrims(e).slice(1).forEach(function(p){primToDxf(p,OW,lay,hs);}); break; }
+        if(!e.loops) primToDxf({k:'poly',closed:true,pts:[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}]},OW,lay,{col:sty.col,lw:sty.lw,lt:'Continuous'});
+        if(!hatchNative||ht==='zigzag'){ (e.loops?entPrims(e):entPrims(e).slice(1)).forEach(function(p){primToDxf(p,OW,lay,hs);}); break; }
         // Padrões predefinidos do AutoCAD/ZWCAD (acadiso.pat), escalados para o espaçamento do EduCAD.
         // As linhas do padrão também são gravadas, como exige o formato.
         var pat,rot=0,kS,lines;
@@ -4370,10 +4393,10 @@ function buildDXF2000(opt){
         else {pat='ANSI31';kS=spc/3.175;rot=ang-45;lines=[[ang,[]]];}
         ent('HATCH',OW,lay,'AcDbHatch',hs);
         g(10,'0.0');g(20,'0.0');g(30,'0.0');g(210,'0.0');g(220,'0.0');g(230,'1.0');
-        g(2,pat);g(70,0);g(71,0);g(91,1);
-        g(92,3);g(72,0);g(73,1);g(93,4);
-        [[e.x,e.y],[e.x+e.w,e.y],[e.x+e.w,e.y+e.h],[e.x,e.y+e.h]].forEach(function(v){g(10,n(v[0]));g(20,n(v[1]));});
-        g(97,0);g(75,1);g(76,1);g(52,n(((rot%360)+360)%360));g(41,n(kS));g(77,0);
+        g(2,pat);g(70,0);g(71,0);
+        var LPS=e.loops||[[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}]];
+        g(91,LPS.length);
+        LPS.forEach(function(Lp,li){ g(92,li===0?3:2);g(72,0);g(73,1);g(93,Lp.length); Lp.forEach(function(v){g(10,n(v.x));g(20,n(v.y));}); g(97,0); });g(75,1);g(76,1);g(52,n(((rot%360)+360)%360));g(41,n(kS));g(77,0);
         g(78,lines.length);
         lines.forEach(function(L){
           var a=L[0]*Math.PI/180,bx=0,by=0;
@@ -4383,6 +4406,9 @@ function buildDXF2000(opt){
         });
         g(98,0);
       } break;
+      case 'mtext':{ ent('MTEXT',OW,lay,'AcDbMText',sty); g(10,n(e.x));g(20,n(e.y));g(30,'0.0');g(40,n(e.h));g(41,n(e.w||0));g(71,e.att||1);g(72,1);
+        var mtx=dxfStrCP(String(e.txt||'').replace(/\n/g,'\\P')); while(mtx.length>250){ g(3,mtx.slice(0,250)); mtx=mtx.slice(250); } g(1,mtx); g(7,'Standard'); if(e.rot) g(50,n(e.rot)); } break;
+      case 'leader':{ var lst=dimStyleOf(e); leaderPrims(e,lst).forEach(function(p){ primToDxf(p,OW,lay,dimPrimStyle(p,lst)); }); } break;
       case 'dim':case 'dimr':case 'dimd':case 'dima':{
         var st=dimStyleOf(e);
         if(!dimsNative){ dimPrims(e,st).forEach(function(p){primToDxf(p,OW,lay,dimPrimStyle(p,st));}); break; }
@@ -4471,7 +4497,8 @@ function buildSVG(){
       case 'arc':{var d=((p.ea-p.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);if(d<1e-9)d=2*Math.PI;
         var x1=p.cx+p.r*Math.cos(p.sa),y1=p.cy+p.r*Math.sin(p.sa),x2=p.cx+p.r*Math.cos(p.sa+d),y2=p.cy+p.r*Math.sin(p.sa+d);
         b.push('<path d="M'+f(x1)+' '+f(-y1)+' A'+f(p.r)+' '+f(p.r)+' 0 '+(d>Math.PI?1:0)+' 0 '+f(x2)+' '+f(-y2)+'" '+st+'/>');}break;
-      case 'poly': b.push('<'+(p.closed?'polygon':'polyline')+' points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" '+st+'/>');break;
+      case 'poly': if(p.b&&p.b.some(function(x){return Math.abs(x||0)>1e-12;})){ b.push('<path d="'+plSvgPath(p,f)+'" '+st+'/>'); break; }
+        b.push('<'+(p.closed?'polygon':'polyline')+' points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" '+st+'/>');break;
       case 'solid': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="'+escHTML(safeCol(it.col))+'" stroke="none"/>');break;
       case 'fillbox': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="#0a0a1a" stroke="none"/>');break;
       case 'point': b.push('<circle cx="'+f(p.x)+'" cy="'+f(-p.y)+'" r="0.3" fill="'+escHTML(safeCol(it.col))+'"/>');break;
@@ -4532,7 +4559,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.0 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.2 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -7315,7 +7342,7 @@ setTool=function(tool){ S.teFence=null; _setTool_v68(tool); if(tool==='trim'||to
    Comandos: ERASE, MOVE, COPY, ROTATE, SCALE, MIRROR, OFFSET, CHAMFER.
    ═══════════════════════════════════════════════════════════════════ */
 var NC={};
-var NC_RAW={sel:1,selwin:1,pick:1,first:1,second:1,poly:1};
+var NC_RAW={sel:1,selwin:1,pick:1,first:1,second:1,poly:1,join:1};
 if(S.offDist===undefined) S.offDist=5;
 if(S.offThrough===undefined) S.offThrough=false;
 if(S.offErase===undefined) S.offErase=false;
@@ -7364,9 +7391,10 @@ function ncPointFrom(v,base){
 function ncSelClick(ds,pt){
   if(ds.phase==='selwin'){
     var a=ds.w1,win=pt.x>=a.x,r={x:Math.min(a.x,pt.x),y:Math.min(a.y,pt.y),w:Math.abs(a.x-pt.x),h:Math.abs(a.y-pt.y)},n=0;
+    (ds.wins=ds.wins||[]).push(r);
     S.ents.forEach(function(e){ if(!ncEditable(e)) return; var b=bbox(e); if(!b) return;
       var inside=b.x>=r.x&&b.y>=r.y&&b.x+b.w<=r.x+r.w&&b.y+b.h<=r.y+r.h;
-      var cross=!(b.x>r.x+r.w||b.x+b.w<r.x||b.y>r.y+r.h||b.y+b.h<r.y);
+      var cross=!(b.x>r.x+r.w||b.x+b.w<r.x||b.y>r.y+r.h||b.y+b.h<r.y)&&(inside||entCrossesRect(e,r)); // v7.2: geometria real
       if((win?inside:cross)&&ds.ids.indexOf(e.id)<0){ ds.ids.push(e.id); n++; } });
     ds.phase='sel'; S.sel=ds.ids.slice(); log(n+' encontrado(s)'+(win?' (janela)':' (cruzando)')+', total '+ds.ids.length+'.','inf'); ncPrompt(); renderAll(); return;
   }
@@ -7743,6 +7771,1157 @@ NC.chamfer={
 
 var _setTool_v70=setTool;
 setTool=function(tool){ _setTool_v70(tool); if(ncIs(tool)) ncStart(tool); };
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v7.1 — PACOTE 2: POLILINHAS COM ARCOS, PEDIT, JOIN, BREAK, STRETCH
+   Convenção (igual ao DXF/AutoCAD): pts[i].b = bulge do segmento i→i+1
+   (b = tan(θ/4); b>0 anti-horário). Polilinha fechada guarda o 1º vértice
+   repetido no fim (convenção já usada pelo EduCAD).
+   ═══════════════════════════════════════════════════════════════════ */
+function plHasArc(e){ return !!e&&e.tp==='pl'&&Array.isArray(e.pts)&&e.pts.some(function(p){return p.b&&Math.abs(p.b)>1e-12;}); }
+function plIsDup(e){ var P=e.pts; return P.length>2&&Math.hypot(P[0].x-P[P.length-1].x,P[0].y-P[P.length-1].y)<1e-9; }
+function bulgeArc(p1,p2,b){
+  var dx=p2.x-p1.x,dy=p2.y-p1.y,d=Math.hypot(dx,dy); if(d<1e-12) return null;
+  var k=d*(1-b*b)/(4*b),cx=(p1.x+p2.x)/2-dy/d*k,cy=(p1.y+p2.y)/2+dx/d*k;
+  return {cx:cx,cy:cy,r:Math.hypot(p1.x-cx,p1.y-cy),a1:Math.atan2(p1.y-cy,p1.x-cx),th:4*Math.atan(b)};
+}
+// Segmentos: {kind:'line'|'arc', i, x1,y1,x2,y2, b, cx,cy,r,a1,th(sweep com sinal), sa,ea(anti-horário)}
+function plSegs(e){
+  var P=e.pts,n=P.length,o=[],last=(e.closed&&!plIsDup(e))?n:n-1;
+  for(var i=0;i<last;i++){
+    var a=P[i],c=P[(i+1)%n],b=a.b||0;
+    if(Math.abs(b)>1e-12){ var A=bulgeArc(a,c,b); if(A){ var a2=A.a1+A.th;
+      o.push({kind:'arc',i:i,x1:a.x,y1:a.y,x2:c.x,y2:c.y,b:b,cx:A.cx,cy:A.cy,r:A.r,a1:A.a1,th:A.th,sa:A.th>0?A.a1:a2,ea:A.th>0?a2:A.a1}); continue; } }
+    o.push({kind:'line',i:i,x1:a.x,y1:a.y,x2:c.x,y2:c.y,b:0});
+  }
+  return o;
+}
+function segLen(s){ return s.kind==='arc'?Math.abs(s.r*s.th):Math.hypot(s.x2-s.x1,s.y2-s.y1); }
+function segPt(s,t){ if(s.kind==='arc'){ var a=s.a1+s.th*t; return {x:s.cx+s.r*Math.cos(a),y:s.cy+s.r*Math.sin(a)}; } return {x:s.x1+(s.x2-s.x1)*t,y:s.y1+(s.y2-s.y1)*t}; }
+function segParam(s,p){ // parâmetro local 0..1 do ponto mais próximo
+  if(s.kind==='arc'){ var a=Math.atan2(p.y-s.cy,p.x-s.cx),d=(a-s.a1)*(s.th>0?1:-1); d=((d%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+    var t=d/Math.abs(s.th); if(t>1){ var over=(d-Math.abs(s.th)),under=2*Math.PI-d; t=over<under?1:0; } return t; }
+  var dx=s.x2-s.x1,dy=s.y2-s.y1,l2=dx*dx+dy*dy; return l2<1e-18?0:Math.max(0,Math.min(1,((p.x-s.x1)*dx+(p.y-s.y1)*dy)/l2));
+}
+function segPart(s){ return s.kind==='arc'?{tp:'arc',cx:s.cx,cy:s.cy,r:s.r,sa:s.sa,ea:s.ea}:{tp:'line',x1:s.x1,y1:s.y1,x2:s.x2,y2:s.y2}; }
+function plSample(e,k){ k=k||16; var o=[]; plSegs(e).forEach(function(s,j){ var m=s.kind==='arc'?Math.max(4,Math.ceil(k*Math.abs(s.th)/Math.PI)):1; for(var q=0;q<m;q++) o.push(segPt(s,q/m)); });
+  var S2=plSegs(e); if(S2.length){ var L=S2[S2.length-1]; o.push({x:L.x2,y:L.y2}); } return o; }
+function plLength(e){ return plSegs(e).reduce(function(a,s){return a+segLen(s);},0); }
+function plArea(e){ var P=plSample(e,48),a=0; for(var i=0;i<P.length;i++){ var q=P[(i+1)%P.length]; a+=P[i].x*q.y-q.x*P[i].y; } return Math.abs(a/2); }
+// Desenha o caminho com um mapeamento mundo→tela qualquer
+function plTrace(ctx,e,map,scale){
+  var S2=plSegs(e); if(!S2.length) return;
+  ctx.beginPath(); var p0=map(S2[0].x1,S2[0].y1); ctx.moveTo(p0.x,p0.y);
+  S2.forEach(function(s){ if(s.kind==='arc'){ var c=map(s.cx,s.cy); ctx.arc(c.x,c.y,s.r*scale,-s.a1,-(s.a1+s.th),s.th>0); } else { var q=map(s.x2,s.y2); ctx.lineTo(q.x,q.y); } });
+  if(e.closed) ctx.closePath();
+}
+// Bulge de um arco que vai de A a B passando por M
+function bulgeThrough(A,M,B){
+  var ax=A.x,ay=A.y,bx=M.x,by=M.y,cx=B.x,cy=B.y,d=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by)); if(Math.abs(d)<1e-12) return 0;
+  var ux=((ax*ax+ay*ay)*(by-cy)+(bx*bx+by*by)*(cy-ay)+(cx*cx+cy*cy)*(ay-by))/d,uy=((ax*ax+ay*ay)*(cx-bx)+(bx*bx+by*by)*(ax-cx)+(cx*cx+cy*cy)*(bx-ax))/d;
+  var aA=Math.atan2(ay-uy,ax-ux),aB=Math.atan2(cy-uy,cx-ux),aM=Math.atan2(by-uy,bx-ux);
+  var ccw=((aB-aA)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),th=arcHas(aM,aA,aB)?ccw:-(2*Math.PI-ccw);
+  return Math.tan(th/4);
+}
+
+// ── integrações com o restante do aplicativo (embrulhando as funções) ────────
+var _p2={drawE:drawE,hitEnt:hitEnt,snapPts:snapPts,bbox:bbox,entSegs:entSegs,entIntersect:entIntersect,entIntersectSnap:entIntersectSnap,
+  xformE:xformE,offsE:offsE,offsetSide:offsetSide,getGrips:getGrips,stretchGrip:stretchGrip,geomFields:geomFields,entPrims:entPrims,primsBox:primsBox,
+  explodeToLines:explodeToLines,doTrim:doTrim,doExtend:doExtend,filletHit:filletHit,filletApply:filletApply,filletPolyline:filletPolyline,chamApply:chamApply};
+drawE=function(ctx,e,sel){
+  if(!plHasArc(e)) return _p2.drawE(ctx,e,sel);
+  ctx.save(); applyStyle(ctx,e,sel); plTrace(ctx,e,w2s,S.vp.sc); ctx.stroke(); ctx.restore();
+};
+hitEnt=function(e,wx,wy){
+  if(!plHasArc(e)) return _p2.hitEnt(e,wx,wy);
+  var ly=getLy(e.ly); if(ly&&(!ly.vis||ly.lock)) return false;
+  var t=8/S.vp.sc;
+  return plSegs(e).some(function(s){ if(s.kind==='line') return segD(wx,wy,s.x1,s.y1,s.x2,s.y2)<t;
+    return Math.abs(Math.hypot(wx-s.cx,wy-s.cy)-s.r)<t&&arcHas(Math.atan2(wy-s.cy,wx-s.cx),s.sa,s.ea); });
+};
+snapPts=function(e){
+  if(!plHasArc(e)) return _p2.snapPts(e);
+  var o=[]; e.pts.forEach(function(p){o.push({x:p.x,y:p.y,st:'end'});});
+  plSegs(e).forEach(function(s){ var m=segPt(s,.5); o.push({x:m.x,y:m.y,st:'mid'}); if(s.kind==='arc') o.push({x:s.cx,y:s.cy,st:'cen'}); });
+  return o;
+};
+bbox=function(e){ if(!plHasArc(e)) return _p2.bbox(e); return ptsBox(plSample(e,24)); };
+entSegs=function(e){ if(!plHasArc(e)) return _p2.entSegs(e); var P=plSample(e,32),o=[]; for(var i=1;i<P.length;i++) o.push([P[i-1].x,P[i-1].y,P[i].x,P[i].y]); return o; };
+function _p2Split(fn,a,b){
+  if(plHasArc(a)){ var r=[]; plSegs(a).forEach(function(s){ r=r.concat(entIntersectSnap(segPart(s),b)||[]); }); return r; }
+  if(plHasArc(b)){ var r2=[]; plSegs(b).forEach(function(s){ r2=r2.concat(fn(a,segPart(s))||[]); }); return r2; }
+  return fn(a,b);
+}
+entIntersectSnap=function(a,b){ return _p2Split(_p2.entIntersectSnap,a,b); };
+entIntersect=function(a,b){ if(plHasArc(a)) return entIntersectSnap(a,b); return _p2Split(_p2.entIntersect,a,b); };
+xformE=function(e,fn,info){
+  var bs=e.tp==='pl'?e.pts.map(function(p){return p.b||0;}):null;
+  _p2.xformE(e,fn,info);
+  if(bs) e.pts.forEach(function(p,i){ var b=bs[i]*(info.kind==='mir'?-1:1); if(Math.abs(b)>1e-12) p.b=b; else delete p.b; }); // bulges preservados (espelho inverte)
+};
+// Grips: meio de segmento em arco ajusta a curvatura (arco passa pelo ponto)
+getGrips=function(e){
+  if(!plHasArc(e)) return _p2.getGrips(e);
+  var G=[],P=e.pts,n=P.length-(plIsDup(e)?1:0);
+  for(var i=0;i<n;i++) G.push({x:P[i].x,y:P[i].y,key:'v'+i});
+  plSegs(e).forEach(function(s){ var m=segPt(s,.5); G.push({x:m.x,y:m.y,key:'m'+s.i}); });
+  return G;
+};
+stretchGrip=function(e,key,base,pt){
+  if(e.tp==='pl'&&key[0]==='m'){ var i=parseInt(key.slice(1),10),s=plSegs(e).filter(function(q){return q.i===i;})[0];
+    if(s&&s.kind==='arc'){ e.pts[i].b=bulgeThrough({x:s.x1,y:s.y1},pt,{x:s.x2,y:s.y2}); return; } }
+  return _p2.stretchGrip(e,key,base,pt);
+};
+geomFields=function(e){
+  var F=_p2.geomFields(e);
+  if(e.tp==='pl'){ F.forEach(function(f){ if(f.l==='Comprimento') f.v=plLength(e); if(f.l==='Área'&&e.closed) f.v=plArea(e); });
+    if(plHasArc(e)) F.push({l:'Segmentos em arco',v:plSegs(e).filter(function(s){return s.kind==='arc';}).length,ro:true}); }
+  return F;
+};
+entPrims=function(e){
+  if(!plHasArc(e)) return _p2.entPrims(e);
+  var P=e.pts.map(function(p){return {x:p.x,y:p.y};}),B=e.pts.map(function(p){return p.b||0;});
+  if(e.closed&&plIsDup(e)){ P.pop(); B.pop(); }
+  return [{k:'poly',closed:!!e.closed,pts:P,b:B}];
+};
+primsBox=function(list){
+  return _p2.primsBox(list.map(function(p){ if(p.k==='poly'&&p.b){ var tmp={tp:'pl',closed:p.closed,pts:p.pts.map(function(v,i){return {x:v.x,y:v.y,b:p.b[i]};})}; return {k:'poly',pts:plSample(tmp,24)}; } return p; }));
+};
+// SVG de polilinha com arcos
+function plSvgPath(p,f){
+  var tmp={tp:'pl',closed:p.closed,pts:p.pts.map(function(v,i){return {x:v.x,y:v.y,b:p.b[i]};})},S2=plSegs(tmp),d='M'+f(S2[0].x1)+' '+f(-S2[0].y1);
+  S2.forEach(function(s){ d+=s.kind==='arc'?(' A'+f(s.r)+' '+f(s.r)+' 0 '+(Math.abs(s.th)>Math.PI?1:0)+' '+(s.th>0?0:1)+' '+f(s.x2)+' '+f(-s.y2)):(' L'+f(s.x2)+' '+f(-s.y2)); });
+  return d+(p.closed?' Z':'');
+}
+// EXPLODE e FILLET/CHAMFER: um segmento por índice de vértice (linhas e arcos)
+explodeToLines=function(e){
+  if(e.tp!=='pl') return _p2.explodeToLines(e);
+  return plSegs(e).map(function(s){ var base={id:uid(),ly:e.ly,col:e.col,lw:e.lw,ld:e.ld};
+    return s.kind==='arc'?Object.assign(base,{tp:'arc',cx:s.cx,cy:s.cy,r:s.r,sa:s.sa,ea:s.ea}):Object.assign(base,{tp:'line',x1:s.x1,y1:s.y1,x2:s.x2,y2:s.y2}); });
+};
+filletHit=function(pt){
+  var h=_p2.filletHit(pt); if(!h||h.e.tp!=='pl') return h;
+  var S2=plSegs(h.e),bi=-1,bd=1e18;
+  S2.forEach(function(s,k){ var q=segPt(s,segParam(s,pt)),d=Math.hypot(q.x-pt.x,q.y-pt.y); if(d<bd){bd=d;bi=k;} });
+  var s=S2[bi]; h.seg=bi;
+  h.curve=s.kind==='arc'?{kind:'circ',cx:s.cx,cy:s.cy,r:s.r,arc:{sa:s.sa,ea:s.ea}}:{kind:'line',x1:s.x1,y1:s.y1,x2:s.x2,y2:s.y2};
+  return h;
+};
+
+// ── FILLET/CHAMFER nos vértices: a polilinha continua sendo um único objeto ───
+function plUnique(e){ var P=e.pts.map(function(p){return {x:p.x,y:p.y,b:p.b||0};}); if(e.closed&&plIsDup(e)) P.pop(); return P; }
+function plRebuild(e,V){ var P=V.map(function(p){var q={x:p.x,y:p.y}; if(p.b) q.b=p.b; return q;}); if(e.closed&&P.length>2) P.push({x:P[0].x,y:P[0].y}); e.pts=P; }
+// mode: 'fillet' (R) | 'chamfer' (d1,d2 | len,ang). verts: índices (em V) a tratar. Retorna {ok,fail}.
+function plCornerOps(e,verts,mode,o){
+  var V=plUnique(e),m=V.length,closed=!!e.closed,ops={},ok=0,fail=0;
+  verts.forEach(function(k){
+    if(!closed&&(k<=0||k>=m-1)){ fail++; return; }
+    var A=V[(k-1+m)%m],C=V[k],B=V[(k+1)%m];
+    if(Math.abs(A.b||0)>1e-12||Math.abs(C.b||0)>1e-12){ fail++; return; } // só entre segmentos retos
+    var l1=Math.hypot(C.x-A.x,C.y-A.y),l2=Math.hypot(B.x-C.x,B.y-C.y); if(l1<1e-9||l2<1e-9){ fail++; return; }
+    var u1={x:(C.x-A.x)/l1,y:(C.y-A.y)/l1},u2={x:(B.x-C.x)/l2,y:(B.y-C.y)/l2},cr=u1.x*u2.y-u1.y*u2.x,dt=u1.x*u2.x+u1.y*u2.y;
+    var defl=Math.atan2(cr,dt); if(Math.abs(defl)<1e-9){ fail++; return; }
+    var t1,t2,b=0;
+    if(mode==='fillet'){ if(!(o.R>1e-9)){ ok++; return; } t1=t2=o.R*Math.tan(Math.abs(defl)/2); b=Math.tan(defl/4); }
+    else if(o.ang!==undefined){ var phi=Math.PI-Math.abs(defl),a=o.ang*Math.PI/180,den=Math.sin(Math.PI-a-phi); if(!(den>1e-9)){ fail++; return; } t1=o.len; t2=o.len*Math.sin(a)/den; }
+    else { t1=o.d1; t2=o.d2; if(!(t1>1e-9||t2>1e-9)){ ok++; return; } }
+    ops[k]={t1:t1,t2:t2,b:b,u1:u1,u2:u2,C:C};
+  });
+  // os segmentos precisam comportar os dois cortes vizinhos
+  Object.keys(ops).forEach(function(ks){ var k=+ks,o2=ops[k],prev=ops[(k-1+m)%m],next=ops[(k+1)%m];
+    var lIn=Math.hypot(V[k].x-V[(k-1+m)%m].x,V[k].y-V[(k-1+m)%m].y),lOut=Math.hypot(V[(k+1)%m].x-V[k].x,V[(k+1)%m].y-V[k].y);
+    if(o2.t1+(prev&&prev!==o2?prev.t2:0)>lIn+1e-9||o2.t2+(next&&next!==o2?next.t1:0)>lOut+1e-9) o2.bad=true; });
+  var out=[];
+  for(var k=0;k<m;k++){ var q=ops[k];
+    if(q&&!q.bad){ out.push({x:q.C.x-q.u1.x*q.t1,y:q.C.y-q.u1.y*q.t1,b:q.b}); out.push({x:q.C.x+q.u2.x*q.t2,y:q.C.y+q.u2.y*q.t2,b:V[k].b}); ok++; }
+    else { if(q&&q.bad) fail++; out.push(V[k]); }
+  }
+  plRebuild(e,out);
+  return {ok:ok,fail:fail};
+}
+function plAdjVertex(e,i,j){ // vértice compartilhado por dois segmentos (índices de plSegs), ou -1
+  var m=plUnique(e).length;
+  if(j===i+1) return i+1; if(i===j+1) return j+1;
+  if(e.closed&&((i===0&&j===m-1)||(j===0&&i===m-1))) return 0;
+  return -1;
+}
+function plSameObjCorner(h1,h2,mode,o){
+  var e=h1.e; if(e.tp==='rect') rectToPl(e);
+  var v=plAdjVertex(e,h1.seg,h2.seg); if(v<0) return null;
+  var V=plUnique(e); v=v%V.length;
+  return plCornerOps(e,[v],mode,o);
+}
+filletApply=function(h1,h2,R,noSnap){
+  if(h1.e===h2.e&&h1.seg!==null&&h2.seg!==null&&h1.seg!==h2.seg&&(h1.e.tp==='pl'||h1.e.tp==='rect')&&h1.curve.kind==='line'&&h2.curve.kind==='line'){
+    var test=JSON.parse(JSON.stringify(h1.e)),tv=plSameObjCorner({e:test,seg:h1.seg},{e:test,seg:h2.seg},'fillet',{R:R});
+    if(tv){ if(tv.fail){ log('FILLET: raio muito grande para estes segmentos.','er'); return false; }
+      if(!noSnap) snapshot(); plSameObjCorner(h1,h2,'fillet',{R:R});
+      log('FILLET: concordância R='+gNum(R)+' na polilinha (continua um único objeto).','ok'); return true; }
+  }
+  return _p2.filletApply(h1,h2,R,noSnap);
+};
+filletPolyline=function(e){
+  if(e.tp!=='pl'&&e.tp!=='rect'){ log('FILLET: o objeto não é uma polilinha nem um retângulo.','er'); return; }
+  snapshot(); if(e.tp==='rect') rectToPl(e);
+  var V=plUnique(e),idx=[]; for(var k=0;k<V.length;k++) idx.push(k);
+  var r=plCornerOps(e,idx,'fillet',{R:S.filletR});
+  log('FILLET Polilinha: '+r.ok+' vértice(s) concordado(s)'+(r.fail?', '+r.fail+' não (segmento curto, arco ou ponta)':'')+'. A polilinha continua um único objeto.',r.ok?'ok':'er');
+  renderAll();
+};
+function chamOpts(zero){ return zero?{d1:0,d2:0}:(S.chamMethod==='angle'?{len:S.chamLen,ang:S.chamAng}:{d1:S.chamD1,d2:S.chamD2}); }
+chamApply=function(h1,h2,zero,noSnap){
+  if(h1.e===h2.e&&h1.seg!==null&&h2.seg!==null&&h1.seg!==h2.seg&&(h1.e.tp==='pl'||h1.e.tp==='rect')){
+    var test=JSON.parse(JSON.stringify(h1.e)),tv=plSameObjCorner({e:test,seg:h1.seg},{e:test,seg:h2.seg},'chamfer',chamOpts(zero));
+    if(tv){ if(tv.fail){ log('CHAMFER: distância grande demais para estes segmentos.','er'); return false; }
+      if(!noSnap) snapshot(); plSameObjCorner(h1,h2,'chamfer',chamOpts(zero));
+      log('CHAMFER: chanfro na polilinha (continua um único objeto).','ok'); return true; }
+  }
+  return _p2.chamApply(h1,h2,zero,noSnap);
+};
+(function(){ var c0=NC.chamfer.click;
+  NC.chamfer.click=function(ds,pt){
+    if(ds.phase!=='poly') return c0.call(this,ds,pt);
+    var h=filletHit(pt); if(!h||(h.e.tp!=='pl'&&h.e.tp!=='rect')){ log('Selecione uma polilinha ou retângulo.','inf'); return; }
+    var e=h.e; snapshot(); if(e.tp==='rect') rectToPl(e);
+    var V=plUnique(e),idx=[]; for(var k=0;k<V.length;k++) idx.push(k);
+    var r=plCornerOps(e,idx,'chamfer',chamOpts(false));
+    log('CHAMFER Polilinha: '+r.ok+' vértice(s) chanfrado(s)'+(r.fail?', '+r.fail+' não':'')+'. A polilinha continua um único objeto.',r.ok?'ok':'er');
+    this.after(ds);
+  };
+})();
+
+// ── OFFSET de polilinhas com arcos ──────────────────────────────────────────
+function plOffsetArcs(e,d){
+  var S2=plSegs(e); if(!S2.length) return null;
+  var off=[];
+  for(var i=0;i<S2.length;i++){ var s=S2[i];
+    if(s.kind==='line'){ var l=Math.hypot(s.x2-s.x1,s.y2-s.y1),nx=-(s.y2-s.y1)/l*d,ny=(s.x2-s.x1)/l*d; off.push({kind:'line',x1:s.x1+nx,y1:s.y1+ny,x2:s.x2+nx,y2:s.y2+ny}); }
+    else { var r2=s.r+(s.th>0?-d:d); if(r2<=1e-9) return null; var a2=s.a1+s.th;
+      off.push({kind:'arc',cx:s.cx,cy:s.cy,r:r2,th:s.th,x1:s.cx+r2*Math.cos(s.a1),y1:s.cy+r2*Math.sin(s.a1),x2:s.cx+r2*Math.cos(a2),y2:s.cy+r2*Math.sin(a2)}); }
+  }
+  function cv(o){ return o.kind==='line'?{kind:'line',x1:o.x1,y1:o.y1,x2:o.x2,y2:o.y2}:{kind:'circ',cx:o.cx,cy:o.cy,r:o.r}; }
+  function join(a,b){ var I=_curveInt(cv(a),cv(b)),ref={x:a.x2,y:a.y2}; if(!I.length) return null;
+    I.sort(function(p,q){return Math.hypot(p.x-ref.x,p.y-ref.y)-Math.hypot(q.x-ref.x,q.y-ref.y);}); return I[0]; }
+  var closed=!!e.closed,n=off.length,J=[];
+  for(var k=0;k<n;k++){ if(!closed&&k===n-1) break; var a=off[k],b=off[(k+1)%n],p=join(a,b); J.push(p||{x:a.x2,y:a.y2,gap:{x:b.x1,y:b.y1}}); }
+  function bul(o,S0,E0){ if(o.kind!=='arc') return 0; var aS=Math.atan2(S0.y-o.cy,S0.x-o.cx),aE=Math.atan2(E0.y-o.cy,E0.x-o.cx),th;
+    if(o.th>0){ th=((aE-aS)%(2*Math.PI)+2*Math.PI)%(2*Math.PI); if(th<1e-9&&Math.abs(o.th)>Math.PI) th=2*Math.PI; } else { th=-(((aS-aE)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)); }
+    return Math.tan(th/4); }
+  var V=[];
+  for(var k2=0;k2<n;k2++){
+    var o=off[k2],start=closed?J[(k2-1+n)%n]:(k2===0?{x:o.x1,y:o.y1}:J[k2-1]),end=closed?J[k2]:(k2===n-1?{x:o.x2,y:o.y2}:J[k2]);
+    var st=start.gap?{x:start.gap.x,y:start.gap.y}:start;
+    V.push({x:st.x,y:st.y,b:bul(o,st,{x:end.x,y:end.y})});
+    if(end.gap) V.push({x:end.x,y:end.y,b:0}); // degrau entre segmentos sem interseção
+  }
+  if(!closed){ var lo=off[n-1]; V.push({x:lo.x2,y:lo.y2,b:0}); }
+  return V;
+}
+offsE=function(e,d){
+  if(!plHasArc(e)) return _p2.offsE(e,d);
+  var V=plOffsetArcs(e,d); if(!V) return false;
+  var P=V.map(function(p){var q={x:p.x,y:p.y}; if(Math.abs(p.b)>1e-12) q.b=p.b; return q;});
+  if(e.closed) P.push({x:P[0].x,y:P[0].y});
+  e.pts=P; return true;
+};
+offsetSide=function(e,mx,my,d){
+  if(!plHasArc(e)) return _p2.offsetSide(e,mx,my,d);
+  var best=null,bd=1e18; plSegs(e).forEach(function(s){ var q=segPt(s,segParam(s,{x:mx,y:my})),dd=Math.hypot(q.x-mx,q.y-my); if(dd<bd){bd=dd;best=s;} });
+  if(best.kind==='arc'){ var inside=Math.hypot(mx-best.cx,my-best.cy)<best.r; return (inside===(best.th>0))?d:-d; }
+  return ((mx-best.x1)*(-(best.y2-best.y1))+(my-best.y1)*(best.x2-best.x1))>=0?d:-d;
+};
+
+// ── parâmetros ao longo da polilinha (TRIM, BREAK) ──────────────────────────
+function plParamAt(e,p){ var S2=plSegs(e),bi=0,bd=1e18,bt=0; S2.forEach(function(s,k){ var t=segParam(s,p),q=segPt(s,t),d=Math.hypot(q.x-p.x,q.y-p.y); if(d<bd){bd=d;bi=k;bt=t;} }); return bi+bt; }
+function plPointAt(S2,u){ var k=Math.min(S2.length-1,Math.floor(u)); return segPt(S2[k],u-k); }
+// Trecho da polilinha entre os parâmetros u0<u1 → vértices com bulge
+function plSubVerts(S2,u0,u1){
+  var V=[],k0=Math.floor(u0),k1=Math.min(S2.length-1,Math.floor(u1-1e-12));
+  for(var k=k0;k<=k1;k++){ var s=S2[k],ta=k===k0?u0-k:0,tb=k===k1?u1-k:1; if(tb-ta<1e-12) continue;
+    var a=segPt(s,ta); V.push({x:a.x,y:a.y,b:s.kind==='arc'?Math.tan(s.th*(tb-ta)/4):0}); }
+  var e1=plPointAt(S2,u1); V.push({x:e1.x,y:e1.y,b:0}); return V;
+}
+function plFromVerts(src,V,keepId){
+  var P=V.map(function(p){var q={x:p.x,y:p.y}; if(Math.abs(p.b||0)>1e-12) q.b=p.b; return q;});
+  return {id:keepId?src.id:uid(),tp:'pl',closed:false,pts:P,ly:src.ly,col:src.col,lw:src.lw,ld:src.ld};
+}
+// Remove o trecho (ua,ub) de uma polilinha; fechada vira aberta. Substitui no desenho.
+function plRemoveRange(e,ua,ub){
+  var S2=plSegs(e),N=S2.length,pieces=[];
+  if(e.closed){ var V=plSubVerts(S2,ub,N).concat(plSubVerts(S2,0,ua).slice(1)); if(V.length>=2) pieces.push(plFromVerts(e,V,true)); }
+  else { if(ua>1e-9){ var A=plSubVerts(S2,0,ua); if(A.length>=2) pieces.push(plFromVerts(e,A,true)); }
+    if(ub<N-1e-9){ var B=plSubVerts(S2,ub,N); if(B.length>=2) pieces.push(plFromVerts(e,B,!pieces.length)); } }
+  var i=S.ents.indexOf(e); if(i<0) return;
+  S.ents.splice.apply(S.ents,[i,1].concat(pieces));
+}
+function plTrimArcs(tgt,pick,cutters){
+  var S2=plSegs(tgt),N=S2.length,us=[];
+  cutters.forEach(function(id){ var c=findE(id); if(!c||c.id===tgt.id) return;
+    S2.forEach(function(s,k){ (_p2.entIntersectSnap(segPart(s),c)||[]).forEach(function(q){ us.push(k+segParam(s,q)); }); }); });
+  if(!us.length) return false;
+  us.sort(function(a,b){return a-b;});
+  var up=plParamAt(tgt,pick),lo=null,hi=null;
+  us.forEach(function(u){ if(u<up-1e-9) lo=u; else if(u>up+1e-9&&hi===null) hi=u; });
+  snapshot();
+  if(tgt.closed){
+    if(us.length<2){ S.undos.pop(); return false; }
+    if(lo===null) lo=us[us.length-1]-N; if(hi===null) hi=us[0]+N;
+    var a0=((hi%N)+N)%N,len=(((lo-hi)%N)+N)%N;
+    var V=a0+len<=N?plSubVerts(S2,a0,a0+len):plSubVerts(S2,a0,N).concat(plSubVerts(S2,0,a0+len-N).slice(1));
+    var i=S.ents.indexOf(tgt); S.ents.splice(i,1,plFromVerts(tgt,V,true));
+  } else plRemoveRange(tgt,lo===null?0:lo,hi===null?N:hi);
+  renderAll(); return true;
+}
+doTrim=function(tgt,pick,cutters){ if(plHasArc(tgt)) return plTrimArcs(tgt,pick,cutters); return _p2.doTrim(tgt,pick,cutters); };
+doExtend=function(tgt,pick,bounds){
+  if(plHasArc(tgt)){ var S2=plSegs(tgt),first=S2[0],last=S2[S2.length-1],atStart=Math.hypot(pick.x-first.x1,pick.y-first.y1)<Math.hypot(pick.x-last.x2,pick.y-last.y2);
+    if((atStart?first:last).kind==='arc'){ log('EXTEND: estender ponta em arco de polilinha ainda não é suportado.','inf'); return false; } }
+  return _p2.doExtend(tgt,pick,bounds);
+};
+
+// ── conversões ─────────────────────────────────────────────────────────────
+function toPlPiece(e){ // linha, arco ou polilinha aberta → vértices com bulge
+  if(e.tp==='line') return [{x:e.x1,y:e.y1,b:0},{x:e.x2,y:e.y2,b:0}];
+  if(e.tp==='arc'){ var sw=((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI); if(sw<1e-9) return null;
+    return [{x:e.cx+e.r*Math.cos(e.sa),y:e.cy+e.r*Math.sin(e.sa),b:Math.tan(sw/4)},{x:e.cx+e.r*Math.cos(e.ea),y:e.cy+e.r*Math.sin(e.ea),b:0}]; }
+  if(e.tp==='pl'&&!e.closed) return e.pts.map(function(p){return {x:p.x,y:p.y,b:p.b||0};});
+  return null;
+}
+function revPiece(V){ var n=V.length,o=[]; for(var i=n-1;i>=0;i--) o.push({x:V[i].x,y:V[i].y,b:i>0?-(V[i-1].b||0):0}); return o; }
+var JOIN_TOL=1e-6;
+function ptEq(a,b){ return Math.hypot(a.x-b.x,a.y-b.y)<=JOIN_TOL*Math.max(1,Math.abs(a.x)+Math.abs(a.y)); }
+// Encadeia peças a partir de uma fonte. Retorna {verts, used:[ids], closed}
+function chainJoin(src,others){
+  var V=toPlPiece(src); if(!V) return null;
+  var used=[],pool=others.slice(),grew=true;
+  while(grew){ grew=false;
+    for(var i=0;i<pool.length;i++){ var o=pool[i],P=toPlPiece(o); if(!P) continue;
+      var head=V[0],tail=V[V.length-1],ph=P[0],pt=P[P.length-1],add=null,front=false;
+      if(ptEq(tail,ph)) add=P; else if(ptEq(tail,pt)) add=revPiece(P); else if(ptEq(head,pt)){ add=P; front=true; } else if(ptEq(head,ph)){ add=revPiece(P); front=true; }
+      if(add){ if(front){ V=add.slice(0,-1).concat(V); } else { V[V.length-1].b=add[0].b; V=V.concat(add.slice(1)); }
+        used.push(o.id); pool.splice(i,1); grew=true; break; } } }
+  var closed=V.length>2&&ptEq(V[0],V[V.length-1]);
+  if(closed) V[V.length-1]={x:V[0].x,y:V[0].y,b:0};
+  return {verts:V,used:used,closed:closed};
+}
+function applyChain(src,res){
+  var P=res.verts.map(function(p){var q={x:p.x,y:p.y}; if(Math.abs(p.b||0)>1e-12) q.b=p.b; return q;});
+  var pl={id:src.id,tp:'pl',closed:res.closed,pts:P,ly:src.ly,col:src.col,lw:src.lw,ld:src.ld};
+  var i=S.ents.indexOf(src); S.ents[i]=pl;
+  S.ents=S.ents.filter(function(e){return res.used.indexOf(e.id)<0;});
+  return pl;
+}
+
+// ── JOIN (J) ───────────────────────────────────────────────────────────────
+function joinCollinear(list){
+  if(!list.every(function(e){return e.tp==='line';})) return null;
+  var a=list[0],dx=a.x2-a.x1,dy=a.y2-a.y1,l=Math.hypot(dx,dy),ux=dx/l,uy=dy/l,tol=1e-6*(1+l);
+  var ts=[];
+  for(var i=0;i<list.length;i++){ var e=list[i];
+    var d1=Math.abs((e.x1-a.x1)*uy-(e.y1-a.y1)*ux),d2=Math.abs((e.x2-a.x1)*uy-(e.y2-a.y1)*ux); if(d1>tol||d2>tol) return null;
+    ts.push((e.x1-a.x1)*ux+(e.y1-a.y1)*uy,(e.x2-a.x1)*ux+(e.y2-a.y1)*uy); }
+  var t0=Math.min.apply(null,ts),t1=Math.max.apply(null,ts);
+  return {x1:a.x1+ux*t0,y1:a.y1+uy*t0,x2:a.x1+ux*t1,y2:a.y1+uy*t1};
+}
+function joinConcentric(list){
+  if(!list.every(function(e){return e.tp==='arc';})) return null;
+  var a=list[0],tol=1e-6*(1+a.r);
+  if(!list.every(function(e){return Math.hypot(e.cx-a.cx,e.cy-a.cy)<tol&&Math.abs(e.r-a.r)<tol;})) return null;
+  var iv=list.map(function(e){var s=((e.sa%(2*Math.PI))+2*Math.PI)%(2*Math.PI),w=((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);return [s,s+w];}).sort(function(p,q){return p[0]-q[0];});
+  var m=[iv[0].slice()]; iv.slice(1).forEach(function(v){ var L=m[m.length-1]; if(v[0]<=L[1]+1e-9) L[1]=Math.max(L[1],v[1]); else m.push(v.slice()); });
+  if(m.length>1&&m[m.length-1][1]>=m[0][0]+2*Math.PI-1e-9){ var L2=m.pop(); m[0]=[L2[0],m[0][1]+2*Math.PI]; }
+  var cov=m.reduce(function(s,v){return s+v[1]-v[0];},0);
+  if(cov>=2*Math.PI-1e-9) return {full:true};
+  var big=0,gi=0; for(var k=0;k<m.length;k++){ var nx=m[(k+1)%m.length],g=((nx[0]-m[k][1])%(2*Math.PI)+2*Math.PI)%(2*Math.PI); if(g>big){big=g;gi=k;} }
+  return {sa:m[(gi+1)%m.length][0],ea:m[gi][1]};
+}
+NC.join={needSel:true,prompt:function(){return '';},click:function(){},input:function(){return true;},
+  afterSel:function(ds){
+    var list=ds.ids.map(findE).filter(Boolean);
+    if(list.length<2){ log('JOIN: selecione pelo menos dois objetos.','er'); ncEnd(); return; }
+    var src=list[0];
+    var L=joinCollinear(list);
+    if(L){ snapshot(); src.x1=L.x1;src.y1=L.y1;src.x2=L.x2;src.y2=L.y2; S.ents=S.ents.filter(function(e){return e===src||ds.ids.indexOf(e.id)<0;}); log('JOIN: '+list.length+' linhas colineares unidas em uma.','ok'); ncEnd(); return; }
+    var A=joinConcentric(list);
+    if(A){ snapshot(); if(A.full){ var c={id:src.id,tp:'circ',cx:src.cx,cy:src.cy,r:src.r,ly:src.ly,col:src.col,lw:src.lw,ld:src.ld}; S.ents[S.ents.indexOf(src)]=c; }
+      else { src.sa=A.sa; src.ea=A.ea; }
+      S.ents=S.ents.filter(function(e){return e.id===src.id||ds.ids.indexOf(e.id)<0;}); log('JOIN: '+list.length+' arcos unidos'+(A.full?' em um círculo':'')+'.','ok'); ncEnd(); return; }
+    var srcPiece=list.filter(function(e){return toPlPiece(e);})[0]; if(!srcPiece){ log('JOIN: objetos não podem ser unidos.','er'); ncEnd(); return; }
+    var res=chainJoin(srcPiece,list.filter(function(e){return e!==srcPiece;}));
+    if(!res||!res.used.length){ log('JOIN: nenhuma extremidade coincidente; nada unido.','er'); ncEnd(); return; }
+    snapshot(); applyChain(srcPiece,res);
+    log('JOIN: '+(res.used.length+1)+' objeto(s) unido(s) em uma polilinha'+(res.closed?' fechada':'')+(list.length-res.used.length-1>0?' ('+(list.length-res.used.length-1)+' sem conexão)':'')+'.','ok');
+    ncEnd();
+  }};
+
+// ── PEDIT (PE) ─────────────────────────────────────────────────────────────
+NC.pedit={
+  init:function(ds){ ds.phase='pick'; },
+  prompt:function(ds){ var e=ds.id&&findE(ds.id);
+    return {pick:'PEDIT Selecione a polilinha:',conv:'O objeto selecionado não é uma polilinha. Deseja transformá-lo em uma? <S>:',
+      opt:'Insira uma opção ['+(e&&e.closed?'Abrir':'Fechar')+'/Unir(J)/Decurvar/Inverter/Desfazer] <Sair>:',join:'Selecione objetos a unir (Enter conclui):'}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='pick'){
+      var h=null; for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(['pl','rect','line','arc'].indexOf(e.tp)>=0&&ncEditable(e)&&hitEnt(e,pt.x,pt.y)){h=e;break;} }
+      if(!h){ log('Selecione uma polilinha, retângulo, linha ou arco.','inf'); return; }
+      ds.id=h.id; S.sel=[h.id];
+      if(h.tp==='rect'){ snapshot(); rectToPl(h); ds.done++; }
+      ds.phase=(h.tp==='line'||h.tp==='arc')?'conv':'opt'; return;
+    }
+    if(ds.phase==='join'){ var hj=null; for(var j=S.ents.length-1;j>=0;j--){ var o=S.ents[j]; if(o.id!==ds.id&&toPlPiece(o)&&ncEditable(o)&&hitEnt(o,pt.x,pt.y)){hj=o;break;} }
+      if(hj&&ds.jids.indexOf(hj.id)<0){ ds.jids.push(hj.id); S.sel=[ds.id].concat(ds.jids); } }
+  },
+  input:function(ds,u){
+    var e=findE(ds.id);
+    if(ds.phase==='pick') return u===''?(ncEnd(),true):false;
+    if(ds.phase==='conv'){ if(u===''||u==='S'||u==='Y'||u==='SIM'){ snapshot(); var V=toPlPiece(e); var pl=applyChain(e,{verts:V,used:[],closed:false}); ds.done++; ds.id=pl.id; ds.phase='opt'; log('Convertido em polilinha.','ok'); return true; }
+      if(u==='N'||u==='NAO'||u==='NÃO'){ ncEnd(); return true; } return false; }
+    if(ds.phase==='join'){
+      if(u!=='') return false;
+      if(!ds.jids.length){ ds.phase='opt'; return true; }
+      if(e.closed){ log('PEDIT Unir: a polilinha está fechada.','er'); ds.phase='opt'; return true; }
+      var res=chainJoin(e,ds.jids.map(findE).filter(Boolean));
+      if(res&&res.used.length){ snapshot(); applyChain(e,res); ds.done++; log(res.used.length+' segmento(s) adicionado(s) à polilinha.','ok'); } else log('Nenhum objeto com extremidade coincidente.','er');
+      ds.phase='opt'; S.sel=[ds.id]; return true;
+    }
+    // opções
+    if(u===''||u==='X'||u==='S'||u==='SAIR'){ ncEnd(); return true; }
+    if((u==='F'||u==='C'||u==='FECHAR'||u==='CLOSE')&&!e.closed){ snapshot(); e.closed=true; if(!plIsDup(e)) e.pts.push({x:e.pts[0].x,y:e.pts[0].y}); ds.done++; log('Polilinha fechada.','ok'); return true; }
+    if((u==='A'||u==='O'||u==='ABRIR'||u==='OPEN')&&e.closed){ snapshot(); if(plIsDup(e)) e.pts.pop(); e.closed=false; ds.done++; log('Polilinha aberta.','ok'); return true; }
+    if(u==='J'||u==='UNIR'||u==='JOIN'){ ds.phase='join'; ds.jids=[]; return true; }
+    if(u==='D'||u==='DECURVAR'||u==='DECURVE'){ snapshot(); e.pts.forEach(function(p){delete p.b;}); ds.done++; log('Arcos removidos (segmentos retos).','ok'); return true; }
+    if(u==='I'||u==='R'||u==='INVERTER'||u==='REVERSE'){ snapshot(); var dup=e.closed&&plIsDup(e),V=e.pts.map(function(p){return {x:p.x,y:p.y,b:p.b||0};}),Rv=revPiece(V);
+      e.pts=Rv.map(function(p){var q={x:p.x,y:p.y}; if(Math.abs(p.b)>1e-12) q.b=p.b; return q;}); ds.done++; log('Sentido da polilinha invertido.','ok'); return true; }
+    if(u==='U'||u==='DESFAZER'||u==='UNDO'){ if(ds.done>0){ undo(); ds.done--; S.ds=ds; if(!findE(ds.id)){ ncEnd(); } } else log('Nada para desfazer.','inf'); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){ if(ds.phase==='pick'){ for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(['pl','rect','line','arc'].indexOf(e.tp)>=0&&hitEnt(e,hp.x,hp.y)){ var c=JSON.parse(JSON.stringify(e)); c.col='#f5a623'; c.lw=2; drawE(ctx,c,false); break; } } } }
+};
+
+// ── BREAK (BR) ─────────────────────────────────────────────────────────────
+function breakApply(e,p1,p2){
+  var same=Math.hypot(p1.x-p2.x,p1.y-p2.y)<1e-9,i=S.ents.indexOf(e),out=null;
+  if(e.tp==='line'){ var dx=e.x2-e.x1,dy=e.y2-e.y1,l2=dx*dx+dy*dy,tp=function(p){return Math.max(0,Math.min(1,((p.x-e.x1)*dx+(p.y-e.y1)*dy)/l2));},t1=tp(p1),t2=tp(p2),a=Math.min(t1,t2),b=Math.max(t1,t2);
+    out=[]; if(a>1e-9) out.push(Object.assign(JSON.parse(JSON.stringify(e)),{x2:e.x1+dx*a,y2:e.y1+dy*a}));
+    if(b<1-1e-9) out.push(Object.assign(JSON.parse(JSON.stringify(e)),{id:out.length?uid():e.id,x1:e.x1+dx*b,y1:e.y1+dy*b})); }
+  else if(e.tp==='circ'){ if(same) return 'Um círculo não pode ser interrompido em um único ponto.';
+    var a1=Math.atan2(p1.y-e.cy,p1.x-e.cx),a2=Math.atan2(p2.y-e.cy,p2.x-e.cx);
+    out=[{id:e.id,tp:'arc',cx:e.cx,cy:e.cy,r:e.r,sa:a2,ea:a1,ly:e.ly,col:e.col,lw:e.lw,ld:e.ld}]; }
+  else if(e.tp==='arc'){ var sw=((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),pr=function(p){var d=((Math.atan2(p.y-e.cy,p.x-e.cx)-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI);return Math.min(d,sw);};
+    var u1=pr(p1),u2=pr(p2),lo=Math.min(u1,u2),hi=Math.max(u1,u2); out=[];
+    if(lo>1e-9) out.push(Object.assign(JSON.parse(JSON.stringify(e)),{ea:e.sa+lo}));
+    if(hi<sw-1e-9) out.push(Object.assign(JSON.parse(JSON.stringify(e)),{id:out.length?uid():e.id,sa:e.sa+hi})); }
+  else if(e.tp==='pl'||e.tp==='rect'){ if(e.tp==='rect') rectToPl(e);
+    var ua=plParamAt(e,p1),ub=plParamAt(e,p2),N=plSegs(e).length;
+    if(e.closed&&same) return 'Use dois pontos para interromper uma polilinha fechada.';
+    var lo2=Math.min(ua,ub),hi2=Math.max(ua,ub);
+    if(e.closed){ plRemoveRange(e,lo2,hi2); return null; }
+    if(same){ var S2=plSegs(e),A=plSubVerts(S2,0,ua),B=plSubVerts(S2,ua,N); out=[]; if(A.length>=2) out.push(plFromVerts(e,A,true)); if(B.length>=2) out.push(plFromVerts(e,B,!out.length)); }
+    else { plRemoveRange(e,lo2,hi2); return null; } }
+  else return 'Tipo de objeto não suportado pelo BREAK.';
+  S.ents.splice.apply(S.ents,[i,1].concat(out||[]));
+  return null;
+}
+function nearOn(e,p){ if(e.tp==='pl'||e.tp==='rect'){ var tmp=e.tp==='rect'?(function(){var c=JSON.parse(JSON.stringify(e));rectToPl(c);return c;})():e,S2=plSegs(tmp),u=plParamAt(tmp,p); return plPointAt(S2,u); } return nearestOn(e,p.x,p.y)||p; }
+NC['break']={
+  init:function(ds){ ds.phase='pick'; },
+  prompt:function(ds){ return {pick:'BREAK Selecione o objeto:',p2:'Especifique o segundo ponto de interrupção ou [Primeiro ponto] (@ = mesmo ponto):',p1:'Especifique o primeiro ponto de interrupção:',p2b:'Especifique o segundo ponto de interrupção (@ = mesmo ponto):'}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='pick'){ var h=null; for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(['line','arc','circ','pl','rect'].indexOf(e.tp)>=0&&ncEditable(e)&&hitEnt(e,pt.x,pt.y)){h=e;break;} }
+      if(!h){ log('Selecione linha, arco, círculo, polilinha ou retângulo.','inf'); return; } ds.id=h.id; S.sel=[h.id]; ds.p1=nearOn(h,pt); ds.phase='p2'; return; }
+    if(ds.phase==='p1'){ ds.p1=nearOn(findE(ds.id),pt); ds.phase='p2b'; return; }
+    if(ds.phase==='p2'||ds.phase==='p2b'){ this.apply(ds,nearOn(findE(ds.id),pt)); }
+  },
+  apply:function(ds,p2){ var e=findE(ds.id); snapshot(); var err=breakApply(e,ds.p1,p2); if(err){ S.undos.pop(); log('BREAK: '+err,'er'); return; } log('BREAK: objeto interrompido.','ok'); ncEnd(); },
+  input:function(ds,u,raw){
+    if(ds.phase==='pick'){ if(u===''){ ncEnd(); return true; } return false; }
+    if(ds.phase==='p2'&&(u==='P'||u==='F'||u==='PRIMEIRO'||u==='FIRST')){ ds.phase='p1'; return true; }
+    if((ds.phase==='p2'||ds.phase==='p2b')&&(u==='@'||u==='')){ this.apply(ds,ds.p1); return true; }
+    var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true;
+  },
+  preview:function(ctx,ds,hp){
+    var e=ds.id&&findE(ds.id); if(!e) return;
+    var m=function(p,col){ var s=w2s(p.x,p.y); ctx.save(); ctx.fillStyle=col; ctx.fillRect(s.x-4,s.y-4,8,8); ctx.restore(); };
+    if(ds.p1) m(ds.p1,'#e85050'); if(ds.phase==='p2'||ds.phase==='p2b'||ds.phase==='p1') m(nearOn(e,hp),'#f5a623');
+  }
+};
+
+// ── STRETCH (S) ────────────────────────────────────────────────────────────
+function inWins(p,wins){ return wins.some(function(r){return p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h;}); }
+function stretchEnt(e,wins,dx,dy,whole){
+  if(whole){ transl(e,dx,dy); return; }
+  var mv=function(o,kx,ky){ if(inWins({x:o[kx],y:o[ky]},wins)){ o[kx]+=dx; o[ky]+=dy; return true; } return false; };
+  switch(e.tp){
+    case 'line': mv(e,'x1','y1'); mv(e,'x2','y2'); break;
+    case 'rect': case 'hatch': { var c=[[e.x,e.y],[e.x+e.w,e.y],[e.x+e.w,e.y+e.h],[e.x,e.y+e.h]].filter(function(q){return inWins({x:q[0],y:q[1]},wins);}).length;
+      if(c===4) transl(e,dx,dy); else if(c>0&&e.tp==='rect'){ rectToPl(e); stretchEnt(e,wins,dx,dy,false); } break; }
+    case 'pl': case 'spline': { var dup=e.tp==='pl'&&plIsDup(e),P=e.pts; for(var i=0;i<P.length;i++){ if(dup&&i===P.length-1) continue; if(inWins(P[i],wins)){ P[i].x+=dx;P[i].y+=dy; if(dup&&i===0){P[P.length-1].x+=dx;P[P.length-1].y+=dy;} } } break; }
+    case 'circ': case 'ell': if(inWins({x:e.cx,y:e.cy},wins)) transl(e,dx,dy); break;
+    case 'arc': { var a={x:e.cx+e.r*Math.cos(e.sa),y:e.cy+e.r*Math.sin(e.sa)},b={x:e.cx+e.r*Math.cos(e.ea),y:e.cy+e.r*Math.sin(e.ea)};
+      if(inWins(a,wins)&&inWins(b,wins)) transl(e,dx,dy); break; }
+    case 'txt': if(inWins({x:e.x,y:e.y},wins)) transl(e,dx,dy); break;
+    case 'dim': normDimLegacy(e); mv(e,'x1','y1'); mv(e,'x2','y2'); mv(e,'px','py'); break;
+    case 'dimr': case 'dimd': mv(e,'cx','cy'); mv(e,'ex','ey'); break;
+    case 'dima': mv(e,'vx','vy'); mv(e,'x1','y1'); mv(e,'x2','y2'); if(e.px!==undefined) mv(e,'px','py'); break;
+  }
+}
+NC.stretch={needSel:true,afterSel:function(ds){ ds.wins=ds.wins||[]; ds.phase='base'; if(!ds.wins.length) log('STRETCH: sem janela cruzando, os objetos serão apenas movidos.','inf'); },
+  prompt:function(ds){ return {base:'STRETCH Especifique o ponto base ou [Deslocamento] <Deslocamento>:',dest:'Especifique o segundo ponto ou <usar o primeiro ponto como deslocamento>:',disp:'Especifique o deslocamento <0,0>:'}[ds.phase]; },
+  apply:function(ds,dx,dy){ ncSnapshotApply(function(){ var whole=!ds.wins.length; ds.ids.map(findE).forEach(function(e){ if(e) stretchEnt(e,ds.wins,dx,dy,whole); }); }); log('STRETCH: '+ds.ids.length+' objeto(s) esticado(s)/movido(s).','ok'); ncEnd(); },
+  click:function(ds,pt){ if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; ds.pts=[ds.base]; ds.phase='dest'; return; } if(ds.phase==='dest') this.apply(ds,pt.x-ds.base.x,pt.y-ds.base.y); },
+  input:function(ds,u,raw){
+    if(ds.phase==='base'){ if(u===''||u==='D'){ ds.phase='disp'; return true; } var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='disp'){ if(u===''){ ncEnd(); return true; } var d=mcDispVec(raw); if(!d) return false; this.apply(ds,d.x,d.y); return true; }
+    if(ds.phase==='dest'){ if(u===''){ this.apply(ds,ds.base.x,ds.base.y); return true; } var q=ncPointFrom(raw,ds.base); if(!q) return false; this.click(ds,q); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){ if(ds.phase!=='dest') return; ncRubber(ctx,ds.base,hp); var whole=!ds.wins.length;
+    ncGhost(ctx,ds.ids,function(c){ stretchEnt(c,ds.wins,hp.x-ds.base.x,hp.y-ds.base.y,whole); }); }
+};
+
+// ── PLINE com arcos: opções [Arco/Linha/Fechar/Desfazer] ────────────────────
+function plineTangent(ds){
+  var P=ds.pts,n=P.length; if(n<2) return {x:1,y:0};
+  var a=P[n-2],c=P[n-1],b=a.b||0;
+  if(Math.abs(b)<1e-12){ var dx=c.x-a.x,dy=c.y-a.y,l=Math.hypot(dx,dy)||1; return {x:dx/l,y:dy/l}; }
+  var A=bulgeArc(a,c,b),a2=A.a1+A.th; return A.th>0?{x:-Math.sin(a2),y:Math.cos(a2)}:{x:Math.sin(a2),y:-Math.cos(a2)};
+}
+function plineArcBulge(ds,pt){
+  var P0=ds.pts[ds.pts.length-1],t=plineTangent(ds),cx=pt.x-P0.x,cy=pt.y-P0.y;
+  var ang=Math.atan2(t.x*cy-t.y*cx,t.x*cx+t.y*cy); return Math.tan(ang/2);
+}
+function plinePrompt(ds){ logp('PLINE Especifique o próximo ponto ou [Arco/Linha/Fechar/Desfazer] — modo '+(ds.arcMode?'ARCO':'LINHA')+' (Enter conclui):'); }
+function plineClick(pt){
+  var ds=S.ds,P0=ds.pts[ds.pts.length-1]; if(Math.hypot(pt.x-P0.x,pt.y-P0.y)<1e-9) return;
+  P0.b=plineArcBulge(ds,pt); if(Math.abs(P0.b)<1e-12) delete P0.b;
+  ds.pts.push({x:pt.x,y:pt.y}); plinePrompt(ds); renderAll();
+}
+function plineOption(v){
+  var ds=S.ds,u=String(v).trim().toUpperCase();
+  if(u==='A'||u==='ARCO'||u==='ARC'){ ds.arcMode=true; plinePrompt(ds); return true; }
+  if(u==='L'||u==='LINHA'||u==='LINE'){ ds.arcMode=false; plinePrompt(ds); return true; }
+  if(u==='U'||u==='DESFAZER'||u==='UNDO'){ if(ds.pts.length>1){ ds.pts.pop(); delete ds.pts[ds.pts.length-1].b; } plinePrompt(ds); renderAll(); return true; }
+  if(u==='F'||u==='C'||u==='FECHAR'||u==='CLOSE'){
+    if(ds.pts.length<2){ log('São necessários pelo menos 2 pontos.','er'); return true; }
+    var first=ds.pts[0]; if(ds.arcMode){ var b=plineArcBulge(ds,first); if(Math.abs(b)>1e-12) ds.pts[ds.pts.length-1].b=b; }
+    ds.pts.push({x:first.x,y:first.y});
+    addE({tp:'pl',pts:ds.pts.slice(),closed:true}); S.lastTool='polyline'; log('Polilinha fechada com '+(ds.pts.length-1)+' vértices.','ok'); S.ds=null; renderAll(); logp('PLINE: 1° ponto:'); return true;
+  }
+  return false;
+}
+function drawPlinePreview(ctx,hp){
+  var ds=S.ds,P=ds.pts.map(function(p){return {x:p.x,y:p.y,b:p.b};});
+  var last=P[P.length-1]; if(ds.arcMode){ var b=plineArcBulge(ds,hp); if(Math.abs(b)>1e-12) last.b=b; }
+  P.push({x:hp.x,y:hp.y});
+  ctx.save(); ctx.strokeStyle='#4d9ef7'; ctx.lineWidth=1.5; ctx.setLineDash([]); plTrace(ctx,{tp:'pl',pts:P,closed:false},w2s,S.vp.sc); ctx.stroke(); ctx.restore();
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   v7.2 — PACOTE 3: HACHURA POR CONTORNO, BLOCOS, MTEXT, LEADER,
+   IMPORTAÇÃO DE DXF E SELEÇÃO CRUZANDO PELA GEOMETRIA REAL
+   ═══════════════════════════════════════════════════════════════════ */
+if(!S.blocks) S.blocks={};
+var _p3={drawE:drawE,hitEnt:hitEnt,snapPts:snapPts,bbox:bbox,transl:transl,xformE:xformE,getGrips:getGrips,stretchGrip:stretchGrip,
+  entPrims:entPrims,geomFields:geomFields,explodeSel:explodeSel,collectExport:collectExport,buildDXF2000:buildDXF2000,buildDXF:buildDXF,buildSVG:buildSVG};
+var TP_NAMES_EXTRA={mtext:'Texto múltiplo (MTEXT)',insert:'Bloco (INSERT)',leader:'Linha de chamada (LEADER)'};
+for(var _k in TP_NAMES_EXTRA) TP_NAMES[_k]=TP_NAMES_EXTRA[_k];
+
+// ── Segmentos aproximados de qualquer objeto (seleção cruzando, contornos) ───
+function arcPts(cx,cy,r,sa,sw,step){ var n=Math.max(2,Math.ceil(Math.abs(sw)/(step||Math.PI/32))),o=[]; for(var i=0;i<=n;i++){ var a=sa+sw*i/n; o.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}); } return o; }
+function polySegs(P,closed){ var o=[]; for(var i=1;i<P.length;i++) o.push([P[i-1].x,P[i-1].y,P[i].x,P[i].y]); if(closed&&P.length>2) o.push([P[P.length-1].x,P[P.length-1].y,P[0].x,P[0].y]); return o; }
+function geoSegs(e,depth){
+  depth=depth||0;
+  switch(e.tp){
+    case 'line': return [[e.x1,e.y1,e.x2,e.y2]];
+    case 'circ': return polySegs(arcPts(e.cx,e.cy,e.r,0,2*Math.PI),false);
+    case 'arc': return polySegs(arcPts(e.cx,e.cy,e.r,e.sa,((e.ea-e.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)||2*Math.PI),false);
+    case 'ell': return polySegs(ellPoints(e,72),false);
+    case 'spline': return polySegs(splinePoints(e,12),false);
+    case 'pl': return polySegs(plHasArc(e)?plSample(e,24):e.pts,!!e.closed&&!plIsDup(e));
+    case 'rect': return polySegs([{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}],true);
+    case 'txt': return polySegs(txtCorners(e),true);
+    case 'mtext': return polySegs(mtCorners(e),true);
+    case 'hatch': return e.loops?[].concat.apply([],e.loops.map(function(L){return polySegs(L,true);})):polySegs([{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}],true);
+    case 'insert': return depth>8?[]:[].concat.apply([],insertExpand(e,depth).map(function(c){return geoSegs(c,depth+1);}));
+    case 'leader': case 'dim': case 'dimr': case 'dimd': case 'dima': {
+      var P=e.tp==='leader'?leaderPrims(e):dimPrims(e),o=[];
+      P.forEach(function(p){ if(p.k==='line') o.push([p.x1,p.y1,p.x2,p.y2]); else if(p.k==='text') o=o.concat(polySegs(txtCorners({x:p.x,y:p.y,h:p.h,rot:p.rot,txt:p.txt}),true)); else if(p.k==='arc') o=o.concat(polySegs(arcPts(p.cx,p.cy,p.r,p.sa,((p.ea-p.sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)),false)); });
+      return o; }
+  }
+  var b=bbox(e); return b?polySegs([{x:b.x,y:b.y},{x:b.x+b.w,y:b.y},{x:b.x+b.w,y:b.y+b.h},{x:b.x,y:b.y+b.h}],true):[];
+}
+function entCrossesRect(e,r){ return geoSegs(e).some(function(s){ return !!clipSegRect(s[0],s[1],s[2],s[3],r); }); }
+
+// ── MTEXT ──────────────────────────────────────────────────────────────────
+var MT_CW=0.6, MT_LS=1.6667;
+function mtLines(e){
+  var out=[],maxc=e.w>0?Math.max(1,Math.floor(e.w/(MT_CW*e.h))):1e9;
+  String(e.txt||'').split('\n').forEach(function(par){
+    if(par.length<=maxc){ out.push(par); return; }
+    var words=par.split(' '),cur='';
+    words.forEach(function(w){ while(w.length>maxc){ if(cur){out.push(cur);cur='';} out.push(w.slice(0,maxc)); w=w.slice(maxc); }
+      if(!cur) cur=w; else if((cur+' '+w).length<=maxc) cur+=' '+w; else { out.push(cur); cur=w; } });
+    out.push(cur);
+  });
+  return out;
+}
+function mtLayout(e){ // linhas em coordenadas locais (antes da rotação), relativas ao ponto de inserção
+  var L=mtLines(e),h=e.h,ls=MT_LS*h,n=L.length,H=(n-1)*ls+h,W=e.w>0?e.w:Math.max.apply(null,L.map(function(s){return s.length;}).concat([1]))*MT_CW*h;
+  var att=e.att||1,col=(att-1)%3,row=Math.floor((att-1)/3);
+  var y0=row===0?-h:row===1?H/2-h:(n-1)*ls; // linha de base da 1ª linha
+  var align=['left','center','right'][col];
+  var left=col===0?0:col===1?-W/2:-W,top=row===0?0:row===1?H/2:H;
+  return {lines:L.map(function(t,i){return {txt:t,lx:0,ly:y0-i*ls,align:align};}),W:W,H:H,left:left,top:top};
+}
+function mtLocalToWorld(e,lx,ly){ var r=e.rot||0,c=Math.cos(r),s=Math.sin(r); return {x:e.x+lx*c-ly*s,y:e.y+lx*s+ly*c}; }
+function mtCorners(e){ var Lo=mtLayout(e); return [[Lo.left,Lo.top],[Lo.left+Lo.W,Lo.top],[Lo.left+Lo.W,Lo.top-Lo.H],[Lo.left,Lo.top-Lo.H]].map(function(q){return mtLocalToWorld(e,q[0],q[1]);}); }
+function mtPrims(e){ var Lo=mtLayout(e); return Lo.lines.filter(function(l){return l.txt;}).map(function(l){ var p=mtLocalToWorld(e,l.lx,l.ly); return {k:'text',x:p.x,y:p.y,h:e.h,rot:e.rot||0,txt:l.txt,align:l.align}; }); }
+function drawTextPrims(ctx,prims,col,map,sc,minPx){
+  prims.forEach(function(p){ var q=map(p.x,p.y),fs=Math.max(minPx||0,p.h*sc); if(fs<1) return;
+    ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(-(p.rot||0)); ctx.fillStyle=col; ctx.font=fs+'px Consolas,monospace'; ctx.textAlign=p.align||'left'; ctx.textBaseline='alphabetic'; ctx.fillText(p.txt,0,0); ctx.restore(); });
+}
+
+// ── LEADER ─────────────────────────────────────────────────────────────────
+function leaderPrims(e,stO){
+  var st=stO||dimStyleOf(e),ds=st.dimscale||1,o=[],P=e.pts; if(!P||P.length<2) return o;
+  for(var i=1;i<P.length;i++) o.push({k:'line',role:'dim',x1:P[i-1].x,y1:P[i-1].y,x2:P[i].x,y2:P[i].y});
+  var dx=P[0].x-P[1].x,dy=P[0].y-P[1].y,l=Math.hypot(dx,dy)||1; dimArrow(o,P[0].x,P[0].y,dx/l,dy/l,st,ds);
+  if(e.txt){
+    var last=P[P.length-1],prev=P[P.length-2],dir=last.x>=prev.x?1:-1,land=st.arrowSize*ds,gap=st.txtGap*ds,h=e.h||st.txtH*ds;
+    o.push({k:'line',role:'dim',x1:last.x,y1:last.y,x2:last.x+dir*land,y2:last.y});
+    String(e.txt).split('\n').forEach(function(t,i){ if(t) o.push({k:'text',role:'text',x:last.x+dir*(land+gap),y:last.y-h/2-i*MT_LS*h,h:h,rot:0,txt:t,align:dir>0?'left':'right'}); });
+  }
+  return o;
+}
+
+// ── BLOCOS ─────────────────────────────────────────────────────────────────
+function insertXform(c,e){ if(e.m) mirr(c,{x:0,y:0},{x:1,y:0}); var s=e.s||1; if(s!==1) scalE(c,{x:0,y:0},s); if(e.rot) rotat(c,{x:0,y:0},e.rot); transl(c,e.x,e.y); }
+function insertExpand(e,depth){
+  var B=S.blocks[e.name]; if(!B||(depth||0)>8) return [];
+  return B.ents.map(function(c0){ var c=JSON.parse(JSON.stringify(c0)); c.id='blk_'+e.id+'_'+(c0.id||''); if(c.ly===0||c.ly===undefined) c.ly=e.ly;
+    if(c.col===null||c.col===undefined) c.col=e.col; insertXform(c,e); return c; });
+}
+function flattenEnts(list,depth){
+  depth=depth||0; var out=[];
+  list.forEach(function(e){ if(e.tp==='insert'&&depth<8) out=out.concat(flattenEnts(insertExpand(e,depth).map(function(c){c.id=uid();return c;}),depth+1)); else out.push(e); });
+  return out;
+}
+
+// ── HACHURA POR CONTORNO ───────────────────────────────────────────────────
+function pointInPoly(p,P){ var c=false; for(var i=0,j=P.length-1;i<P.length;j=i++){ var a=P[i],b=P[j]; if(((a.y>p.y)!==(b.y>p.y))&&(p.x<(b.x-a.x)*(p.y-a.y)/(b.y-a.y)+a.x)) c=!c; } return c; }
+function pointInLoops(p,loops){ var c=false; loops.forEach(function(L){ if(pointInPoly(p,L)) c=!c; }); return c; }
+function polyArea(P){ var a=0; for(var i=0;i<P.length;i++){ var q=P[(i+1)%P.length]; a+=P[i].x*q.y-q.x*P[i].y; } return a/2; }
+var BOUNDARY_SKIP=['txt','mtext','hatch','dim','dimr','dimd','dima','leader'];
+function boundaryFind(P){
+  var segs=[];
+  S.ents.forEach(function(e){ var ly=getLy(e.ly); if(ly&&!ly.vis) return; if(BOUNDARY_SKIP.indexOf(e.tp)>=0) return; geoSegs(e).forEach(function(s){ if(Math.hypot(s[2]-s[0],s[3]-s[1])>1e-9) segs.push(s); }); });
+  if(!segs.length) return {err:'Nenhum objeto de contorno no desenho.'};
+  // dividir nas interseções
+  var bb=segs.map(function(s){return [Math.min(s[0],s[2]),Math.min(s[1],s[3]),Math.max(s[0],s[2]),Math.max(s[1],s[3])];}),T=segs.map(function(){return [0,1];});
+  for(var i=0;i<segs.length;i++) for(var j=i+1;j<segs.length;j++){
+    var A=bb[i],B=bb[j]; if(A[0]>B[2]+1e-9||B[0]>A[2]+1e-9||A[1]>B[3]+1e-9||B[1]>A[3]+1e-9) continue;
+    var s=segs[i],q=segs[j],r=lineLineInt(s[0],s[1],s[2],s[3],q[0],q[1],q[2],q[3]);
+    if(r&&r.t>-1e-9&&r.t<1+1e-9&&r.u>-1e-9&&r.u<1+1e-9){ T[i].push(Math.max(0,Math.min(1,r.t))); T[j].push(Math.max(0,Math.min(1,r.u))); }
+  }
+  var ext=0; segs.forEach(function(s){ ext=Math.max(ext,Math.abs(s[0]),Math.abs(s[1]),Math.abs(s[2]),Math.abs(s[3])); });
+  var eps=Math.max(1e-7,ext*1e-9),nodes=[],key={},adj=[];
+  function node(x,y){ var k=Math.round(x/eps)+','+Math.round(y/eps); if(key[k]===undefined){ key[k]=nodes.length; nodes.push({x:x,y:y}); adj.push([]); } return key[k]; }
+  var edges=[];
+  segs.forEach(function(s,i){ var ts=T[i].sort(function(a,b){return a-b;});
+    for(var k=1;k<ts.length;k++){ if(ts[k]-ts[k-1]<1e-12) continue;
+      var a=node(s[0]+(s[2]-s[0])*ts[k-1],s[1]+(s[3]-s[1])*ts[k-1]),b=node(s[0]+(s[2]-s[0])*ts[k],s[1]+(s[3]-s[1])*ts[k]);
+      if(a!==b&&adj[a].indexOf(b)<0){ adj[a].push(b); adj[b].push(a); edges.push([a,b]); } } });
+  // raio horizontal a partir do ponto
+  var py=P.y+eps*7.123,best=null,bx=Infinity;
+  edges.forEach(function(E){ var a=nodes[E[0]],b=nodes[E[1]]; if((a.y-py)*(b.y-py)>0||a.y===b.y) return; var x=a.x+(b.x-a.x)*(py-a.y)/(b.y-a.y); if(x>P.x&&x<bx){bx=x;best=E;} });
+  if(!best) return {err:'Nenhum contorno fechado em volta do ponto.'};
+  var a0=best[0],b0=best[1],A0=nodes[a0],B0=nodes[b0];
+  if((B0.x-A0.x)*(P.y-A0.y)-(B0.y-A0.y)*(P.x-A0.x)<0){ var t=a0;a0=b0;b0=t; }
+  var loop=[a0],u=a0,v=b0,steps=0;
+  while(steps++<200000){
+    loop.push(v);
+    var din={x:nodes[v].x-nodes[u].x,y:nodes[v].y-nodes[u].y},cand=adj[v].filter(function(w){return w!==u;});
+    if(!cand.length) cand=[u];
+    var bw=cand[0],bt=-Infinity;
+    cand.forEach(function(w){ var d={x:nodes[w].x-nodes[v].x,y:nodes[w].y-nodes[v].y},tu=Math.atan2(din.x*d.y-din.y*d.x,din.x*d.x+din.y*d.y); if(tu>bt){bt=tu;bw=w;} });
+    u=v; v=bw;
+    if(u===a0&&v===b0) break;
+  }
+  loop.pop();
+  var poly=loop.map(function(k){return {x:nodes[k].x,y:nodes[k].y};});
+  if(steps>=200000||poly.length<3||polyArea(poly)<=1e-12||!pointInPoly(P,poly)) return {err:'Contorno não fechado: verifique se as linhas se encontram (use OSNAP extremidade/interseção).'};
+  // ilhas: objetos fechados inteiramente dentro, que não contêm o ponto
+  var islands=[];
+  S.ents.forEach(function(e){ var ly=getLy(e.ly); if(ly&&!ly.vis) return; var Q=null;
+    if(e.tp==='circ') Q=arcPts(e.cx,e.cy,e.r,0,2*Math.PI).slice(0,-1);
+    else if(e.tp==='ell') Q=ellPoints(e,72).slice(0,-1);
+    else if(e.tp==='rect') Q=[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}];
+    else if(e.tp==='pl'&&e.closed){ Q=plHasArc(e)?plSample(e,24):e.pts.slice(); if(plIsDup(e)||Q.length&&Math.hypot(Q[0].x-Q[Q.length-1].x,Q[0].y-Q[Q.length-1].y)<1e-9) Q.pop(); }
+    if(!Q||Q.length<3||pointInPoly(P,Q)) return;
+    if(Q.every(function(q){return pointInPoly(q,poly);})) islands.push(Q);
+  });
+  return {loops:[poly].concat(islands)};
+}
+function hatchLoopsBox(L){ return ptsBox([].concat.apply([],L)); }
+function hatchSegsIn(e){ // linhas do padrão recortadas pelos laços (par-ímpar)
+  var r=hatchLoopsBox(e.loops),ht=e.htype||'lines',sp=e.sp||5,angs=(ht==='cross'||ht==='grid')?[e.ang||0,(e.ang||0)+90]:[e.ang!==undefined?e.ang:45],out=[];
+  angs.forEach(function(ag){ hatchLines(r,ag,sp).forEach(function(s){
+    var ts=[]; e.loops.forEach(function(L){ for(var i=0;i<L.length;i++){ var a=L[i],b=L[(i+1)%L.length],q=lineLineInt(s[0],s[1],s[2],s[3],a.x,a.y,b.x,b.y); if(q&&q.u>=0&&q.u<1&&q.t>=0&&q.t<=1) ts.push(q.t); } });
+    ts.sort(function(x,y){return x-y;});
+    for(var k=0;k+1<ts.length;k+=2) out.push([s[0]+(s[2]-s[0])*ts[k],s[1]+(s[3]-s[1])*ts[k],s[0]+(s[2]-s[0])*ts[k+1],s[1]+(s[3]-s[1])*ts[k+1]]);
+  }); });
+  return out;
+}
+function drawHatchLoops(ctx,e,map,sc,col){
+  ctx.save(); ctx.beginPath();
+  e.loops.forEach(function(L){ L.forEach(function(p,i){ var q=map(p.x,p.y); if(i) ctx.lineTo(q.x,q.y); else ctx.moveTo(q.x,q.y); }); ctx.closePath(); });
+  ctx.clip('evenodd');
+  ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=0.8; var ht=e.htype||'lines';
+  ctx.setLineDash(ht==='dashed'?[4,3]:ht==='dotted'?[1,3]:[]);
+  var r=hatchLoopsBox(e.loops),sp=Math.max(e.sp||5,1/sc);
+  if(ht==='dots'){ for(var x=r.x+sp/2;x<r.x+r.w;x+=sp) for(var y=r.y+sp/2;y<r.y+r.h;y+=sp){ var q=map(x,y); ctx.fillRect(q.x-.8,q.y-.8,1.6,1.6); } }
+  else { var angs=(ht==='cross'||ht==='grid')?[e.ang||0,(e.ang||0)+90]:[e.ang!==undefined?e.ang:45];
+    if(ht==='zigzag') angs=[45,-45];
+    ctx.beginPath(); angs.forEach(function(ag){ hatchLines(r,ag,sp).forEach(function(s){ var a=map(s[0],s[1]),b=map(s[2],s[3]); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); }); }); ctx.stroke(); }
+  ctx.restore();
+}
+function hatchSync(e){ var b=hatchLoopsBox(e.loops); e.x=b.x; e.y=b.y; e.w=b.w; e.h=b.h; }
+
+// ── embrulhos das funções gerais para os novos tipos ───────────────────────
+drawE=function(ctx,e,sel){
+  if(e.tp==='mtext'){ ctx.save(); applyStyle(ctx,e,sel); drawTextPrims(ctx,mtPrims(e),sel?'#60b8ff':effCol(e),w2s,S.vp.sc,4); ctx.restore(); return; }
+  if(e.tp==='leader'){ var st=dimStyleOf(e); renderDimPrims(ctx,leaderPrims(e,st),st,w2s,S.vp.sc,{sel:sel,minTxt:5}); return; }
+  if(e.tp==='insert'){ var C=insertExpand(e,0); if(!C.length){ ctx.save(); var p=w2s(e.x,e.y); ctx.strokeStyle='#e85050'; ctx.beginPath(); ctx.moveTo(p.x-6,p.y-6); ctx.lineTo(p.x+6,p.y+6); ctx.moveTo(p.x+6,p.y-6); ctx.lineTo(p.x-6,p.y+6); ctx.stroke(); ctx.restore(); return; }
+    C.forEach(function(c){ drawE(ctx,c,sel); }); return; }
+  if(e.tp==='hatch'&&e.loops){ ctx.save(); applyStyle(ctx,e,sel); drawHatchLoops(ctx,e,w2s,S.vp.sc,sel?'#60b8ff':effCol(e)); ctx.restore(); return; }
+  return _p3.drawE(ctx,e,sel);
+};
+hitEnt=function(e,wx,wy){
+  if(['mtext','leader','insert'].indexOf(e.tp)<0&&!(e.tp==='hatch'&&e.loops)) return _p3.hitEnt(e,wx,wy);
+  var ly=getLy(e.ly); if(ly&&(!ly.vis||ly.lock)) return false;
+  var t=8/S.vp.sc;
+  if(e.tp==='mtext') return pointInPoly({x:wx,y:wy},mtCorners(e))||polySegs(mtCorners(e),true).some(function(s){return segD(wx,wy,s[0],s[1],s[2],s[3])<t;});
+  if(e.tp==='hatch') return pointInLoops({x:wx,y:wy},e.loops);
+  if(e.tp==='insert') return insertExpand(e,0).some(function(c){ return hitEnt(c,wx,wy); });
+  return geoSegs(e).some(function(s){return segD(wx,wy,s[0],s[1],s[2],s[3])<t;})||leaderPrims(e).some(function(p){ return p.k==='text'&&pointInPoly({x:wx,y:wy},txtCorners({x:p.align==='right'?p.x-String(p.txt).length*p.h*.6:p.x,y:p.y,h:p.h,rot:0,txt:p.txt})); });
+};
+snapPts=function(e){
+  if(e.tp==='mtext') return [{x:e.x,y:e.y,st:'end'}];
+  if(e.tp==='leader') return e.pts.map(function(p){return {x:p.x,y:p.y,st:'end'};});
+  if(e.tp==='insert') return [{x:e.x,y:e.y,st:'end'}].concat([].concat.apply([],insertExpand(e,0).map(snapPts)));
+  if(e.tp==='hatch'&&e.loops) return [];
+  return _p3.snapPts(e);
+};
+bbox=function(e){
+  if(e.tp==='mtext') return ptsBox(mtCorners(e));
+  if(e.tp==='leader'){ var pts=[]; geoSegs(e).forEach(function(s){pts.push({x:s[0],y:s[1]},{x:s[2],y:s[3]});}); return ptsBox(pts); }
+  if(e.tp==='insert'){ var C=insertExpand(e,0),bs=C.map(bbox).filter(Boolean); if(!bs.length) return {x:e.x,y:e.y,w:0,h:0};
+    var p=[]; bs.forEach(function(b){p.push({x:b.x,y:b.y},{x:b.x+b.w,y:b.y+b.h});}); return ptsBox(p); }
+  if(e.tp==='hatch'&&e.loops) return hatchLoopsBox(e.loops);
+  return _p3.bbox(e);
+};
+transl=function(e,dx,dy){
+  if(e.tp==='mtext'||e.tp==='insert'){ e.x+=dx; e.y+=dy; return; }
+  if(e.tp==='leader'){ e.pts.forEach(function(p){p.x+=dx;p.y+=dy;}); return; }
+  if(e.tp==='hatch'&&e.loops){ e.loops.forEach(function(L){L.forEach(function(p){p.x+=dx;p.y+=dy;});}); hatchSync(e); return; }
+  return _p3.transl(e,dx,dy);
+};
+xformE=function(e,fn,info){
+  if(e.tp==='mtext'){ var q=fn(e.x,e.y); e.x=q.x; e.y=q.y; if(info.kind==='rot') e.rot=(e.rot||0)+info.rad; else if(info.kind==='scl'){ e.h*=info.f; e.w*=info.f; } return; }
+  if(e.tp==='leader'){ e.pts=e.pts.map(function(p){return fn(p.x,p.y);}); if(info.kind==='scl'&&e.h) e.h*=info.f; return; }
+  if(e.tp==='insert'){ var q2=fn(e.x,e.y); e.x=q2.x; e.y=q2.y;
+    if(info.kind==='rot') e.rot=(e.rot||0)+info.rad; else if(info.kind==='scl') e.s=(e.s||1)*info.f; else { e.m=!e.m; e.rot=2*info.axisAng-(e.rot||0); } return; }
+  if(e.tp==='hatch'&&e.loops){ e.loops=e.loops.map(function(L){return L.map(function(p){return fn(p.x,p.y);});});
+    if(info.kind==='rot') e.ang=((e.ang||45)+info.rad*180/Math.PI)%360; else if(info.kind==='mir') e.ang=(2*info.axisAng*180/Math.PI-(e.ang||45))%360; else e.sp=(e.sp||5)*info.f;
+    hatchSync(e); return; }
+  return _p3.xformE(e,fn,info);
+};
+getGrips=function(e){
+  if(e.tp==='mtext'||e.tp==='insert') return [{x:e.x,y:e.y,key:'p'}];
+  if(e.tp==='leader') return e.pts.map(function(p,i){return {x:p.x,y:p.y,key:'v'+i};});
+  if(e.tp==='hatch'&&e.loops){ var b=hatchLoopsBox(e.loops); return [{x:b.x+b.w/2,y:b.y+b.h/2,key:'c'}]; }
+  return _p3.getGrips(e);
+};
+stretchGrip=function(e,key,base,pt){
+  var dx=pt.x-base.x,dy=pt.y-base.y;
+  if(e.tp==='mtext'||e.tp==='insert'||(e.tp==='hatch'&&e.loops)){ transl(e,dx,dy); return; }
+  if(e.tp==='leader'){ var i=parseInt(key.slice(1),10); e.pts[i].x+=dx; e.pts[i].y+=dy; return; }
+  return _p3.stretchGrip(e,key,base,pt);
+};
+entPrims=function(e){
+  if(e.tp==='mtext') return mtPrims(e);
+  if(e.tp==='leader') return leaderPrims(e).map(function(p){ return p.k==='box'?{k:'poly',closed:true,pts:p.pts,role:p.role}:p; });
+  if(e.tp==='insert') return [].concat.apply([],flattenEnts([e]).map(entPrims));
+  if(e.tp==='hatch'&&e.loops){ var ht=e.htype||'lines';
+    if(ht==='dots'){ var r=hatchLoopsBox(e.loops),o=[],sp=e.sp||5; for(var x=r.x+sp/2;x<r.x+r.w;x+=sp) for(var y=r.y+sp/2;y<r.y+r.h;y+=sp) if(pointInLoops({x:x,y:y},e.loops)) o.push({k:'point',x:x,y:y}); return o; }
+    return hatchSegsIn(e).map(function(s){return {k:'line',x1:s[0],y1:s[1],x2:s[2],y2:s[3],ld:ht==='dashed'?'dashed':'solid'};}); }
+  return _p3.entPrims(e);
+};
+geomFields=function(e){
+  var F=[],R=function(l,v){F.push({l:l,v:v,ro:true});};
+  if(e.tp==='mtext'){ F.push({l:'Conteúdo',k:'txt',str:1},{l:'Altura',k:'h',pos:1},{l:'Largura (0=livre)',k:'w'},{l:'Rotação (°)',v:(e.rot||0)*180/Math.PI,set:function(e,v){e.rot=v*Math.PI/180;}},{l:'Posição X',k:'x'},{l:'Posição Y',k:'y'}); R('Linhas',mtLines(e).length); return F; }
+  if(e.tp==='insert'){ R('Bloco',e.name); F.push({l:'Posição X',k:'x'},{l:'Posição Y',k:'y'},{l:'Escala',v:e.s||1,set:function(e,v){if(!(v>0))return false;e.s=v;}},{l:'Rotação (°)',v:(e.rot||0)*180/Math.PI,set:function(e,v){e.rot=v*Math.PI/180;}}); return F; }
+  if(e.tp==='leader'){ F.push({l:'Texto',k:'txt',str:1}); R('Vértices',e.pts.length); return F; }
+  if(e.tp==='hatch'&&e.loops){ F.push({l:'Ângulo (°)',k:'ang'},{l:'Espaçamento',k:'sp',pos:1}); var a=Math.abs(polyArea(e.loops[0]))-e.loops.slice(1).reduce(function(s,L){return s+Math.abs(polyArea(L));},0); R('Área',a); R('Ilhas',e.loops.length-1); return F; }
+  return _p3.geomFields(e);
+};
+explodeSel=function(){
+  var ids=S.sel.slice(),special=S.ents.filter(function(e){return ids.indexOf(e.id)>=0&&(e.tp==='insert'||e.tp==='mtext');});
+  if(!special.length) return _p3.explodeSel();
+  snapshot(); var nw=[];
+  S.ents=[].concat.apply([],S.ents.map(function(e){
+    if(special.indexOf(e)<0) return [e];
+    var parts=e.tp==='insert'?insertExpand(e,0).map(function(c){c.id=uid();return c;}):mtPrims(e).map(function(p){return {id:uid(),tp:'txt',x:p.align==='left'?p.x:p.x-(p.align==='center'?.5:1)*String(p.txt).length*p.h*MT_CW,y:p.y,h:p.h,rot:p.rot,txt:p.txt,ly:e.ly,col:e.col};});
+    nw=nw.concat(parts); return parts; }));
+  S.sel=nw.map(function(e){return e.id;});
+  var rest=ids.filter(function(id){var e=findE(id);return e&&(e.tp==='pl'||e.tp==='rect');});
+  log('EXPLODE: '+special.length+' bloco(s)/texto(s) explodido(s) em '+nw.length+' objeto(s).','ok');
+  if(rest.length){ S.sel=rest; S.undos.pop(); _p3.explodeSel(); }
+  renderAll(); updSelInfo();
+};
+// Exportação: blocos explodidos (geometria idêntica)
+function withFlat(fn){ var saved=S.ents; S.ents=flattenEnts(saved); try{ return fn(); } finally { S.ents=saved; } }
+collectExport=function(v){ return withFlat(function(){ return _p3.collectExport(v); }); };
+buildDXF2000=function(o){ return withFlat(function(){ return _p3.buildDXF2000(o); }); };
+buildDXF=function(){ return withFlat(function(){ return _p3.buildDXF(); }); };
+buildSVG=function(){ return withFlat(function(){ return _p3.buildSVG(); }); };
+
+// ── Editor de texto (MTEXT, LEADER, edição de textos) ───────────────────────
+var MTED={cb:null};
+function mtEditorOpen(opts,cb){
+  MTED.cb=cb;
+  document.getElementById('mted-title').textContent=opts.title||'Editor de texto';
+  document.getElementById('mted-txt').value=opts.txt||'';
+  document.getElementById('mted-h').value=opts.h||2.5;
+  document.getElementById('mted-att').value=String(opts.att||1);
+  document.getElementById('mted-row-att').style.display=opts.noAtt?'none':'';
+  document.getElementById('mted-row-h').style.display=opts.noH?'none':'';
+  document.getElementById('ov-mtext').classList.add('show');
+  setTimeout(function(){ var t=document.getElementById('mted-txt'); t.focus(); t.select(); },30);
+}
+function mtEditorOK(){
+  var txt=document.getElementById('mted-txt').value.replace(/\r/g,''),h=parseFloat(String(document.getElementById('mted-h').value).replace(',','.')),att=parseInt(document.getElementById('mted-att').value,10)||1;
+  if(!(h>0)){ alert('Altura inválida.'); return; }
+  closeOv('ov-mtext'); var cb=MTED.cb; MTED.cb=null; if(cb) cb({txt:txt,h:h,att:att});
+}
+function mtEditorCancel(){ closeOv('ov-mtext'); MTED.cb=null; if(S.ds&&ncIs(S.tool)) ncEnd(false); }
+
+// ── MTEXT (T / MT) ─────────────────────────────────────────────────────────
+if(S.mtH===undefined) S.mtH=2.5;
+NC.mtext={init:function(ds){ ds.phase='p1'; ds.att=1; },
+  prompt:function(ds){ return {p1:'MTEXT Especifique o primeiro canto:',p2:'Especifique o canto oposto ou [Altura/Justificar/Rotação/Largura]:',h:'Especifique a altura <'+gNum(S.mtH)+'>:',j:'Justificação [TE/TC/TD/ME/MC/MD/BE/BC/BD] <'+['','TE','TC','TD','ME','MC','MD','BE','BC','BD'][ds.att]+'>:',r:'Ângulo de rotação <0>:',w:'Especifique a largura:',edit:'Digite o texto no editor (Ctrl+Enter = OK).'}[ds.phase]; },
+  open:function(ds,box){
+    var self=this; ds.phase='edit';
+    mtEditorOpen({title:'MTEXT — texto múltiplo',h:S.mtH,att:ds.att},function(r){
+      if(!r.txt.trim()){ log('MTEXT vazio: nada criado.','inf'); ncEnd(); return; }
+      S.mtH=r.h; var att=r.att,col=(att-1)%3,row=Math.floor((att-1)/3),bx=box;
+      var x=col===0?bx.x0:col===1?(bx.x0+bx.x1)/2:bx.x1,y=row===0?bx.y1:row===1?(bx.y0+bx.y1)/2:bx.y0;
+      snapshot(); addE({tp:'mtext',x:x,y:y,w:bx.w,h:r.h,txt:r.txt,att:att,rot:ds.rot||0},true);
+      log('MTEXT criado ('+mtLines(S.ents[S.ents.length-1]).length+' linha(s)).','ok'); ncEnd(); renderAll();
+    });
+  },
+  click:function(ds,pt){
+    if(ds.phase==='p1'){ ds.a={x:pt.x,y:pt.y}; ds.pts=[ds.a]; ds.phase='p2'; return; }
+    if(ds.phase==='p2'){ var w=Math.abs(pt.x-ds.a.x); this.open(ds,{x0:Math.min(ds.a.x,pt.x),x1:Math.max(ds.a.x,pt.x),y0:Math.min(ds.a.y,pt.y),y1:Math.max(ds.a.y,pt.y),w:w}); }
+  },
+  input:function(ds,u,raw){
+    var n=ncNum(u),J={TE:1,TC:2,TD:3,ME:4,MC:5,MD:6,BE:7,BC:8,BD:9,TL:1,TR:3,ML:4,MR:6,BL:7,BR:9};
+    if(ds.phase==='p1'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='p2'){ if(u==='A'||u==='H'){ds.phase='h';return true;} if(u==='J'){ds.phase='j';return true;} if(u==='R'){ds.phase='r';return true;} if(u==='L'||u==='W'){ds.phase='w';return true;}
+      var q=ncPointFrom(raw,ds.a); if(!q) return false; this.click(ds,q); return true; }
+    if(ds.phase==='h'){ if(u!==''){ if(!(n>0)) return false; S.mtH=n; } ds.phase='p2'; return true; }
+    if(ds.phase==='j'){ if(u!==''){ if(!J[u]) return false; ds.att=J[u]; } ds.phase='p2'; return true; }
+    if(ds.phase==='r'){ if(u!==''){ if(n===null) return false; ds.rot=n*Math.PI/180; } ds.phase='p2'; return true; }
+    if(ds.phase==='w'){ if(!(n>=0)) return false; this.open(ds,{x0:ds.a.x,x1:ds.a.x+n,y0:ds.a.y,y1:ds.a.y,w:n}); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){ if(ds.phase!=='p2') return; var a=w2s(ds.a.x,ds.a.y),b=w2s(hp.x,hp.y); ctx.save(); ctx.setLineDash([4,3]); ctx.strokeStyle='#4d9ef7'; ctx.strokeRect(Math.min(a.x,b.x),Math.min(a.y,b.y),Math.abs(a.x-b.x),Math.abs(a.y-b.y)); ctx.restore(); }
+};
+// Edição de textos (ED / duplo clique)
+function textEdit(e){
+  if(e.tp==='txt'||e.tp==='mtext'||e.tp==='leader'){
+    mtEditorOpen({title:'Editar texto',txt:e.txt,h:e.h||S.mtH,att:e.att||1,noAtt:e.tp!=='mtext',noH:e.tp==='leader'},function(r){
+      snapshot(); e.txt=e.tp==='txt'?r.txt.split('\n')[0]:r.txt; if(e.tp!=='leader') e.h=r.h; if(e.tp==='mtext') e.att=r.att; renderAll(); updSelInfo(); log('Texto atualizado.','ok');
+      if(S.tool==='textedit') ncEnd(); });
+    return true;
+  }
+  return false;
+}
+NC.textedit={init:function(ds){ds.phase='pick';},prompt:function(){return 'TEXTEDIT Selecione um texto, MTEXT ou linha de chamada:';},
+  click:function(ds,pt){ for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(['txt','mtext','leader'].indexOf(e.tp)>=0&&hitEnt(e,pt.x,pt.y)){ ds.phase='edit'; textEdit(e); return; } } log('Nenhum texto no ponto.','inf'); },
+  input:function(ds,u){ if(u===''){ ncEnd(); return true; } return false; }};
+window.addEventListener('load',function(){ var w=document.getElementById('cw'); if(!w) return;
+  w.addEventListener('dblclick',function(ev){ if(S.tool!=='select') return; var r=w.getBoundingClientRect(),p=s2w(ev.clientX-r.left,ev.clientY-r.top);
+    for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(['txt','mtext','leader'].indexOf(e.tp)>=0&&hitEnt(e,p.x,p.y)){ textEdit(e); return; } } }); });
+
+// ── LEADER (LE / MLD) ──────────────────────────────────────────────────────
+NC.leader={init:function(ds){ ds.phase='tip'; ds.lpts=[]; },
+  prompt:function(ds){ return {tip:'LEADER Especifique a posição da ponta da seta:',next:'Especifique o próximo ponto (Enter = digitar o texto):',edit:'Digite o texto no editor.'}[ds.phase]; },
+  finish:function(ds){
+    if(ds.lpts.length<2){ log('São necessários pelo menos dois pontos.','er'); return; }
+    ds.phase='edit';
+    mtEditorOpen({title:'LEADER — texto da chamada',noAtt:true,noH:true},function(r){
+      snapshot(); addE({tp:'leader',pts:ds.lpts.map(function(p){return {x:p.x,y:p.y};}),txt:r.txt,dimStyle:S.dimCurrent,ly:S.curLy},true);
+      log('Linha de chamada criada.','ok'); ncEnd(); renderAll(); });
+  },
+  click:function(ds,pt){ ds.lpts.push({x:pt.x,y:pt.y}); ds.pts=[ds.lpts[ds.lpts.length-1]]; ds.phase='next'; if(ds.lpts.length>=3) this.finish(ds); },
+  input:function(ds,u,raw){ if(ds.phase==='next'&&u===''){ this.finish(ds); return true; } if(ds.phase==='tip'&&u===''){ ncEnd(); return true; }
+    var p=ncPointFrom(raw,ds.lpts.length?ds.lpts[ds.lpts.length-1]:null); if(!p) return false; this.click(ds,p); return true; },
+  preview:function(ctx,ds,hp){ if(ds.phase!=='next') return; var tmp={tp:'leader',pts:ds.lpts.concat([{x:hp.x,y:hp.y}]),txt:'',dimStyle:S.dimCurrent}; var st=dimStyleOf(tmp); renderDimPrims(ctx,leaderPrims(tmp,st),st,w2s,S.vp.sc,{alpha:.8}); }
+};
+
+// ── BLOCK (B) e INSERT (I) ─────────────────────────────────────────────────
+function blockNameOk(n){ return /^[^<>\/\\":;?*|=`]{1,60}$/.test(n)&&n.trim()===n; }
+NC.block={
+  init:function(ds){ ds.phase='name'; ds.pre=selEnts().filter(ncEditable).map(function(e){return e.id;}); },
+  prompt:function(ds){ return {name:'BLOCK Nome do bloco:',redef:'O bloco "'+ds.name+'" já existe. Redefinir? [Sim/Não] <Não>:',base:'Especifique o ponto base de inserção:',conv:'Objetos de origem [Manter/Converter em bloco/Apagar] <Converter>:'}[ds.phase]; },
+  click:function(ds,pt){ if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; if(ds.pre.length){ ds.ids=ds.pre; S.sel=ds.ids.slice(); this.afterSel(ds); } else { ds.phase='sel'; ds.ids=[]; S.sel=[]; } } },
+  afterSel:function(ds){ ds.phase='conv'; },
+  input:function(ds,u,raw){
+    if(ds.phase==='name'){ if(u===''){ ncEnd(); return true; } var nm=String(raw).trim(); if(!blockNameOk(nm)){ log('Nome inválido (sem < > / \\ " : ; ? * | = `).','er'); return true; }
+      ds.name=nm; ds.phase=S.blocks[nm]?'redef':'base'; return true; }
+    if(ds.phase==='redef'){ if(u==='S'||u==='SIM'||u==='Y'){ ds.phase='base'; return true; } ncEnd(); return true; }
+    if(ds.phase==='base'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='conv'){
+      var mode=u===''||u==='C'||u==='CONVERTER'?'conv':(u==='M'||u==='MANTER')?'keep':(u==='A'||u==='APAGAR')?'del':null; if(!mode) return false;
+      var b=ds.base,list=ds.ids.map(findE).filter(Boolean);
+      snapshot();
+      S.blocks[ds.name]={base:{x:0,y:0},ents:list.map(function(e){ var c=JSON.parse(JSON.stringify(e)); transl(c,-b.x,-b.y); return c; })};
+      if(mode!=='keep') S.ents=S.ents.filter(function(e){return ds.ids.indexOf(e.id)<0;});
+      if(mode==='conv') addE({tp:'insert',name:ds.name,x:b.x,y:b.y,s:1,rot:0,m:false,ly:S.curLy},true);
+      S.lastBlock=ds.name; log('BLOCK "'+ds.name+'" definido com '+list.length+' objeto(s)'+(mode==='conv'?' e convertido em referência':'')+'.','ok'); ncEnd(); return true;
+    }
+    return false;
+  }
+};
+NC.insert={
+  init:function(ds){ ds.phase='name'; ds.s=1; ds.rot=0; },
+  prompt:function(ds){ return {name:'INSERT Nome do bloco ou [?] <'+(S.lastBlock||'')+'>:',pt:'Especifique o ponto de inserção ou [Escala/Rotação]:',ps:'Fator de escala <'+gNum(ds.s)+'>:',pr:'Ângulo de rotação <'+gNum(ds.rot*180/Math.PI)+'>:',s2:'Fator de escala <1>:',r2:'Ângulo de rotação <0>:'}[ds.phase]; },
+  make:function(ds){ snapshot(); addE({tp:'insert',name:ds.name,x:ds.p.x,y:ds.p.y,s:ds.s,rot:ds.rot,m:false,ly:S.curLy},true); S.lastBlock=ds.name; log('INSERT "'+ds.name+'".','ok'); ncEnd(); renderAll(); },
+  click:function(ds,pt){ if(ds.phase==='pt'){ ds.p={x:pt.x,y:pt.y}; ds.pts=[ds.p]; ds.phase='s2'; } else if(ds.phase==='r2'){ ds.rot=Math.atan2(pt.y-ds.p.y,pt.x-ds.p.x); this.make(ds); } },
+  input:function(ds,u,raw){
+    var n=ncNum(u);
+    if(ds.phase==='name'){
+      if(u==='?'){ var k=Object.keys(S.blocks); log(k.length?'Blocos: '+k.join(', '):'Nenhum bloco definido (use BLOCK).','inf'); return true; }
+      var nm=u===''?S.lastBlock:String(raw).trim(); if(!nm){ ncEnd(); return true; }
+      var real=Object.keys(S.blocks).filter(function(k){return k.toUpperCase()===nm.toUpperCase();})[0];
+      if(!real){ log('Bloco "'+nm+'" não encontrado. Digite ? para listar.','er'); return true; } ds.name=real; ds.phase='pt'; return true; }
+    if(ds.phase==='pt'){ if(u==='E'||u==='S'||u==='ESCALA'){ ds.phase='ps'; return true; } if(u==='R'||u==='ROTACAO'||u==='ROTAÇÃO'){ ds.phase='pr'; return true; } var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; }
+    if(ds.phase==='ps'){ if(u!==''){ if(!(n>0)) return false; ds.s=n; } ds.phase='pt'; return true; }
+    if(ds.phase==='pr'){ if(u!==''){ if(n===null) return false; ds.rot=n*Math.PI/180; } ds.phase='pt'; return true; }
+    if(ds.phase==='s2'){ if(u!==''){ if(!(n>0)) return false; ds.s=n; } ds.phase='r2'; return true; }
+    if(ds.phase==='r2'){ if(u!==''){ if(n===null){ var q=parseCoord(raw); if(!q) return false; this.click(ds,q); return true; } ds.rot=n*Math.PI/180; } this.make(ds); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){ if(ds.phase!=='pt'&&ds.phase!=='r2'&&ds.phase!=='s2') return; var p=ds.phase==='pt'?hp:ds.p,rot=ds.phase==='r2'?Math.atan2(hp.y-ds.p.y,hp.x-ds.p.x):ds.rot;
+    ctx.save(); ctx.globalAlpha=.75; drawE(ctx,{id:'__prev',tp:'insert',name:ds.name,x:p.x,y:p.y,s:ds.s,rot:rot,ly:S.curLy},true); ctx.restore(); }
+};
+
+// ── HATCH por ponto interno ────────────────────────────────────────────────
+NC.hatch={
+  init:function(ds){ ds.phase='pick'; ds.regions=S.hatchPending||[]; S.hatchPending=null; var p=S.hatchPat||{name:'Linhas 45° (Genérico)'}; log('Padrão: '+(p.name||p.type)+' — digite C para mudar.','inf'); },
+  prompt:function(ds){ return {pick:'HATCH Selecione um ponto interno ou [Selecionar objetos/Configurações/Desfazer] <Enter conclui>:'+(ds.regions.length?' ('+ds.regions.length+' área(s))':''),objs:'Selecione objetos fechados (círculo, polilinha fechada, retângulo, elipse) — Enter volta:'}[ds.phase]; },
+  click:function(ds,pt){
+    if(ds.phase==='objs'){ for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i],Q=null; if(!hitEnt(e,pt.x,pt.y)) continue;
+        if(e.tp==='circ') Q=arcPts(e.cx,e.cy,e.r,0,2*Math.PI).slice(0,-1); else if(e.tp==='ell') Q=ellPoints(e,72).slice(0,-1);
+        else if(e.tp==='rect') Q=[{x:e.x,y:e.y},{x:e.x+e.w,y:e.y},{x:e.x+e.w,y:e.y+e.h},{x:e.x,y:e.y+e.h}];
+        else if(e.tp==='pl'&&e.closed){ Q=plHasArc(e)?plSample(e,24):e.pts.slice(); if(Q.length>3&&Math.hypot(Q[0].x-Q[Q.length-1].x,Q[0].y-Q[Q.length-1].y)<1e-9) Q.pop(); }
+        if(Q){ ds.regions.push([Q]); log('Objeto adicionado ao contorno.','ok'); } else log('O objeto não é fechado.','er'); return; }
+      return; }
+    var r=boundaryFind(pt); if(r.err){ log('HATCH: '+r.err,'er'); return; }
+    ds.regions.push(r.loops); log('Contorno encontrado'+(r.loops.length>1?' com '+(r.loops.length-1)+' ilha(s)':'')+'.','ok');
+  },
+  input:function(ds,u){
+    if(ds.phase==='objs'){ if(u===''){ ds.phase='pick'; return true; } return false; }
+    if(u===''){
+      if(!ds.regions.length){ ncEnd(); return true; }
+      var p=S.hatchPat||{ang:45,sp:5,type:'lines'},loops=[].concat.apply([],ds.regions);
+      var e={tp:'hatch',loops:loops,ang:p.ang,sp:p.sp,htype:p.type,col:S.style.col}; hatchSync(e);
+      snapshot(); addE(e,true); log('Hachura criada ('+ds.regions.length+' área(s)).','ok'); ncEnd(); return true; }
+    if(u==='S'||u==='O'||u==='SELECIONAR'){ ds.phase='objs'; return true; }
+    if(u==='C'||u==='T'||u==='CONFIGURACOES'||u==='CONFIGURAÇÕES'){ S.hatchPending=ds.regions; showHatchDlg(); return true; }
+    if(u==='U'||u==='D'||u==='DESFAZER'){ ds.regions.pop(); return true; }
+    return false;
+  },
+  preview:function(ctx,ds,hp){
+    ds.regions.forEach(function(L){ var tmp={loops:L,htype:(S.hatchPat||{}).type||'lines',ang:(S.hatchPat||{}).ang,sp:(S.hatchPat||{}).sp}; drawHatchLoops(ctx,tmp,w2s,S.vp.sc,'#4ec87a'); });
+  }
+};
+
+// ── IMPORTAÇÃO DE DXF ──────────────────────────────────────────────────────
+var ACI_BASE={1:'#ff0000',2:'#ffff00',3:'#00ff00',4:'#00ffff',5:'#0000ff',6:'#ff00ff',7:'#ffffff',8:'#808080',9:'#c0c0c0'};
+function aciToHex(i){
+  i=Math.abs(i|0); if(ACI_BASE[i]) return ACI_BASE[i];
+  if(i>=250&&i<=255){ var g=Math.round(51+(i-250)*40.8); var h=('0'+g.toString(16)).slice(-2); return '#'+h+h+h; }
+  if(i<10||i>249) return '#ffffff';
+  var hue=Math.floor((i-10)/10)*15,v=i%10,lv=[1,1,.8,.8,.65,.65,.5,.5,.3,.3][v],sat=v%2?.5:1;
+  function f(n){ var k=(n+hue/60)%6; return lv-lv*sat*Math.max(0,Math.min(k,4-k,1)); }
+  return '#'+[f(5),f(3),f(1)].map(function(c){return ('0'+Math.round(c*255).toString(16)).slice(-2);}).join('');
+}
+function dxfTxt(s){ return String(s).replace(/\\U\+([0-9A-Fa-f]{4})/g,function(m,h){return String.fromCharCode(parseInt(h,16));}).replace(/%%[dD]/g,'°').replace(/%%[cC]/g,'⌀').replace(/%%[pP]/g,'±').replace(/%%[uUoO]/g,''); }
+function mtextPlain(s){ return dxfTxt(String(s).replace(/\\P/g,'\n').replace(/\\[AaCcFfHhQTtWw][^;]*;/g,'').replace(/\\[LlOoKk]/g,'').replace(/\\S([^;]*);/g,function(m,a){return a.replace(/[\^#]/,'/');}).replace(/[{}]/g,'').replace(/\\~/g,' ')); }
+function ltFromDxf(n){ if(!n) return null; var u=String(n).toUpperCase(); if(u==='BYLAYER'||u==='BYBLOCK') return null; if(u==='CONTINUOUS') return 'solid';
+  var map=[['DASHDOT','dashdot'],['DIVIDE','divide'],['PHANTOM','phantom'],['CENTER','center'],['HIDDEN','hidden'],['DASH','dashed'],['DOT','dotted']]; for(var i=0;i<map.length;i++) if(u.indexOf(map[i][0])===0) return map[i][1]; return 'solid'; }
+function parseDXFText(text){
+  var L=text.split(/\r\n|\r|\n/),P=[];
+  for(var i=0;i+1<L.length;i+=2){ var c=parseInt(L[i].trim(),10); if(isNaN(c)) { i--; continue; } P.push([c,L[i+1]]); }
+  return P;
+}
+function dxfImport(text,merge){
+  if(/^AutoCAD Binary DXF/.test(text)) return {err:'DXF binário não é suportado; salve como DXF ASCII.'};
+  var P=parseDXFText(text),i=0,hdr={},layers={},blocks={},ents=[],skipped={},cnt={};
+  function readEnt(){ var t=P[i][1].trim(),c=[]; i++; while(i<P.length&&P[i][0]!==0){ c.push(P[i]); i++; } return {t:t,c:c}; }
+  function g(E,code,def){ for(var k=0;k<E.c.length;k++) if(E.c[k][0]===code) return E.c[k][1]; return def; }
+  function gn(E,code,def){ var v=g(E,code); var n=parseFloat(v); return isFinite(n)?n:def; }
+  // varre seções
+  while(i<P.length){
+    if(P[i][0]===0&&P[i][1].trim()==='SECTION'){ var name=(P[i+1]||[0,''])[1].trim(); i+=2;
+      if(name==='HEADER'){ while(i<P.length&&!(P[i][0]===0&&P[i][1].trim()==='ENDSEC')){ if(P[i][0]===9){ var vn=P[i][1].trim(); i++; if(i<P.length) hdr[vn]=P[i][1].trim(); } i++; } }
+      else if(name==='TABLES'){ while(i<P.length&&!(P[i][0]===0&&P[i][1].trim()==='ENDSEC')){
+          if(P[i][0]===0&&P[i][1].trim()==='LAYER'){ var E=readEnt(),nm=g(E,2,'0'),col=parseInt(g(E,62,'7'),10),fl=parseInt(g(E,70,'0'),10),tc=g(E,420);
+            layers[nm]={nm:nm,col:tc!==undefined?'#'+('000000'+parseInt(tc,10).toString(16)).slice(-6):aciToHex(col),vis:col>=0&&!(fl&1),lock:!!(fl&4),ld:ltFromDxf(g(E,6,'CONTINUOUS'))||'solid',lw:(function(w){w=parseInt(w,10);return w>0?w/100:.25;})(g(E,370,'-3'))}; continue; }
+          i++; } }
+      else if(name==='BLOCKS'||name==='ENTITIES'){
+        var curBlock=null,buf=ents;
+        while(i<P.length&&!(P[i][0]===0&&P[i][1].trim()==='ENDSEC')){
+          if(P[i][0]!==0){ i++; continue; }
+          var E2=readEnt();
+          if(E2.t==='BLOCK'){ curBlock={name:g(E2,2,''),bx:gn(E2,10,0),by:gn(E2,20,0),ents:[]}; buf=curBlock.ents; continue; }
+          if(E2.t==='ENDBLK'){ if(curBlock) blocks[curBlock.name]=curBlock; curBlock=null; buf=ents; continue; }
+          if(E2.t==='POLYLINE'){ E2.verts=[]; while(i<P.length&&P[i][0]===0&&P[i][1].trim()==='VERTEX'){ E2.verts.push(readEnt()); } if(i<P.length&&P[i][1].trim()==='SEQEND') readEnt(); }
+          buf.push(E2);
+        }
+      }
+      continue;
+    }
+    i++;
+  }
+  var ver=hdr.$ACADVER||'',units=parseInt(hdr.$INSUNITS||'4',10),f={0:1,1:25.4,2:304.8,4:1,5:10,6:1000,14:100}[units]||1;
+  // camadas
+  var lyMap={};
+  if(!merge){ S.layers=[{id:0,nm:'0',col:'#dce4f5',vis:true,lock:false,ld:'solid',lw:.25}]; }
+  function layerId(nm){ nm=String(nm||'0'); if(lyMap[nm]!==undefined) return lyMap[nm];
+    var ex=S.layers.filter(function(l){return String(l.nm)===nm;})[0];
+    if(!ex){ var L0=layers[nm]||{nm:nm,col:'#dce4f5',vis:true,lock:false,ld:'solid',lw:.25}; ex={id:nm==='0'?0:Date.now()+Math.floor(Math.random()*1e6),nm:nm,col:L0.col,vis:L0.vis,lock:false,ld:L0.ld,lw:L0.lw}; S.layers.push(ex); }
+    else if(nm==='0'&&layers['0']){ ex.col=layers['0'].col; }
+    lyMap[nm]=ex.id; return ex.id; }
+  Object.keys(layers).forEach(layerId);
+  function props(E){ var o={ly:layerId(g(E,8,'0'))},c=g(E,62),tc=g(E,420),lt=g(E,6),lw=g(E,370);
+    if(tc!==undefined) o.col='#'+('000000'+parseInt(tc,10).toString(16)).slice(-6); else if(c!==undefined&&+c!==256&&+c!==0) o.col=aciToHex(+c); else o.col=null;
+    o.ld=lt!==undefined?ltFromDxf(lt):null; o.lw=lw!==undefined&&+lw>0?(+lw)/100:null; return o; }
+  function conv(E,blockCtx){
+    var t=E.t,o=null,pr=props(E),D=Math.PI/180;
+    switch(t){
+      case 'LINE': o={tp:'line',x1:gn(E,10,0),y1:gn(E,20,0),x2:gn(E,11,0),y2:gn(E,21,0)}; break;
+      case 'CIRCLE': o={tp:'circ',cx:gn(E,10,0),cy:gn(E,20,0),r:gn(E,40,1)}; break;
+      case 'ARC': o={tp:'arc',cx:gn(E,10,0),cy:gn(E,20,0),r:gn(E,40,1),sa:gn(E,50,0)*D,ea:gn(E,51,0)*D}; break;
+      case 'LWPOLYLINE': { var pts=[],cur=null; E.c.forEach(function(q){ if(q[0]===10){ cur={x:parseFloat(q[1]),y:0}; pts.push(cur); } else if(q[0]===20&&cur) cur.y=parseFloat(q[1]); else if(q[0]===42&&cur){ var b=parseFloat(q[1]); if(Math.abs(b)>1e-12) cur.b=b; } });
+        var cl=!!(parseInt(g(E,70,'0'),10)&1); if(cl&&pts.length>2) pts.push({x:pts[0].x,y:pts[0].y}); if(pts.length>=2) o={tp:'pl',closed:cl,pts:pts}; break; }
+      case 'POLYLINE': { var fl=parseInt(g(E,70,'0'),10); if(fl&(16|64)){ skipped['POLYLINE 3D/malha']=(skipped['POLYLINE 3D/malha']||0)+1; return null; }
+        var pts2=(E.verts||[]).map(function(V){ var p={x:gn(V,10,0),y:gn(V,20,0)},b=gn(V,42,0); if(Math.abs(b)>1e-12) p.b=b; return p; });
+        var cl2=!!(fl&1); if(cl2&&pts2.length>2) pts2.push({x:pts2[0].x,y:pts2[0].y}); if(pts2.length>=2) o={tp:'pl',closed:cl2,pts:pts2}; break; }
+      case 'TEXT': case 'ATTDEF': case 'ATTRIB': { if(t==='ATTDEF'){ return null; } var h=gn(E,40,2.5),tx=dxfTxt(g(E,1,'')),rot=gn(E,50,0)*D,hj=parseInt(g(E,72,'0'),10),vj=parseInt(g(E,73,'0'),10);
+        if(!tx) return null;
+        if(hj===0&&vj===0) o={tp:'txt',x:gn(E,10,0),y:gn(E,20,0),h:h,txt:tx,rot:rot};
+        else { var att=(vj===3?1:vj===2?4:7)+(hj===1||hj===4?1:hj===2?2:0); o={tp:'mtext',x:gn(E,11,gn(E,10,0)),y:gn(E,21,gn(E,20,0)),h:h,w:0,txt:tx,att:att,rot:rot}; }
+        break; }
+      case 'MTEXT': { var s='';E.c.forEach(function(q){ if(q[0]===3) s+=q[1]; }); s+=g(E,1,''); var rx=gn(E,11,null),ry=gn(E,21,0),r50=gn(E,50,null);
+        o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:mtextPlain(s),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
+        if(!o.txt) return null; break; }
+      case 'ELLIPSE': { var cx=gn(E,10,0),cy=gn(E,20,0),mx=gn(E,11,1),my=gn(E,21,0),ra=gn(E,40,1),p0=gn(E,41,0),p1=gn(E,42,2*Math.PI),rx2=Math.hypot(mx,my);
+        if(Math.abs(Math.abs(p1-p0)-2*Math.PI)<1e-6) o={tp:'ell',cx:cx,cy:cy,rx:rx2,ry:rx2*ra,rot:Math.atan2(my,mx)};
+        else { var tmpE={cx:cx,cy:cy,rx:rx2,ry:rx2*ra,rot:Math.atan2(my,mx)},sw=((p1-p0)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),pp=[]; for(var k=0;k<=48;k++) pp.push(ellPt(tmpE,p0+sw*k/48)); o={tp:'pl',closed:false,pts:pp}; } break; }
+      case 'SPLINE': { var fit=[],ctl=[],kn=[],cur2=null,cur3=null; E.c.forEach(function(q){ if(q[0]===11){cur2={x:parseFloat(q[1]),y:0};fit.push(cur2);} else if(q[0]===21&&cur2) cur2.y=parseFloat(q[1]); else if(q[0]===10){cur3={x:parseFloat(q[1]),y:0};ctl.push(cur3);} else if(q[0]===20&&cur3) cur3.y=parseFloat(q[1]); else if(q[0]===40) kn.push(parseFloat(q[1])); });
+        if(fit.length>=2){ o={tp:'spline',pts:fit}; break; }
+        var deg=parseInt(g(E,71,'3'),10); if(ctl.length<2){ return null; }
+        if(kn.length!==ctl.length+deg+1){ o={tp:'pl',closed:false,pts:ctl}; break; }
+        var sp=[],t0=kn[deg],t1=kn[ctl.length]; for(var s2=0;s2<=Math.max(20,ctl.length*8);s2++){ var tt=t0+(t1-t0)*s2/Math.max(20,ctl.length*8); sp.push(deBoor(deg,ctl,kn,Math.min(tt,t1-1e-12))); }
+        o={tp:'pl',closed:false,pts:sp}; break; }
+      case 'SOLID': case 'TRACE': { var q1={x:gn(E,10,0),y:gn(E,20,0)},q2={x:gn(E,11,0),y:gn(E,21,0)},q3={x:gn(E,12,0),y:gn(E,22,0)},q4={x:gn(E,13,q3.x),y:gn(E,23,q3.y)};
+        o={tp:'pl',closed:true,pts:[q1,q2,q4,q3,{x:q1.x,y:q1.y}]}; break; }
+      case 'INSERT': { var nm=g(E,2,''),sx=gn(E,41,1),sy=gn(E,42,1); o={tp:'insert',name:nm,x:gn(E,10,0),y:gn(E,20,0),s:Math.abs(sx)||1,m:sx*sy<0,rot:gn(E,50,0)*D}; if(sx<0){ o.rot+=Math.PI; } break; }
+      case 'DIMENSION': { var bn=g(E,2,''); if(blocks[bn]){ var out=[]; blocks[bn].ents.forEach(function(B){ var c=conv(B,true); if(c){ if(c.ly===0) c.ly=pr.ly; out.push(c);} }); cnt.DIMENSION=(cnt.DIMENSION||0)+1; return out; } skipped.DIMENSION=(skipped.DIMENSION||0)+1; return null; }
+      case 'LEADER': { var lp=[],c4=null; E.c.forEach(function(q){ if(q[0]===10){c4={x:parseFloat(q[1]),y:0};lp.push(c4);} else if(q[0]===20&&c4) c4.y=parseFloat(q[1]); }); if(lp.length>=2) o={tp:'leader',pts:lp,txt:''}; break; }
+      case 'HATCH': { var res=hatchFromDxf(E); if(res) o=res; else { skipped.HATCH=(skipped.HATCH||0)+1; return null; } break; }
+      case 'POINT': case 'VIEWPORT': case 'SEQEND': case 'IMAGE': case 'WIPEOUT': default:
+        skipped[t]=(skipped[t]||0)+1; return null;
+    }
+    if(!o) return null;
+    cnt[t]=(cnt[t]||0)+1;
+    return Object.assign(o,pr);
+  }
+  // blocos (exceto anônimos de cota *D, usados só para explodir cotas)
+  Object.keys(blocks).forEach(function(nm){ if(/^\*(D|Model_Space|Paper_Space)/i.test(nm)) return; var B=blocks[nm],list=[];
+    B.ents.forEach(function(E){ var c=conv(E,true); if(!c) return; [].concat(c).forEach(function(x){ x.id='b'+Math.random().toString(36).slice(2,9); transl(x,-B.bx,-B.by); list.push(x); }); });
+    S.blocks[nm.replace(/^\*/,'_')]={base:{x:0,y:0},ents:list}; });
+  var added=[];
+  ents.forEach(function(E){ var c=conv(E,false); if(!c) return; [].concat(c).forEach(function(x){ if(x.tp==='insert') x.name=x.name.replace(/^\*/,'_'); x.id=uid(); added.push(x); }); });
+  if(f!==1){ added.forEach(function(e){ scalE(e,{x:0,y:0},f); }); Object.keys(S.blocks).forEach(function(k){ S.blocks[k].ents.forEach(function(e){ scalE(e,{x:0,y:0},f); }); }); }
+  return {ents:added,counts:cnt,skipped:skipped,ver:ver,units:units,f:f};
+}
+function deBoor(k,C,T,t){
+  var s=k; for(var j=k;j<T.length-k-1;j++) if(t>=T[j]&&t<T[j+1]){ s=j; break; }
+  var d=[]; for(var j2=0;j2<=k;j2++){ var c=C[Math.min(C.length-1,Math.max(0,j2+s-k))]; d.push({x:c.x,y:c.y}); }
+  for(var r=1;r<=k;r++) for(var j3=k;j3>=r;j3--){ var den=T[j3+1+s-r]-T[j3+s-k],a=den?(t-T[j3+s-k])/den:0; d[j3]={x:(1-a)*d[j3-1].x+a*d[j3].x,y:(1-a)*d[j3-1].y+a*d[j3].y}; }
+  return d[k];
+}
+function hatchFromDxf(E){
+  var c=E.c,k=0,loops=[],n=0;
+  for(;k<c.length;k++) if(c[k][0]===91){ n=parseInt(c[k][1],10); k++; break; }
+  for(var pth=0;pth<n&&k<c.length;pth++){
+    while(k<c.length&&c[k][0]!==92) k++; if(k>=c.length) break;
+    var fl=parseInt(c[k][1],10); k++; var L=[];
+    if(fl&2){ var hb=0,nv=0; while(k<c.length&&c[k][0]!==93){ if(c[k][0]===72) hb=parseInt(c[k][1],10); k++; } nv=parseInt(c[k][1],10); k++;
+      var V=[],cur=null; while(k<c.length&&V.length<=nv&&c[k][0]!==97&&c[k][0]!==92){ var q=c[k]; if(q[0]===10){ if(V.length===nv) break; cur={x:parseFloat(q[1]),y:0}; V.push(cur);} else if(q[0]===20&&cur) cur.y=parseFloat(q[1]); else if(q[0]===42&&cur) cur.b=parseFloat(q[1]); k++; }
+      var tmp={tp:'pl',closed:true,pts:V.concat([{x:V[0].x,y:V[0].y}])}; L=plHasArc(tmp)?plSample(tmp,24):V;
+      if(L.length>2&&Math.hypot(L[0].x-L[L.length-1].x,L[0].y-L[L.length-1].y)<1e-9) L=L.slice(0,-1);
+    } else { var ne=0; while(k<c.length&&c[k][0]!==93) k++; ne=parseInt(c[k][1],10); k++;
+      for(var ed=0;ed<ne&&k<c.length;ed++){ while(k<c.length&&c[k][0]!==72) k++; var et=parseInt(c[k][1],10); k++; var vals={},keys=[];
+        while(k<c.length&&[72,97,92].indexOf(c[k][0])<0){ if(vals[c[k][0]]===undefined) vals[c[k][0]]=parseFloat(c[k][1]); k++; }
+        if(et===1){ L.push({x:vals[10],y:vals[20]}); }
+        else if(et===2){ var sa=vals[50]*Math.PI/180,ea=vals[51]*Math.PI/180,ccw=vals[73]!==0; if(!ccw){ sa=-sa; ea=-ea; } var sw=((ea-sa)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)||2*Math.PI;
+          arcPts(vals[10],vals[20],vals[40],sa,ccw?sw:-sw).slice(0,-1).forEach(function(p){L.push(p);}); }
+        else if(et===3){ var ex={cx:vals[10],cy:vals[20],rx:Math.hypot(vals[11],vals[21]),ry:Math.hypot(vals[11],vals[21])*vals[40],rot:Math.atan2(vals[21],vals[11])},a0=vals[50]*Math.PI/180,a1=vals[51]*Math.PI/180,sw2=((a1-a0)%(2*Math.PI)+2*Math.PI)%(2*Math.PI)||2*Math.PI;
+          for(var s3=0;s3<24;s3++) L.push(ellPt(ex,a0+sw2*s3/24)); }
+      } }
+    if(L.length>=3) loops.push(L);
+  }
+  if(!loops.length) return null;
+  var nm=String((E.c.filter(function(q){return q[0]===2;})[0]||[0,''])[1]).toUpperCase(),ang=0,sc=1;
+  E.c.forEach(function(q){ if(q[0]===52) ang=parseFloat(q[1]); if(q[0]===41) sc=parseFloat(q[1]); });
+  var e={tp:'hatch',loops:loops,htype:'lines',ang:45+ang,sp:3.175*(sc||1)};
+  if(nm==='NET'||nm.indexOf('BRICK')===0){ e.htype='cross'; e.ang=ang; } else if(nm==='DOTS'||nm==='AR-SAND'){ e.htype='dots'; e.sp=0.79375*(sc||1)*4; } else if(nm==='DASH'){ e.htype='dashed'; e.ang=ang; } else if(nm==='SOLID'){ e.htype='lines'; e.sp=0.8; e.ang=45; }
+  else if(nm==='_USER'){ e.ang=ang; e.sp=sc||5; }
+  hatchSync(e); return e;
+}
+function dxfDecode(buf){
+  var latin=new TextDecoder('windows-1252').decode(buf),m=/\$ACADVER\s*\r?\n\s*1\s*\r?\n\s*(AC\d+)/.exec(latin),ver=m?m[1]:'AC1009';
+  return parseInt(ver.slice(2),10)>=1021?new TextDecoder('utf-8').decode(buf):latin;
+}
+function importDxfBuffer(buf,name,merge){
+  var text=dxfDecode(buf),saveBlocks=S.blocks;
+  if(!merge){ S.blocks={}; }
+  var r;
+  try{ r=dxfImport(text,merge); }catch(err){ r={err:'Falha ao ler o DXF ('+err.message+').'}; }
+  if(r.err){ S.blocks=saveBlocks; log('DXF: '+r.err,'er'); return false; }
+  if(!merge){ S.ents=r.ents; S.sel=[]; resetHistory(); S.dirty=false; S.curLy=0; loadDimStyles({}); document.getElementById('ftitle').textContent=name; }
+  else { snapshot(); S.ents=S.ents.concat(r.ents); }
+  syncIdCounter(); updLayerUI(); updLayerSel(); zoomFit(); renderAll(); updStatus();
+  var c=Object.keys(r.counts).map(function(k){return k+' '+r.counts[k];}).join(', '),sk=Object.keys(r.skipped).map(function(k){return k+' '+r.skipped[k];}).join(', ');
+  log('DXF '+(r.ver||'')+(merge?' anexado':' aberto')+': '+r.ents.length+' objeto(s)'+(c?' ('+c+')':'')+(r.f!==1?' — unidades convertidas para mm (×'+r.f+')':'')+'.','ok');
+  if(sk) log('Não importados: '+sk+'.','inf');
+  return true;
+}
+var _loadFile_p3=loadFile;
+loadFile=function(ev){
+  var f=ev.target.files[0]; if(!f) return;
+  if(/\.dxf$/i.test(f.name)){ var merge=!!S.dxfMerge; S.dxfMerge=false; var rd=new FileReader();
+    rd.onload=function(e){ importDxfBuffer(e.target.result,f.name,merge); ev.target.value=''; }; rd.readAsArrayBuffer(f); return; }
+  return _loadFile_p3(ev);
+};
+function dxfIn(merge){ S.dxfMerge=!!merge; var fi=document.getElementById('fileInput'); fi.click(); }
 
 
 // ── UNITS ENGINE ─────────────────────────────────────────────────────────────
@@ -8198,6 +9377,7 @@ function lyUpdateVpBadge(){
 
 // ── LAYOUT RENDER ────────────────────────────────────────────
 function layoutRender(){
+  if(!layoutRender._flat){ layoutRender._flat=true; try{ return withFlat(function(){ return layoutRender(); }); } finally { layoutRender._flat=false; } } // v7.2: blocos explodidos
   var cvs = document.getElementById('layoutCanvas');
   var ctx = cvs.getContext('2d');
   var px  = LY.pxPerMm;
@@ -8320,8 +9500,11 @@ function layoutRender(){
         for(var _k=1;_k<_sp.length;_k++){var _sk=m2l(_sp[_k].x,_sp[_k].y);ctx.lineTo(_sk.x,_sk.y);}
         ctx.stroke(); break;
       }
+      case 'mtext': drawTextPrims(ctx,mtPrims(e),col,m2l,sc*px,0); ctx.beginPath(); break;
+      case 'leader':{ var _lst=dimStyleOf(e); renderDimPrims(ctx,leaderPrims(e,_lst),_lst,m2l,sc*px,{minLw:0.5}); ctx.beginPath(); break; }
       case 'pl':{
         if(e.pts.length<2) break;
+        if(plHasArc(e)){ plTrace(ctx,e,m2l,sc*px); ctx.stroke(); break; }
         var p0=m2l(e.pts[0].x,e.pts[0].y);
         ctx.moveTo(p0.x,p0.y);
         for(var j=1;j<e.pts.length;j++){var pj=m2l(e.pts[j].x,e.pts[j].y);ctx.lineTo(pj.x,pj.y);}
@@ -8343,6 +9526,7 @@ function layoutRender(){
         ctx.beginPath(); break;
       }
       case 'hatch':{
+        if(e.loops){ drawHatchLoops(ctx,e,m2l,sc*px,col); ctx.beginPath(); break; }
         ctx.setLineDash([]);
         if(e.pts&&e.pts.length>=3){
           var hp0=m2l(e.pts[0].x,e.pts[0].y);

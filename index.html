@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v7.6</title>
+<title>EduCAD 2D v7.7</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -438,6 +438,16 @@ body.clean #layoutPanel{right:0!important}
 .ps-grid select,.ps-grid input{margin:0!important;width:auto}
 .anno-wrap{font-size:9px;color:var(--t2);margin-left:10px;display:inline-flex;gap:4px;align-items:center}
 .anno-wrap select{background:var(--bg3);color:var(--t0);border:1px solid var(--bdr);font:9px var(--mono);border-radius:2px;padding:0 2px}
+
+/* v7.7: recuperação */
+#rec-list{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow:auto}
+.rec-row{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--bdr);border-radius:4px;padding:6px 8px}
+.rec-info{flex:1;min-width:0}
+.rec-name{font-size:12px;color:var(--t0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rec-meta{font-size:9px;color:var(--t2)}
+.rec-empty{font-size:11px;color:var(--t2);padding:8px}
+#sautosave{font-size:9px}
+#ov-recover{z-index:500}
 </style>
 </head>
 <body>
@@ -456,7 +466,7 @@ body.clean #layoutPanel{right:0!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.6 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.7 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
@@ -766,7 +776,7 @@ body.clean #layoutPanel{right:0!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.6 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.7 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1173,7 +1183,7 @@ body.clean #layoutPanel{right:0!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.6 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.7 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1314,7 +1324,7 @@ body.clean #layoutPanel{right:0!important}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v7.6 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v7.7 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1388,7 +1398,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v7.6 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v7.7 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -3495,6 +3505,7 @@ function onCmdKey(e){
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
+    'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
     'PDF':'pdf','EXPORTPDF':'pdf','PLOT':'pagesetup','PLOTAR':'pagesetup','PAGESETUP':'pagesetup','PAGINA':'pagesetup',
     'MS':'mspace','MSPACE':'mspace','PS':'pspace','PSPACE':'pspace','MV':'mview','MVIEW':'mview','CARIMBO':'carimbo','TITLEBLOCK':'carimbo','LAYOUT':'newlayout','NOVOLAYOUT':'newlayout','MODEL':'model','MODELO':'model',
     'TELACHEIA':'fullscreen','FULLSCREEN':'fullscreen','FS':'fullscreen','LIMPA':'cleanscreen','CLEANSCREENON':'cleanscreen','CLEANSCREENOFF':'cleanscreen','INSTALAR':'install',
@@ -3532,6 +3543,9 @@ function onCmdKey(e){
     case 'fullscreen':toggleFullscreen();break;
     case 'explode':explodeSel();break;
     case 'pdf':expPDF(false);break;
+    case 'recover':asShowAll();break;
+    case 'savetime':setTool('savetime');break;
+    case 'asclear':asClearAll();break;
     case 'pagesetup':if(S.space==='model')switchSpace('layout');pageSetupOpen();break;
     case 'mspace':if(S.space==='model')log('MSPACE: abra um layout primeiro.','er');else mspaceEnter(curViewport());break;
     case 'pspace':mspaceExit();break;
@@ -3567,6 +3581,7 @@ function onCmdKey(e){
       log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
       log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
       log('MEDIR: DI=Distância  AA=Área','inf');
+      log('SEGURANÇA (v7.7): cópia automática no navegador (8 s após cada alteração e a cada SAVETIME min) | RECUPERAR = cópias de segurança | LIMPARRECUPERACAO em PCs compartilhados','inf');
       log('SAÍDA (v7.6): PDF = PDF vetorial em escala | PLOT/PAGESETUP = configurar página | cotas/textos ANOTATIVOS (DDIM > Ajuste; editor de texto) | Anotação na barra de status','inf');
       log('VIEWPORTS (v7.5): MV=MVIEW [Ajustar/Travar/Objeto/Poligonal/2/3/4] | ❄ nas camadas = congelar só na viewport atual | 🖨 = camada imprime ou não | 🔒 escala travada','inf');
       log('LAYOUT (v7.4): abas de layout (+ novo, duplo clique renomeia, botão direito: duplicar/excluir) | desenhe e cote na folha em mm | MV=MVIEW MS/PS | CARIMBO | plotagem mono/cor/cinza','inf');
@@ -3941,7 +3956,8 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function saveDoc(){var d={v:'7.6',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function buildDoc(){return {v:'7.7',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function saveDoc(){var d=buildDoc();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
 function validateDoc(d){
@@ -3977,7 +3993,9 @@ function loadDimStyles(d){
   updDimStyleSel();
 }
 function openDoc(){document.getElementById('fileInput').click();}
-function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=validateDoc(d);if(v){log('Arquivo inválido: '+v,'er');return;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);loadLayouts(d);S.annoScale=(typeof d.annoScale==='number'&&d.annoScale>0)?d.annoScale:1;(function(){var _as=document.getElementById('annoSel');if(_as)_as.value=String(S.annoScale);})();S.blocks=(d.blocks&&typeof d.blocks==='object'&&!Array.isArray(d.blocks))?d.blocks:{};if(typeof d.filletR==='number'&&d.filletR>=0)S.filletR=d.filletR;if(typeof d.filletTrim==='boolean')S.filletTrim=d.filletTrim;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=f.name;log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
+function loadFile(ev){var f=ev.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(e){try{var d=JSON.parse(e.target.result);var v=applyDoc(d,f.name);if(v){log('Arquivo inválido: '+v,'er');return;}log('Carregado: '+S.ents.length+' obj.','ok');}catch(ex){log('Erro: '+ex.message,'er');}};r.readAsText(f);ev.target.value='';}
+// v7.7: aplica um documento já lido (arquivo ou recuperação); devolve a mensagem de erro ou ''
+function applyDoc(d,name){var v=validateDoc(d);if(v)return v;if(S.space!=='model'){S.space='model';S.modelEnts=null;}S.ents=d.ents||d.entities||[];if(d.layers)S.layers=d.layers;S.curLy=0;loadDimStyles(d);loadLayouts(d);S.annoScale=(typeof d.annoScale==='number'&&d.annoScale>0)?d.annoScale:1;(function(){var _as=document.getElementById('annoSel');if(_as)_as.value=String(S.annoScale);})();S.blocks=(d.blocks&&typeof d.blocks==='object'&&!Array.isArray(d.blocks))?d.blocks:{};if(typeof d.filletR==='number'&&d.filletR>=0)S.filletR=d.filletR;if(typeof d.filletTrim==='boolean')S.filletTrim=d.filletTrim;if(d.vp)S.vp=d.vp;S.sel=[];resetHistory();S.dirty=false;syncIdCounter();updLayerUI();updLayerSel();zoomFit();updStatus();document.getElementById('ftitle').textContent=name;if(typeof asAfterLoad==='function')asAfterLoad();return '';}
 function newDoc(){if(S.ents.length&&!confirm('Criar novo documento? Alterações não salvas serão perdidas.'))return;S.ents=[];S.sel=[];resetHistory();S.dirty=false;S.vp={x:cvW()/2,y:cvH()/2,sc:2};loadDimStyles({});S.blocks={};resetLayouts();renderAll();updStatus();document.getElementById('ftitle').textContent='Sem título';log('Novo documento.','ok');}
 function showExport(){expFmtChange();document.getElementById('ov-export').classList.add('show');}
 function doExport(){var fmt=document.getElementById('ef').value;closeOv('ov-export');switch(fmt){case 'pdf':expPDF(false);break;case 'pdfall':expPDF(true);break;case 'json':saveDoc();break;case 'svg':expSVG();break;case 'dxf':case 'dxf2k':expDXF('2000');break;case 'dxf12':expDXF('12');break;case 'dwg':expDWG();break;case 'png':expPNG();break;}}
@@ -4646,7 +4664,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.6 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.7 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -9989,7 +10007,7 @@ function pdfAssemble(pages,title){
     objs[co]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream'; });
   objs[fontId]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v7.6) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v7.7) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -10085,6 +10103,159 @@ function dxfPaperLayouts(){
     return {name:nm,fmt:L.fmt,paper:L.paper,vps:ents.filter(function(e){return e.tp==='viewport';}),ents:flattenEnts(ents.filter(function(e){return e.tp!=='viewport';})).map(annoClone)};
   });
 }
+/* ═══════════════════════════════════════════════════════════════════
+   v7.7 — SALVAMENTO AUTOMÁTICO E RECUPERAÇÃO (R1 do parecer técnico)
+   • Uma cópia do desenho (modelo + layouts + blocos + estilos) é gravada no
+     próprio navegador: 8 s depois de cada alteração e a cada SAVETIME minutos
+     (padrão 1), ao trocar de aba/janela e ao fechar a página.
+   • Ao abrir o EduCAD, se houver desenho com alterações não salvas em arquivo,
+     aparece "Recuperar desenhos" (recuperar, baixar .json ou descartar).
+   • Armazenamento: IndexedDB; se o navegador não permitir, localStorage.
+   • Comandos: RECUPERAR (RECOVER), SAVETIME, LIMPARRECUPERACAO.
+   ═══════════════════════════════════════════════════════════════════ */
+var AS={db:null,mode:null,sid:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),timer:null,iv:null,
+  lastJson:null,lastDirty:null,lastTs:0,delay:8000,keep:5,minutes:1,started:Date.now(),LS:'educad-as:'};
+try{ var _st=localStorage.getItem('educad-savetime'); if(_st!==null&&!isNaN(+_st)) AS.minutes=Math.max(0,Math.min(120,+_st)); }catch(e){}
+
+// ── armazenamento (IndexedDB, com localStorage como reserva) ────────────────
+function asLsOk(){ try{ localStorage.setItem('educad-as-test','1'); localStorage.removeItem('educad-as-test'); return true; }catch(e){ return false; } }
+function asOpen(cb){
+  if(AS.mode){ cb(); return; }
+  var done=false; function fin(m){ if(done) return; done=true; AS.mode=m; cb(); }
+  try{
+    if(!window.indexedDB) return fin(asLsOk()?'ls':'none');
+    var rq=indexedDB.open('educad-autosave',1);
+    rq.onupgradeneeded=function(){ try{ rq.result.createObjectStore('docs',{keyPath:'id'}); }catch(e){} };
+    rq.onsuccess=function(){ AS.db=rq.result; fin('idb'); };
+    rq.onerror=function(){ fin(asLsOk()?'ls':'none'); };
+    rq.onblocked=function(){ fin(asLsOk()?'ls':'none'); };
+    setTimeout(function(){ fin(asLsOk()?'ls':'none'); },3000);
+  }catch(e){ fin(asLsOk()?'ls':'none'); }
+}
+function asLsPut(rec){ try{ localStorage.setItem(AS.LS+rec.id,JSON.stringify(rec)); return true; }catch(e){ return false; } }
+function asLsAll(){ var o=[]; try{ for(var i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k&&k.indexOf(AS.LS)===0){ try{ o.push(JSON.parse(localStorage.getItem(k))); }catch(e){} } } }catch(e){} return o; }
+function asPut(rec,cb){
+  cb=cb||function(){};
+  if(AS.mode==='idb'&&AS.db){ try{ var tx=AS.db.transaction('docs','readwrite'); tx.objectStore('docs').put(rec); tx.oncomplete=function(){ cb(true); }; tx.onerror=function(){ cb(asLsPut(rec)); }; return; }catch(e){} }
+  if(AS.mode==='ls'||AS.mode==='idb') return cb(asLsPut(rec));
+  cb(false);
+}
+function asList(cb){
+  var ls=asLsAll();
+  function merge(a){ var m={}; a.concat(ls).forEach(function(r){ if(r&&r.id&&(!m[r.id]||r.ts>m[r.id].ts)) m[r.id]=r; }); cb(Object.keys(m).map(function(k){return m[k];}).sort(function(x,y){return y.ts-x.ts;})); }
+  if(AS.mode==='idb'&&AS.db){ try{ var rq=AS.db.transaction('docs','readonly').objectStore('docs').getAll(); rq.onsuccess=function(){ merge(rq.result||[]); }; rq.onerror=function(){ merge([]); }; return; }catch(e){} }
+  merge([]);
+}
+function asDel(id,cb){
+  try{ localStorage.removeItem(AS.LS+id); }catch(e){}
+  if(AS.mode==='idb'&&AS.db){ try{ var tx=AS.db.transaction('docs','readwrite'); tx.objectStore('docs').delete(id); tx.oncomplete=function(){ (cb||function(){})(); }; tx.onerror=function(){ (cb||function(){})(); }; return; }catch(e){} }
+  (cb||function(){})();
+}
+function asPrune(){ asList(function(L){ L.slice(AS.keep).forEach(function(r){ asDel(r.id); }); }); }
+
+// ── conteúdo do desenho (sempre a partir do modelo, como o Salvar) ──────────
+function asDocJson(){
+  if(S.space==='model') return JSON.stringify(buildDoc());
+  spaceSave(); var e=S.ents,vp=S.vp,sp=S.space; S.ents=S.modelEnts; S.vp=S.modelVp||S.vp; S.space='model';
+  try{ return JSON.stringify(buildDoc()); } finally { S.ents=e; S.vp=vp; S.space=sp; }
+}
+function asCount(){ var n=(S.space==='model'?S.ents:(S.modelEnts||[])).length; (S.layouts||[]).forEach(function(L){ var ents=L.id===S.space?S.ents:L.ents; n+=ents.filter(function(x){return x.tp!=='viewport';}).length; }); return n; }
+function asSaveNow(reason,cb){
+  cb=cb||function(){};
+  if(!AS.minutes&&reason!=='arquivo'&&reason!=='novo') return cb(false);
+  asOpen(function(){
+    if(AS.mode==='none'){ asStatus(); return cb(false); }
+    var json; try{ json=asDocJson(); }catch(e){ return cb(false); }
+    var dirty=!!S.dirty;
+    if(json===AS.lastJson&&dirty===AS.lastDirty) return cb(true);
+    var rec={id:AS.sid,ts:Date.now(),name:(document.getElementById('ftitle')||{}).textContent||'Sem título',dirty:dirty,n:asCount(),v:'7.7',json:json};
+    asPut(rec,function(ok){ if(ok){ AS.lastJson=json; AS.lastDirty=dirty; AS.lastTs=rec.ts; AS.pending=false; asPrune(); } asStatus(); cb(ok); });
+  });
+}
+function asSchedule(){ if(!AS.minutes) return; AS.pending=true; clearTimeout(AS.timer); AS.timer=setTimeout(function(){ asSaveNow('alteração'); },AS.delay); asStatus(); }
+function asAfterLoad(){ AS.lastJson=null; setTimeout(function(){ asSaveNow('arquivo'); },0); }
+function asRestartInterval(){ clearInterval(AS.iv); AS.iv=null; if(AS.minutes>0) AS.iv=setInterval(function(){ if(S.dirty) asSaveNow('intervalo'); },AS.minutes*60000); asStatus(); }
+function hhmm(ts){ var d=new Date(ts); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+function dmy(ts){ var d=new Date(ts); return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear()+' '+hhmm(ts); }
+function asStatus(){
+  var el=document.getElementById('sautosave'); if(!el) return;
+  var t,c;
+  if(AS.mode==='none'){ t='● Salvamento automático indisponível neste navegador'; c='#e85050'; }
+  else if(!AS.minutes){ t='○ Salvamento automático desligado (SAVETIME)'; c='var(--t2)'; }
+  else if(AS.pending||(S.dirty&&AS.lastJson===null)){ t='● Guardando cópia de segurança…'; c='#f5a623'; }
+  else if(AS.lastTs){ t='● Cópia de segurança '+hhmm(AS.lastTs); c='#4ec87a'; }
+  else { t='● Salvamento automático ativo'; c='#4ec87a'; }
+  el.textContent=t; el.style.color=c;
+}
+
+// ── ganchos: alterações, salvar, novo, fechar ───────────────────────────────
+(function(){
+  var sn=snapshot,un=undo,re=redo,sv=saveDoc,nd=newDoc;
+  snapshot=function(){ var r=sn.apply(this,arguments); asSchedule(); return r; };
+  undo=function(){ var r=un.apply(this,arguments); asSchedule(); return r; };
+  redo=function(){ var r=re.apply(this,arguments); asSchedule(); return r; };
+  saveDoc=function(){ var r=sv.apply(this,arguments); if(!S.dirty) asSaveNow('arquivo'); return r; };
+  newDoc=function(){ var r=nd.apply(this,arguments); if(!S.dirty){ AS.lastJson=null; asSaveNow('novo'); } return r; };
+})();
+function asFlush(){ if(!AS.minutes||!S.dirty) return; try{ var json=asDocJson(); var rec={id:AS.sid,ts:Date.now(),name:(document.getElementById('ftitle')||{}).textContent||'Sem título',dirty:true,n:asCount(),v:'7.7',json:json};
+  asLsPut(rec); if(AS.mode==='idb') asPut(rec); AS.lastJson=json; AS.lastDirty=true; AS.lastTs=rec.ts; }catch(e){} }
+document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='hidden') asFlush(); });
+window.addEventListener('pagehide',asFlush);
+window.addEventListener('beforeunload',asFlush);
+
+// ── recuperação ─────────────────────────────────────────────────────────────
+function asRecover(rec){
+  var d; try{ d=JSON.parse(rec.json); }catch(e){ log('Recuperação: cópia corrompida.','er'); return false; }
+  var nm=String(rec.name||'Sem título').replace(/ \(recuperado\)$/,'')+' (recuperado)';
+  var err=applyDoc(d,nm); if(err){ log('Recuperação: '+err,'er'); return false; }
+  S.dirty=true; AS.lastJson=null; asDel(rec.id); asSaveNow('recuperado');
+  renderAll(); updStatus(); log('Desenho recuperado de '+dmy(rec.ts)+' ('+rec.n+' objeto(s)). Salve em arquivo com Ctrl+S.','ok');
+  return true;
+}
+function asDownload(rec){ var nm=String(rec.name||'educad').replace(/\.json$/i,'').replace(/[\\/:*?"<>|]+/g,'_')+' - recuperado '+dmy(rec.ts).replace(/[\/: ]/g,'-')+'.json';
+  var pretty; try{ pretty=JSON.stringify(JSON.parse(rec.json),null,2); }catch(e){ pretty=rec.json; } downloadBlob(pretty,'application/json',nm); }
+function asDialog(list,all){
+  var ov=document.getElementById('ov-recover'); if(!ov) return;
+  var box=document.getElementById('rec-list'); box.textContent='';
+  document.getElementById('rec-title').textContent=all?'Cópias de segurança neste navegador':'Recuperar desenhos';
+  document.getElementById('rec-lead').textContent=all?'Cópias guardadas automaticamente (as 5 mais recentes).':'O EduCAD foi fechado com alterações que não foram salvas em arquivo. Escolha o que fazer com cada cópia:';
+  if(!list.length){ var p=document.createElement('div'); p.className='rec-empty'; p.textContent='Nenhuma cópia de segurança.'; box.appendChild(p); }
+  list.forEach(function(r){
+    var row=document.createElement('div'); row.className='rec-row';
+    var info=document.createElement('div'); info.className='rec-info';
+    var t=document.createElement('div'); t.className='rec-name'; t.textContent=r.name||'Sem título';
+    var m=document.createElement('div'); m.className='rec-meta'; m.textContent=dmy(r.ts)+' · '+r.n+' objeto(s)'+(r.dirty?' · não salvo em arquivo':' · já salvo em arquivo')+(r.id===AS.sid?' · esta sessão':'');
+    info.appendChild(t); info.appendChild(m); row.appendChild(info);
+    function btn(txt,cls,fn){ var b=document.createElement('button'); b.className='btn '+cls; b.type='button'; b.textContent=txt; b.addEventListener('click',fn); row.appendChild(b); return b; }
+    if(r.id!==AS.sid) btn('Recuperar','p rec-ok',function(){ if(S.dirty&&asCount()&&!confirm('O desenho atual tem alterações não salvas. Substituí-lo pela cópia recuperada?')) return; closeOv('ov-recover'); asRecover(r); });
+    btn('Baixar .json','s rec-dl',function(){ asDownload(r); });
+    if(r.id!==AS.sid) btn('Descartar','s rec-del',function(){ asDel(r.id,function(){ row.remove(); if(!box.querySelector('.rec-row')) closeOv('ov-recover'); }); });
+    box.appendChild(row);
+  });
+  ov.classList.add('show');
+}
+function asCheckOnStart(){
+  asOpen(function(){
+    asStatus(); if(AS.mode==='none') return;
+    asList(function(L){ var c=L.filter(function(r){ return r.id!==AS.sid&&r.dirty&&r.n>0; }); if(c.length) asDialog(c,false); });
+  });
+}
+function asShowAll(){ asOpen(function(){ asList(function(L){ asDialog(L,true); }); }); }
+function asClearAll(){ if(!confirm('Apagar todas as cópias de segurança guardadas neste navegador?')) return; asOpen(function(){ asList(function(L){ L.forEach(function(r){ asDel(r.id); }); AS.lastJson=null; AS.lastTs=0; asStatus(); log(L.length+' cópia(s) de segurança apagada(s) deste navegador.','ok'); }); }); }
+function asSetMinutes(m){ AS.minutes=Math.max(0,Math.min(120,m)); try{ localStorage.setItem('educad-savetime',String(AS.minutes)); }catch(e){} asRestartInterval(); log(AS.minutes?'Salvamento automático: a cada '+AS.minutes+' min e 8 s após cada alteração.':'Salvamento automático desligado.',AS.minutes?'ok':'inf'); }
+NC.savetime={init:function(ds){ ds.phase='m'; },prompt:function(){ return 'SAVETIME Intervalo do salvamento automático em minutos (0 = desligado) <'+AS.minutes+'>:'; },
+  click:function(){},input:function(ds,u){ if(u===''){ ncEnd(); return true; } var n=ncNum(u); if(n===null||n<0) return false; asSetMinutes(Math.round(n)); ncEnd(); return true; }};
+
+window.addEventListener('load',function(){
+  var ov=document.createElement('div'); ov.className='ov'; ov.id='ov-recover';
+  ov.innerHTML='<div class="modal" style="min-width:460px;max-width:94vw"><h3 id="rec-title">Recuperar desenhos</h3><div id="rec-lead" style="font-size:11px;color:var(--t1);margin-bottom:8px"></div>'+
+    '<div id="rec-list"></div><div style="font-size:9px;color:var(--t2);margin-top:8px">As cópias ficam só neste navegador, neste computador. Em computadores compartilhados, use LIMPARRECUPERACAO ao terminar.</div>'+
+    '<div class="mact"><button class="btn s" type="button" onclick="closeOv(\'ov-recover\')">Agora não</button></div></div>';
+  document.body.appendChild(ov);
+  var sb=document.getElementById('sbar'); if(sb){ var sp=document.createElement('span'); sp.className='ssep'; sb.appendChild(sp); var s=document.createElement('span'); s.id='sautosave'; s.style.cursor='pointer'; s.title='Cópias de segurança (RECUPERAR)'; s.addEventListener('click',asShowAll); sb.appendChild(s); }
+  asRestartInterval(); asStatus();
+  setTimeout(asCheckOnStart,500);
+});
 </script>
 </body>
 </html>

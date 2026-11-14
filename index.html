@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v7.7</title>
+<title>EduCAD 2D v8.1</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -448,6 +448,43 @@ body.clean #layoutPanel{right:0!important}
 .rec-empty{font-size:11px;color:var(--t2);padding:8px}
 #sautosave{font-size:9px}
 #ov-recover{z-index:500}
+/* v7.9: faixa de opções compacta em telas médias (mais botões sem roubar altura do desenho) */
+@media (max-width:1519px){
+  .rb{min-width:30px;padding:3px 3px;font-size:8px;letter-spacing:-.1px}
+  .rb svg{width:19px;height:19px}
+  .rg{padding:0 2px}
+  .rpanel{gap:1px;padding:3px 4px}
+}
+@media (max-width:1180px){
+  .rb{min-width:24px;padding:2px 1px;font-size:7px;letter-spacing:-.2px}
+  .rb svg{width:16px;height:16px}
+  .rg{padding:0 1px}
+}
+
+/* v8.1: aula guiada */
+#aula-panel{display:none;position:absolute;left:10px;top:10px;width:310px;max-height:calc(100% - 20px);overflow:auto;z-index:30;background:rgba(13,21,37,.97);border:1px solid var(--acc);border-radius:6px;box-shadow:0 6px 24px rgba(0,0,0,.55);color:var(--t0);font:11px system-ui,sans-serif;cursor:default}
+#aula-panel.show{display:block}
+.aula-head{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;font-weight:600;font-size:12px;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:#0d1525}
+.aula-x{background:none;border:none;color:var(--t1);font-size:16px;cursor:pointer}
+#aula-sel{margin:8px 10px 0;width:calc(100% - 20px);background:var(--bg3);color:var(--t0);border:1px solid var(--bdr);border-radius:3px;font-size:11px;padding:3px}
+#aula-body{padding:8px 10px 10px}
+.aula-meta{font-size:9px;color:var(--t2);margin:2px 0 6px}
+.aula-goal,.aula-intro{font-size:11px;line-height:1.45;margin-bottom:6px;color:var(--t1)}
+.aula-start,.aula-next{width:100%;margin:6px 0}
+.aula-restart{margin-top:8px;font-size:10px}
+.aula-prog{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:6px}
+.aula-bar{height:100%;background:#4ec87a;transition:width .3s}
+.aula-steps{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:4px}
+.aula-steps li{border:1px solid var(--bdr);border-radius:4px;padding:5px 7px;color:var(--t2)}
+.aula-steps li.ok{color:#4ec87a;border-color:rgba(78,200,122,.4)}
+.aula-steps li.cur{color:var(--t0);border-color:var(--acc);background:rgba(0,200,255,.06)}
+.aula-st{font-weight:600}
+.aula-ins{margin:5px 0;line-height:1.45;font-size:11px}
+.aula-ins code,.aula-hint code{background:var(--bg3);padding:0 3px;border-radius:2px;font-family:Consolas,monospace;color:#f5c860}
+.aula-row{display:flex;gap:6px;margin:4px 0}
+.aula-hint{margin-top:4px;padding:5px 6px;border-left:2px solid #f5a623;background:rgba(245,166,35,.08);line-height:1.45;font-size:10.5px}
+.aula-fb{margin-top:5px;padding:5px 6px;border-left:2px solid #e85050;background:rgba(232,80,80,.08);color:#ffb3b3;font-size:10.5px;line-height:1.4}
+.aula-done{margin-top:8px;padding:6px 8px;border-radius:4px;background:rgba(78,200,122,.12);color:#8ff0b0;font-weight:600;line-height:1.4}
 </style>
 </head>
 <body>
@@ -466,10 +503,10 @@ body.clean #layoutPanel{right:0!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v7.7 · Uso Educacional</span>
-  <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços)" style="display:none">⬇ Instalar</button>
-  <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis (Ctrl+0)">▭ Tela limpa</button>
-  <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia (comando TELACHEIA)">⛶ Tela cheia</button>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.1 · Uso Educacional</span>
+  <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
+  <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
+  <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
   <button onclick="showAbout()" style="background:none;border:1px solid var(--bdr);color:var(--t2);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;" title="Sobre / Licença">ⓘ Sobre</button>
 </div>
 
@@ -482,68 +519,89 @@ body.clean #layoutPanel{right:0!important}
   <div class="rpanel" id="tab0">
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="newDoc()" title="Novo Ctrl+N"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
-        <div class="rb" onclick="saveDoc()" title="Salvar Ctrl+S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
-        <div class="rb" onclick="openDoc()" title="Abrir Ctrl+O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
-        <div class="rb" onclick="showLineType()" title="Tipos de Linha LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
-        <div class="rb" onclick="showUnits()" title="Unidades UN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>Unidades</div>
-        <div class="rb" onclick="showExport()"  title="Exportar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</div>
+        <div class="rb" onclick="newDoc()" title="Novo — NEW (Ctrl+N)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
+        <div class="rb" onclick="saveDoc()" title="Salvar — SAVE (Ctrl+S)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
+        <div class="rb" onclick="openDoc()" title="Abrir (.json ou .dxf) — OPEN (Ctrl+O)" data-cmd="OPEN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
+        <div class="rb" onclick="showLineType()" title="Tipos de linha — LT" data-cmd="LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
+        <div class="rb" onclick="showUnits()" title="Unidades — UN" data-cmd="UN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>Unidades</div>
+        <div class="rb" onclick="showExport()"  title="Exportar (PDF, DXF, SVG, PNG, JSON) — EXPORT" data-cmd="EXPORT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</div>
+        <div class="rb" id="rb-recover" onclick="asShowAll()" title="Recuperar desenho — RECUPERAR (cópias de segurança deste navegador)" data-cmd="RECUPERAR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12a8 8 0 108-8"/><path d="M4 4v5h5"/><path d="M12 8v4l3 2"/></svg>Recuperar</div>
       </div><div class="rglbl">Arquivo</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="undo()" title="Ctrl+Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9,14 4,9 9,4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>Desfazer</div>
-        <div class="rb" onclick="redo()" title="Ctrl+Y"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,14 20,9 15,4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg>Refazer</div>
-        <div class="rb red" onclick="delSel()" title="Del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M9,6V4a1,1,0,011-1h4a1,1,0,011,1v2"/></svg>Apagar</div>
+        <div class="rb" onclick="undo()" title="Desfazer — U (Ctrl+Z)" data-cmd="U"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9,14 4,9 9,4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>Desfazer</div>
+        <div class="rb" onclick="redo()" title="Refazer — REDO (Ctrl+Y)" data-cmd="REDO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,14 20,9 15,4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg>Refazer</div>
+        <div class="rb red" onclick="setTool('erase')" title="Apagar — E (ou tecla Del)" data-cmd="E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M9,6V4a1,1,0,011-1h4a1,1,0,011,1v2"/></svg>Apagar</div>
       </div><div class="rglbl">Editar</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" id="rb-select" onclick="setTool('select')" title="Selecionar S/Esc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 0v20l5-5 3 7 2-1-3-7h7L4 0z"/></svg>Select</div>
-        <div class="rb" id="rb-pan"    onclick="setTool('pan')"    title="Pan P / roda mouse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>Pan</div>
-        <div class="rb" onclick="zoomFit()" title="Zoom Fit Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>Zoom Fit</div>
-        <div class="rb" onclick="selAll()" title="Ctrl+A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3,2"/></svg>Sel. Tudo</div>
-        <div class="rb" onclick="setTool('dist')" title="Distância DI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="9" x2="3" y2="15"/><line x1="21" y1="9" x2="21" y2="15"/></svg>Dist</div>
-        <div class="rb" onclick="setTool('area')" title="Área AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 21,9 18,20 6,20 3,9"/></svg>Área</div>
+        <div class="rb" id="rb-select" onclick="setTool('select')" title="Selecionar — SELECT (Esc encerra o comando atual)" data-cmd="SELECT"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 0v20l5-5 3 7 2-1-3-7h7L4 0z"/></svg>Select</div>
+        <div class="rb" id="rb-pan"    onclick="setTool('pan')"    title="Pan — P (ou arraste com o botão do meio / roda do mouse)" data-cmd="P"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>Pan</div>
+        <div class="rb" onclick="zoomFit()" title="Zoom extensão — Z" data-cmd="Z"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>Zoom Fit</div>
+        <div class="rb" onclick="selAll()" title="Selecionar tudo (Ctrl+A)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3,2"/></svg>Sel. Tudo</div>
+        <div class="rb" onclick="setTool('dist')" title="Distância — DI" data-cmd="DI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="9" x2="3" y2="15"/><line x1="21" y1="9" x2="21" y2="15"/></svg>Dist</div>
+        <div class="rb" onclick="setTool('area')" title="Área — AA" data-cmd="AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 21,9 18,20 6,20 3,9"/></svg>Área</div>
       </div><div class="rglbl">Navegar</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" id="rb-line"      onclick="setTool('line')"      title="Linha L"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="currentColor"/><circle cx="20" cy="4" r="1.5" fill="currentColor"/></svg>Linha</div>
-        <div class="rb" id="rb-polyline"  onclick="setTool('polyline')"  title="Polilinha PL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,19 7,8 13,14 20,4"/></svg>Polilinha</div>
-        <div class="rb" id="rb-rectangle" onclick="setTool('rectangle')" title="Retângulo R"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>Retângulo</div>
-        <div class="rb" id="rb-circle"    onclick="setTool('circle')"    title="Círculo C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>Círculo</div>
-        <div class="rb" id="rb-arc"       onclick="setTool('arc')"       title="Arco A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20 Q12 2 21 20"/></svg>Arco</div>
-        <div class="rb" id="rb-ellipse"   onclick="setTool('ellipse')"   title="Elipse E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>Elipse</div>
-        <div class="rb" id="rb-text"      onclick="setTool('text')"      title="Texto T"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Texto</div>
-        <div class="rb" id="rb-polygon" onclick="startPolygon()" title="Polígono POL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,8 17,20 7,20 4,8"/></svg>Polígono</div>
-        <div class="rb" id="rb-hatch" onclick="showHatchDlg()" title="Hachura H"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
+        <div class="rb" id="rb-line"      onclick="setTool('line')"      title="Linha — L" data-cmd="L"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="currentColor"/><circle cx="20" cy="4" r="1.5" fill="currentColor"/></svg>Linha</div>
+        <div class="rb" id="rb-polyline"  onclick="setTool('polyline')"  title="Polilinha — PL" data-cmd="PL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,19 7,8 13,14 20,4"/></svg>Polilinha</div>
+        <div class="rb" id="rb-rectangle" onclick="setTool('rectangle')" title="Retângulo — REC" data-cmd="REC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>Retângulo</div>
+        <div class="rb" id="rb-circle"    onclick="setTool('circle')"    title="Círculo — C" data-cmd="C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>Círculo</div>
+        <div class="rb" id="rb-arc"       onclick="setTool('arc')"       title="Arco — A" data-cmd="A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20 Q12 2 21 20"/></svg>Arco</div>
+        <div class="rb" id="rb-ellipse"   onclick="setTool('ellipse')"   title="Elipse — EL" data-cmd="EL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>Elipse</div>
+        <div class="rb" id="rb-text"      onclick="setTool('text')"      title="Texto de uma linha — DT (texto de várias linhas: T ou MT)" data-cmd="DT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Texto</div>
+        <div class="rb" id="rb-polygon" onclick="startPolygon()" title="Polígono — POL" data-cmd="POL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,8 17,20 7,20 4,8"/></svg>Polígono</div>
+        <div class="rb" id="rb-hatch" onclick="showHatchDlg()" title="Hachura — H (escolha o padrão e clique dentro da área)" data-cmd="H" data-cmd-via="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
       </div><div class="rglbl">Desenhar</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" id="rb-move"   onclick="setTool('move')"   title="Mover M"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>Mover</div>
-        <div class="rb" id="rb-copy"   onclick="setTool('copy')"   title="Copiar CO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar</div>
-        <div class="rb" id="rb-rotate" onclick="setTool('rotate')" title="Rotacionar RO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>Rotar</div>
-        <div class="rb" id="rb-mirror" onclick="setTool('mirror')" title="Espelhar MI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2,2"/><path d="M7 7L3 12l4 5M17 7l4 5-4 5"/></svg>Espelhar</div>
-        <div class="rb" id="rb-scale"  onclick="setTool('scale')"  title="Escalar SC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Escalar</div>
-        <div class="rb" id="rb-offset" onclick="setTool('offset')" title="Offset O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="11" height="9" rx="1"/><rect x="10" y="10" width="11" height="9" rx="1" opacity=".6"/></svg>Offset</div>
-        <div class="rb" id="rb-trim"   onclick="setTool('trim')"   title="Trim TR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="20" y2="20" stroke-dasharray="4,3"/><line x1="4" y1="20" x2="20" y2="4"/><line x1="14" y1="14" x2="20" y2="20" stroke="var(--red)" stroke-width="2.5"/></svg>Trim</div>
-        <div class="rb" id="rb-extend" onclick="setTool('extend')" title="Extend EX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="16" y2="12"/><polyline points="13,9 16,12 13,15"/><line x1="18" y1="5" x2="18" y2="19" stroke-dasharray="3,2"/></svg>Extend</div>
-        <div class="rb" id="rb-fillet" onclick="setTool('fillet')" title="Fillet F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><path d="M3 8 Q3 3 8 3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Fillet</div>
-        <div class="rb" id="rb-chamfer" onclick="setTool('chamfer')" title="Chamfer CHA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><line x1="3" y1="8" x2="8" y2="3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Chamfer</div>
-        <div class="rb" id="rb-array"  onclick="showArrayDlg()"   title="Array AR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="10" y="3" width="5" height="5" rx=".5"/><rect x="17" y="3" width="4" height="5" rx=".5"/><rect x="3" y="10" width="5" height="5" rx=".5"/><rect x="10" y="10" width="5" height="5" rx=".5"/><rect x="17" y="10" width="4" height="5" rx=".5"/></svg>Array</div>
+        <div class="rb" id="rb-move"   onclick="setTool('move')"   title="Mover — M" data-cmd="M"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>Mover</div>
+        <div class="rb" id="rb-copy"   onclick="setTool('copy')"   title="Copiar — CO" data-cmd="CO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar</div>
+        <div class="rb" id="rb-rotate" onclick="setTool('rotate')" title="Rotacionar — RO" data-cmd="RO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>Rotar</div>
+        <div class="rb" id="rb-mirror" onclick="setTool('mirror')" title="Espelhar — MI" data-cmd="MI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2,2"/><path d="M7 7L3 12l4 5M17 7l4 5-4 5"/></svg>Espelhar</div>
+        <div class="rb" id="rb-scale"  onclick="setTool('scale')"  title="Escalar — SC" data-cmd="SC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Escalar</div>
+        <div class="rb" id="rb-offset" onclick="setTool('offset')" title="Offset — O" data-cmd="O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="11" height="9" rx="1"/><rect x="10" y="10" width="11" height="9" rx="1" opacity=".6"/></svg>Offset</div>
+        <div class="rb" id="rb-trim"   onclick="setTool('trim')"   title="Trim — TR (Shift+clique estende)" data-cmd="TR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="20" y2="20" stroke-dasharray="4,3"/><line x1="4" y1="20" x2="20" y2="4"/><line x1="14" y1="14" x2="20" y2="20" stroke="var(--red)" stroke-width="2.5"/></svg>Trim</div>
+        <div class="rb" id="rb-extend" onclick="setTool('extend')" title="Extend — EX (Shift+clique apara)" data-cmd="EX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="16" y2="12"/><polyline points="13,9 16,12 13,15"/><line x1="18" y1="5" x2="18" y2="19" stroke-dasharray="3,2"/></svg>Extend</div>
+        <div class="rb" id="rb-fillet" onclick="setTool('fillet')" title="Fillet — F" data-cmd="F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><path d="M3 8 Q3 3 8 3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Fillet</div>
+        <div class="rb" id="rb-chamfer" onclick="setTool('chamfer')" title="Chamfer — CHA" data-cmd="CHA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><line x1="3" y1="8" x2="8" y2="3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Chamfer</div>
+        <div class="rb" id="rb-array"  onclick="showArrayDlg()"   title="Array — AR" data-cmd="AR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="10" y="3" width="5" height="5" rx=".5"/><rect x="17" y="3" width="4" height="5" rx=".5"/><rect x="3" y="10" width="5" height="5" rx=".5"/><rect x="10" y="10" width="5" height="5" rx=".5"/><rect x="17" y="10" width="4" height="5" rx=".5"/></svg>Array</div>
+        <div class="rb" id="rb-stretch" onclick="setTool('stretch')" title="Esticar — S (selecione com janela cruzando; só os vértices dentro dela se movem)" data-cmd="S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="9" height="8" stroke-dasharray="2 2"/><path d="M12 8h7v8h-7"/><path d="M15 5l4 3-4 3"/></svg>Esticar</div>
+        <div class="rb" id="rb-break" onclick="setTool('break')" title="Interromper — BR (@ = interromper num ponto)" data-cmd="BR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/><path d="M10 8l2 8M12 8l2 8"/></svg>Interromper</div>
+        <div class="rb" id="rb-join" onclick="setTool('join')" title="Unir — J (linhas colineares, arcos e peças encadeadas)" data-cmd="J"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="16" x2="11" y2="16"/><path d="M13 16a6 6 0 006-6V4"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>Unir</div>
+        <div class="rb" id="rb-pedit" onclick="setTool('pedit')" title="Editar polilinha — PE (Fechar/Abrir, Unir, Decurvar, Inverter)" data-cmd="PE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,18 8,8 14,14 20,5"/><circle cx="8" cy="8" r="1.6"/><circle cx="14" cy="14" r="1.6"/></svg>Editar PL</div>
+        <div class="rb" id="rb-explode" onclick="setTool('explode')" title="Explodir — X (polilinhas, retângulos, blocos e texto múltiplo)" data-cmd="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="8" height="8"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/></svg>Explodir</div>
       </div><div class="rglbl">Modificar</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" id="rb-dim"    onclick="setTool('dim')"    title="Cota Linear DLI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="19" x2="21" y2="19"/><line x1="3" y1="17" x2="3" y2="21"/><line x1="21" y1="17" x2="21" y2="21"/><line x1="8" y1="14" x2="8" y2="19"/><line x1="16" y1="14" x2="16" y2="19"/></svg>Linear</div>
-        <div class="rb" id="rb-dimali" onclick="setTool('dimali')" title="Cota Alinhada DAL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="4" y1="20" x2="20" y2="8"/><line x1="3" y1="18" x2="5" y2="22"/><line x1="19" y1="6" x2="21" y2="10"/><line x1="8" y1="15" x2="10" y2="19"/><line x1="14" y1="10" x2="16" y2="14"/></svg>Alinhada</div>
-        <div class="rb" id="rb-dimr" onclick="setTool('dimr')" title="Raio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="13" r="7"/><line x1="12" y1="13" x2="17" y2="8"/><text x="14" y="8" font-size="5" fill="currentColor">R</text></svg>Raio</div>
-        <div class="rb" id="rb-dimd" onclick="setTool('dimd')" title="Diâmetro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="8"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Diâm.</div>
-        <div class="rb" id="rb-dima" onclick="setTool('dima')" title="Ângulo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="6"/><path d="M11 19 A7 7 0 0 0 14 13"/></svg>Ângulo</div>
-        <div class="rb" onclick="showDimStyle()" title="Estilos de Cota DDIM"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><circle cx="12" cy="10" r="3"/><line x1="12" y1="3" x2="12" y2="7"/></svg>DimStyle</div>
+        <div class="rb" id="rb-dim"    onclick="setTool('dim')"    title="Cota linear — DLI" data-cmd="DLI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="19" x2="21" y2="19"/><line x1="3" y1="17" x2="3" y2="21"/><line x1="21" y1="17" x2="21" y2="21"/><line x1="8" y1="14" x2="8" y2="19"/><line x1="16" y1="14" x2="16" y2="19"/></svg>Linear</div>
+        <div class="rb" id="rb-dimali" onclick="setTool('dimali')" title="Cota alinhada — DAL" data-cmd="DAL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="4" y1="20" x2="20" y2="8"/><line x1="3" y1="18" x2="5" y2="22"/><line x1="19" y1="6" x2="21" y2="10"/><line x1="8" y1="15" x2="10" y2="19"/><line x1="14" y1="10" x2="16" y2="14"/></svg>Alinhada</div>
+                <div class="rb" id="rb-dimcont" onclick="setTool('dimcontinue')" title="Cota em série (contínua) — DCO: continua da última cota linear" data-cmd="DCO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15h18M3 11v8M10 11v8M17 11v8"/><path d="M3 15l2-1v2zM10 15l-2-1v2zM10 15l2-1v2zM17 15l-2-1v2z" fill="currentColor"/></svg>Contínua</div>
+        <div class="rb" id="rb-dimbase" onclick="setTool('dimbaseline')" title="Cota de base — DBA: todas a partir da mesma linha de extensão" data-cmd="DBA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6v15M4 18h8M4 12h15M12 15v6M19 9v12"/></svg>De base</div>
+        <div class="rb" id="rb-dimr" onclick="setTool('dimr')" title="Cota de raio — DRA" data-cmd="DRA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="13" r="7"/><line x1="12" y1="13" x2="17" y2="8"/><text x="14" y="8" font-size="5" fill="currentColor">R</text></svg>Raio</div>
+        <div class="rb" id="rb-dimd" onclick="setTool('dimd')" title="Cota de diâmetro — DDI" data-cmd="DDI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="8"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Diâm.</div>
+        <div class="rb" id="rb-dima" onclick="setTool('dima')" title="Cota angular — DAN" data-cmd="DAN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="6"/><path d="M11 19 A7 7 0 0 0 14 13"/></svg>Ângulo</div>
+        <div class="rb" onclick="showDimStyle()" title="Estilos de cota — D (DDIM)" data-cmd="D"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><circle cx="12" cy="10" r="3"/><line x1="12" y1="3" x2="12" y2="7"/></svg>DimStyle</div>
       </div><div class="rglbl">Cotar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-mtext" onclick="setTool('mtext')" title="Texto múltiplo — T ou MT (dois cantos definem a largura)" data-cmd="T"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" stroke-dasharray="2 2"/><path d="M7 8h10M12 8v9M7 13h3"/></svg>Texto M</div>
+        <div class="rb" id="rb-leader" onclick="setTool('leader')" title="Linha de chamada — LE (ponta da seta, pontos, Enter, texto)" data-cmd="LE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20l7-9h8"/><path d="M4 20l1.5-4 2.5 2z" fill="currentColor"/><path d="M14 7h6"/></svg>Chamada</div>
+        <div class="rb" id="rb-textedit" onclick="setTool('textedit')" title="Editar texto — ED (ou duplo clique no texto)" data-cmd="ED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h10v2M9 5v12"/><path d="M14 20l1-4 6-6 3 3-6 6z"/></svg>Editar texto</div>
+      </div><div class="rglbl">Anotar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-block" onclick="setTool('block')" title="Criar bloco — B (nome, ponto base, objetos)" data-cmd="B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 12h8M12 8v8"/></svg>Criar bloco</div>
+        <div class="rb" id="rb-insert" onclick="setTool('insert')" title="Inserir bloco — I (? lista os blocos)" data-cmd="I"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M3 3l8 8M11 5v6H5"/></svg>Inserir</div>
+      </div><div class="rglbl">Blocos</div>
     </div>
     <div class="rg">
       <div class="rgbtns">
@@ -553,6 +611,11 @@ body.clean #layoutPanel{right:0!important}
   </div>
   <!-- TAB 1: EDUCATIONAL -->
   <div class="rpanel hide" id="tab1">
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-aula" onclick="aulaToggle()" title="Aula guiada: exercícios passo a passo com verificação automática — AULA" data-cmd="AULA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/><path d="M22 9v6"/></svg>Aula guiada</div>
+      </div><div class="rglbl">Exercícios</div>
+    </div>
     <div class="rg">
       <div class="rgbtns">
         <div class="rb" id="rb-didactic"    onclick="toggleMode('didactic')"   ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>Didático</div>
@@ -669,8 +732,9 @@ body.clean #layoutPanel{right:0!important}
     </div>
     <div class="lc-sep"></div>
     <button class="lc-btn" onclick="showLegendEditor()">📋 Legenda</button>
-    <button class="lc-btn" onclick="layoutFit()">⊡ Ajustar</button>
-    <button class="lc-btn" id="btn-mspace" onclick="lyToggleMspace()" title="Ativar edição da viewport (MSPACE/PSPACE)">⬛ PSPACE</button>
+    <button class="lc-btn" id="btn-mview" onclick="setTool('mview')" title="Criar viewports — MV (MVIEW: Ajustar/Travar/Objeto/Poligonal/2/3/4)" data-cmd="MV">▣ Viewports</button>
+    <button class="lc-btn" onclick="layoutFit()" title="Ajustar a viewport ao desenho (escala da NBR 8196)">⊡ Ajustar</button>
+    <button class="lc-btn" id="btn-mspace" onclick="lyToggleMspace()" title="Entrar na viewport — MSPACE (ou duplo clique na viewport; Esc ou PS volta ao papel)" data-cmd="MSPACE">⬛ PSPACE</button>
     <button class="lc-btn primary" onclick="layoutPrint()">🖨 Imprimir</button>
     <span style="margin-left:auto;font-size:9px;color:var(--t2)" id="lc-info">A4 Paisagem · 1:10</span>
   </div>
@@ -776,7 +840,7 @@ body.clean #layoutPanel{right:0!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v7.7 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.1 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1183,7 +1247,7 @@ body.clean #layoutPanel{right:0!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v7.7 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.1 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1268,7 +1332,7 @@ body.clean #layoutPanel{right:0!important}
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px;">
     <div style="grid-column:1/-1;font-size:9px;color:var(--t2);margin-bottom:4px;">Selecione o padrão:</div>
     <select id="hpat-sel" size="9" style="grid-column:1/-1;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px;border-radius:2px;height:180px;" onchange="hpUpdate()">
-      <option value="lines|45|5">Linhas 45° (Genérico)</option>
+      <option value="lines|45|5" selected>Linhas 45° (Genérico)</option>
       <option value="lines|30|4">Linhas 30°</option>
       <option value="lines|0|4">Linhas Horizontais</option>
       <option value="lines|90|4">Linhas Verticais</option>
@@ -1324,7 +1388,7 @@ body.clean #layoutPanel{right:0!important}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v7.7 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.1 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1398,7 +1462,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v7.7 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.1 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -1683,7 +1747,8 @@ function handleClick(pt) {
         var p1=ds.pts[0],p2=ds.pts[1];
         // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
         // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
-        var dir=ds.dimDir||dimLinearDir(p1,p2,pt);
+        // v8.1: ponto digitado (sem pré-visualização pelo cursor) decide a direção pela posição digitada
+        var dir=(ds.dirHover&&ds.dimDir)?ds.dimDir:dimLinearDir(p1,p2,pt);
         // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
         var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
         addE({tp:'dim',subtp:'linear',dimDir:dir,
@@ -2196,6 +2261,7 @@ function hpUpdate(){
 }
 function confirmHatch(){
   var sel=document.getElementById('hpat-sel');
+  if(sel.selectedIndex<0) sel.selectedIndex=0; // v7.8: OK sem escolher um padrão usava um item inexistente
   var parts=sel.value.split('|');
   var name=sel.options[sel.selectedIndex].text;
   S.hatchPat={
@@ -2601,7 +2667,7 @@ function drawPreview(ctx){
         // Fase pos: preview COMPLETO com cota linear ortogonal (H ou V)
         var p1=ds.pts[0],p2=ds.pts[1];
         // Atualizar direção em tempo real conforme cursor
-        ds.dimDir=dimLinearDir(p1,p2,hp);
+        ds.dimDir=dimLinearDir(p1,p2,hp); ds.dirHover=true;
         drawDimTemp(ctx,{tp:'dim',subtp:'linear',dimDir:ds.dimDir,x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:hp.x,py:hp.y});
       }
       break;
@@ -3449,6 +3515,9 @@ function onCmdKey(e){
 
   // Tentar como número sozinho: distância na direção do cursor
   // Suportado para LINE e demais ferramentas que têm pts
+  // v8.1: CIRCLE — número digitado depois do centro é o raio (como no AutoCAD), sem depender da posição do cursor
+  if(S.tool==='circle'&&S.ds&&S.ds.pts&&S.ds.pts.length===1&&/^\s*\d+([.,]\d+)?\s*$/.test(v)){
+    var _r=parseFloat(v.replace(',','.')); if(_r>0){ handleClick({x:S.ds.pts[0].x+_r,y:S.ds.pts[0].y}); ci.focus(); return; } }
   if(S.tool!=='offset' && cmdRefPt()){
     var num=parseFloat(v);
     if(!isNaN(num) && num>0 && v.match(/^[\d]+\.?\d*$/)){
@@ -3504,6 +3573,8 @@ function onCmdKey(e){
     'TR':'trim','TRIM':'trim','EX':'extend','EXTEND':'extend',
     'POL':'polygon','POLYGON':'polygon',
     'F':'fillet','FILLET':'fillet','CHA':'chamfer','CHAMFER':'chamfer',
+    'DCO':'dimcontinue','DIMCONT':'dimcontinue','DIMCONTINUE':'dimcontinue','DBA':'dimbaseline','DIMBASE':'dimbaseline','DIMBASELINE':'dimbaseline',
+    'AULA':'aula','EXERCICIOS':'aula','EXERCÍCIOS':'aula',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
     'PDF':'pdf','EXPORTPDF':'pdf','PLOT':'pagesetup','PLOTAR':'pagesetup','PAGESETUP':'pagesetup','PAGINA':'pagesetup',
@@ -3541,7 +3612,9 @@ function onCmdKey(e){
     case 'ddim':showDimStyle();break;
     case 'dxfout':expDXF('2000');break;
     case 'fullscreen':toggleFullscreen();break;
-    case 'explode':explodeSel();break;
+    case 'explode':setTool('explode');break;
+    case 'aula':aulaToggle();break;
+    case 'dimcontinue':case 'dimbaseline':setTool(act);break;
     case 'pdf':expPDF(false);break;
     case 'recover':asShowAll();break;
     case 'savetime':setTool('savetime');break;
@@ -3578,31 +3651,21 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v6 ═══════════════════════════════','inf');
-      log('DRAW: L C R A E PL SPL T H POL (Linha Circ Rect Arco Elipse PL Spline Texto Hach Polígono)','inf');
-      log('MEDIR: DI=Distância  AA=Área','inf');
-      log('SEGURANÇA (v7.7): cópia automática no navegador (8 s após cada alteração e a cada SAVETIME min) | RECUPERAR = cópias de segurança | LIMPARRECUPERACAO em PCs compartilhados','inf');
-      log('SAÍDA (v7.6): PDF = PDF vetorial em escala | PLOT/PAGESETUP = configurar página | cotas/textos ANOTATIVOS (DDIM > Ajuste; editor de texto) | Anotação na barra de status','inf');
-      log('VIEWPORTS (v7.5): MV=MVIEW [Ajustar/Travar/Objeto/Poligonal/2/3/4] | ❄ nas camadas = congelar só na viewport atual | 🖨 = camada imprime ou não | 🔒 escala travada','inf');
-      log('LAYOUT (v7.4): abas de layout (+ novo, duplo clique renomeia, botão direito: duplicar/excluir) | desenhe e cote na folha em mm | MV=MVIEW MS/PS | CARIMBO | plotagem mono/cor/cinza','inf');
-      log('TOQUE (v7.3): toque = clique | arrastar = mover a vista | pinça = zoom | toque duplo = duplo clique | toque longo = Enter | barra ⏎ Esc ↶ ⇧ ⤢ ⌨','inf');
-      log('ANOTAÇÃO E BLOCOS (v7.2): T/MT=MTEXT DT=TEXT ED=editar LE=LEADER | B=BLOCK I=INSERT | H=HATCH por ponto interno | DXFIN=abrir DXF IMPORTDXF=anexar','inf');
-      log('POLILINHAS (v7.1): PL com [Arco/Linha/Fechar/Desfazer] | PE=PEDIT J=JOIN BR=BREAK S=STRETCH X=EXPLODE | FILLET/CHAMFER em polilinha mantêm um único objeto','inf');
-      log('EDIÇÃO (v7): E M CO RO SC MI O CHA — selecione dentro do comando (clique, janela →, cruzando ←, Todos) ou antes dele | opções entre [ ] pela letra maiúscula','inf');
-      log('TRIM (TR) / EXTEND (EX): clique no trecho | arraste = cerca | área vazia = janela | Shift inverte | T=arestas C=cruzando O=modo R=apagar U=desfazer','inf');
-      log('FILLET (F): 1º objeto, 2º objeto | R=raio T=aparar M=múltiplo P=polilinha U=desfazer | Shift+clique = canto vivo  —  X = EXPLODE','inf');
-      log('TELA: TELACHEIA (⛶) | LIMPA ou Ctrl+0 = tela limpa | INSTALAR = aplicativo do computador','inf');
-      log('OSNAP: F3 liga/desliga | durante um comando digite END MID CEN INT QUA PER TAN NEA ou NON para forçar o próximo ponto','inf');
-      log('GRIPS: selecione e clique numa alça azul | Espaço alterna STRETCH/MOVE/ROTATE/SCALE/MIRROR | C=copiar B=base X=sair','inf');
-      log('CONFIG: UN=Unidades  DDIM/DIMSTYLE/DST=Estilos de cota  LAYER/LA=Camadas  DEMO=Exemplo','inf');
-      log('DIM:  D DAL DR DD DA (Linear Alinhada Raio Diâm Ângulo)  |  DDIM = estilos de cota','inf');
-      log('EDIT: M CO RO SC MI O TR EX F CHA AR','inf');
-      log('  M=Mover CO=Copiar RO=Rotar SC=Escalar MI=Espelhar O=Offset','inf');
-      log('  TR=Trim EX=Extend F=Fillet CHA=Chamfer AR=Array','inf');
-      log('NAV:  P Z +/- F7=Grade F8=Ortho F9=Snap','inf');
-      log('COORD: 10,20  @5,3  @10<45  50(dist dir cursor)','inf');
-      log('EXPORT/EXP: DXF 2000 | DWG (via DXF) | DXF R12 | JSON | SVG | PNG   —   DXFOUT = DXF 2000 direto','inf');
-      log('Enter/Espaço=finaliza cmd | Esc=cancela | Ctrl+Z/Y=Undo/Redo','inf');
+      log('═══ COMANDOS EduCAD v8.1 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
+      log('TEXTO: T ou MT=Texto múltiplo  DT=Texto de uma linha  ED=Editar texto  LE=Linha de chamada','inf');
+      log('COTAS: DLI=Linear  DAL=Alinhada  DCO=Em série (contínua)  DBA=De base  DRA=Raio  DDI=Diâmetro  DAN=Angular  |  D ou DDIM=Estilos de cota','inf');
+      log('MODIFICAR: E=Apagar  M=Mover  CO=Copiar  RO=Rotacionar  SC=Escalar  MI=Espelhar  O=Offset  AR=Array','inf');
+      log('  TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  S=Stretch  BR=Break  J=Join  PE=Editar polilinha  X=Explodir','inf');
+      log('BLOCOS: B=Criar bloco  I=Inserir bloco','inf');
+      log('MEDIR: DI=Distância  AA=Área  |  NAVEGAR: P=Pan  Z=Zoom extensão  R ou RE=Redesenhar','inf');
+      log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
+      log('ARQUIVO: NEW  OPEN  SAVE  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
+      log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
+      log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
+      log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');
+      log('COORDENADAS: 10,20  @5,3  @10<45  ou só a distância na direção do cursor','inf');
+      log('Opções dos comandos aparecem entre [ ] — digite a letra maiúscula. Enter repete o último comando; Esc cancela; Ctrl+Z/Ctrl+Y desfaz/refaz.','inf');
       log('════════════════════════════════════════════════════════','inf');
       break;
   }
@@ -3956,7 +4019,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'7.7',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function buildDoc(){return {v:'8.1',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
 function saveDoc(){var d=buildDoc();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
@@ -4348,7 +4411,7 @@ function buildDXF2000(opt){
     var zin=(st.zLead?4:0)+(st.zTrail?8:0);
     var tol=st.tolMethod==='symmetric'||st.tolMethod==='deviation';
     g(2,DSN[st.name]);g(70,0);g(3,dxfStrCP(post));g(4,dxfStrCP(apost));
-    g(40,n(st.annot?0:(st.dimscale||1)));g(41,n(st.arrowSize));g(42,n(st.extOrigin));g(43,'3.75');g(44,n(st.extDimline));
+    g(40,n(st.annot?0:(st.dimscale||1)));g(41,n(st.arrowSize));g(42,n(st.extOrigin));g(43,n(st.baseInc!==undefined?st.baseInc:3.75));g(44,n(st.extDimline));
     g(45,n(st.round||0));g(46,'0.0');g(47,n(st.tolUpper));g(48,n(st.tolMethod==='symmetric'?st.tolUpper:st.tolLower));
     g(140,n(st.txtH));g(141,n(st.centerMark==='none'?0:st.centerMark==='line'?-st.centerSize:st.centerSize));
     g(142,n(st.arrowType==='tick'?st.arrowSize*0.5:0));g(143,n(st.altMult));g(144,n(lfac));g(145,'0.0');
@@ -4664,7 +4727,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v7.7 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.1 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -5637,6 +5700,7 @@ var DS_DEFAULT = {
   se1:false, se2:false, // suprimir 1ª/2ª linha de extensão (DIMSE1/DIMSE2)
   extDimline:1.25,    // prolongamento além da linha de cota (DIMEXE)
   extOrigin:0.625,    // afastamento da origem (DIMEXO)
+  baseInc:3.75,       // espaçamento entre linhas de cota de base (DIMDLI)
   extFixed:false, extFixLen:1, // extensões de comprimento fixo (DIMFXLON/DIMFXL)
   // Símbolos e setas
   arrowType:'filled', // tipo de seta (DIMBLK)
@@ -5686,7 +5750,7 @@ function dimDefaultStyles(){
   var std=JSON.parse(JSON.stringify(DS_DEFAULT));
   std.desc='Estilo padrão do EduCAD.';
   var abnt=JSON.parse(JSON.stringify(DS_DEFAULT));
-  abnt.name='ABNT'; abnt.decSep=','; abnt.zTrail=true; abnt.txtAlign='aligned'; abnt.txtPos='above';
+  abnt.name='ABNT'; abnt.decSep=','; abnt.zTrail=true; abnt.txtAlign='aligned'; abnt.txtPos='above'; abnt.baseInc=7;
   abnt.col=abnt.extCol=abnt.txtCol='#f0c040';
   abnt.desc='Separador decimal vírgula e zeros finais suprimidos (convenção brasileira). Ajuste tamanhos e escala à folha usada.';
   return [std,abnt];
@@ -6064,7 +6128,8 @@ var DDIM_TABS=[
       {k:'col',l:'Cor',ty:'color',v:'DIMCLRD'},
       {k:'lw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70'],['1','1,00']],num:1,v:'DIMLWD'},
       {k:'sd1',l:'Suprimir 1ª metade',ty:'chk',v:'DIMSD1'},
-      {k:'sd2',l:'Suprimir 2ª metade',ty:'chk',v:'DIMSD2'}]},
+      {k:'sd2',l:'Suprimir 2ª metade',ty:'chk',v:'DIMSD2'},
+      {k:'baseInc',l:'Espaçamento da linha de base',ty:'num',min:0,max:100,st:0.25,v:'DIMDLI',hint:'Distância entre as linhas de cota sucessivas do DIMBASELINE (DBA).'}]},
     {h:'Linhas de extensão',f:[
       {k:'extCol',l:'Cor',ty:'color',v:'DIMCLRE'},
       {k:'extLw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70']],num:1,v:'DIMLWE'},
@@ -9032,6 +9097,10 @@ loadFile=function(ev){
 function dxfIn(merge){ S.dxfMerge=!!merge; var fi=document.getElementById('fileInput'); fi.click(); }
 
 
+
+// ── v7.9: EXPLODE com seleção dentro do comando (como no AutoCAD) ──────────
+NC.explode={needSel:true,prompt:function(){return '';},click:function(){},input:function(){return true;},
+  afterSel:function(ds){ S.sel=ds.ids.slice(); explodeSel(); ncEnd(false); }};
 /* ═══════════════════════════════════════════════════════════════════
    v7.3 — PACOTE 4: ALTA RESOLUÇÃO, TOQUE E TELAS PEQUENAS
    • Canvas na resolução física da tela (devicePixelRatio): linhas e textos nítidos.
@@ -9621,7 +9690,7 @@ function buildLayoutTabs(){
   tab('model','Model',S.space==='model',false);
   if(!S.layouts.length){ var t=tab('layout','Layout1',false,true); t.id='tab-layout1'; }
   S.layouts.forEach(function(L,i){ var t=tab(L.id,L.name,S.space===L.id,true); if(i===0&&!document.getElementById('tab-layout1')) t.setAttribute('data-first','1'); });
-  var add=document.createElement('button'); add.className='tb-add'; add.title='Novo layout'; add.textContent='＋'; add.addEventListener('click',function(){ layoutNew(); }); bar.appendChild(add);
+  var add=document.createElement('button'); add.className='tb-add'; add.title='Novo layout — LAYOUT'; add.setAttribute('data-cmd','LAYOUT'); add.textContent='＋'; add.addEventListener('click',function(){ layoutNew(); }); bar.appendChild(add);
   if(!document.getElementById('tab-layout1')){ var f=bar.querySelector('[data-first]'); if(f) f.id='tab-layout1'; }
 }
 function layoutUniqueName(base){ var n=1,nm; do{ nm=base+n; n++; }while(S.layouts.some(function(l){return l.name===nm;})); return nm; }
@@ -9773,7 +9842,7 @@ window.addEventListener('load',function(){
   var lbl=document.querySelector('#layoutControls .lc-grp:nth-child(3) .lc-lbl'); if(lbl) lbl.textContent='ESCALA DA VIEWPORT';
   var leg=Array.prototype.filter.call(document.querySelectorAll('#layoutControls .lc-btn'),function(b){return /Legenda/.test(b.textContent);})[0];
   if(leg){ leg.textContent='📋 Tabela';
-    var cb=document.createElement('button'); cb.className='lc-btn'; cb.textContent='🗂 Carimbo ABNT'; cb.title='Margem + legenda (NBR 10068 / NBR 10582) no papel'; cb.onclick=titleBlockInsert; leg.parentNode.insertBefore(cb,leg);
+    var cb=document.createElement('button'); cb.className='lc-btn'; cb.textContent='🗂 Carimbo ABNT'; cb.title='Margem + legenda (NBR 10068 / NBR 10582) no papel — CARIMBO'; cb.setAttribute('data-cmd','CARIMBO'); cb.onclick=function(){ titleBlockInsert(); }; leg.parentNode.insertBefore(cb,leg);
     var g=document.createElement('div'); g.className='lc-grp'; g.innerHTML='<span class="lc-lbl">PLOTAGEM</span>';
     var s2=document.createElement('select'); s2.className='lc-sel'; s2.id='lc-plot'; [['mono','Monocromático'],['color','Colorido'],['gray','Tons de cinza']].forEach(function(o){ var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; s2.appendChild(op); });
     s2.onchange=layoutApply; g.appendChild(s2); cb.parentNode.insertBefore(g,cb); var sep=document.createElement('div'); sep.className='lc-sep'; cb.parentNode.insertBefore(sep,cb); }
@@ -10007,7 +10076,7 @@ function pdfAssemble(pages,title){
     objs[co]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream'; });
   objs[fontId]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v7.7) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.1) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -10082,8 +10151,8 @@ window.addEventListener('load',function(){
   document.getElementById('ps-pdf').addEventListener('click',function(){ pageSetupOK(); expPDF(false); });
   // botões na barra do layout
   var pr=Array.prototype.filter.call(document.querySelectorAll('#layoutControls .lc-btn'),function(b){return /Imprimir/.test(b.textContent);})[0];
-  if(pr){ var pg=document.createElement('button'); pg.className='lc-btn'; pg.textContent='⚙ Página'; pg.title='Configurar página (PAGESETUP)'; pg.onclick=pageSetupOpen; pr.parentNode.insertBefore(pg,pr);
-    var pd=document.createElement('button'); pd.className='lc-btn primary'; pd.textContent='📄 PDF'; pd.title='PDF vetorial em escala exata deste layout (Shift+clique: todos os layouts)'; pd.onclick=function(ev){ expPDF(!!ev.shiftKey); }; pr.parentNode.insertBefore(pd,pr);
+  if(pr){ var pg=document.createElement('button'); pg.className='lc-btn'; pg.textContent='⚙ Página'; pg.title='Configurar página — PAGESETUP (ou PLOT)'; pg.setAttribute('data-cmd','PAGESETUP'); pg.onclick=function(){ pageSetupOpen(); }; pr.parentNode.insertBefore(pg,pr);
+    var pd=document.createElement('button'); pd.className='lc-btn primary'; pd.textContent='📄 PDF'; pd.title='PDF vetorial em escala exata deste layout — PDF (Shift+clique: todos os layouts)'; pd.setAttribute('data-cmd','PDF'); pd.onclick=function(ev){ expPDF(!!ev.shiftKey); }; pr.parentNode.insertBefore(pd,pr);
     pr.classList.remove('primary'); }
   // escala de anotação do modelo (barra de status)
   var st=document.getElementById('stool'); if(st&&st.parentNode){ var wrap=document.createElement('span'); wrap.className='anno-wrap'; wrap.title='Escala de anotação do modelo: tamanho das cotas e textos anotativos no Model';
@@ -10255,6 +10324,320 @@ window.addEventListener('load',function(){
   var sb=document.getElementById('sbar'); if(sb){ var sp=document.createElement('span'); sp.className='ssep'; sb.appendChild(sp); var s=document.createElement('span'); s.id='sautosave'; s.style.cursor='pointer'; s.title='Cópias de segurança (RECUPERAR)'; s.addEventListener('click',asShowAll); sb.appendChild(s); }
   asRestartInterval(); asStatus();
   setTimeout(asCheckOnStart,500);
+});
+/* ═══════════════════════════════════════════════════════════════════
+   v8.0 — COTAS EM SÉRIE (DIMCONTINUE) E DE BASE (DIMBASELINE) — R6 do parecer
+   • DCO: cada nova cota começa na 2ª linha de extensão da anterior, na mesma
+     linha de cota (cotagem em série / em cadeia).
+   • DBA: todas as cotas partem da 1ª linha de extensão da cota de base; cada
+     nova linha de cota fica DIMDLI ("Espaçamento da linha de base") mais longe.
+   • Partem da última cota linear ou alinhada criada; [Selecionar] escolhe outra
+     (a linha de extensão mais próxima do clique vira a origem, como no AutoCAD).
+   • Opções: [Selecionar/Desfazer]; Enter ou Esc encerra; um Ctrl+Z por cota.
+   ═══════════════════════════════════════════════════════════════════ */
+function dcDimOk(e){ return e&&e.tp==='dim'&&(e.subtp==='linear'||e.subtp==='aligned'||!e.subtp)&&dimLinePoints(e); }
+function dcLastDim(){ for(var i=S.ents.length-1;i>=0;i--) if(dcDimOk(S.ents[i])) return S.ents[i]; return null; }
+function dcScale(st){ return st.annot?1/annoK():(st.dimscale||1); }
+// Dados geométricos de uma cota: origens, linha de cota, direção, normal e afastamento
+function dcFrame(e){
+  normDimLegacy(e);
+  var g=dimLinePoints(e),o1={x:e.x1,y:e.y1},o2={x:e.x2,y:e.y2},u,n,off;
+  if(e.subtp==='aligned'){ var L=Math.hypot(o2.x-o1.x,o2.y-o1.y); u={x:(o2.x-o1.x)/L,y:(o2.y-o1.y)/L}; n={x:-u.y,y:u.x}; off=(g.d1x-o1.x)*n.x+(g.d1y-o1.y)*n.y; }
+  else if(e.dimDir==='v'){ u={x:0,y:1}; n={x:1,y:0}; off=g.d1x; }
+  else { u={x:1,y:0}; n={x:0,y:1}; off=g.d1y; }
+  return {g:g,o1:o1,o2:o2,u:u,n:n,off:off};
+}
+// Cria a nova cota de o (origem) até p, com a linha de cota em "line" (coordenada absoluta ou afastamento)
+function dcMake(B,o,p,lineAbs,lineSide){
+  var st=dimStyleOf(B),e={tp:'dim',subtp:B.subtp||'linear',x1:o.x,y1:o.y,x2:p.x,y2:p.y,dimStyle:B.dimStyle,ly:B.ly,col:B.col,unit:'mm'};
+  if(e.subtp==='aligned'){
+    var L=Math.hypot(p.x-o.x,p.y-o.y); if(L<1e-9) return null;
+    var u={x:(p.x-o.x)/L,y:(p.y-o.y)/L},n={x:-u.y,y:u.x},f=dcFrame(B);
+    if(n.x*f.n.x+n.y*f.n.y<0){ n={x:-n.x,y:-n.y}; } // mesmo lado da cota de origem
+    e.px=(o.x+p.x)/2+n.x*lineSide; e.py=(o.y+p.y)/2+n.y*lineSide;
+  } else {
+    e.dimDir=B.dimDir||'h';
+    if(e.dimDir==='h'){ if(Math.abs(p.x-o.x)<1e-9) return null; e.px=(o.x+p.x)/2; e.py=lineAbs; }
+    else { if(Math.abs(p.y-o.y)<1e-9) return null; e.px=lineAbs; e.py=(o.y+p.y)/2; }
+  }
+  e.val=dimMeasure(e).toFixed(2);
+  return e;
+}
+function dcNext(ds,p){
+  var B=findE(ds.base); if(!B) return null;
+  var f=dcFrame(B),st=dimStyleOf(B);
+  if(ds.cmd==='dimcontinue') return dcMake(B,f.o2,p,f.off,f.off);
+  // linha de base: origem fixa (o1 da primeira cota) e linha de cota afastada DIMDLI da última
+  var inc=(st.baseInc!==undefined?st.baseInc:3.75)*dcScale(st);
+  var R=findE(ds.root)||B,fr=dcFrame(R),side;
+  if(B.subtp==='aligned'){ side=f.off>=0?1:-1; return dcMake(B,ds.origin,p,null,f.off+side*inc); }
+  var ref=B.dimDir==='v'?fr.o1.x:fr.o1.y; side=(f.off-ref)>=0?1:-1; if(Math.abs(f.off-ref)<1e-9) side=-1;
+  return dcMake(B,ds.origin,p,f.off+side*inc,null);
+}
+function dcSetBase(ds,B,pick){
+  normDimLegacy(B);
+  if(pick){ // a linha de extensão mais próxima do clique vira a origem da série / da base
+    var d1=Math.hypot(pick.x-B.x1,pick.y-B.y1),d2=Math.hypot(pick.x-B.x2,pick.y-B.y2),nearFirst=d1<d2;
+    var swapNeeded=ds.cmd==='dimcontinue'?nearFirst:!nearFirst;
+    if(swapNeeded){ snapshot(); var t; t=B.x1;B.x1=B.x2;B.x2=t; t=B.y1;B.y1=B.y2;B.y2=t; ds.done=(ds.done||0)+1; ds.swaps=(ds.swaps||0)+1; }
+  }
+  ds.base=B.id; ds.root=B.id; ds.origin={x:B.x1,y:B.y1}; ds.chain=[]; ds.phase='pt'; S.sel=[]; renderAll();
+}
+function dcCommand(name){
+  return {
+    init:function(ds){ var B=dcLastDim(); if(B) dcSetBase(ds,B,null); else { ds.phase='pick'; log(name+': não há cota linear ou alinhada; selecione uma.','inf'); } ds.chain=ds.chain||[]; },
+    prompt:function(ds){ return ds.phase==='pick'?(name==='DIMCONTINUE'?'Selecione a cota contínua:':'Selecione a cota de base:')
+      :name+' Especifique a origem da segunda linha de extensão ou [Selecionar/Desfazer] <Selecionar>:'; },
+    click:function(ds,pt){
+      if(ds.phase==='pick'){ var h=null; for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(dcDimOk(e)&&hitEnt(e,pt.x,pt.y)){ h=e; break; } }
+        if(!h){ log('Selecione uma cota linear ou alinhada.','inf'); return; } dcSetBase(ds,h,pt); return; }
+      var ne=dcNext(ds,pt); if(!ne){ log(name+': o ponto coincide com a origem; nada a cotar.','er'); return; }
+      snapshot(); addE(ne,true); var c=S.ents[S.ents.length-1]; ds.chain.push(c.id); ds.done=(ds.done||0)+1;
+      ds.base=c.id; if(ds.cmd==='dimcontinue') ds.root=c.id;
+      log(name+': '+dimLinearText(dimMeasure(c),dimStyleOf(c)).main+'.','ok');
+    },
+    input:function(ds,u,raw){
+      if(ds.phase==='pick'){ if(u===''){ ncEnd(); return true; } return false; }
+      if(u===''){ if(!ds.chain.length&&!ds.picked){ ds.picked=true; ds.phase='pick'; return true; } ncEnd(); return true; }
+      if(u==='S'||u==='SELECIONAR'||u==='SELECT'){ ds.phase='pick'; ds.picked=true; return true; }
+      if(u==='U'||u==='D'||u==='DESFAZER'||u==='UNDO'){
+        if(!ds.chain.length){ log('Nada para desfazer neste comando.','inf'); return true; }
+        undo(); ds.done--; S.ds=ds; ds.chain.pop();
+        ds.base=ds.chain.length?ds.chain[ds.chain.length-1]:ds.root0||ds.base; if(!findE(ds.base)){ var B=dcLastDim(); ds.base=B?B.id:null; }
+        if(ds.cmd==='dimcontinue') ds.root=ds.base;
+        log('Última cota desfeita.','ok'); return true; }
+      var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true;
+    },
+    preview:function(ctx,ds,hp){
+      if(ds.phase==='pick'){ for(var i=S.ents.length-1;i>=0;i--){ var e=S.ents[i]; if(dcDimOk(e)&&hitEnt(e,hp.x,hp.y)){ ctx.save(); ctx.globalAlpha=.9; drawDimTemp(ctx,e); ctx.restore(); break; } } return; }
+      var ne=dcNext(ds,hp); if(ne){ ctx.save(); ctx.globalAlpha=.75; drawDimTemp(ctx,ne); ctx.restore(); }
+    }
+  };
+}
+NC.dimcontinue=dcCommand('DIMCONTINUE');
+NC.dimbaseline=dcCommand('DIMBASELINE');
+(function(){ var i0=NC.dimcontinue.init,i1=NC.dimbaseline.init;
+  NC.dimcontinue.init=function(ds){ i0.call(this,ds); ds.root0=ds.base; };
+  NC.dimbaseline.init=function(ds){ i1.call(this,ds); ds.root0=ds.base; };
+})();
+/* ═══════════════════════════════════════════════════════════════════
+   v8.1 — AULA GUIADA (R8 do parecer técnico)
+   Exercícios passo a passo na aba Educacional, com verificação automática
+   das medidas no próprio desenho. Cada passo tem instrução, dica e uma
+   função de verificação que diz exatamente o que falta ou está errado.
+   Para criar um exercício novo, acrescente um objeto em EX_LIST (ver README).
+   ═══════════════════════════════════════════════════════════════════ */
+var EXA={open:false,cur:0,started:0,timer:null,last:{},shown:{},done:{}};
+try{ EXA.done=JSON.parse(localStorage.getItem('educad-aula')||'{}')||{}; }catch(e){ EXA.done={}; }
+var EX_TOL=0.05; // mm
+
+// ── leitura do desenho (sempre do espaço do modelo) ─────────────────────────
+function exModel(){ return (typeof modelEntsNow==='function')?modelEntsNow():S.ents; }
+function exLayerName(e){ var l=getLy(e.ly); return l?String(l.nm):''; }
+function exLd(e){ if(e.ld&&e.ld!=='bylayer') return e.ld; var l=getLy(e.ly); return (l&&l.ld)||'solid'; }
+function exSegs(){
+  var o=[];
+  exModel().forEach(function(e){
+    var ly=getLy(e.ly); if(ly&&!ly.vis) return;
+    function add(x1,y1,x2,y2){ if(Math.hypot(x2-x1,y2-y1)>1e-9) o.push({x1:x1,y1:y1,x2:x2,y2:y2,e:e}); }
+    if(e.tp==='line') add(e.x1,e.y1,e.x2,e.y2);
+    else if(e.tp==='rect'){ add(e.x,e.y,e.x+e.w,e.y); add(e.x+e.w,e.y,e.x+e.w,e.y+e.h); add(e.x+e.w,e.y+e.h,e.x,e.y+e.h); add(e.x,e.y+e.h,e.x,e.y); }
+    else if(e.tp==='pl'){ plSegs(e).forEach(function(s){ if(s.kind==='line') add(s.x1,s.y1,s.x2,s.y2); }); }
+  });
+  return o;
+}
+// O trecho a→b está desenhado (por linhas, polilinha ou retângulo, inteiro ou em partes)?
+function exCovered(S2,a,b,filter){
+  var L=Math.hypot(b.x-a.x,b.y-a.y); if(L<1e-9) return false;
+  var ux=(b.x-a.x)/L,uy=(b.y-a.y)/L,n=Math.max(4,Math.min(40,Math.ceil(L/5)));
+  for(var k=0;k<=n;k++){ var t=k/n,p={x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t},hit=false;
+    for(var i=0;i<S2.length&&!hit;i++){ var s=S2[i]; if(filter&&!filter(s.e)) continue;
+      var sl=Math.hypot(s.x2-s.x1,s.y2-s.y1),sx=(s.x2-s.x1)/sl,sy=(s.y2-s.y1)/sl;
+      if(Math.abs(sx*uy-sy*ux)>1e-3) continue;
+      if(segD(p.x,p.y,s.x1,s.y1,s.x2,s.y2)<=EX_TOL) hit=true; }
+    if(!hit) return false; }
+  return true;
+}
+function exP(x,y){ return {x:x,y:y}; }
+function exFmt(p){ return gNum(p.x)+','+gNum(p.y); }
+// Polígono fechado (lista de vértices) desenhado? Devolve a primeira aresta que falta.
+function exPoly(S2,P,filter){ for(var i=0;i<P.length;i++){ var a=P[i],b=P[(i+1)%P.length]; if(!exCovered(S2,a,b,filter)) return {ok:false,miss:[a,b]}; } return {ok:true}; }
+function exRectPts(x,y,w,h){ return [exP(x,y),exP(x+w,y),exP(x+w,y+h),exP(x,y+h)]; }
+function exMissMsg(r,what){ return what+': falta o lado de '+exFmt(r.miss[0])+' a '+exFmt(r.miss[1])+'.'; }
+function exDims(tp){ return exModel().filter(function(e){ return tp?e.tp===tp:(e.tp==='dim'||e.tp==='dimr'||e.tp==='dimd'||e.tp==='dima'); }); }
+function exHasDim(val,tp,style){
+  var L=exDims(tp).filter(function(e){ return Math.abs(dimMeasure(e)-val)<=EX_TOL; });
+  if(!L.length) return {ok:false,msg:'Falta a cota de '+gNum(val)+(tp==='dimd'?' (diâmetro)':'')+'.'};
+  if(style&&!L.some(function(e){ return (e.dimStyle||'Standard')===style; })) return {ok:false,msg:'A cota de '+gNum(val)+' existe, mas não usa o estilo '+style+'. Selecione-a e troque o estilo no painel de propriedades (ou use "Aplicar à seleção" no DDIM).'};
+  return {ok:true};
+}
+function exAll(list){ for(var i=0;i<list.length;i++){ var r=list[i](); if(!r.ok) return r; } return {ok:true}; }
+function exCircle(cx,cy,r){ return exModel().some(function(e){ return e.tp==='circ'&&Math.abs(e.cx-cx)<=EX_TOL&&Math.abs(e.cy-cy)<=EX_TOL&&Math.abs(e.r-r)<=EX_TOL; }); }
+function exHatchAt(p){ return exModel().some(function(e){ if(e.tp!=='hatch') return false; if(e.loops) return pointInLoops(p,e.loops); return p.x>=e.x&&p.x<=e.x+e.w&&p.y>=e.y&&p.y<=e.y+e.h; }); }
+// procura um valor de posição (ex.: o topo da vista superior) entre as extremidades dos segmentos
+function exCandidates(S2,axis,pred){ var v={}; S2.forEach(function(s){ [s[axis+'1'],s[axis+'2']].forEach(function(q){ if(pred(q)) v[Math.round(q*1000)/1000]=q; }); }); return Object.keys(v).map(function(k){return v[k];}); }
+function exLayouts(){ return (S.layouts||[]).map(function(L){ return {L:L,ents:L.id===S.space?S.ents:L.ents}; }); }
+
+// ── exercícios ──────────────────────────────────────────────────────────────
+var EX_LIST=[
+ {id:'placa',title:'1. Placa de identificação de parcela',level:'Iniciante · 15 min',
+  goal:'Coordenadas absolutas e relativas, círculos, cópia e cotagem com o estilo ABNT.',
+  norm:'NBR 10126 (cotagem)',view:{x:-20,y:-30,w:170,h:130},
+  intro:'Uma placa de 120 × 80 mm com quatro furos de fixação de Ø8, a 10 mm das bordas, identifica cada parcela do experimento.',
+  steps:[
+   {t:'Contorno da placa',i:'Desenhe um retângulo de 120 × 80 mm com o canto inferior esquerdo em <b>0,0</b>.',
+    h:'Digite <code>REC</code> Enter, <code>0,0</code> Enter e <code>@120,80</code> Enter.',
+    c:function(){ var r=exPoly(exSegs(),exRectPts(0,0,120,80)); return r.ok?r:{ok:false,msg:exMissMsg(r,'Contorno 120 × 80')}; }},
+   {t:'Furos de fixação',i:'Desenhe quatro furos de <b>Ø8</b> (raio 4) com centros em 10,10 · 110,10 · 10,70 · 110,70.',
+    h:'<code>C</code> Enter, <code>10,10</code> Enter, <code>4</code> Enter. Depois use <code>CO</code> (Copiar) com ponto base 10,10 e destinos <code>@100,0</code>, <code>@0,60</code> e <code>@100,60</code>.',
+    c:function(){ var C=[[10,10],[110,10],[10,70],[110,70]]; for(var i=0;i<C.length;i++) if(!exCircle(C[i][0],C[i][1],4)) return {ok:false,msg:'Falta o furo de Ø8 com centro em '+C[i][0]+','+C[i][1]+'.'}; return {ok:true}; }},
+   {t:'Estilo de cota ABNT',i:'Torne o estilo <b>ABNT</b> o estilo de cota atual.',
+    h:'Digite <code>D</code> Enter, clique em ABNT e em <b>Definir atual</b>. Ou escolha ABNT em "Est. cota", no painel de propriedades.',
+    c:function(){ return S.dimCurrent==='ABNT'?{ok:true}:{ok:false,msg:'O estilo de cota atual é "'+S.dimCurrent+'".'}; }},
+   {t:'Cotas da placa',i:'Cote a largura (<b>120</b>) e a altura (<b>80</b>) da placa com <code>DLI</code>.',
+    h:'<code>DLI</code>: clique nos dois cantos (use o OSNAP Extremidade) e depois onde a linha de cota deve ficar, 10 mm fora da peça.',
+    c:function(){ return exAll([function(){return exHasDim(120,'dim','ABNT');},function(){return exHasDim(80,'dim','ABNT');}]); }},
+   {t:'Cota do furo',i:'Cote o diâmetro de um dos furos (<b>Ø8</b>) com <code>DDI</code>.',
+    h:'<code>DDI</code>: clique no centro do furo (OSNAP Centro), num ponto da circunferência e no lugar do texto.',
+    c:function(){ return exHasDim(8,'dimd','ABNT'); }}
+  ]},
+ {id:'vistas',title:'2. Vistas ortográficas — bloco com degrau',level:'Intermediário · 30 min',
+  goal:'Projeção no 1º diedro: vista frontal, superior e lateral esquerda alinhadas, aresta oculta e cotagem.',
+  norm:'NBR 10067 (vistas) · NBR 8403 (linhas) · NBR 10126 (cotagem)',view:{x:-30,y:-110,w:220,h:170},
+  intro:'Peça de 60 (largura) × 40 (altura) × 30 (profundidade), com um degrau de 30 × 20 no lado direito, em toda a profundidade. No 1º diedro, a vista superior fica <b>abaixo</b> da frontal e a vista lateral esquerda fica <b>à direita</b> dela.',
+  steps:[
+   {t:'Vista frontal',i:'Desenhe o contorno da vista frontal pelos vértices <b>0,0 → 60,0 → 60,20 → 30,20 → 30,40 → 0,40</b> e feche.',
+    h:'<code>PL</code> Enter, digite os pontos (<code>0,0</code>, <code>@60,0</code>, <code>@0,20</code>, <code>@-30,0</code>, <code>@0,20</code>, <code>@-30,0</code>) e <code>F</code> para fechar.',
+    c:function(){ var r=exPoly(exSegs(),[exP(0,0),exP(60,0),exP(60,20),exP(30,20),exP(30,40),exP(0,40)]); return r.ok?r:{ok:false,msg:exMissMsg(r,'Vista frontal')}; }},
+   {t:'Vista superior',i:'Abaixo da frontal, desenhe a vista superior: <b>mesma largura e alinhada</b> (x de 0 a 60), profundidade <b>30</b>, com a aresta do degrau visível em <b>x = 30</b>. Deixe um espaço entre as vistas (por exemplo, 20 mm).',
+    h:'Ligue o ORTHO (F8) e puxe linhas de chamada das arestas da frontal para baixo. Ou <code>REC</code> <code>0,-20</code> <code>@60,-30</code> e uma linha de <code>30,-20</code> a <code>@0,-30</code>.',
+    c:function(){ var S2=exSegs(),C=exCandidates(S2,'y',function(y){return y<-EX_TOL;}),best=null;
+      for(var i=0;i<C.length;i++){ var y0=C[i],r=exPoly(S2,exRectPts(0,y0-30,60,30)); if(r.ok){ if(!exCovered(S2,exP(30,y0),exP(30,y0-30))) best={ok:false,msg:'A vista superior está no lugar, mas falta a aresta do degrau em x = 30 (de '+gNum(y0)+' a '+gNum(y0-30)+').'}; else return {ok:true}; } }
+      return best||{ok:false,msg:'Não encontrei um retângulo de 60 × 30 abaixo da vista frontal com x de 0 a 60. Confira o alinhamento com a frontal (mesmo x) e a profundidade 30.'}; }},
+   {t:'Vista lateral esquerda',i:'À direita da frontal, desenhe a vista lateral esquerda: <b>mesma altura e alinhada</b> (y de 0 a 40), largura igual à profundidade (<b>30</b>).',
+    h:'Com o ORTHO, puxe linhas de chamada horizontais da frontal. Ou <code>REC</code> <code>80,0</code> <code>@30,40</code>.',
+    c:function(){ var S2=exSegs(),C=exCandidates(S2,'x',function(x){return x>60+EX_TOL;});
+      for(var i=0;i<C.length;i++){ if(exPoly(S2,exRectPts(C[i],0,30,40)).ok){ EXA.sideX=C[i]; return {ok:true}; } }
+      return {ok:false,msg:'Não encontrei um retângulo de 30 × 40 à direita da frontal com y de 0 a 40. Confira o alinhamento com a frontal (mesmo y).'}; }},
+   {t:'Aresta oculta',i:'Na vista lateral, a aresta do degrau (altura <b>20</b>) fica escondida atrás da parte alta da peça: desenhe-a com linha <b>tracejada</b> (oculta).',
+    h:'Na aba <b>Educacional</b>, clique em <b>Linha oculta</b> antes de desenhar a linha; ou selecione a linha e troque o tipo para Tracejada no painel de propriedades.',
+    c:function(){ var S2=exSegs(),x0=EXA.sideX; if(x0===undefined){ var r=EX_LIST[1].steps[2].c(); if(!r.ok) return {ok:false,msg:'Faça antes a vista lateral esquerda.'}; x0=EXA.sideX; }
+      var a=exP(x0,20),b=exP(x0+30,20);
+      if(exCovered(S2,a,b,function(e){ var ld=exLd(e); return ld==='dashed'||ld==='hidden'; })) return {ok:true};
+      if(exCovered(S2,a,b)) return {ok:false,msg:'A linha em y = 20 existe, mas está contínua. Aresta oculta usa linha tracejada (NBR 8403).'};
+      return {ok:false,msg:'Falta a aresta oculta de '+exFmt(a)+' a '+exFmt(b)+', tracejada.'}; }},
+   {t:'Cotagem',i:'Com o estilo <b>ABNT</b>, cote a largura <b>60</b>, a altura <b>40</b> e a profundidade <b>30</b> (cada medida uma única vez, na vista que melhor a mostra).',
+    h:'Largura e altura na vista frontal; a profundidade na vista superior ou na lateral. Use <code>DLI</code> e o OSNAP Extremidade.',
+    c:function(){ return exAll([function(){return exHasDim(60,'dim','ABNT');},function(){return exHasDim(40,'dim','ABNT');},function(){return exHasDim(30,'dim','ABNT');}]); }}
+  ]},
+ {id:'horta',title:'3. Planta de canteiros de uma horta',level:'Intermediário · 40 min',
+  goal:'Camadas, cópia com espaçamento, hachura, cotas em série e prancha em escala com carimbo.',
+  norm:'NBR 8196 (escalas) · NBR 10068 (folhas) · NBR 10582 (legenda)',view:{x:-800,y:-1500,w:9600,h:8300},
+  intro:'Terreno de 8 m × 6 m com quatro canteiros de 1,20 m × 5,00 m e corredores de 0,60 m. Desenhe em milímetros, em verdadeira grandeza: 8 m = 8000.',
+  steps:[
+   {t:'Camada do terreno',i:'Crie a camada <b>Terreno</b> e torne-a atual.',
+    h:'No painel Camadas, clique em <b>+ Nova</b>, digite Terreno e confirme; depois clique na camada para torná-la atual.',
+    c:function(){ var l=S.layers.filter(function(x){return /terreno/i.test(x.nm);})[0]; if(!l) return {ok:false,msg:'Não há camada chamada Terreno.'}; return {ok:true}; }},
+   {t:'Terreno 8 × 6 m',i:'Na camada Terreno, desenhe o limite do terreno: retângulo <b>8000 × 6000</b> com canto em <b>0,0</b>.',
+    h:'<code>REC</code> <code>0,0</code> <code>@8000,6000</code>. Depois <code>Z</code> Enter para ver o desenho inteiro.',
+    c:function(){ var S2=exSegs(),r=exPoly(S2,exRectPts(0,0,8000,6000)); if(!r.ok) return {ok:false,msg:exMissMsg(r,'Terreno 8000 × 6000')};
+      if(!exPoly(S2,exRectPts(0,0,8000,6000),function(e){return /terreno/i.test(exLayerName(e));}).ok) return {ok:false,msg:'O terreno está desenhado, mas não na camada Terreno. Selecione-o e troque a camada no painel de propriedades.'};
+      return {ok:true}; }},
+   {t:'Primeiro canteiro',i:'Desenhe o primeiro canteiro: <b>1200 × 5000</b> com canto em <b>700,500</b>.',
+    h:'<code>REC</code> <code>700,500</code> <code>@1200,5000</code>. (Pode criar antes uma camada Canteiros.)',
+    c:function(){ var r=exPoly(exSegs(),exRectPts(700,500,1200,5000)); return r.ok?r:{ok:false,msg:exMissMsg(r,'Canteiro 1')}; }},
+   {t:'Outros três canteiros',i:'Faça mais três canteiros iguais, com corredores de <b>600</b> entre eles (distância de 1800 de um canteiro ao seguinte).',
+    h:'<code>CO</code>, selecione o canteiro, Enter, ponto base <code>700,500</code>, depois <code>M</code> (Matriz), <code>4</code> itens e o segundo ponto <code>@1800,0</code>.',
+    c:function(){ var S2=exSegs(); for(var i=1;i<4;i++){ var r=exPoly(S2,exRectPts(700+1800*i,500,1200,5000)); if(!r.ok) return {ok:false,msg:exMissMsg(r,'Canteiro '+(i+1))}; } return {ok:true}; }},
+   {t:'Hachura dos canteiros',i:'Hachure os quatro canteiros (padrão à sua escolha).',
+    h:'<code>H</code> Enter e clique dentro de cada canteiro; Enter conclui. Ajuste o espaçamento (por exemplo, 150) com a opção Configurações.',
+    c:function(){ for(var i=0;i<4;i++){ if(!exHatchAt(exP(700+1800*i+600,3000))) return {ok:false,msg:'O canteiro '+(i+1)+' ainda não está hachurado.'}; }
+      if(exHatchAt(exP(700+1200+300,3000))) return {ok:false,msg:'O corredor entre os canteiros 1 e 2 também ficou hachurado. Desfaça e clique só dentro dos canteiros.'};
+      return {ok:true}; }},
+   {t:'Cotas em série',i:'Com o estilo <b>ABNT</b>, cote a largura de um canteiro (<b>1200</b>), um corredor (<b>600</b>) e a largura total do terreno (<b>8000</b>).',
+    h:'<code>DLI</code> na largura do canteiro 1 e, em seguida, <code>DCO</code> (cota em série) para o corredor. A largura total pode ficar numa linha de cota mais afastada.',
+    c:function(){ return exAll([function(){return exHasDim(1200,'dim','ABNT');},function(){return exHasDim(600,'dim','ABNT');},function(){return exHasDim(8000,'dim','ABNT');}]); }},
+   {t:'Prancha em escala 1:50',i:'Monte a prancha: abra o <b>Layout</b>, deixe a viewport em <b>1:50</b>, insira o <b>Carimbo ABNT</b> e preencha o título do desenho.',
+    h:'Clique na aba Layout1, escolha 1:50 em "Escala da viewport", clique em 🗂 Carimbo ABNT e dê duplo clique em "TÍTULO DO DESENHO" para escrever o título.',
+    c:function(){ var LS=exLayouts(); if(!LS.length) return {ok:false,msg:'Ainda não há layout. Clique na aba Layout1.'};
+      for(var i=0;i<LS.length;i++){ var E=LS[i].ents,vp=E.filter(function(e){return e.tp==='viewport'&&Math.abs(vpRatio(e)-1/50)<1e-9;});
+        var cb=E.some(function(e){return e.tp==='insert'&&/^CARIMBO/.test(e.name);}),tit=E.some(function(e){return e.tp==='mtext'&&e.txt==='TÍTULO DO DESENHO';});
+        if(vp.length&&cb&&!tit) return {ok:true};
+        if(i===LS.length-1){ if(!vp.length) return {ok:false,msg:'A viewport do layout não está em 1:50.'}; if(!cb) return {ok:false,msg:'Falta inserir o Carimbo ABNT no layout.'}; return {ok:false,msg:'Preencha o título do desenho no carimbo (duplo clique em "TÍTULO DO DESENHO").'}; } }
+      return {ok:false,msg:''}; }}
+  ]}
+];
+
+// ── verificação ─────────────────────────────────────────────────────────────
+function exState(){ var X=EX_LIST[EXA.cur],res=X.steps.map(function(s){ try{ return s.c(); }catch(err){ return {ok:false,msg:'Erro na verificação: '+err.message}; } });
+  var first=-1; for(var i=0;i<res.length;i++) if(!res[i].ok){ first=i; break; } return {X:X,res:res,cur:first}; }
+function exCheck(manual){
+  if(!EXA.open) return; var st=exState(),X=st.X,key=X.id;
+  st.res.forEach(function(r,i){ var k=key+':'+i; if(r.ok&&!EXA.last[k]&&EXA.started){ log('✓ Aula guiada — passo '+(i+1)+' concluído: '+X.steps[i].t+'.','ok'); } EXA.last[k]=r.ok; });
+  if(st.cur<0&&EXA.started&&!EXA.finished){ EXA.finished=Date.now(); var sec=Math.round((EXA.finished-EXA.started)/1000); var prev=EXA.done[key];
+    EXA.done[key]={t:sec,best:prev&&prev.best?Math.min(prev.best,sec):sec,date:new Date().toISOString()}; try{ localStorage.setItem('educad-aula',JSON.stringify(EXA.done)); }catch(e){}
+    log('🏁 Exercício concluído: '+X.title+' em '+exTime(sec)+'.','ok'); }
+  exRender(st,manual);
+}
+function exTime(s){ return Math.floor(s/60)+' min '+('0'+(s%60)).slice(-2)+' s'; }
+
+// ── painel ──────────────────────────────────────────────────────────────────
+function exEl(tag,cls,txt){ var e=document.createElement(tag); if(cls) e.className=cls; if(txt!==undefined) e.textContent=txt; return e; }
+function exRender(st,manual){
+  var P=document.getElementById('aula-panel'); if(!P) return;
+  st=st||exState(); var X=st.X,body=document.getElementById('aula-body'); body.textContent='';
+  var sel=document.getElementById('aula-sel'); sel.value=String(EXA.cur);
+  body.appendChild(exEl('div','aula-meta',X.level+' · '+X.norm));
+  var g=exEl('div','aula-goal'); g.innerHTML='<b>Objetivo:</b> '+X.goal; body.appendChild(g);
+  var it=exEl('div','aula-intro'); it.innerHTML=X.intro; body.appendChild(it);
+  if(!EXA.started){ var sb=exEl('button','btn p aula-start','▶ Começar em um desenho novo'); sb.type='button'; sb.addEventListener('click',exStart); body.appendChild(sb);
+    var d=EXA.done[X.id]; if(d) body.appendChild(exEl('div','aula-meta','Já concluído neste navegador · melhor tempo '+exTime(d.best)));
+    return; }
+  var nOk=st.res.filter(function(r){return r.ok;}).length,pr=exEl('div','aula-prog'),bar=exEl('div','aula-bar'); bar.style.width=Math.round(100*nOk/st.res.length)+'%'; pr.appendChild(bar);
+  body.appendChild(pr); body.appendChild(exEl('div','aula-meta',nOk+' de '+st.res.length+' passos'));
+  var ol=exEl('ol','aula-steps');
+  X.steps.forEach(function(s,i){ var li=exEl('li',st.res[i].ok?'ok':(i===st.cur?'cur':'')); var h=exEl('div','aula-st',(st.res[i].ok?'✓ ':(i===st.cur?'▶ ':'○ '))+s.t); li.appendChild(h);
+    if(i===st.cur){ var ins=exEl('div','aula-ins'); ins.innerHTML=s.i; li.appendChild(ins);
+      var hb=exEl('button','btn s aula-hintbtn',EXA.shown[X.id+':'+i]?'Ocultar dica':'💡 Dica'); hb.type='button'; hb.addEventListener('click',function(){ EXA.shown[X.id+':'+i]=!EXA.shown[X.id+':'+i]; exRender(); });
+      var cb=exEl('button','btn p aula-check','Verificar'); cb.type='button'; cb.addEventListener('click',function(){ exCheck(true); });
+      var row=exEl('div','aula-row'); row.appendChild(cb); row.appendChild(hb); li.appendChild(row);
+      if(EXA.shown[X.id+':'+i]){ var hd=exEl('div','aula-hint'); hd.innerHTML=s.h; li.appendChild(hd); }
+      if(manual||EXA.fbStep===i){ EXA.fbStep=i; var fb=exEl('div','aula-fb',st.res[i].msg||'Ainda não encontrei este passo no desenho.'); li.appendChild(fb); } }
+    ol.appendChild(li); });
+  body.appendChild(ol);
+  if(st.cur<0){ var fin=exEl('div','aula-done'); var sec=Math.round(((EXA.finished||Date.now())-EXA.started)/1000);
+    fin.textContent='🏁 Exercício concluído em '+exTime(sec)+'. Salve o desenho (Ctrl+S) ou gere o PDF da prancha.'; body.appendChild(fin);
+    if(EXA.cur<EX_LIST.length-1){ var nx=exEl('button','btn p aula-next','Próximo exercício →'); nx.type='button'; nx.addEventListener('click',function(){ exSelect(EXA.cur+1); }); body.appendChild(nx); } }
+  var rs=exEl('button','btn s aula-restart','↺ Recomeçar'); rs.type='button'; rs.addEventListener('click',exStart); body.appendChild(rs);
+}
+function exZoom(v){ var pw=EXA.open?330:0,W=cvW()-pw,H=cvH(),sc=Math.min(W/v.w,H/v.h)*0.9; S.vp={x:pw+W/2-(v.x+v.w/2)*sc,y:H/2+(v.y+v.h/2)*sc,sc:sc}; renderAll(); updStatus(); } // a vista fica à direita do painel
+function exStart(){
+  var had=(exModel().length||(S.layouts&&S.layouts.length));
+  if(had&&S.dirty&&!confirm('Começar o exercício num desenho novo? O desenho atual não salvo será substituído (a cópia de segurança continua disponível em RECUPERAR).')) return;
+  if(S.space!=='model') switchSpace('model');
+  var cf=window.confirm; window.confirm=function(){ return true; }; try{ newDoc(); } finally { window.confirm=cf; }
+  var X=EX_LIST[EXA.cur]; document.getElementById('ftitle').textContent='Aula guiada — '+X.title.replace(/^\d+\.\s*/,'');
+  EXA.started=Date.now(); EXA.finished=0; EXA.last={}; EXA.fbStep=-1; EXA.sideX=undefined; S.dirty=false;
+  exZoom(X.view); log('Aula guiada: '+X.title+'. Siga os passos do painel; a verificação é automática.','inf'); exCheck(false);
+}
+function exSelect(i){ EXA.cur=Math.max(0,Math.min(EX_LIST.length-1,i)); EXA.started=0; EXA.finished=0; EXA.last={}; EXA.fbStep=-1; exRender(); }
+function aulaOpen(){ var P=document.getElementById('aula-panel'); EXA.open=true; P.classList.add('show'); exRender(); clearInterval(EXA.timer); EXA.timer=setInterval(function(){ exCheck(false); },1200); }
+function aulaClose(){ EXA.open=false; document.getElementById('aula-panel').classList.remove('show'); clearInterval(EXA.timer); }
+function aulaToggle(){ if(EXA.open) aulaClose(); else aulaOpen(); }
+(function(){ var sn=snapshot,un=undo,re=redo;
+  function soon(){ if(EXA.open){ clearTimeout(EXA.soon); EXA.soon=setTimeout(function(){ exCheck(false); },250); } }
+  snapshot=function(){ var r=sn.apply(this,arguments); soon(); return r; };
+  undo=function(){ var r=un.apply(this,arguments); soon(); return r; };
+  redo=function(){ var r=re.apply(this,arguments); soon(); return r; };
+})();
+window.addEventListener('load',function(){
+  var P=document.createElement('div'); P.id='aula-panel';
+  P.innerHTML='<div class="aula-head"><span>🎓 Aula guiada</span><button type="button" class="aula-x" title="Fechar (AULA)">×</button></div><select id="aula-sel"></select><div id="aula-body"></div>';
+  (document.getElementById('cw')||document.body).appendChild(P);
+  var sel=P.querySelector('#aula-sel'); EX_LIST.forEach(function(X,i){ var o=document.createElement('option'); o.value=String(i); o.textContent=X.title+(EXA.done[X.id]?' ✓':''); sel.appendChild(o); });
+  sel.addEventListener('change',function(){ exSelect(+sel.value); });
+  P.querySelector('.aula-x').addEventListener('click',aulaClose);
+  ['keydown','mousedown','mouseup','mousemove','click','dblclick','wheel','pointerdown','pointermove','pointerup','contextmenu'].forEach(function(t){ P.addEventListener(t,function(ev){ ev.stopPropagation(); }); });
 });
 </script>
 </body>

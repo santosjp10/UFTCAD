@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EduCAD 2D v8.6</title>
+<!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a0a1a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<!-- v6.5: tela de abertura — o clique do usuário permite ao navegador entrar em tela cheia -->
+<div id="startscr" role="dialog" aria-labelledby="ss-title" style="display:none">
+  <div class="ss-box">
+    <div class="ss-logo">Edu<b>CAD</b> 2D</div>
+    <div class="ss-sub" id="ss-title">Desenho técnico assistido por computador</div>
+    <button class="ss-main" id="ss-go" onclick="startApp(true)">⛶ Abrir aplicativo CAD em tela cheia</button>
+    <button class="ss-sec" onclick="startApp(false)">Continuar na janela do navegador</button>
+    <label class="ss-chk"><input type="checkbox" id="ss-skip"> Não mostrar esta tela novamente (abrir direto na janela)</label>
+    <div class="ss-note" id="ss-note"></div>
+  </div>
+</div>
+
+<div id="titlebar">
+  <div class="logo">Edu<b>CAD</b> 2D</div>
+  <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.6 · Uso Educacional</span>
+  <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
+  <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
+  <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
+  <button onclick="showAbout()" style="background:none;border:1px solid var(--bdr);color:var(--t2);font-size:9px;font-family:var(--mono);padding:2px 8px;border-radius:10px;cursor:pointer;" title="Sobre / Licença">ⓘ Sobre</button>
+</div>
+
+<div id="ribbon">
+  <div class="rtabs">
+    <div class="rtab on" id="rtab0" onclick="switchTab(0)">Início</div>
+    <div class="rtab"    id="rtab1" onclick="switchTab(1)">Educacional</div>
+  </div>
+  <!-- TAB 0 -->
+  <div class="rpanel" id="tab0">
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" onclick="newDoc()" title="Novo — NEW (Ctrl+N)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
+        <div class="rb" onclick="saveDoc()" title="Salvar — SAVE (Ctrl+S)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
+        <div class="rb" onclick="openDoc()" title="Abrir (.json ou .dxf) — OPEN (Ctrl+O)" data-cmd="OPEN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
+        <div class="rb" onclick="showLineType()" title="Tipos de linha — LT" data-cmd="LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
+        <div class="rb" onclick="showUnits()" title="Unidades — UN" data-cmd="UN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>Unidades</div>
+        <div class="rb" onclick="showExport()"  title="Exportar (PDF, DXF, SVG, PNG, JSON) — EXPORT" data-cmd="EXPORT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Exportar</div>
+        <div class="rb" id="rb-recover" onclick="asShowAll()" title="Recuperar desenho — RECUPERAR (cópias de segurança deste navegador)" data-cmd="RECUPERAR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12a8 8 0 108-8"/><path d="M4 4v5h5"/><path d="M12 8v4l3 2"/></svg>Recuperar</div>
+        <div class="rb" id="rb-script" onclick="scrOpen()" title="Script — SCRIPT (executar, gravar e salvar sequências de comandos .scr)" data-cmd="SCRIPT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/><path d="M9 12l2 2-2 2M12.5 16h3"/></svg>Script</div>
+      </div><div class="rglbl">Arquivo</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" onclick="undo()" title="Desfazer — U (Ctrl+Z)" data-cmd="U"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="9,14 4,9 9,4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>Desfazer</div>
+        <div class="rb" onclick="redo()" title="Refazer — REDO (Ctrl+Y)" data-cmd="REDO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,14 20,9 15,4"/><path d="M4 20v-7a4 4 0 014-4h12"/></svg>Refazer</div>
+        <div class="rb red" onclick="setTool('erase')" title="Apagar — E (ou tecla Del)" data-cmd="E"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,6 5,6 21,6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M9,6V4a1,1,0,011-1h4a1,1,0,011,1v2"/></svg>Apagar</div>
+      </div><div class="rglbl">Editar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-select" onclick="setTool('select')" title="Selecionar — SELECT (Esc encerra o comando atual)" data-cmd="SELECT"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 0v20l5-5 3 7 2-1-3-7h7L4 0z"/></svg>Select</div>
+        <div class="rb" id="rb-pan"    onclick="setTool('pan')"    title="Pan — P (ou arraste com o botão do meio / roda do mouse)" data-cmd="P"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/></svg>Pan</div>
+        <div class="rb" onclick="zoomFit()" title="Zoom extensão — ZE" data-cmd="ZE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>Zoom Fit</div>
+        <div class="rb" id="rb-zoomwin" onclick="zoomCmd('J')" title="Zoom janela — ZJ: clique dois cantos" data-cmd="ZJ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><line x1="15" y1="15" x2="21" y2="21"/><rect x="7" y="7.5" width="6" height="5" stroke-dasharray="2,1.2"/></svg>Janela</div>
+        <div class="rb" id="rb-zoomprev" onclick="zoomCmd('P')" title="Zoom anterior — ZP: volta à vista anterior" data-cmd="ZP"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><line x1="15" y1="15" x2="21" y2="21"/><path d="M12.5 8.5H8.5l1.8-1.8M8.5 8.5l1.8 1.8"/><path d="M8.5 8.5h3.5a1.8 1.8 0 010 3.6H9.5"/></svg>Anterior</div>
+        <div class="rb" onclick="selAll()" title="Selecionar tudo (Ctrl+A)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3,2"/></svg>Sel. Tudo</div>
+        <div class="rb" onclick="setTool('dist')" title="Distância — DI" data-cmd="DI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="9" x2="3" y2="15"/><line x1="21" y1="9" x2="21" y2="15"/></svg>Dist</div>
+        <div class="rb" onclick="setTool('area')" title="Área — AA" data-cmd="AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 21,9 18,20 6,20 3,9"/></svg>Área</div>
+      </div><div class="rglbl">Navegar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-line"      onclick="setTool('line')"      title="Linha — L" data-cmd="L"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="20" x2="20" y2="4"/><circle cx="4" cy="20" r="1.5" fill="currentColor"/><circle cx="20" cy="4" r="1.5" fill="currentColor"/></svg>Linha</div>
+        <div class="rb" id="rb-polyline"  onclick="setTool('polyline')"  title="Polilinha — PL" data-cmd="PL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,19 7,8 13,14 20,4"/></svg>Polilinha</div>
+        <div class="rb" id="rb-rectangle" onclick="setTool('rectangle')" title="Retângulo — REC" data-cmd="REC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/></svg>Retângulo</div>
+        <div class="rb" id="rb-circle"    onclick="setTool('circle')"    title="Círculo — C" data-cmd="C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>Círculo</div>
+        <div class="rb" id="rb-arc"       onclick="setTool('arc')"       title="Arco — A" data-cmd="A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20 Q12 2 21 20"/></svg>Arco</div>
+        <div class="rb" id="rb-ellipse"   onclick="setTool('ellipse')"   title="Elipse — EL" data-cmd="EL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="12" rx="9" ry="5"/></svg>Elipse</div>
+        <div class="rb" id="rb-text"      onclick="setTool('text')"      title="Texto de uma linha — DT (texto de várias linhas: T ou MT)" data-cmd="DT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h16v2M9 20h6M12 5v15"/></svg>Texto</div>
+        <div class="rb" id="rb-polygon" onclick="startPolygon()" title="Polígono — POL" data-cmd="POL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,2 20,8 17,20 7,20 4,8"/></svg>Polígono</div>
+        <div class="rb" id="rb-point" onclick="setTool('point')" title="Ponto — PO" data-cmd="PO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 8l8 8M16 8l-8 8"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>Ponto</div>
+        <div class="rb" id="rb-pontos" onclick="ptOpen()" title="Importar pontos de uma tabela (Excel, CSV) — PONTOS" data-cmd="PONTOS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="9" height="18" rx="1"/><path d="M2 8h9M2 13h9M6.5 3v18"/><polyline points="14,18 17,9 21,14"/><circle cx="14" cy="18" r="1.3" fill="currentColor"/><circle cx="17" cy="9" r="1.3" fill="currentColor"/><circle cx="21" cy="14" r="1.3" fill="currentColor"/></svg>Pontos XY</div>
+        <div class="rb" id="rb-hatch" onclick="showHatchDlg()" title="Hachura — H (escolha o padrão e clique dentro da área)" data-cmd="H" data-cmd-via="dialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><line x1="3" y1="21" x2="21" y2="3"/><line x1="7" y1="21" x2="21" y2="7"/><line x1="11" y1="21" x2="21" y2="11"/><line x1="3" y1="17" x2="17" y2="3"/><line x1="3" y1="13" x2="13" y2="3"/><rect x="2" y="2" width="20" height="20"/></svg>Hachura</div>
+      </div><div class="rglbl">Desenhar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-move"   onclick="setTool('move')"   title="Mover — M" data-cmd="M"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3"/></svg>Mover</div>
+        <div class="rb" id="rb-copy"   onclick="setTool('copy')"   title="Copiar — CO" data-cmd="CO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copiar</div>
+        <div class="rb" id="rb-rotate" onclick="setTool('rotate')" title="Rotacionar — RO" data-cmd="RO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="23,4 23,10 17,10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>Rotar</div>
+        <div class="rb" id="rb-mirror" onclick="setTool('mirror')" title="Espelhar — MI" data-cmd="MI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="3" x2="12" y2="21" stroke-dasharray="2,2"/><path d="M7 7L3 12l4 5M17 7l4 5-4 5"/></svg>Espelhar</div>
+        <div class="rb" id="rb-scale"  onclick="setTool('scale')"  title="Escalar — SC" data-cmd="SC"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="15,3 21,3 21,9"/><polyline points="9,21 3,21 3,15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>Escalar</div>
+        <div class="rb" id="rb-offset" onclick="setTool('offset')" title="Offset — O" data-cmd="O"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="11" height="9" rx="1"/><rect x="10" y="10" width="11" height="9" rx="1" opacity=".6"/></svg>Offset</div>
+        <div class="rb" id="rb-trim"   onclick="setTool('trim')"   title="Trim — TR (Shift+clique estende)" data-cmd="TR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="4" x2="20" y2="20" stroke-dasharray="4,3"/><line x1="4" y1="20" x2="20" y2="4"/><line x1="14" y1="14" x2="20" y2="20" stroke="var(--red)" stroke-width="2.5"/></svg>Trim</div>
+        <div class="rb" id="rb-extend" onclick="setTool('extend')" title="Extend — EX (Shift+clique apara)" data-cmd="EX"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="4" y1="12" x2="16" y2="12"/><polyline points="13,9 16,12 13,15"/><line x1="18" y1="5" x2="18" y2="19" stroke-dasharray="3,2"/></svg>Extend</div>
+        <div class="rb" id="rb-fillet" onclick="setTool('fillet')" title="Fillet — F" data-cmd="F"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><path d="M3 8 Q3 3 8 3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Fillet</div>
+        <div class="rb" id="rb-chamfer" onclick="setTool('chamfer')" title="Chamfer — CHA" data-cmd="CHA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="20" x2="3" y2="8"/><line x1="3" y1="8" x2="8" y2="3"/><line x1="8" y1="3" x2="20" y2="3"/></svg>Chamfer</div>
+        <div class="rb" id="rb-array"  onclick="showArrayDlg()"   title="Array — AR" data-cmd="AR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="10" y="3" width="5" height="5" rx=".5"/><rect x="17" y="3" width="4" height="5" rx=".5"/><rect x="3" y="10" width="5" height="5" rx=".5"/><rect x="10" y="10" width="5" height="5" rx=".5"/><rect x="17" y="10" width="4" height="5" rx=".5"/></svg>Array</div>
+        <div class="rb" id="rb-stretch" onclick="setTool('stretch')" title="Esticar — S (selecione com janela cruzando; só os vértices dentro dela se movem)" data-cmd="S"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="9" height="8" stroke-dasharray="2 2"/><path d="M12 8h7v8h-7"/><path d="M15 5l4 3-4 3"/></svg>Esticar</div>
+        <div class="rb" id="rb-break" onclick="setTool('break')" title="Interromper — BR (@ = interromper num ponto)" data-cmd="BR"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="22" y2="12"/><path d="M10 8l2 8M12 8l2 8"/></svg>Interromper</div>
+        <div class="rb" id="rb-join" onclick="setTool('join')" title="Unir — J (linhas colineares, arcos e peças encadeadas)" data-cmd="J"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="16" x2="11" y2="16"/><path d="M13 16a6 6 0 006-6V4"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>Unir</div>
+        <div class="rb" id="rb-pedit" onclick="setTool('pedit')" title="Editar polilinha — PE (Fechar/Abrir, Unir, Decurvar, Inverter)" data-cmd="PE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="3,18 8,8 14,14 20,5"/><circle cx="8" cy="8" r="1.6"/><circle cx="14" cy="14" r="1.6"/></svg>Editar PL</div>
+        <div class="rb" id="rb-explode" onclick="setTool('explode')" title="Explodir — X (polilinhas, retângulos, blocos e texto múltiplo)" data-cmd="X"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="8" y="8" width="8" height="8"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/></svg>Explodir</div>
+      </div><div class="rglbl">Modificar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-dim"    onclick="setTool('dim')"    title="Cota linear — DLI" data-cmd="DLI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="19" x2="21" y2="19"/><line x1="3" y1="17" x2="3" y2="21"/><line x1="21" y1="17" x2="21" y2="21"/><line x1="8" y1="14" x2="8" y2="19"/><line x1="16" y1="14" x2="16" y2="19"/></svg>Linear</div>
+        <div class="rb" id="rb-dimali" onclick="setTool('dimali')" title="Cota alinhada — DAL" data-cmd="DAL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="4" y1="20" x2="20" y2="8"/><line x1="3" y1="18" x2="5" y2="22"/><line x1="19" y1="6" x2="21" y2="10"/><line x1="8" y1="15" x2="10" y2="19"/><line x1="14" y1="10" x2="16" y2="14"/></svg>Alinhada</div>
+                <div class="rb" id="rb-dimcont" onclick="setTool('dimcontinue')" title="Cota em série (contínua) — DCO: continua da última cota linear" data-cmd="DCO"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 15h18M3 11v8M10 11v8M17 11v8"/><path d="M3 15l2-1v2zM10 15l-2-1v2zM10 15l2-1v2zM17 15l-2-1v2z" fill="currentColor"/></svg>Contínua</div>
+        <div class="rb" id="rb-dimbase" onclick="setTool('dimbaseline')" title="Cota de base — DBA: todas a partir da mesma linha de extensão" data-cmd="DBA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6v15M4 18h8M4 12h15M12 15v6M19 9v12"/></svg>De base</div>
+        <div class="rb" id="rb-dimr" onclick="setTool('dimr')" title="Cota de raio — DRA" data-cmd="DRA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="13" r="7"/><line x1="12" y1="13" x2="17" y2="8"/><text x="14" y="8" font-size="5" fill="currentColor">R</text></svg>Raio</div>
+        <div class="rb" id="rb-dimd" onclick="setTool('dimd')" title="Cota de diâmetro — DDI" data-cmd="DDI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="12" r="8"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Diâm.</div>
+        <div class="rb" id="rb-dima" onclick="setTool('dima')" title="Cota angular — DAN" data-cmd="DAN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="6"/><path d="M11 19 A7 7 0 0 0 14 13"/></svg>Ângulo</div>
+        <div class="rb" onclick="showDimStyle()" title="Estilos de cota — D (DDIM)" data-cmd="D"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><line x1="3" y1="18" x2="21" y2="18"/><line x1="3" y1="16" x2="3" y2="20"/><line x1="21" y1="16" x2="21" y2="20"/><circle cx="12" cy="10" r="3"/><line x1="12" y1="3" x2="12" y2="7"/></svg>DimStyle</div>
+      </div><div class="rglbl">Cotar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-mtext" onclick="setTool('mtext')" title="Texto múltiplo — T ou MT (dois cantos definem a largura)" data-cmd="T"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" stroke-dasharray="2 2"/><path d="M7 8h10M12 8v9M7 13h3"/></svg>Texto M</div>
+        <div class="rb" id="rb-leader" onclick="setTool('leader')" title="Linha de chamada — LE (ponta da seta, pontos, Enter, texto)" data-cmd="LE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 20l7-9h8"/><path d="M4 20l1.5-4 2.5 2z" fill="currentColor"/><path d="M14 7h6"/></svg>Chamada</div>
+        <div class="rb" id="rb-textedit" onclick="setTool('textedit')" title="Editar texto — ED (ou duplo clique no texto)" data-cmd="ED"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7V5h10v2M9 5v12"/><path d="M14 20l1-4 6-6 3 3-6 6z"/></svg>Editar texto</div>
+      </div><div class="rglbl">Anotar</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-block" onclick="setTool('block')" title="Criar bloco — B (nome, ponto base, objetos)" data-cmd="B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 12h8M12 8v8"/></svg>Criar bloco</div>
+        <div class="rb" id="rb-insert" onclick="setTool('insert')" title="Inserir bloco — I (? lista os blocos)" data-cmd="I"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M3 3l8 8M11 5v6H5"/></svg>Inserir</div>
+      </div><div class="rglbl">Blocos</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" onclick="showTemplate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="18" height="20" rx="1"/><line x1="7" y1="7" x2="17" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="13" y2="15"/></svg>Template</div>
+      </div><div class="rglbl">ABNT</div>
+    </div>
+  </div>
+  <!-- TAB 1: EDUCATIONAL -->
+  <div class="rpanel hide" id="tab1">
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-aula" onclick="aulaToggle()" title="Aula guiada: exercícios passo a passo com verificação automática — AULA" data-cmd="AULA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/><path d="M22 9v6"/></svg>Aula guiada</div>
+      </div><div class="rglbl">Exercícios</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-poligonal" onclick="poOpen()" title="Poligonal topográfica: caderneta, erros, compensação, área e quadro de coordenadas — POLIGONAL" data-cmd="POLIGONAL"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="4,17 9,5 19,7 21,16 12,21"/><circle cx="4" cy="17" r="1.3" fill="currentColor"/><circle cx="9" cy="5" r="1.3" fill="currentColor"/><circle cx="19" cy="7" r="1.3" fill="currentColor"/><circle cx="21" cy="16" r="1.3" fill="currentColor"/><circle cx="12" cy="21" r="1.3" fill="currentColor"/><path d="M9 5v-3M8 3l1-1 1 1"/></svg>Poligonal</div>
+        <div class="rb" id="rb-pontos2" onclick="ptOpen()" title="Importar pontos de uma tabela (Excel, CSV) — PONTOS" data-cmd="PONTOS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="9" height="18" rx="1"/><path d="M2 8h9M2 13h9M6.5 3v18"/><polyline points="14,18 17,9 21,14"/></svg>Pontos XY</div>
+      </div><div class="rglbl">Topografia</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" id="rb-didactic"    onclick="toggleMode('didactic')"   ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>Didático</div>
+        <div class="rb" id="rb-showcoords"  onclick="toggleMode('showcoords')" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>Coords</div>
+        <div class="rb" id="rb-showangles"  onclick="toggleMode('showangles')" ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="5" y1="19" x2="19" y2="19"/><line x1="5" y1="19" x2="14" y2="7"/><path d="M11 19 A6 6 0 0 0 13.5 13"/></svg>Ângulos</div>
+      </div><div class="rglbl">Modo Visual</div>
+    </div>
+    <div class="rg">
+      <div class="rgbtns">
+        <div class="rb" onclick="lineCenter()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="12" x2="22" y2="12" stroke-dasharray="8,2,2,2"/></svg>L.Centro</div>
+        <div class="rb" onclick="lineHidden()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="12" x2="22" y2="12" stroke-dasharray="5,3"/></svg>L.Oculta</div>
+      </div><div class="rglbl">ABNT</div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div id="ws">
+  <div id="cw">
+    <canvas id="cGrid"></canvas>
+    <canvas id="cDraw"></canvas>
+    <canvas id="cOver"></canvas>
+    <div id="snapmark"></div>
+    <div id="snaplbl"></div>
+    <div id="dynInput">
+      <div class="di-row">
+        <span class="di-lbl">X</span>
+        <input class="di-inp" id="di-x" type="text" autocomplete="off" spellcheck="false" placeholder="0.000">
+      </div>
+      <div class="di-row">
+        <span class="di-lbl">Y</span>
+        <input class="di-inp" id="di-y" type="text" autocomplete="off" spellcheck="false" placeholder="0.000">
+      </div>
+      <div class="di-sep"></div>
+      <div class="di-row">
+        <span class="di-lbl" style="color:var(--grn)">L</span>
+        <input class="di-inp" id="di-d" type="text" autocomplete="off" spellcheck="false" placeholder="dist">
+      </div>
+      <div class="di-row">
+        <span class="di-lbl" style="color:var(--acc2)">&#8736;</span>
+        <input class="di-inp" id="di-a" type="text" autocomplete="off" spellcheck="false" placeholder="angulo">
+      </div>
+      <div class="di-hint" id="di-hint">Tab=campo | Enter=confirmar</div>
+    </div>
+  </div>
+<!-- LAYOUT PANEL (sobrepõe o canvas quando ativo) -->
+<div id="layoutPanel">
+  <div id="layoutBg">
+    <div id="layoutSheet">
+      <canvas id="layoutCanvas"></canvas>
+      <div id="vpRect">
+        <div class="vp-handle" style="bottom:-4px;right:-4px;" id="vpHandle"></div>
+        <div id="vpScaleBadge">1:10</div>
+      </div>
+      <!-- Legendas dinâmicas geradas por JS aqui -->
+    </div>
+    <!-- Barra de zoom flutuante -->
+    <div id="ly-zoom-bar">
+      <button class="ly-zb-btn" onclick="lyZoom(-1)" title="Reduzir (-)">−</button>
+      <span id="ly-zoom-pct">100%</span>
+      <button class="ly-zb-btn" onclick="lyZoom(+1)" title="Ampliar (+)">+</button>
+      <button class="ly-zb-btn" onclick="lyZoomFit()" title="Ajustar à janela" style="font-size:11px;width:auto;padding:0 6px;border-radius:10px;">⊡</button>
+    </div>
+    <!-- Status bar -->
+    <div id="ly-statusbar">
+      <span class="ly-mode-badge paper" id="ly-mode-badge">PAPER SPACE</span>
+      <span id="ly-coord">X: 0.000  Y: 0.000</span>
+      <span id="ly-scale-info">1:10</span>
+    </div>
+    <!-- Hint -->
+    <div id="ly-hint">Duplo-clique na viewport para editar · ESC para sair</div>
+  </div>
+  <div id="layoutControls">
+    <div class="lc-grp">
+      <span class="lc-lbl">FOLHA</span>
+      <select class="lc-sel" id="lc-paper" onchange="layoutApply()">
+        <option value="297,210">A4 Paisagem 297×210</option>
+        <option value="210,297">A4 Retrato 210×297</option>
+        <option value="420,297">A3 Paisagem 420×297</option>
+        <option value="594,420">A2 Paisagem 594×420</option>
+        <option value="841,594">A1 Paisagem 841×594</option>
+        <option value="1189,841">A0 Paisagem 1189×841</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">ESCALA</span>
+      <select class="lc-sel" id="lc-scale" onchange="layoutApply()">
+        <option value="1">1:1</option>
+        <option value="0.5">1:2</option>
+        <option value="0.2">1:5</option>
+        <option value="0.1" selected>1:10</option>
+        <option value="0.05">1:20</option>
+        <option value="0.02">1:50</option>
+        <option value="0.01">1:100</option>
+        <option value="0">Ajustar</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">MARGENS mm</span>
+      <input class="lc-inp" id="lc-mt" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Superior">
+      <input class="lc-inp" id="lc-mr" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Direita">
+      <input class="lc-inp" id="lc-mb" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Inferior">
+      <input class="lc-inp" id="lc-ml" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Esquerda">
+    </div>
+    <div class="lc-sep"></div>
+    <div class="lc-grp">
+      <span class="lc-lbl">ORIENTAÇÃO</span>
+      <select class="lc-sel" id="lc-orient" onchange="layoutOrient()">
+        <option value="land">Paisagem</option>
+        <option value="port">Retrato</option>
+      </select>
+    </div>
+    <div class="lc-sep"></div>
+    <button class="lc-btn" onclick="showLegendEditor()">📋 Legenda</button>
+    <button class="lc-btn" id="btn-mview" onclick="setTool('mview')" title="Criar viewports — MV (MVIEW: Ajustar/Travar/Objeto/Poligonal/2/3/4)" data-cmd="MV">▣ Viewports</button>
+    <button class="lc-btn" onclick="layoutFit()" title="Ajustar a viewport ao desenho (escala da NBR 8196)">⊡ Ajustar</button>
+    <button class="lc-btn" id="btn-mspace" onclick="lyToggleMspace()" title="Entrar na viewport — MSPACE (ou duplo clique na viewport; Esc ou PS volta ao papel)" data-cmd="MSPACE">⬛ PSPACE</button>
+    <button class="lc-btn primary" onclick="layoutPrint()">🖨 Imprimir</button>
+    <span style="margin-left:auto;font-size:9px;color:var(--t2)" id="lc-info">A4 Paisagem · 1:10</span>
+  </div>
+</div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rp">
+    <div id="coordbox">X: 0.000 &nbsp; Y: 0.000</div>
+    <div class="rph">⬡ CAMADAS</div>
+    <div id="lylist"></div>
+    <div class="lyadd">
+      <button class="btn s" onclick="showAddLayer()" style="flex:1;font-size:10px">+ Nova</button>
+      <button class="btn s" onclick="delLayer()" style="font-size:10px">✕</button>
+    </div>
+    <div class="rph" id="prop-hdr">⚙ PROPRIEDADES</div>
+    <div id="prop-panel" style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
+      <div class="prow"><span class="plbl">Camada:</span><select class="ps" id="propLy" onchange="propLayerChange(this.value)"></select></div>
+      <div class="prow"><span class="plbl">Cor:</span><span style="display:flex;gap:4px;align-items:center">
+        <select class="ps" id="propColMode" onchange="propColModeChange(this.value)" style="max-width:82px"><option value="">ByLayer</option><option value="custom">Escolher</option></select>
+        <input type="color" class="cp" id="propCol" value="#dce4f5" onchange="propColChange(this.value)"></span></div>
+      <div class="prow"><span class="plbl">Espessura:</span>
+        <select class="ps" id="propLW" onchange="propLwChange(this.value)">
+          <option value="">ByLayer</option><option value=".13">0,13</option><option value=".18">0,18</option><option value=".25">0,25</option><option value=".35">0,35</option><option value=".5">0,50</option><option value=".7">0,70</option>
+          <option value="1">1,00</option><option value="1.4">1,40</option><option value="2">2,00</option>
+        </select>
+      </div>
+      <div class="prow"><span class="plbl">Linha:</span>
+        <select class="ps" id="propLD" onchange="propLdChange(this.value)">
+          <option value="">ByLayer</option><option value="solid">Contínua</option><option value="dashed">Tracejada</option>
+          <option value="dotted">Pontilhada</option><option value="center">Centro</option>
+          <option value="phantom">Fantasma</option><option value="divide">Divide</option>
+          <option value="hidden">Oculta</option><option value="dashdot">Traço-Ponto</option>
+        </select>
+      </div>
+      <div class="prow"><span class="plbl">Tipo:</span>
+        <select class="ps" id="propLT" onchange="ltQuickApply(this.value)" style="max-width:120px"></select>
+      </div>
+      <div class="prow" title="Estilo das novas cotas. Com cotas selecionadas, aplica o estilo a elas. DDIM abre o gerenciador.">
+        <span class="plbl">Est. cota:</span>
+        <span style="display:flex;gap:3px;align-items:center"><select class="ps" id="propDS" onchange="propDimStyleChange(this.value)" style="max-width:96px"></select><span class="lyico" style="cursor:pointer" onclick="showDimStyle()" title="DDIM">⚙</span></span>
+      </div>
+    </div>
+    <div class="rph">◈ SNAP &amp; MODOS</div>
+    <div class="togg">
+      <div class="tg on" id="tg-grid"  onclick="toggleMode('grid')">GRADE F7</div>
+      <div class="tg on" id="tg-snap"  onclick="toggleMode('snap')">SNAP F9</div>
+      <div class="tg"    id="tg-ortho" onclick="toggleMode('ortho')">ORTHO F8</div>
+      <div class="tg on" id="tg-polar" onclick="toggleMode('polar')">POLAR</div>
+      <div class="tg on" id="tg-end"   onclick="toggleMode('end')">ENDPOINT</div>
+      <div class="tg on" id="tg-mid"   onclick="toggleMode('mid')">MIDPOINT</div>
+      <div class="tg on" id="tg-int"   onclick="toggleMode('int')">INTERSECT</div>
+      <div class="tg on" id="tg-cen"   onclick="toggleMode('cen')">CENTER</div>
+      <div class="tg on" id="tg-quad"  onclick="toggleMode('quad')">QUADRANT</div>
+      <div class="tg on" id="tg-per"   onclick="toggleMode('per')">PERPEND.</div>
+      <div class="tg"    id="tg-tan"   onclick="toggleMode('tan')">TANGENT</div>
+      <div class="tg"    id="tg-nea"   onclick="toggleMode('nea')">NEAREST</div>
+      <div class="tg on" id="tg-osnap" onclick="toggleMode('osnap')" title="Liga/desliga todos os snaps de objeto">OSNAP F3</div>
+      <div class="tg on" id="tg-grips" onclick="toggleMode('grips')" title="Alças de edição dos objetos selecionados">GRIPS</div>
+    </div>
+    <div class="rph">▦ GRADE</div>
+    <div style="padding:6px 8px;border-bottom:1px solid var(--bdr)">
+      <div class="prow"><span class="plbl">Espaçamento:</span>
+        <select class="ps" onchange="S.modes.gridSz=parseInt(this.value);renderAll()">
+          <option value="1">1mm</option><option value="5">5mm</option>
+          <option value="10" selected>10mm</option><option value="20">20mm</option><option value="50">50mm</option>
+        </select>
+      </div>
+    </div>
+    <div class="rph">ℹ SELEÇÃO</div>
+    <div id="selinfo">Nenhum objeto</div>
+  </div>
+</div>
+
+<!-- CMD -->
+<div id="cmdbar">
+  <div id="cmdlog"></div>
+  <div id="cmdrow">
+    <span id="cmdlbl">Command:</span>
+    <input id="cmdinput" placeholder="Comando ou coordenada: 10,20  @5,3  @10&lt;45 …" autocomplete="off" spellcheck="false">
+  </div>
+</div>
+
+<!-- MODEL / LAYOUT TAB BAR -->
+<div id="tabbar">
+  <div class="tbtab active" id="tab-model" onclick="switchSpace('model')">
+    <div class="tb-dot"></div>Model
+  </div>
+  <div class="tbtab layout-tab" id="tab-layout1" onclick="switchSpace('layout')">
+    <div class="tb-dot"></div>Layout
+  </div>
+  <button class="tb-add" title="Adicionar layout" onclick="switchSpace('layout')">＋</button>
+</div>
+
+
+<!-- STATUS -->
+<div id="sbar">
+  <span class="stool" id="stool">SELECT</span>
+  <span class="ssep"></span>
+  <span>Zoom: <span class="sv" id="szoom">100%</span></span>
+  <span class="ssep"></span>
+  <span>Obj: <span class="sv" id="scount">0</span></span>
+  <span class="ssep"></span>
+  <span>Camada: <span class="sv" id="slayer">0</span></span>
+  <span class="ssep"></span>
+  <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.6 · Software Educacional Livre · HELP = comandos</span>
+</div>
+
+<!-- MODALS -->
+<div class="ov" id="ov-layer"><div class="modal">
+  <h3>Nova Camada</h3>
+  <label>Nome:</label><input id="ml-name" value="Nova Camada">
+  <label>Cor:</label><input type="color" id="ml-col" value="#4d9ef7" style="height:28px;margin-bottom:10px">
+  <label>Tipo de linha:</label>
+  <select id="ml-ld"><option value="solid">Contínua</option><option value="dashed">Tracejada</option><option value="center">Centro</option></select>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-layer')">Cancelar</button><button class="btn p" onclick="confirmLayer()">Criar</button></div>
+</div></div>
+
+<div class="ov" id="ov-template"><div class="modal">
+  <h3>Templates ABNT NBR 10068</h3>
+  <label>Formato:</label>
+  <select id="tf"><option value="210,297">A4 Retrato 210×297</option><option value="297,210">A4 Paisagem 297×210</option><option value="420,297">A3 Paisagem 420×297</option><option value="594,420">A2 Paisagem 594×420</option></select>
+  <label>Escala:</label>
+  <select id="ts"><option value="1">1:1</option><option value=".5">1:2</option><option value=".2">1:5</option><option value=".1">1:10</option></select>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-template')">Cancelar</button><button class="btn p" onclick="doTemplate()">Inserir</button></div>
+</div></div>
+
+<div class="ov" id="ov-export"><div class="modal" style="min-width:380px;max-width:460px">
+  <h3>Exportar</h3>
+  <label for="ef">Formato:</label>
+  <select id="ef" onchange="expFmtChange()">
+    <option value="dxf">DXF 2000 — AutoCAD, ZWCAD, BricsCAD (recomendado)</option>
+    <option value="dwg">DWG — via DXF 2000 (ver instruções)</option>
+    <option value="dxf12">DXF R12 — compatibilidade máxima (LibreCAD, QGIS, CNC)</option>
+    <option value="json">JSON (EduCAD — editável)</option>
+    <option value="svg">SVG (mm, escala 1:1)</option>
+    <option value="png">PNG (imagem da tela)</option></select>
+  <div id="ef-dxfopts" class="ef-opts">
+    <label class="ef-chk"><input type="checkbox" id="dxf-dims" checked> Cotas editáveis (entidades DIMENSION com estilos do DDIM)</label>
+    <label class="ef-chk"><input type="checkbox" id="dxf-hatch" checked> Hachuras como entidade HATCH</label>
+    <label class="ef-chk"><input type="checkbox" id="dxf-blocks" checked> Blocos como BLOCK e INSERT (editáveis no AutoCAD)</label>
+  </div>
+  <div id="ef-note" class="ef-note"></div>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-export')">Cancelar</button><button class="btn p" onclick="doExport()">Exportar</button></div>
+</div></div>
+
+<!-- DWG: instruções de conversão -->
+<div class="ov" id="ov-dwg"><div class="modal" style="max-width:520px">
+  <h3>Exportação para DWG</h3>
+  <div class="ef-note" style="display:block;margin-bottom:10px">Foi baixado o arquivo <b id="dwg-file"></b> no formato <b>DXF 2000</b>, que contém todo o desenho (camadas, cores, tipos e espessuras de linha, cotas e hachuras). Para obter o <b>.DWG</b>, converta-o por um dos caminhos abaixo:</div>
+  <ol class="dwg-steps">
+    <li><b>AutoCAD ou ZWCAD</b>: abra o arquivo .dxf (Abrir → tipo de arquivo DXF) e use <b>Salvar como → Desenho (*.dwg)</b>, escolhendo a versão desejada.</li>
+    <li><b>ODA File Converter</b> (gratuito, Windows/macOS/Linux): selecione a pasta de entrada com o .dxf, a pasta de saída, o formato de saída <b>DWG</b> e a versão (ex.: ACAD2018), e clique em Iniciar. Converte vários arquivos de uma vez.</li>
+    <li><b>BricsCAD, DraftSight ou QCAD Pro</b>: também abrem o DXF e salvam em DWG.</li>
+  </ol>
+  <div class="ef-note" style="display:block">Por que não DWG direto? O DWG é um formato binário fechado. Gravá-lo no navegador exigiria uma biblioteca comercial licenciada (ODA) ou uma biblioteca GPL experimental, incompatível com a licença MIT do EduCAD. O DXF é o formato de intercâmbio documentado pela própria Autodesk e é aberto diretamente pelo AutoCAD e pelo ZWCAD.</div>
+  <div class="mact"><button class="btn p" onclick="closeOv('ov-dwg')">Entendi</button></div>
+</div></div>
+
+<div class="ov" id="ov-text"><div class="modal">
+  <h3>Inserir Texto</h3>
+  <label>Conteúdo:</label><input id="tv" value="Texto" onkeydown="if(event.key==='Enter'){event.preventDefault();confirmText();}">
+  <label>Altura (mm):</label><input id="th" type="number" value="10" min="1">
+  <label style="display:flex;align-items:center;gap:6px;font-size:10px;cursor:pointer;margin:4px 0 8px">
+    <input type="checkbox" id="twipeout" style="accent-color:var(--acc)"> Fundo branco (Wipeout)
+  </label>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-text')">Cancelar</button><button class="btn p" onclick="confirmText()">OK</button></div>
+</div></div>
+
+<!-- UNITS DIALOG -->
+<div class="ov" id="ov-units"><div class="modal">
+  <h3>Unidades do Desenho</h3>
+  <div class="un-body">
+
+    <!-- Coluna: Length -->
+    <div class="un-col">
+      <div class="un-section">Comprimento</div>
+      <div>
+        <label class="un-lbl">Tipo:</label>
+        <select class="un-sel" id="un-len-type" onchange="unUpdateSample()">
+          <option value="decimal">Decimal</option>
+          <option value="engineering">Engineering</option>
+          <option value="architectural">Architectural</option>
+          <option value="fractional">Fractional</option>
+          <option value="scientific">Scientific</option>
+        </select>
+      </div>
+      <div>
+        <label class="un-lbl">Precisão:</label>
+        <select class="un-sel" id="un-len-prec" onchange="unUpdateSample()">
+          <option value="0">0</option>
+          <option value="1">0.0</option>
+          <option value="2">0.00</option>
+          <option value="3">0.000</option>
+          <option value="4" selected>0.0000</option>
+          <option value="5">0.00000</option>
+          <option value="6">0.000000</option>
+          <option value="7">0.0000000</option>
+          <option value="8">0.00000000</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Coluna: Angle -->
+    <div class="un-col">
+      <div class="un-section">Ângulo</div>
+      <div>
+        <label class="un-lbl">Tipo:</label>
+        <select class="un-sel" id="un-ang-type" onchange="unUpdateSample()">
+          <option value="decimal_deg">Graus decimais</option>
+          <option value="deg_min_sec">Grau/Min/Seg</option>
+          <option value="gradians">Gradianos</option>
+          <option value="radians">Radianos</option>
+          <option value="surveyor">Unidades de agrimensor</option>
+        </select>
+      </div>
+      <div>
+        <label class="un-lbl">Precisão:</label>
+        <select class="un-sel" id="un-ang-prec" onchange="unUpdateSample()">
+          <option value="0" selected>0</option>
+          <option value="1">0.0</option>
+          <option value="2">0.00</option>
+          <option value="3">0.000</option>
+          <option value="4">0.0000</option>
+        </select>
+      </div>
+      <label class="un-check">
+        <input type="checkbox" id="un-clockwise" onchange="unUpdateSample()">
+        Clockwise
+      </label>
+    </div>
+
+    <div class="un-divider"></div>
+
+    <!-- Escala de inserção (largura total) -->
+    <div class="un-insert">
+      <div class="un-section">Escala de inserção</div>
+      <div style="font-size:9px;color:var(--t2);margin-bottom:5px;">Unidades para escalar conteúdo inserido:</div>
+      <select class="un-sel" id="un-insert" style="max-width:200px" onchange="unUpdateSample()">
+        <option value="unitless">Sem unidade</option>
+        <option value="inches">Polegadas</option>
+        <option value="feet">Pés</option>
+        <option value="miles">Milhas</option>
+        <option value="mm" selected>Milímetros</option>
+        <option value="cm">Centímetros</option>
+        <option value="m">Metros</option>
+        <option value="km">Quilômetros</option>
+        <option value="microinches">Micropolegadas</option>
+        <option value="mils">Mils</option>
+        <option value="yards">Jardas</option>
+        <option value="angstroms">Ångströms</option>
+        <option value="nanometers">Nanômetros</option>
+        <option value="microns">Mícrons</option>
+        <option value="decimeters">Decímetros</option>
+        <option value="dekameters">Decâmetros</option>
+        <option value="hectometers">Hectômetros</option>
+        <option value="gigameters">Gigâmetros</option>
+        <option value="au">Unidades astronômicas</option>
+        <option value="ly">Anos-luz</option>
+        <option value="parsecs">Parsecs</option>
+      </select>
+    </div>
+
+    <!-- Amostra -->
+    <div class="un-sample">
+      <span>Amostra</span>
+      <div id="un-sample-len">1.5,2.0039,0</div>
+      <div id="un-sample-ang">3&lt;45,0</div>
+    </div>
+
+  </div>
+  <div class="un-foot">
+    <button class="btn p" onclick="unApply()">OK</button>
+    <button class="btn s" onclick="closeOv('ov-units')">Cancel</button>
+    <button class="btn s" onclick="unDirection()">Direção...</button>
+  </div>
+</div></div>
+
+<!-- LEGEND EDITOR -->
+<div class="ov" id="ov-legend"><div class="modal">
+  <h3>📋 Editor de Legenda</h3>
+  <div class="lg-body">
+    <div class="lg-toolbar">
+      <button class="btn s" style="font-size:10px" onclick="lgAddRow()">＋ Linha</button>
+      <button class="btn s" style="font-size:10px" onclick="lgAddCol()">＋ Coluna</button>
+      <button class="btn s" style="font-size:10px" onclick="lgDelRow()">✕ Linha</button>
+      <button class="btn s" style="font-size:10px" onclick="lgDelCol()">✕ Coluna</button>
+      <span style="margin-left:6px;font-size:9px;color:var(--t2)">Título:</span>
+      <input id="lg-title" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 8px;border-radius:2px;outline:none;width:140px;" value="LEGENDA" oninput="lgPreviewUpdate()">
+      <span style="font-size:9px;color:var(--t2)">Pos:</span>
+      <select id="lg-pos" style="background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:2px 6px;border-radius:2px;outline:none;" onchange="lgPreviewUpdate()">
+        <option value="br">Inferior Direito</option>
+        <option value="bl">Inferior Esquerdo</option>
+        <option value="tr">Superior Direito</option>
+        <option value="tl">Superior Esquerdo</option>
+        <option value="free">Livre</option>
+      </select>
+    </div>
+    <div class="lg-table-wrap" style="padding:8px 12px;">
+      <table id="lg-tbl">
+        <thead id="lg-thead"></thead>
+        <tbody id="lg-tbody"></tbody>
+      </table>
+    </div>
+    <div style="padding:6px 12px;border-top:1px solid var(--bdr);font-size:9px;color:var(--t2)">
+      Dica: clique nas células para editar. A legenda aparece na folha de impressão.
+    </div>
+  </div>
+  <div class="lg-foot">
+    <button class="btn s" onclick="lgRemove()">Remover legenda</button>
+    <button class="btn s" onclick="closeOv('ov-legend')">Cancelar</button>
+    <button class="btn p" onclick="lgSave()">✔ Inserir / Atualizar</button>
+  </div>
+</div></div>
+
+<!-- LINETYPE MANAGER -->
+<div class="ov" id="ov-linetype"><div class="modal">
+  <h3>⚙ Gerenciador de Tipos de Linha — LINETYPE</h3>
+  <div class="lt-body">
+
+    <!-- Lista principal -->
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="lt-head">
+        <span></span>
+        <span>Nome</span>
+        <span>Aparência</span>
+        <span>Cor</span>
+        <span>Esp.</span>
+      </div>
+      <div class="lt-list" id="lt-list"></div>
+    </div>
+
+    <!-- Painel editor lateral -->
+    <div class="lt-editor">
+      <div class="lt-editor-title" id="lt-ed-title">Selecione um tipo</div>
+      <div class="lt-editor-body">
+        <div class="lt-ef">
+          <label>Nome:</label>
+          <input class="lt-inp" type="text" id="lt-name" maxlength="32" oninput="ltEdChange()">
+        </div>
+        <div class="lt-ef">
+          <label>Tipo de linha:</label>
+          <select class="lt-sel" id="lt-ld" onchange="ltEdChange()">
+            <option value="solid">━━━ Contínua</option>
+            <option value="dashed">╍╍╍ Tracejada</option>
+            <option value="dotted">·····  Pontilhada</option>
+            <option value="center">─ · ─ Centro</option>
+            <option value="phantom">── ·· ── Fantasma</option>
+            <option value="divide">──··── Divide</option>
+            <option value="hidden">- - - Oculta</option>
+            <option value="dashdot">─·─·─ Traço-Ponto</option>
+          </select>
+        </div>
+        <div class="lt-ef">
+          <label>Cor:</label>
+          <input class="lt-inp" type="color" id="lt-col" oninput="ltEdChange()">
+        </div>
+        <div class="lt-ef">
+          <label>Espessura (mm):</label>
+          <select class="lt-sel" id="lt-lw" onchange="ltEdChange()">
+            <option value="0.13">0.13</option>
+            <option value="0.18">0.18</option>
+            <option value="0.25">0.25</option>
+            <option value="0.35">0.35</option>
+            <option value="0.5">0.50</option>
+            <option value="0.7">0.70</option>
+            <option value="1.0">1.00</option>
+            <option value="1.4">1.40</option>
+            <option value="2.0">2.00</option>
+          </select>
+        </div>
+        <div class="lt-ef">
+          <label>Preview:</label>
+          <canvas class="lt-preview-box" id="lt-prev-canvas" width="174" height="28"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lt-foot">
+    <button class="btn s" style="font-size:10px" onclick="ltNew()">＋ Novo</button>
+    <button class="btn s" style="font-size:10px" onclick="ltDelete()">✕ Excluir</button>
+    <button class="btn s" style="font-size:10px" onclick="ltSetCurrent()">★ Usar como padrão</button>
+    <div class="lt-foot-r">
+      <button class="btn s" onclick="closeOv('ov-linetype')">Fechar</button>
+      <button class="btn p" onclick="ltApply()">✔ Aplicar</button>
+    </div>
+  </div>
+</div></div>
+
+<!-- DDIM — GERENCIADOR DE ESTILOS DE COTA (v6.2) -->
+<div class="ov" id="ov-dimstyle"><div class="modal ddim-modal" role="dialog" aria-labelledby="ddim-h">
+  <h3 id="ddim-h">Gerenciador de estilos de cota <span class="ddim-cmd">DDIM / DIMSTYLE</span></h3>
+  <div class="ddim-mgr">
+    <div class="ddim-col-list">
+      <div class="ddim-curline">Estilo atual: <b id="ddim-cur"></b></div>
+      <div class="ddim-lbl">Estilos:</div>
+      <div class="ddim-list" id="ddim-list"></div>
+      <div class="ddim-lbl">Listar:</div>
+      <select id="ddim-filter" class="ddim-inp" onchange="ddimRenderManager()">
+        <option value="all">Todos os estilos</option>
+        <option value="used">Estilos em uso</option>
+      </select>
+    </div>
+    <div class="ddim-col-prev">
+      <div class="ddim-lbl" id="ddim-prev-title">Pré-visualização</div>
+      <canvas id="ddim-preview" class="ddim-preview"></canvas>
+      <div class="ddim-lbl">Descrição:</div>
+      <div class="ddim-desc" id="ddim-desc"></div>
+    </div>
+    <div class="ddim-col-btns">
+      <button class="btn s" id="ddim-setcur" onclick="ddimSetCurrent()" title="Novas cotas usarão este estilo">Definir atual</button>
+      <button class="btn p" onclick="ddimNew()">Novo…</button>
+      <button class="btn s" onclick="ddimModify()" title="Alterações atualizam todas as cotas deste estilo">Modificar…</button>
+      <button class="btn s" onclick="ddimRename()">Renomear…</button>
+      <button class="btn s" id="ddim-del" onclick="ddimDelete()">Excluir</button>
+      <div class="ddim-sp"></div>
+      <button class="btn s" id="ddim-apply" onclick="ddimApplySel()" title="Atribui o estilo selecionado às cotas selecionadas no desenho">Aplicar à seleção</button>
+    </div>
+  </div>
+  <div class="mact ddim-foot"><button class="btn p" onclick="closeOv('ov-dimstyle')">Fechar</button></div>
+</div></div>
+
+<!-- DDIM — NOVO ESTILO -->
+<div class="ov" id="ov-ddimnew"><div class="modal" style="min-width:320px" role="dialog">
+  <h3>Criar novo estilo de cota</h3>
+  <label for="ddimn-name">Nome do novo estilo:</label><input id="ddimn-name" onkeydown="if(event.key==='Enter'){event.preventDefault();ddimNewContinue();}">
+  <label for="ddimn-base">Começar com:</label><select id="ddimn-base"></select>
+  <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" id="ddimn-cur" style="width:auto;margin:0"> Definir como estilo atual</label>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-ddimnew')">Cancelar</button><button class="btn p" onclick="ddimNewContinue()">Continuar…</button></div>
+</div></div>
+
+<!-- DDIM — EDITOR DO ESTILO (abas) -->
+<div class="ov" id="ov-dimedit"><div class="modal ddim-modal ddim-edit" role="dialog" aria-labelledby="ddime-title">
+  <h3 id="ddime-title">Modificar estilo de cota</h3>
+  <div class="ddim-tabs" id="ddime-tabs"></div>
+  <div class="ddim-editbody">
+    <div class="ddim-pane" id="ddime-pane"></div>
+    <div class="ddim-editprev">
+      <canvas id="ddime-preview" class="ddim-preview"></canvas>
+      <div class="ddim-note">As siglas à direita dos campos são as variáveis equivalentes do AutoCAD. Tamanhos em mm do desenho, multiplicados pela escala global.</div>
+    </div>
+  </div>
+  <div class="mact ddim-foot"><button class="btn s" onclick="ddimEditCancel()">Cancelar</button><button class="btn p" onclick="ddimEditOK()">OK</button></div>
+</div></div>
+
+<!-- ARRAY DIALOG -->
+<div class="ov" id="ov-array"><div class="modal" style="min-width:320px">
+  <h3>Array — Cópia em Matriz</h3>
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="rect" id="ar-rect" checked onchange="arTypeChange()"> Retangular</label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="polar" id="ar-polar" onchange="arTypeChange()"> Polar</label>
+    <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:11px;color:var(--t1)"><input type="radio" name="artype" value="path" id="ar-path" onchange="arTypeChange()"> Caminho</label>
+  </div>
+  <div id="ar-rect-form">
+    <label>Linhas (rows):</label><input id="ar-rows" type="number" value="3" min="1" max="100">
+    <label>Colunas (cols):</label><input id="ar-cols" type="number" value="3" min="1" max="100">
+    <label>Espaçamento entre linhas (mm):</label><input id="ar-rsp" type="number" value="20" step="0.1">
+    <label>Espaçamento entre colunas (mm):</label><input id="ar-csp" type="number" value="20" step="0.1">
+    <label>Ângulo de rotação do array (°):</label><input id="ar-ang" type="number" value="0" step="1">
+  </div>
+  <div id="ar-polar-form" style="display:none">
+    <label>Número de itens:</label><input id="ar-pcount" type="number" value="6" min="2" max="360">
+    <label>Ângulo total (°):</label><input id="ar-ptotal" type="number" value="360" step="1">
+    <label>Preencher ângulo total:</label>
+    <select id="ar-pfill" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+    <label>Rotacionar itens:</label>
+    <select id="ar-prot" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+  </div>
+  <div id="ar-path-form" style="display:none">
+    <label>Número de itens:</label><input id="ar-pathcount" type="number" value="5" min="2" max="200">
+    <label>Espaçamento (mm, 0=uniforme):</label><input id="ar-pathsp" type="number" value="0" step="0.1">
+    <label>Alinhar itens ao caminho:</label>
+    <select id="ar-pathalign" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+      <option value="1">Sim</option><option value="0">Não</option>
+    </select>
+    <p style="font-size:9px;color:var(--t2);margin-bottom:8px">Selecione os objetos de origem, depois execute Array. Clique em um objeto de caminho (linha/polilinha/arco/círculo) no canvas quando solicitado.</p>
+  </div>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-array')">Cancelar</button><button class="btn p" onclick="confirmArray()">OK</button></div>
+</div></div>
+
+<!-- POLYGON DIALOG -->
+<div class="ov" id="ov-polygon"><div class="modal" style="min-width:300px">
+  <h3>Polígono Regular</h3>
+  <label>Número de lados (3–1024):</label>
+  <input id="pol-sides" type="number" value="6" min="3" max="1024">
+  <label>Método:</label>
+  <select id="pol-method" style="width:100%;margin-bottom:9px;padding:5px 9px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:11px var(--mono);border-radius:3px">
+    <option value="ic">Inscrito no círculo (I) — raio = vértice ao centro</option>
+    <option value="cc">Circunscrito ao círculo (C) — raio = meio do lado ao centro</option>
+    <option value="edge">Por aresta (E) — definir dois vértices de um lado</option>
+  </select>
+  <div id="pol-radius-row">
+    <label id="pol-radius-lbl">Raio (mm):</label>
+    <input id="pol-radius" type="number" value="25" min="0.1" step="0.1">
+  </div>
+  <p style="font-size:9px;color:var(--t2);margin-bottom:8px" id="pol-hint">
+    Após OK, clique no centro do polígono. O raio final pode ser ajustado pelo cursor.
+  </p>
+  <div class="mact">
+    <button class="btn s" onclick="closeOv('ov-polygon')">Cancelar</button>
+    <button class="btn p" onclick="confirmPolygon()">OK</button>
+  </div>
+</div></div>
+
+<!-- ABOUT / LICENSE MODAL -->
+<div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
+  <h3 style="display:flex;align-items:center;gap:8px;">
+    <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.6 — Software Educacional</span>
+  </h3>
+  <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--acc);">
+      <b style="color:var(--t0);">Finalidade</b><br>
+      <span style="color:var(--t1);">Software desenvolvido exclusivamente para fins educacionais na disciplina de
+      <b>Desenho Técnico</b> — Ciências Agrárias e Agronomia. Permite que estudantes
+      aprendam ferramentas CAD sem necessidade de computadores de alto desempenho
+      ou licenças comerciais.</span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #4ec87a;">
+      <b style="color:#4ec87a;">Licença — MIT License</b><br>
+      <span style="color:var(--t1);">Copyright © 2026 — EduCAD 2D<br><br>
+      É concedida permissão, gratuitamente, a qualquer pessoa que obtenha uma cópia
+      deste software, para utilizá-lo sem restrições, incluindo os direitos de usar,
+      copiar, modificar, mesclar, publicar, distribuir e sublicenciar, sujeito às
+      seguintes condições:<br><br>
+      O aviso de copyright acima e este aviso de permissão devem ser incluídos em
+      todas as cópias ou partes substanciais do software.<br><br>
+      <b>O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE
+      QUALQUER TIPO.</b></span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #f5a623;">
+      <b style="color:#f5a623;">Declaração de Independência</b><br>
+      <span style="color:var(--t1);">Este software é <b>código original</b>, desenvolvido de forma independente.
+      Não é derivado, não contém código, nem é afiliado ao
+      <b>AutoCAD®</b> (Autodesk, Inc.), <b>ZWCAD®</b> (ZWSOFT) ou qualquer outro
+      software CAD comercial. Os nomes de comandos (LINE, CIRCLE, TRIM, etc.)
+      são termos técnicos do domínio público da geometria e do desenho técnico.</span>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid var(--bdr);">
+      <b style="color:var(--t0);">Distribuição</b><br>
+      <span style="color:var(--t1);">✔ Pode ser distribuído gratuitamente para alunos<br>
+      ✔ Pode ser copiado, modificado e adaptado para fins educacionais<br>
+      ✔ Pode ser usado em laboratórios, aulas presenciais e remotas<br>
+      ✗ Não deve ser comercializado ou vendido</span>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-hdr">Desenvolvedor</div>
+      <div class="dev-body">
+        <div class="dev-avatar" aria-hidden="true">JP</div>
+        <div class="dev-info">
+          <div class="dev-name">Jacinto Pereira Santos</div>
+          <div class="dev-role">Professor da disciplina de Desenho Técnico</div>
+          <div class="dev-inst">
+            <span>Curso de Agronomia</span>
+            <span>Universidade Federal do Tocantins (UFT)</span>
+            <span>Campus de Gurupi – TO</span>
+          </div>
+          <div class="dev-contact">Dúvidas, sugestões ou contribuições:
+            <a href="mailto:santosjp10@gmail.com">✉ santosjp10@gmail.com</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg3);border-radius:4px;padding:10px 12px;border-left:3px solid #9d6fff;text-align:center;">
+      <span style="color:var(--t2);font-size:10px;">
+        Desenvolvido com o auxílio da Inteligência Artificial<br>
+        <b style="color:#9d6fff;font-size:13px;">Claude</b>
+        <span style="color:var(--t2);font-size:10px;"> · </span>
+        <b style="color:var(--t0);font-size:11px;">Anthropic</b><br>
+        <span style="color:var(--t2);font-size:9px;margin-top:4px;display:block;">
+          Agradecimento especial à Anthropic por disponibilizar a tecnologia de IA
+          que tornou possível o desenvolvimento deste projeto educacional.
+        </span>
+      </span>
+    </div>
+
+  </div>
+  <div style="padding:8px 14px;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end;background:var(--bg3);">
+    <button class="btn p" onclick="closeOv('ov-about')">Fechar</button>
+  </div>
+</div></div>
+
+<!-- HATCH PATTERN DIALOG -->
+<div class="ov" id="ov-hatch"><div class="modal" style="min-width:360px">
+  <h3>Padrão de Hachura — ABNT</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 14px;">
+    <div style="grid-column:1/-1;font-size:9px;color:var(--t2);margin-bottom:4px;">Selecione o padrão:</div>
+    <select id="hpat-sel" size="9" style="grid-column:1/-1;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px;border-radius:2px;height:180px;" onchange="hpUpdate()">
+      <option value="lines|45|5" selected>Linhas 45° (Genérico)</option>
+      <option value="lines|30|4">Linhas 30°</option>
+      <option value="lines|0|4">Linhas Horizontais</option>
+      <option value="lines|90|4">Linhas Verticais</option>
+      <option value="cross|0|6">Grade / Concreto</option>
+      <option value="cross|45|6">Grade 45° (Pedra)</option>
+      <option value="lines|45|3">Solo Compactado (denso)</option>
+      <option value="dots|0|6">Pontos / Areia</option>
+      <option value="zigzag|0|6">Zigue-Zague / Vegetal</option>
+      <option value="dashed|45|5">Tracejado 45° (Oculto)</option>
+      <option value="lines|45|8">Espaçado (área verde)</option>
+    </select>
+    <div style="grid-column:1/-1;height:1px;background:var(--bdr);margin:4px 0;"></div>
+    <div>
+      <label style="font-size:9px;color:var(--t2);display:block;margin-bottom:3px;">Ângulo (°):</label>
+      <input id="hpat-ang" type="number" value="45" min="0" max="180" style="width:80px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px 6px;border-radius:2px;outline:none;">
+    </div>
+    <div>
+      <label style="font-size:9px;color:var(--t2);display:block;margin-bottom:3px;">Espaçamento (mm):</label>
+      <input id="hpat-sp" type="number" value="5" min="1" max="50" style="width:80px;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:10px var(--mono);padding:3px 6px;border-radius:2px;outline:none;">
+    </div>
+  </div>
+  <div class="mact">
+    <button class="btn s" onclick="closeOv('ov-hatch')">Cancelar</button>
+    <button class="btn p" onclick="confirmHatch()">OK — Desenhar</button>
+  </div>
+</div></div>
+
+<!-- FILLET DIALOG -->
+<div class="ov" id="ov-fillet"><div class="modal">
+  <h3 id="fillet-title">Fillet — Arredondamento</h3>
+  <label id="fillet-lbl">Raio (mm, 0=canto vivo):</label>
+  <input id="fillet-r" type="number" value="5" min="0" step="0.5">
+  <p id="fillet-note" style="font-size:9px;color:var(--t2);margin-bottom:8px">Após OK, clique na primeira linha/arco, depois na segunda.</p>
+  <div class="mact"><button class="btn s" onclick="closeOv('ov-fillet')">Cancelar</button><button class="btn p" onclick="confirmFillet()">OK</button></div>
+</div></div>
+
+<input type="file" id="fileInput" accept=".json,.dxf" onchange="loadFile(event)">
+<!-- v7.2: editor de texto (MTEXT, LEADER, edição) -->
+<div class="ov" id="ov-mtext"><div class="modal" style="min-width:420px;max-width:92vw">
+  <h3 id="mted-title">Editor de texto</h3>
+  <textarea id="mted-txt" rows="6" style="width:100%;box-sizing:border-box;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font:12px Consolas,monospace;padding:6px;border-radius:3px;resize:vertical" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();mtEditorOK();}"></textarea>
+  <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+    <label id="mted-row-h" style="display:flex;align-items:center;gap:6px">Altura <input id="mted-h" style="width:70px;margin:0"></label>
+    <label id="mted-row-att" style="display:flex;align-items:center;gap:6px">Justificação <select id="mted-att" style="width:auto;margin:0">
+      <option value="1">Topo esquerda</option><option value="2">Topo centro</option><option value="3">Topo direita</option>
+      <option value="4">Meio esquerda</option><option value="5">Meio centro</option><option value="6">Meio direita</option>
+      <option value="7">Base esquerda</option><option value="8">Base centro</option><option value="9">Base direita</option></select></label>
+  </div>
+  <label id="mted-row-an" style="display:flex;align-items:center;gap:6px;margin-top:6px;cursor:pointer"><input type="checkbox" id="mted-annot" style="width:auto;margin:0"> Anotativo — a altura vale no papel (mesmo tamanho em qualquer escala de viewport)</label>
+  <div style="font-size:9px;color:var(--t2);margin-top:6px">Enter quebra a linha · Ctrl+Enter confirma</div>
+  <div class="mact"><button class="btn s" onclick="mtEditorCancel()">Cancelar</button><button class="btn p" onclick="mtEditorOK()">OK</button></div>
+</div></div>
+
+<!-- módulos (modo desenvolvimento) -->
+<script src="js/01-estado-e-inicializacao.js"></script>
+<script src="js/02-geometria-basica.js"></script>
+<script src="js/03-cliques.js"></script>
+<script src="js/04-entidades-e-transformacoes.js"></script>
+<script src="js/05-desfazer-selecao-vista.js"></script>
+<script src="js/06-desenho.js"></script>
+<script src="js/07-eventos-e-linha-de-comando.js"></script>
+<script src="js/08-entrada-dinamica.js"></script>
+<script src="js/09-interface-e-arquivos.js"></script>
+<script src="js/10-exportacao.js"></script>
+<script src="js/11-utilitarios-e-demo.js"></script>
+<script src="js/12-geometria-trim-fillet-array.js"></script>
+<script src="js/13-cotas-e-ddim.js"></script>
+<script src="js/14-edicao-e-precisao.js"></script>
+<script src="js/15-tela-cheia-e-pwa.js"></script>
+<script src="js/16-fillet.js"></script>
+<script src="js/17-trim-extend.js"></script>
+<script src="js/18-motor-de-comandos.js"></script>
+<script src="js/19-polilinhas-pedit-join-break-stretch.js"></script>
+<script src="js/20-hachura-mtext-leader-blocos.js"></script>
+<script src="js/21-comandos-de-anotacao-e-importacao-dxf.js"></script>
+<script src="js/22-toque-e-alta-resolucao.js"></script>
+<script src="js/23-unidades-e-tipos-de-linha.js"></script>
+<script src="js/24-layout-e-impressao.js"></script>
+<script src="js/25-plotagem-pdf-e-anotacao.js"></script>
+<script src="js/26-salvamento-automatico.js"></script>
+<script src="js/27-cotas-continua-e-base.js"></script>
+<script src="js/28-aula-guiada.js"></script>
+<script src="js/29-padroes-de-hachura.js"></script>
+<script src="js/30-pontos-e-coordenadas.js"></script>
+<script src="js/31-scripts.js"></script>
+<script src="js/32-poligonal-e-variaveis.js"></script>
+<script src="js/33-zoom.js"></script>
+</body>
+</html>

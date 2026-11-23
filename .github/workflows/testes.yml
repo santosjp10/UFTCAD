@@ -1,0 +1,32 @@
+# Testes automáticos do EduCAD 2D: rodam a cada envio (push) e a cada pull request.
+name: Testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependências de teste
+        run: |
+          pip install playwright ezdxf pypdf dxfgrabber
+          python -m playwright install --with-deps chromium
+
+      - name: index.html corresponde aos módulos de src/
+        run: python build.py --check
+
+      - name: Testes no arquivo único (index.html)
+        run: python tests/run_all.py
+
+      - name: Testes de fumaça na versão modular (src/dev.html)
+        run: python tests/run_all.py --alvo src/dev.html --somente test_navegador test_comandos

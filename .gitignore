@@ -1,0 +1,4 @@
+__pycache__/
+tests/_*
+*.pyc
+node_modules/

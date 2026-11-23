@@ -1,0 +1,159 @@
+{
+ "versao": "v8.6",
+ "data": "23/11/2026",
+ "arquivos": {
+  "01-geometria": [
+   {
+    "o": "LIST na linha inclinada (de 0,0 a 60,80)",
+    "esperado": "comprimento 100.0000, ângulo 53.1301°"
+   },
+   {
+    "o": "LIST no círculo",
+    "esperado": "centro 150,50; raio 25.0000; área 1963.4954; circunferência 157.0796"
+   },
+   {
+    "o": "LIST no arco",
+    "esperado": "centro 250,50; raio 30; ângulo inicial 0°, final 120°; comprimento 62.8319"
+   },
+   {
+    "o": "LIST na elipse",
+    "esperado": "centro 350,50; eixo maior 80 (raio 40) a 30°; razão 0.5 (eixo menor 40)"
+   },
+   {
+    "o": "LIST na polilinha com arco (canto 0,120)",
+    "esperado": "fechada; área 6513.2741; perímetro 305.6637"
+   },
+   {
+    "o": "LIST no retângulo (canto 380,120)",
+    "esperado": "área 1200.0000; perímetro 140.0000"
+   },
+   {
+    "o": "LIST no hexágono (centro 450,50)",
+    "esperado": "área 2338.2686; perímetro 180.0000"
+   },
+   {
+    "o": "Clicar na spline e conferir as extremidades",
+    "esperado": "começa em 150,120 e termina em 260,170 (passa pelos 4 pontos)"
+   },
+   {
+    "o": "Contar os pontos (QSELECT tipo Ponto)",
+    "esperado": "3 pontos em 300,120 · 320,120 · 340,120"
+   }
+  ],
+  "02-texto-e-cotas": [
+   {
+    "o": "Ler o texto de altura 5",
+    "esperado": "\"Ação de irrigação — 25 °C ± 0,5 ⌀ 50\" (acentos, °, ± e ⌀ corretos; no arquivo, °, ± e ⌀ vão como %%d, %%p e %%c, os códigos do AutoCAD)"
+   },
+   {
+    "o": "Ler o texto múltiplo",
+    "esperado": "duas linhas: \"Linha 1\" / \"Linha 2 com acentuação\""
+   },
+   {
+    "o": "Conferir as cotas (clicar e ver Propriedades → Medida)",
+    "esperado": "120 (Standard) · 80 · 144.2221 (alinhada) · R25 · Ø50 · 33.69° (ABNT)"
+   },
+   {
+    "o": "Estilos de cota (DIMSTYLE)",
+    "esperado": "Standard e ABNT existem e são usados"
+   },
+   {
+    "o": "Mover um ponto de definição de uma cota (grip)",
+    "esperado": "o valor da cota acompanha: são cotas associativas/editáveis, não linhas soltas"
+   },
+   {
+    "o": "Linha de chamada com o texto",
+    "esperado": "seta apontando o círculo e o texto \"Furo Ø50\" (no DXF, a linha de chamada vai como linhas, seta e texto)"
+   }
+  ],
+  "03-hachuras": [
+   {
+    "o": "Propriedades de cada hachura → Padrão",
+    "esperado": "ANSI31 · BRICK · EARTH · GRASS · SOLID · EDU_CULTIVO · ANSI37"
+   },
+   {
+    "o": "Escala e ângulo (Propriedades)",
+    "esperado": "BRICK escala 2 · GRASS escala 0.5 · EARTH ângulo 30°"
+   },
+   {
+    "o": "LIST na hachura com ilha",
+    "esperado": "2 contornos; área 5294.0385 (retângulo 6000 − furo 705.9615); o furo fica sem hachura"
+   },
+   {
+    "o": "Sólido",
+    "esperado": "SOLID preenchido (cor cheia)"
+   },
+   {
+    "o": "Padrão próprio EDU_CULTIVO",
+    "esperado": "aparece desenhado (linhas guardadas no arquivo, sem precisar do .pat)"
+   }
+  ],
+  "04-camadas-e-blocos": [
+   {
+    "o": "LAYER: Paredes",
+    "esperado": "cor 1 (vermelho), Continuous, 0.50 mm"
+   },
+   {
+    "o": "LAYER: Eixos",
+    "esperado": "cor RGB 0,160,255, CENTER, 0.18 mm"
+   },
+   {
+    "o": "LAYER: Ocultas",
+    "esperado": "cor 3 (verde), HIDDEN, 0.25 mm"
+   },
+   {
+    "o": "LAYER: NaoImprime",
+    "esperado": "não plotável (ícone da impressora desligado)"
+   },
+   {
+    "o": "LAYER: Travada e Desligada",
+    "esperado": "Travada com cadeado; Desligada apagada (lâmpada desligada)"
+   },
+   {
+    "o": "Propriedades da linha laranja tracejada",
+    "esperado": "cor própria RGB 255,128,0 · DASHED · 0.70 mm (não ByLayer)"
+   },
+   {
+    "o": "Bloco MARCO (INSERT / BEDIT)",
+    "esperado": "definição com 3 objetos; 3 inserções"
+   },
+   {
+    "o": "Propriedades das inserções",
+    "esperado": "em 40,-40: escala 2, rotação 45° · em 90,-40: espelhado (escala X −1)"
+   }
+  ],
+  "05-layout-escala": [
+   {
+    "o": "Abas de layout",
+    "esperado": "existe a aba \"Prancha A3\""
+   },
+   {
+    "o": "PAGESETUP do layout",
+    "esperado": "papel A3 (420 × 297 mm)"
+   },
+   {
+    "o": "Propriedades da viewport → Escala padrão",
+    "esperado": "1:100"
+   },
+   {
+    "o": "No papel, DIST de um canto a outro do terreno (OSNAP através da viewport)",
+    "esperado": "200.0000 mm (20 m em 1:100)"
+   },
+   {
+    "o": "Carimbo ABNT no layout",
+    "esperado": "bloco do carimbo inserido no papel, com o título"
+   },
+   {
+    "o": "No Model, cota da frente do terreno",
+    "esperado": "20000 (estilo ABNT)"
+   }
+  ]
+ },
+ "pdf": {
+  "pagina_mm": [
+   297.0,
+   210.0
+  ],
+  "tracos_100mm": 3
+ }
+}

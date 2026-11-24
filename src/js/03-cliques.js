@@ -198,13 +198,13 @@ function handleClick(pt) {
         ds.dimDir=dimLinearDir(ds.pts[0],ds.pts[1],pt);
         var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
         log('DIMLINEAR: '+d0.toFixed(2)+'mm — mova para posicionar (H ou V segue o cursor):','ok');
-        logp('DIMLINEAR: clique para confirmar posição:');
+        logp('DIMLINEAR: clique na posição da linha de cota, ou digite a distância ao 2º ponto (ex.: 10) [H/V]:');
       } else if(ds.phase==='pos'){
         var p1=ds.pts[0],p2=ds.pts[1];
         // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
         // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
         // v8.1: ponto digitado (sem pré-visualização pelo cursor) decide a direção pela posição digitada
-        var dir=(ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt); // v8.7: ponto digitado sempre decide pela posição digitada
+        var dir=ds.forceDir||((ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt)); // v8.9: H/V forçado // v8.7: ponto digitado sempre decide pela posição digitada
         // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
         var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
         addE({tp:'dim',subtp:'linear',dimDir:dir,
@@ -228,7 +228,7 @@ function handleClick(pt) {
         ds.phase='pos';
         var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
         log('DIMALIGNED: '+d0.toFixed(2)+'mm — mova para posicionar:','ok');
-        logp('DIMALIGNED: clique para confirmar posição:');
+        logp('DIMALIGNED: clique na posição da linha de cota, ou digite a distância ao 2º ponto (ex.: 10):');
       } else if(ds.phase==='pos'){
         var p1=ds.pts[0],p2=ds.pts[1];
         var d=Math.hypot(p2.x-p1.x,p2.y-p1.y);

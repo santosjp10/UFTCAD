@@ -337,7 +337,7 @@ function drawPreview(ctx){
         // Fase pos: preview COMPLETO com cota linear ortogonal (H ou V)
         var p1=ds.pts[0],p2=ds.pts[1];
         // Atualizar direção em tempo real conforme cursor
-        ds.dimDir=dimLinearDir(p1,p2,hp); ds.dirHover=true;
+        ds.dimDir=ds.forceDir||dimLinearDir(p1,p2,hp); ds.dirHover=true;
         drawDimTemp(ctx,{tp:'dim',subtp:'linear',dimDir:ds.dimDir,x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:hp.x,py:hp.y});
       }
       break;

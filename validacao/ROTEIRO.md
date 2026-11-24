@@ -1,4 +1,4 @@
-# Roteiro de validação externa — EduCAD 2D v8.8
+# Roteiro de validação externa — EduCAD 2D v8.9
 
 Este roteiro confere, em programas de CAD de mercado, os arquivos que o EduCAD gera (R9 do parecer técnico). Leva cerca de 40 minutos por programa.
 

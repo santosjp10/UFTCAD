@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.8</title>
+<title>EduCAD 2D v8.9</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -572,6 +572,17 @@ body.scr-running #cw{cursor:progress!important}
 /* v8.8: campos de margem com dois algarismos visíveis */
 #lc-mt,#lc-mr,#lc-mb,#lc-ml{width:44px!important;min-width:44px}
 #lc-mnbr{padding:2px 6px}
+
+/* v8.9: janela Salvar como / Exportar */
+.sv-row{margin-bottom:8px}
+.sv-namebox{display:flex;align-items:center;gap:4px}
+.sv-namebox input{flex:1;margin:0}
+#sv-ext{font:11px Consolas,monospace;color:var(--t1);min-width:40px}
+.sv-loc{margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)}
+.sv-lbl{font-size:10px;color:var(--t1);margin-bottom:4px}
+.sv-note{font-size:9.5px;color:var(--t2);line-height:1.45;margin-top:4px}
+.sv-note .btn{padding:2px 8px;font-size:10px;margin-left:4px}
+.sv-warn{font-size:9.5px;color:#f5c860;line-height:1.45;margin-top:6px}
 </style>
 </head>
 <body>
@@ -590,7 +601,7 @@ body.scr-running #cw{cursor:progress!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.8 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.9 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -607,7 +618,7 @@ body.scr-running #cw{cursor:progress!important}
     <div class="rg">
       <div class="rgbtns">
         <div class="rb" onclick="newDoc()" title="Novo — NEW (Ctrl+N)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
-        <div class="rb" onclick="saveDoc()" title="Salvar — SAVE (Ctrl+S)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
+        <div class="rb" onclick="saveCmd()" title="Salvar — SAVE: nome, formato e pasta (Ctrl+S regrava o mesmo arquivo)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
         <div class="rb" onclick="openDoc()" title="Abrir (.json ou .dxf) — OPEN (Ctrl+O)" data-cmd="OPEN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
         <div class="rb" onclick="showLineType()" title="Tipos de linha — LT" data-cmd="LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
         <div class="rb" onclick="showUnits()" title="Unidades — UN" data-cmd="UN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="12" x2="15" y2="15"/><line x1="3" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="21" y2="12"/></svg>Unidades</div>
@@ -939,7 +950,7 @@ body.scr-running #cw{cursor:progress!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.8 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.9 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1347,7 +1358,7 @@ body.scr-running #cw{cursor:progress!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.8 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.9 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1488,7 +1499,7 @@ body.scr-running #cw{cursor:progress!important}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.8 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1562,7 +1573,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.8 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -1842,13 +1853,13 @@ function handleClick(pt) {
         ds.dimDir=dimLinearDir(ds.pts[0],ds.pts[1],pt);
         var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
         log('DIMLINEAR: '+d0.toFixed(2)+'mm — mova para posicionar (H ou V segue o cursor):','ok');
-        logp('DIMLINEAR: clique para confirmar posição:');
+        logp('DIMLINEAR: clique na posição da linha de cota, ou digite a distância ao 2º ponto (ex.: 10) [H/V]:');
       } else if(ds.phase==='pos'){
         var p1=ds.pts[0],p2=ds.pts[1];
         // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
         // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
         // v8.1: ponto digitado (sem pré-visualização pelo cursor) decide a direção pela posição digitada
-        var dir=(ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt); // v8.7: ponto digitado sempre decide pela posição digitada
+        var dir=ds.forceDir||((ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt)); // v8.9: H/V forçado // v8.7: ponto digitado sempre decide pela posição digitada
         // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
         var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
         addE({tp:'dim',subtp:'linear',dimDir:dir,
@@ -1872,7 +1883,7 @@ function handleClick(pt) {
         ds.phase='pos';
         var d0=Math.hypot(ds.pts[1].x-ds.pts[0].x,ds.pts[1].y-ds.pts[0].y);
         log('DIMALIGNED: '+d0.toFixed(2)+'mm — mova para posicionar:','ok');
-        logp('DIMALIGNED: clique para confirmar posição:');
+        logp('DIMALIGNED: clique na posição da linha de cota, ou digite a distância ao 2º ponto (ex.: 10):');
       } else if(ds.phase==='pos'){
         var p1=ds.pts[0],p2=ds.pts[1];
         var d=Math.hypot(p2.x-p1.x,p2.y-p1.y);
@@ -2767,7 +2778,7 @@ function drawPreview(ctx){
         // Fase pos: preview COMPLETO com cota linear ortogonal (H ou V)
         var p1=ds.pts[0],p2=ds.pts[1];
         // Atualizar direção em tempo real conforme cursor
-        ds.dimDir=dimLinearDir(p1,p2,hp); ds.dirHover=true;
+        ds.dimDir=ds.forceDir||dimLinearDir(p1,p2,hp); ds.dirHover=true;
         drawDimTemp(ctx,{tp:'dim',subtp:'linear',dimDir:ds.dimDir,x1:p1.x,y1:p1.y,x2:p2.x,y2:p2.y,px:hp.x,py:hp.y});
       }
       break;
@@ -3399,7 +3410,7 @@ function onKey(e){
   if(e.ctrlKey&&k==='z'){e.preventDefault();undo();return;}
   if(e.ctrlKey&&(k==='y'||k==='Y')){e.preventDefault();redo();return;}
   if(e.ctrlKey&&k==='a'){e.preventDefault();selAll();return;}
-  if(e.ctrlKey&&k==='s'){e.preventDefault();saveDoc();return;}
+  if(e.ctrlKey&&k==='s'){e.preventDefault();if(e.shiftKey)saveCmd();else qsaveCmd();return;} // v8.9: Ctrl+S regrava; Ctrl+Shift+S = Salvar como
   if(e.ctrlKey&&k==='n'){e.preventDefault();newDoc();return;}
   if(k==='F3'){e.preventDefault();toggleMode('osnap');return;}
   if(e.ctrlKey&&(k==='0'||e.code==='Digit0'||e.code==='Numpad0')){e.preventDefault();toggleCleanScreen();return;}
@@ -3694,7 +3705,7 @@ function onCmdKey(e){
     'Z':'zoom','ZE':'zf','ZOOM':'zoom','ZJ':'zoomwin','ZW':'zoomwin','ZP':'zoomprev','ZA':'zoomall','ZO':'zoomobj',
     'DEL':'del','ERASE':'del',
     'ORTHO':'ortho','GRID':'grid','SNAP':'snap',
-    'NEW':'new','SAVE':'save','OPEN':'open',
+    'NEW':'new','SAVE':'save','OPEN':'open','SAVEAS':'save','SALVAR':'save','SALVARCOMO':'save','QSAVE':'qsave','EXPORTAR':'export',
     'LAYER':'ly','LA':'ly',
     'HELP':'help','?':'help',
   };
@@ -3759,24 +3770,26 @@ function onCmdKey(e){
     case 'grid':toggleMode('grid');break;
     case 'snap':toggleMode('snap');break;
     case 'new':newDoc();break;
-    case 'save':saveDoc();break;
+    case 'save':saveCmd();break;
+    case 'qsave':qsaveCmd();break;
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.8 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.9 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
       log('TOPOGRAFIA: POLIGONAL=Cálculo de poligonal (caderneta, erros, compensação, área)  |  @dist<AZ96d56\'30" (azimute)  @dist<N45d30\'E (rumo)','inf');
       log('TEXTO: T ou MT=Texto múltiplo  DT=Texto de uma linha  ED=Editar texto  LE=Linha de chamada','inf');
       log('COTAS: DLI=Linear  DAL=Alinhada  DCO=Em série (contínua)  DBA=De base  DRA=Raio  DDI=Diâmetro  DAN=Angular  |  D ou DDIM=Estilos de cota','inf');
+      log('  Na cota linear ou alinhada, depois dos 2 pontos: clique a posição ou digite a distância da linha de cota ao 2º ponto (ex.: 10; H ou V fixam o sentido)','inf');
       log('MODIFICAR: E=Apagar  M=Mover  CO=Copiar  RO=Rotacionar  SC=Escalar  MI=Espelhar  O=Offset  AR=Array','inf');
       log('  TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  S=Stretch  BR=Break  J=Join  PE=Editar polilinha  X=Explodir','inf');
       log('BLOCOS: B=Criar bloco  I=Inserir bloco','inf');
       log('MEDIR: DI=Distância  AA=Área  |  NAVEGAR: P=Pan  R ou RE=Redesenhar','inf');
       log('ZOOM: Z=Zoom [Tudo/Centro/Extensão/Anterior/Escala/Janela/Objeto, nX, 1/50XP]  ZE=Extensão  ZJ=Janela  ZP=Anterior  ZA=Tudo  ZO=Objeto  |  duplo clique no botão do meio = Extensão','inf');
       log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
-      log('ARQUIVO: NEW  OPEN  SAVE  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
+      log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');
@@ -4135,8 +4148,8 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'8.8',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
-function saveDoc(){var d=buildDoc();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
+function buildDoc(){return {v:'8.9',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function saveDoc(){var d=buildDoc();downloadBlob(JSON.stringify(d,null,2),'application/json','educad.json');document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');} // v8.9: passa por downloadBlob (janela Salvar como)
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
 function validateDoc(d){
@@ -4835,7 +4848,7 @@ function expPNG(){
     S.gD=saved.gD;S.ds=saved.ds;S.sel=saved.sel;S.hoverId=saved.hov;S.isWin=saved.win;S.modes.didactic=saved.did;S.modes.showcoords=saved.sc;
   }
   ctx.globalCompositeOperation='destination-over';ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
-  var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='educad.png';a.click();log('PNG exportado.','ok');
+  var du=cv.toDataURL('image/png'),bin=atob(du.split(',')[1]),u8=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);downloadBlob(u8,'image/png','educad.png');log('PNG exportado.','ok');
 }
 
 // ── TEMPLATE ─────────────────────────────────────────────────
@@ -4875,7 +4888,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.8 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.9 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -10241,7 +10254,7 @@ function pdfAssemble(pages,title){
     objs[co]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream'; });
   objs[fontId]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.8) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.9) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -12349,6 +12362,175 @@ window.addEventListener('load',function(){
 
 // ── v8.7: ponto digitado na linha de comando é marcado (a cota linear usa a posição digitada, não a do mouse) ──
 (function(){ var ok0=onCmdKey; onCmdKey=function(e){ if(e&&e.key==='Enter'){ var was=S._typedPt; S._typedPt=true; try{ return ok0.apply(this,arguments); } finally { S._typedPt=was; } } return ok0.apply(this,arguments); }; })();
+/* ═══════════════════════════════════════════════════════════════════
+   v8.9 — SALVAR E EXPORTAR COM JANELA (nome, formato, pasta, confirmação)
+   • Salvar (SAVE/SAVEAS) e Exportar (EXPORT) abrem a mesma janela: nome do
+     arquivo, formato (todos os que o EduCAD grava), opções do formato e o
+     local. No Chrome e no Edge do computador, "Salvar…" abre a janela do
+     sistema para escolher a pasta e confirmar (File System Access API). Nos
+     outros navegadores, o arquivo vai para a pasta de downloads com o nome
+     escolhido.
+   • Ctrl+S / QSAVE: depois do primeiro salvamento numa pasta escolhida, grava
+     de novo no mesmo arquivo, sem perguntar (como nos CADs).
+   • Abrir (OPEN), quando o navegador permite, também guarda o arquivo aberto
+     para o Ctrl+S gravar por cima dele.
+   ═══════════════════════════════════════════════════════════════════ */
+var FILEIO={sink:null,name:null,docHandle:null,lastHandle:null,mode:'export',userName:false,lastFmt:'dxf'};
+function fioCanPick(){ return typeof window.showSaveFilePicker==='function'&&!FILEIO.noPicker; }
+(function(){ var dl=downloadBlob;
+  downloadBlob=function(content,type,name){
+    if(FILEIO.sink){ FILEIO.sink({content:content,type:type,name:name}); return; }
+    return dl(content,type,FILEIO.name||name);
+  };
+})();
+var FIO_FMT={
+  json:{ext:'.json',mime:'application/json',desc:'Desenho EduCAD',run:function(){ saveDoc(); }},
+  dxf:{ext:'.dxf',mime:'application/dxf',desc:'DXF 2000',run:function(){ expDXF('2000'); },suf:''},
+  dxf12:{ext:'.dxf',mime:'application/dxf',desc:'DXF R12',run:function(){ expDXF('12'); },suf:'_R12'},
+  dwg:{ext:'.dxf',mime:'application/dxf',desc:'DXF 2000 para converter em DWG',run:function(){ expDWG(); },suf:'_para_DWG'},
+  pdf:{ext:'.pdf',mime:'application/pdf',desc:'PDF',run:function(){ expPDF(false); },layout:true},
+  pdfall:{ext:'.pdf',mime:'application/pdf',desc:'PDF (todos os layouts)',run:function(){ expPDF(true); }},
+  svg:{ext:'.svg',mime:'image/svg+xml',desc:'SVG',run:function(){ expSVG(); }},
+  png:{ext:'.png',mime:'image/png',desc:'Imagem PNG',run:function(){ expPNG(); }}
+};
+function fioBase(){ var t=(document.getElementById('ftitle').textContent||'').replace(/^Aula guiada — /,'').replace(/\.(json|dxf|dwg|pdf|svg|png)$/i,'').trim();
+  if(!t||/^sem t[ií]tulo/i.test(t)) t='educad'; return t.replace(/[\\/:*?"<>|]+/g,'_'); }
+function fioSuggest(fmt){ var F=FIO_FMT[fmt]||FIO_FMT.dxf;
+  if(F.layout){ var L=(typeof curLayout==='function'&&curLayout())||(S.layouts||[]).filter(function(l){return l.id===S.lastLayout;})[0]||(S.layouts||[])[0]; return ((L&&L.name)||'Layout1').replace(/[\\/:*?"<>|]+/g,'_'); }
+  return fioBase()+(F.suf||''); }
+function fioName(){ var fmt=document.getElementById('ef').value,F=FIO_FMT[fmt]||FIO_FMT.dxf,b=document.getElementById('sv-name').value.trim().replace(/[\\/:*?"<>|]+/g,'_').replace(/\.(json|dxf|dwg|pdf|svg|png)$/i,'');
+  return (b||fioSuggest(fmt))+F.ext; }
+function fioSync(keepName){
+  var fmt=document.getElementById('ef').value,F=FIO_FMT[fmt]||FIO_FMT.dxf;
+  if(!keepName&&!FILEIO.userName) document.getElementById('sv-name').value=fioSuggest(fmt);
+  document.getElementById('sv-ext').textContent=F.ext;
+  var pick=document.getElementById('sv-pick'),can=fioCanPick();
+  document.getElementById('sv-pickrow').style.display=can?'':'none';
+  document.getElementById('sv-dlnote').style.display=can&&pick.checked?'none':'';
+  var ok=document.querySelector('#ov-export .btn.p'); ok.textContent=(FILEIO.mode==='save'?'Salvar':'Exportar')+(can&&pick.checked?'…':'');
+  var cur=document.getElementById('sv-cur'),h=FILEIO.docHandle;
+  cur.style.display=FILEIO.mode==='save'&&h&&fmt==='json'?'':'none'; if(h) document.getElementById('sv-curname').textContent=h.name;
+  var w=document.getElementById('sv-warn'); w.textContent=FILEIO.mode==='save'&&fmt!=='json'?'Atenção: só o formato "Desenho EduCAD (.json)" guarda tudo para continuar editando aqui (layouts, estilos, blocos e ajustes). Os outros formatos servem para levar o desenho a outros programas.':''; w.style.display=w.textContent?'':'none';
+  if(typeof expFmtChange==='function') expFmtChange();
+}
+function svOpen(mode){
+  FILEIO.mode=mode==='save'?'save':'export'; FILEIO.userName=false;
+  var ef=document.getElementById('ef'); ef.value=FILEIO.mode==='save'?'json':(FILEIO.lastFmt||'dxf'); if(!ef.value) ef.selectedIndex=0;
+  document.getElementById('sv-title').textContent=FILEIO.mode==='save'?'Salvar como':'Exportar';
+  fioSync(); document.getElementById('ov-export').classList.add('show');
+  setTimeout(function(){ var n=document.getElementById('sv-name'); n.focus(); n.select(); },30);
+}
+// produz o arquivo do formato sem baixar (captura o que o exportador geraria)
+function fioProduce(fmt){ var got=null; FILEIO.sink=function(o){ got=o; }; try{ FIO_FMT[fmt].run(); } finally { FILEIO.sink=null; } return got; }
+function fioBlob(o){ return o.content instanceof Blob?o.content:new Blob([o.content],{type:o.type}); }
+async function fioWrite(handle,o){ var w=await handle.createWritable(); await w.write(fioBlob(o)); await w.close(); }
+async function svGo(){
+  var fmt=document.getElementById('ef').value,F=FIO_FMT[fmt]; if(!F) return;
+  var name=fioName(),pick=fioCanPick()&&document.getElementById('sv-pick').checked;
+  FILEIO.lastFmt=FILEIO.mode==='export'?fmt:FILEIO.lastFmt;
+  if(pick){
+    var handle,acc={}; acc[F.mime]=[F.ext];
+    var opts={suggestedName:name,types:[{description:F.desc+' ('+F.ext+')',accept:acc}],id:'educad'};
+    if(FILEIO.lastHandle) opts.startIn=FILEIO.lastHandle;
+    try{ handle=await window.showSaveFilePicker(opts); }
+    catch(err){ if(err&&err.name==='AbortError'){ log('Operação cancelada: nenhum arquivo foi gravado.','inf'); return; } log('A janela do sistema não pôde ser aberta ('+(err&&err.message||err)+'). O arquivo será baixado.','inf'); pick=false; }
+    if(pick){
+      closeOv('ov-export'); var wasDirty=S.dirty,o=fioProduce(fmt); if(!o){ log('Nada a gravar.','er'); return; }
+      try{ await fioWrite(handle,o); }
+      catch(err){ if(fmt==='json') S.dirty=wasDirty||true; log('Não foi possível gravar "'+handle.name+'": '+(err&&err.message||err),'er'); return; }
+      FILEIO.lastHandle=handle;
+      if(fmt==='json'){ FILEIO.docHandle=handle; document.getElementById('ftitle').textContent=handle.name; S.dirty=false; }
+      log((fmt==='json'?'Desenho salvo':'Exportado')+' em "'+handle.name+'" — '+F.desc+', na pasta escolhida.','ok');
+      return;
+    }
+  }
+  closeOv('ov-export'); FILEIO.name=name;
+  try{ F.run(); } finally { FILEIO.name=null; }
+  if(fmt==='json') document.getElementById('ftitle').textContent=name;
+  log('"'+name+'" baixado ('+F.desc+'). O navegador grava na pasta de downloads — ou pergunta onde salvar, se essa opção estiver ligada nas configurações dele.','inf');
+}
+// Ctrl+S / QSAVE: grava no mesmo arquivo, se houver; senão, abre a janela
+async function qsaveCmd(){
+  var h=FILEIO.docHandle;
+  if(!h){ svOpen('save'); return; }
+  try{ if(h.queryPermission&&(await h.queryPermission({mode:'readwrite'}))!=='granted'&&h.requestPermission&&(await h.requestPermission({mode:'readwrite'}))!=='granted'){ svOpen('save'); return; }
+    var o=fioProduce('json'); await fioWrite(h,o); document.getElementById('ftitle').textContent=h.name; S.dirty=false; log('Salvo em "'+h.name+'".','ok'); }
+  catch(err){ log('Não foi possível gravar em "'+h.name+'" ('+(err&&err.message||err)+'). Escolha o local de novo.','er'); svOpen('save'); }
+}
+// Abrir: guarda o arquivo escolhido (para o Ctrl+S gravar nele)
+(function(){ var od=openDoc;
+  openDoc=async function(){
+    if(typeof window.showOpenFilePicker!=='function'||FILEIO.noPicker) return od.apply(this,arguments);
+    var hs; try{ hs=await window.showOpenFilePicker({id:'educad',types:[{description:'Desenhos (EduCAD, DXF)',accept:{'application/json':['.json'],'application/dxf':['.dxf']}}],multiple:false}); }
+    catch(err){ if(err&&err.name==='AbortError') return; return od.apply(this,arguments); }
+    var h=hs[0],f=await h.getFile(); loadFile({target:{files:[f],value:''}});
+    FILEIO.lastHandle=h; FILEIO.docHandle=/\.json$/i.test(f.name)?h:null;
+  };
+  var nd=newDoc; newDoc=function(){ var r=nd.apply(this,arguments); if(!S.ents.length&&!S.dirty) FILEIO.docHandle=null; return r; };
+})();
+showExport=function(){ svOpen('export'); };
+doExport=function(){ return svGo(); };
+function saveCmd(){ svOpen('save'); }
+window.addEventListener('load',function(){
+  var ov=document.getElementById('ov-export'); if(!ov) return; var md=ov.querySelector('.modal'),h3=md.querySelector('h3'),ef=document.getElementById('ef');
+  md.style.maxWidth='520px'; h3.id='sv-title';
+  var top=document.createElement('div'); top.className='sv-row';
+  top.innerHTML='<label for="sv-name">Nome do arquivo:</label><div class="sv-namebox"><input id="sv-name" spellcheck="false" autocomplete="off"><span id="sv-ext">.dxf</span></div>';
+  h3.parentNode.insertBefore(top,h3.nextSibling);
+  var lf=md.querySelector('label[for="ef"]'); if(lf) lf.textContent='Formato:';
+  var jo=ef.querySelector('option[value="json"]'); if(jo){ jo.textContent='Desenho EduCAD (.json) — guarda tudo para continuar editando'; }
+  var loc=document.createElement('div'); loc.className='sv-loc';
+  loc.innerHTML='<div class="sv-lbl">Local:</div>'+
+   '<div id="sv-pickrow"><label class="ef-chk"><input type="checkbox" id="sv-pick" checked> Escolher a pasta e confirmar na janela do sistema</label></div>'+
+   '<div id="sv-dlnote" class="sv-note">O arquivo vai para a pasta de downloads do navegador. Para escolher a pasta a cada vez, ative "Perguntar onde salvar cada arquivo" nas configurações do navegador — ou use o Chrome ou o Edge no computador.</div>'+
+   '<div id="sv-cur" class="sv-note" style="display:none">Arquivo atual: <b id="sv-curname"></b> · <button type="button" class="btn s" id="sv-replace">Substituir este arquivo</button></div>'+
+   '<div id="sv-warn" class="sv-warn" style="display:none"></div>';
+  var note=document.getElementById('ef-note'); note.parentNode.insertBefore(loc,note.nextSibling);
+  var ok=md.querySelector('.btn.p'); ok.removeAttribute('onclick'); ok.addEventListener('click',function(){ svGo(); });
+  ef.addEventListener('change',function(){ fioSync(); });
+  document.getElementById('sv-pick').addEventListener('change',function(){ fioSync(true); });
+  document.getElementById('sv-name').addEventListener('input',function(){ FILEIO.userName=true; });
+  document.getElementById('sv-name').addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); svGo(); } else if(ev.key==='Escape'){ closeOv('ov-export'); } ev.stopPropagation(); });
+  document.getElementById('sv-replace').addEventListener('click',function(){ closeOv('ov-export'); qsaveCmd(); });
+});
+/* ═══════════════════════════════════════════════════════════════════
+   v8.9 — COTA COM DISTÂNCIA DIGITADA (DLI e DAL)
+   Depois dos dois pontos da medida, em vez de clicar a posição da linha de
+   cota, digite a distância entre a linha de cota e o 2º ponto (ex.: 10).
+   O lado é o do cursor (o número negativo inverte); no DLI, H ou V fixa a
+   cota horizontal ou vertical antes da distância. Sem cursor (scripts,
+   toque), a cota vai para baixo (horizontal) ou para a esquerda (vertical).
+   ═══════════════════════════════════════════════════════════════════ */
+function dimDistPoint(tool,ds,n){
+  var p1=ds.pts[0],p2=ds.pts[1],h=S.hover,s;
+  if(tool==='dimali'){
+    var dx=p2.x-p1.x,dy=p2.y-p1.y,L=Math.hypot(dx,dy); if(L<1e-9) return null;
+    var nx=-dy/L,ny=dx/L; s=h?Math.sign((h.x-p2.x)*nx+(h.y-p2.y)*ny):0; if(!s) s=dx>=0?-1:1; // sem cursor: "por fora" (abaixo/à esquerda do segmento)
+    if(n<0){ s=-s; n=-n; } return {x:p2.x+nx*s*n,y:p2.y+ny*s*n};
+  }
+  var dir=ds.forceDir||(h&&ds.dirHover&&ds.dimDir)||(Math.abs(p2.x-p1.x)>=Math.abs(p2.y-p1.y)?'h':'v');
+  ds.forceDir=dir;
+  if(dir==='h'){ s=h?Math.sign(h.y-p2.y):0; if(!s) s=-1; if(n<0){ s=-s; n=-n; } return {x:(p1.x+p2.x)/2,y:p2.y+s*n}; }
+  s=h?Math.sign(h.x-p2.x):0; if(!s) s=-1; if(n<0){ s=-s; n=-n; } return {x:p2.x+s*n,y:(p1.y+p2.y)/2};
+}
+(function(){ var ok0=onCmdKey;
+  onCmdKey=function(e){
+    if(e&&e.key==='Enter'&&(S.tool==='dim'||S.tool==='dimali')&&S.ds&&S.ds.phase==='pos'&&S.ds.pts&&S.ds.pts.length===2){
+      var ci=document.getElementById('cmdinput'),raw=ci.value.trim(),u=raw.toUpperCase(),ds=S.ds;
+      if(S.tool==='dim'&&/^(H|HOR|HORIZONTAL|V|VER|VERTICAL)$/.test(u)){
+        ci.value=''; log('> '+raw); ds.forceDir=u[0]==='H'?'h':'v'; e.preventDefault&&e.preventDefault();
+        logp('DIMLINEAR '+(ds.forceDir==='h'?'horizontal':'vertical')+': clique na posição ou digite a distância ao 2º ponto:'); renderAll(); return; }
+      if(/^[-+]?(\d+(\.\d*)?|\.\d+)$/.test(raw)){
+        var n=parseFloat(raw); ci.value=''; log('> '+raw); e.preventDefault&&e.preventDefault();
+        if(n===0){ log('A distância da linha de cota precisa ser diferente de zero.','er'); return; }
+        var pt=dimDistPoint(S.tool,ds,n); if(!pt){ log('Os dois pontos da cota coincidem.','er'); return; }
+        var was=S._typedPt; S._typedPt=true;
+        try{ handleClick(pt); } finally { S._typedPt=was; }
+        log('Linha de cota a '+gNum(Math.abs(n))+' do 2º ponto.','inf'); return; }
+    }
+    return ok0.apply(this,arguments);
+  };
+})();
 </script>
 </body>
 </html>

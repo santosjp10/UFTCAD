@@ -1,5 +1,35 @@
 # Changelog
 
+## v8.9 — Janela Salvar/Exportar e cota com distância digitada
+
+### Salvar e Exportar
+- **Salvar** (botão, `SAVE`, `SAVEAS`, Ctrl+Shift+S) e **Exportar** (botão, `EXPORT`) abrem a mesma janela:
+  - **nome do arquivo**, sem extensão (a extensão aparece ao lado e segue o formato; caracteres proibidos são trocados por "_");
+  - **formato**: Desenho EduCAD (.json), DXF 2000, DXF R12, DXF para DWG, PDF do layout atual, PDF de todos os layouts, SVG e PNG, com as opções de cada um (cotas, hachuras e blocos no DXF);
+  - **local**: no Chrome e no Edge do computador, **Salvar…/Exportar…** abre a janela do sistema para **escolher a pasta e confirmar**. Ela também pede confirmação antes de substituir um arquivo que já existe.
+- **Nome sugerido:** vem do desenho, com `_R12` e `_para_DWG` quando for o caso, e com o nome do layout no PDF. Um nome digitado é mantido ao trocar de formato.
+- **Outros navegadores** (Firefox, Safari, celular): o arquivo é baixado com o nome escolhido, e a janela explica onde ele vai parar.
+- **Ctrl+S / `QSAVE`:**
+  - depois de salvar numa pasta escolhida (ou de abrir um arquivo pela janela do sistema), grava **no mesmo arquivo, sem perguntar**, como nos CADs;
+  - se ainda não houver arquivo, abre a janela.
+  - A janela Salvar mostra o arquivo atual, com o botão **Substituir este arquivo**.
+- **Avisos:** cancelar na janela do sistema não grava nada e é informado. Salvar em DXF, SVG ou PNG avisa que só o .json guarda tudo para continuar editando.
+- **Abrir:** no Chrome e no Edge, usa a janela do sistema e guarda o arquivo aberto para o Ctrl+S. O botão Abrir continua aceitando .json e .dxf. **Novo** esquece o arquivo anterior.
+
+### Cota com distância digitada (DLI e DAL)
+- Depois de escolher os dois pontos da medida, **digite a distância entre a linha de cota e o 2º ponto** (ex.: `10`, ponto decimal), em vez de clicar a posição.
+  - A cota vai para o lado indicado pelo cursor; um número negativo inverte o lado.
+  - No DLI, `H` ou `V` fixam a cota horizontal ou vertical antes da distância.
+  - Sem cursor (scripts, toque), a cota horizontal vai para baixo e a vertical para a esquerda.
+- O valor medido não muda; só a posição da linha de cota.
+- Uma coordenada continua aceita para a posição (ex.: `50,-25`). A distância zero é recusada com mensagem.
+- Scripts: `DLI 0,0 100,0 10` cria a cota a 10 mm do 2º ponto.
+- O prompt da linha de comando explica a nova opção.
+
+### Outros
+- HELP atualizado.
+- Testes: `tests/test_arquivos.py` (44). A janela do sistema é simulada nos testes, porque num teste automático ninguém pode clicar nela. O teste de exportação de `test_dxf` passou a usar o download direto. Total de **900 testes**, todos passando.
+
 ## v8.8 — Margens da folha conforme a ABNT NBR 16752:2020
 
 - **Margens padrão do layout:** esquerda **20 mm** (encadernação); superior, direita e inferior **10 mm**, em todos os formatos (A0 a A4). Substituem as da NBR 10068 (esquerda 25 mm; demais 7 mm, ou 10 mm em A0 e A1).

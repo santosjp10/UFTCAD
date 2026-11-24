@@ -646,6 +646,6 @@ function expPNG(){
     S.gD=saved.gD;S.ds=saved.ds;S.sel=saved.sel;S.hoverId=saved.hov;S.isWin=saved.win;S.modes.didactic=saved.did;S.modes.showcoords=saved.sc;
   }
   ctx.globalCompositeOperation='destination-over';ctx.fillStyle='#0a0a1a';ctx.fillRect(0,0,W,H);
-  var a=document.createElement('a');a.href=cv.toDataURL('image/png');a.download='educad.png';a.click();log('PNG exportado.','ok');
+  var du=cv.toDataURL('image/png'),bin=atob(du.split(',')[1]),u8=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i);downloadBlob(u8,'image/png','educad.png');log('PNG exportado.','ok');
 }
 

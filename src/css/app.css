@@ -558,3 +558,14 @@ body.scr-running #cw{cursor:progress!important}
 /* v8.8: campos de margem com dois algarismos visíveis */
 #lc-mt,#lc-mr,#lc-mb,#lc-ml{width:44px!important;min-width:44px}
 #lc-mnbr{padding:2px 6px}
+
+/* v8.9: janela Salvar como / Exportar */
+.sv-row{margin-bottom:8px}
+.sv-namebox{display:flex;align-items:center;gap:4px}
+.sv-namebox input{flex:1;margin:0}
+#sv-ext{font:11px Consolas,monospace;color:var(--t1);min-width:40px}
+.sv-loc{margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)}
+.sv-lbl{font-size:10px;color:var(--t1);margin-bottom:4px}
+.sv-note{font-size:9.5px;color:var(--t2);line-height:1.45;margin-top:4px}
+.sv-note .btn{padding:2px 8px;font-size:10px;margin-left:4px}
+.sv-warn{font-size:9.5px;color:#f5c860;line-height:1.45;margin-top:6px}

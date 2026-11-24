@@ -1,6 +1,6 @@
 
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.8 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -74,7 +74,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.8 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');

@@ -39,7 +39,7 @@ with sync_playwright() as p:
     pg.goto('file://'+path); pg.wait_for_timeout(400); E=pg.evaluate
     E(DRAW)
     def export(fmt,setup=None):
-        E("showExport()"); pg.select_option('#ef',fmt)
+        E("()=>{FILEIO.noPicker=true;showExport();}"); pg.select_option('#ef',fmt)  # v8.9: sem a janela do sistema (download)
         if setup: setup()
         with pg.expect_download() as dl: pg.click("#ov-export .btn.p")
         f=TMP(dl.value.suggested_filename); dl.value.save_as(f); return f, dl.value.suggested_filename

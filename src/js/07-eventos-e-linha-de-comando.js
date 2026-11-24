@@ -274,7 +274,7 @@ function onKey(e){
   if(e.ctrlKey&&k==='z'){e.preventDefault();undo();return;}
   if(e.ctrlKey&&(k==='y'||k==='Y')){e.preventDefault();redo();return;}
   if(e.ctrlKey&&k==='a'){e.preventDefault();selAll();return;}
-  if(e.ctrlKey&&k==='s'){e.preventDefault();saveDoc();return;}
+  if(e.ctrlKey&&k==='s'){e.preventDefault();if(e.shiftKey)saveCmd();else qsaveCmd();return;} // v8.9: Ctrl+S regrava; Ctrl+Shift+S = Salvar como
   if(e.ctrlKey&&k==='n'){e.preventDefault();newDoc();return;}
   if(k==='F3'){e.preventDefault();toggleMode('osnap');return;}
   if(e.ctrlKey&&(k==='0'||e.code==='Digit0'||e.code==='Numpad0')){e.preventDefault();toggleCleanScreen();return;}
@@ -569,7 +569,7 @@ function onCmdKey(e){
     'Z':'zoom','ZE':'zf','ZOOM':'zoom','ZJ':'zoomwin','ZW':'zoomwin','ZP':'zoomprev','ZA':'zoomall','ZO':'zoomobj',
     'DEL':'del','ERASE':'del',
     'ORTHO':'ortho','GRID':'grid','SNAP':'snap',
-    'NEW':'new','SAVE':'save','OPEN':'open',
+    'NEW':'new','SAVE':'save','OPEN':'open','SAVEAS':'save','SALVAR':'save','SALVARCOMO':'save','QSAVE':'qsave','EXPORTAR':'export',
     'LAYER':'ly','LA':'ly',
     'HELP':'help','?':'help',
   };
@@ -634,24 +634,26 @@ function onCmdKey(e){
     case 'grid':toggleMode('grid');break;
     case 'snap':toggleMode('snap');break;
     case 'new':newDoc();break;
-    case 'save':saveDoc();break;
+    case 'save':saveCmd();break;
+    case 'qsave':qsaveCmd();break;
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.8 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.9 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
       log('TOPOGRAFIA: POLIGONAL=Cálculo de poligonal (caderneta, erros, compensação, área)  |  @dist<AZ96d56\'30" (azimute)  @dist<N45d30\'E (rumo)','inf');
       log('TEXTO: T ou MT=Texto múltiplo  DT=Texto de uma linha  ED=Editar texto  LE=Linha de chamada','inf');
       log('COTAS: DLI=Linear  DAL=Alinhada  DCO=Em série (contínua)  DBA=De base  DRA=Raio  DDI=Diâmetro  DAN=Angular  |  D ou DDIM=Estilos de cota','inf');
+      log('  Na cota linear ou alinhada, depois dos 2 pontos: clique a posição ou digite a distância da linha de cota ao 2º ponto (ex.: 10; H ou V fixam o sentido)','inf');
       log('MODIFICAR: E=Apagar  M=Mover  CO=Copiar  RO=Rotacionar  SC=Escalar  MI=Espelhar  O=Offset  AR=Array','inf');
       log('  TR=Trim  EX=Extend  F=Fillet  CHA=Chamfer  S=Stretch  BR=Break  J=Join  PE=Editar polilinha  X=Explodir','inf');
       log('BLOCOS: B=Criar bloco  I=Inserir bloco','inf');
       log('MEDIR: DI=Distância  AA=Área  |  NAVEGAR: P=Pan  R ou RE=Redesenhar','inf');
       log('ZOOM: Z=Zoom [Tudo/Centro/Extensão/Anterior/Escala/Janela/Objeto, nX, 1/50XP]  ZE=Extensão  ZJ=Janela  ZP=Anterior  ZA=Tudo  ZO=Objeto  |  duplo clique no botão do meio = Extensão','inf');
       log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
-      log('ARQUIVO: NEW  OPEN  SAVE  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
+      log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');

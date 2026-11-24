@@ -1,4 +1,4 @@
-# Pré-validação automática — EduCAD 2D v8.10
+# Pré-validação automática — EduCAD 2D v8.11
 
 Feita em 24/11/2026 com leitores de DXF independentes do EduCAD, antes da conferência no AutoCAD e no ZWCAD (que só pode ser feita por uma pessoa, com as licenças da instituição).
 

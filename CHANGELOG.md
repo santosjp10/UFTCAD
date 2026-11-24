@@ -1,5 +1,27 @@
 # Changelog
 
+## v8.11 — Carimbo ajustado à largura útil da folha
+
+### Correção
+- **A4 retrato:**
+  - **Problema:** a legenda tinha largura fixa de 178 mm e ficava encostada à direita. Com as margens da NBR 16752 (v8.8), a largura útil passou a 180 mm (210 − 20 − 10), e sobrava uma faixa de 2 mm à esquerda.
+  - **Correção:** a legenda passou a ocupar **toda a largura útil (180 mm), de margem a margem**.
+- **Regra da largura:**
+  - folhas com até 200 mm de largura útil (A4 retrato): a legenda ocupa toda a base entre as margens;
+  - folhas largas (A4 paisagem, A3, A2, A1, A0): 178 mm no **canto inferior direito**, como na norma, com altura de 40 mm.
+  - Os campos internos (instituição, curso, disciplina, título, desenhista, data, escala e folha) mantêm as proporções.
+
+### Ajuste automático
+- Ao mudar **margens, formato ou orientação** (painel do layout ou botão NBR), a moldura e a legenda se ajustam sozinhas.
+- **Inserir o carimbo de novo** substitui o anterior, sem duplicar, e mantém o que foi escrito nos campos.
+- **Desenhos salvos nas versões anteriores:** ao abrir o layout, um carimbo fora das margens atuais (por exemplo, o A4 retrato com legenda de 178 mm deslocada) é corrigido automaticamente.
+  - Os textos dos campos são mantidos; os textos fora da legenda, não são tocados.
+  - A linha de comando avisa o ajuste, e Ctrl+Z desfaz.
+- No DXF, a legenda sai como bloco `CARIMBO_ABNT_180` no A4 retrato, alinhada à margem esquerda.
+
+### Outros
+- Testes: `tests/test_carimbo.py` (19). Total de **961 testes**, todos passando.
+
 ## v8.10 — Fontes dos textos e espessuras de linha compatíveis com o AutoCAD
 
 ### Diagnóstico (DXF da v8.9 lido com o ezdxf)

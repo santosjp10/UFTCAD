@@ -98,7 +98,7 @@ function drawE(ctx,e,sel){
     case 'pl':{if(e.pts.length<2)break;ctx.beginPath();var p0=w2s(e.pts[0].x,e.pts[0].y);ctx.moveTo(p0.x,p0.y);for(var i=1;i<e.pts.length;i++){var p=w2s(e.pts[i].x,e.pts[i].y);ctx.lineTo(p.x,p.y);}if(e.closed)ctx.closePath();ctx.stroke();if(sel)for(var i=0;i<e.pts.length;i++){var s=w2s(e.pts[i].x,e.pts[i].y);drawH(ctx,s.x,s.y);}break;}
     case 'txt':{
       var p=w2s(e.x,e.y);ctx.setLineDash([]);ctx.shadowBlur=0;
-      var fnt=Math.max(S.printing?0:8,e.h*sc)+'px '+(e.font||'Consolas,monospace');
+      var fnt=Math.max(S.printing?0:8,e.h*sc)+'px '+fontCss(e.font);
       ctx.font=fnt;
       if(e.rot){ctx.translate(p.x,p.y);ctx.rotate(-e.rot);p={x:0,y:0};}
       if(e.wipeout){

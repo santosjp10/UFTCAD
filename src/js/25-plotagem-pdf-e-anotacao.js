@@ -107,31 +107,36 @@ function PdfCtx(Hpt){ this.H=Hpt; this.out=[]; this.p=[]; this.st={lw:1,ss:'#000
   P.clearRect=function(){};
   P.drawImage=function(){};
   P.fsize=function(){ var m=/([\d.]+)px/.exec(this.st.font||''); return m?parseFloat(m[1]):10; };
-  P.measureText=function(t){ return {width:String(t).length*0.6*this.fsize()}; };
+  // v8.10: três fontes do PDF (Helvetica, Times, Courier), escolhidas pela família do texto
+  P.pfont=function(){ var fam=String(this.st.font||'').replace(/^.*?px\s*/,''),pf=(typeof fontInfo==='function')?fontInfo(fam).pdf:'Courier';
+    return pf==='Times-Roman'?{id:'F3',w:0.47}:pf==='Helvetica'?{id:'F2',w:0.53}:{id:'F1',w:0.6}; };
+  P.measureText=function(t){ return {width:String(t).length*this.pfont().w*this.fsize()}; };
   P.fillText=function(t,x,y){
-    t=String(t); if(!t) return; var sz=this.fsize(),w=t.length*0.6*sz,ta=this.st.ta,tb=this.st.tb;
+    t=String(t); if(!t) return; var pf=this.pfont(),sz=this.fsize(),w=t.length*pf.w*sz,ta=this.st.ta,tb=this.st.tb;
     var dx=ta==='center'?-w/2:(ta==='right'||ta==='end')?-w:0,dy=tb==='middle'?0.32*sz:tb==='top'||tb==='hanging'?0.78*sz:tb==='bottom'||tb==='ideographic'?-0.22*sz:0;
     var o=this.tx(x+dx,y+dy),u=this.tx(x+dx+1,y+dy),ux=u.x-o.x,uy=u.y-o.y,L=Math.hypot(ux,uy)||1,sc=L,c=ux/L,s=-uy/L;
     var esc='';
     for(var i=0;i<t.length;i++){ var ch=t[i]; if(ch==='⌀') ch='Ø'; var b=cp1252Byte(ch.charCodeAt(0)); if(b===undefined) b=63;
       var cc=String.fromCharCode(b); esc+=(cc==='('||cc===')'||cc==='\\')?'\\'+cc:cc; }
     this.state(false);
-    this.out.push('BT /F1 '+num(sz*sc)+' Tf '+num(c)+' '+num(s)+' '+num(-s)+' '+num(c)+' '+num(o.x)+' '+num(this.H-o.y)+' Tm ('+esc+') Tj ET');
+    this.out.push('BT /'+pf.id+' '+num(sz*sc)+' Tf '+num(c)+' '+num(s)+' '+num(-s)+' '+num(c)+' '+num(o.x)+' '+num(this.H-o.y)+' Tm ('+esc+') Tj ET');
   };
   P.strokeText=P.fillText;
 })(PdfCtx.prototype);
 function pdfAssemble(pages,title){
   var objs=[],kids=[],n=3;
   pages.forEach(function(pg){ kids.push(n+' 0 R'); n+=2; });
-  var fontId=n,infoId=n+1;
+  var fontId=n,infoId=n+3;
   objs[1]='<< /Type /Catalog /Pages 2 0 R >>';
   objs[2]='<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+pages.length+' >>';
   pages.forEach(function(pg,i){ var po=3+2*i,co=po+1,content=pg.content;
-    objs[po]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pg.w.toFixed(3)+' '+pg.h.toFixed(3)+'] /Resources << /Font << /F1 '+fontId+' 0 R >> >> /Contents '+co+' 0 R >>';
+    objs[po]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pg.w.toFixed(3)+' '+pg.h.toFixed(3)+'] /Resources << /Font << /F1 '+fontId+' 0 R /F2 '+(fontId+1)+' 0 R /F3 '+(fontId+2)+' 0 R >> >> /Contents '+co+' 0 R >>';
     objs[co]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream'; });
   objs[fontId]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
+  objs[fontId+1]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+  objs[fontId+2]='<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.9) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.10) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';

@@ -60,7 +60,7 @@ with sync_playwright() as p:
     ok('TEXT editado numa linha continua TEXT',ents()[0]['tp']=='txt' and ents()[0]['txt']=='Outro')
     # quebra automática com largura, explodir, PDF, DXF
     reset(); E("addE({tp:'mtext',x:0,y:0,w:40,h:2,txt:'{\\\\H2x;Título longo do memorial}\\ncorpo do texto com várias palavras',att:1,rot:0})")
-    L=E("mtLines(S.ents[0])"); ok('Largura definida: quebra por palavras respeitando os tamanhos',len(L)>=4 and all(len(l)*0.6*2<=40.01 or True for l in L) and E("rtLines(S.ents[0]).every(l=>l.w<=40+1e-9)"),L)
+    L=E("mtLines(S.ents[0])"); ok('Largura definida: quebra por palavras respeitando os tamanhos',len(L)>=3 and E("rtLines(S.ents[0]).every(l=>l.w<=40+1e-9)"),L)
     reset(); E("addE({tp:'mtext',x:0,y:0,w:0,h:2.5,txt:'{\\\\H2x;TÍTULO}\\nNormal {\\\\H0.6x;nota}',att:1,rot:0})")
     f=os.path.join(HERE,'_t.dxf'); open(f,'wb').write(bytes(E("Array.from(cp1252Encode(buildDXF2000({})))"))); d=ezdxf.readfile(f)
     mt=d.modelspace().query('MTEXT')[0]

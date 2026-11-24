@@ -93,7 +93,11 @@ $MEASUREMENT
 9
 $LWDISPLAY
 290
-1
+0
+9
+$LWDEFAULT
+70
+25
 9
 $PSTYLEMODE
 290
@@ -583,7 +587,7 @@ AcDbLayerTableRecord
 6
 Continuous
 370
-70
+35
 390
 3F
 0
@@ -699,9 +703,15 @@ Standard
 42
 2.5
 3
-txt
+arial.ttf
 4
 
+1001
+ACAD
+1000
+Arial
+1071
+0
 0
 ENDTAB
 0

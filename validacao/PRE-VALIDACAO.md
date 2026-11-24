@@ -1,4 +1,4 @@
-# Pré-validação automática — EduCAD 2D v8.9
+# Pré-validação automática — EduCAD 2D v8.10
 
 Feita em 24/11/2026 com leitores de DXF independentes do EduCAD, antes da conferência no AutoCAD e no ZWCAD (que só pode ser feita por uma pessoa, com as licenças da instituição).
 
@@ -17,7 +17,7 @@ Leitores: **ezdxf** 1.4.5 (auditoria completa, igual em espírito ao AUDIT do Au
 | 05-layout-escala.dxf | AC1015 | 0 / 0 | lido (13) | lido | desenhado (11 elementos) | DIMENSION 1, LWPOLYLINE 2, TEXT 1 |
 | 05-layout-escala-R12.dxf | AC1009 | 0 / 0 | lido (9) | lido | desenhado (5 elementos) | LINE 3, POLYLINE 2, SOLID 2, TEXT 2 |
 
-**Valores esperados conferidos no arquivo:** 34 de 34.
+**Valores esperados conferidos no arquivo:** 36 de 36.
 
 
 **PDF de calibração:** página 297.0 × 210.0 mm; 3 traços de exatamente 100,0 mm encontrados no arquivo.

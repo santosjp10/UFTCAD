@@ -1,4 +1,4 @@
-# Roteiro de validação externa — EduCAD 2D v8.9
+# Roteiro de validação externa — EduCAD 2D v8.10
 
 Este roteiro confere, em programas de CAD de mercado, os arquivos que o EduCAD gera (R9 do parecer técnico). Leva cerca de 40 minutos por programa.
 
@@ -38,8 +38,9 @@ Texto com acentos e símbolos, texto múltiplo, cotas linear, vertical, alinhada
 | 2 | Ler o texto múltiplo | duas linhas: "Linha 1" / "Linha 2 com acentuação" |
 | 3 | Conferir as cotas (clicar e ver Propriedades → Medida) | 120 (Standard) · 80 · 144.2221 (alinhada) · R25 · Ø50 · 33.69° (ABNT) |
 | 4 | Estilos de cota (DIMSTYLE) | Standard e ABNT existem e são usados |
-| 5 | Mover um ponto de definição de uma cota (grip) | o valor da cota acompanha: são cotas associativas/editáveis, não linhas soltas |
-| 6 | Linha de chamada com o texto | seta apontando o círculo e o texto "Furo Ø50" (no DXF, a linha de chamada vai como linhas, seta e texto) |
+| 5 | STYLE (estilos de texto): fonte do estilo Standard | Arial (arial.ttf) — não mais txt.shx |
+| 6 | Mover um ponto de definição de uma cota (grip) | o valor da cota acompanha: são cotas associativas/editáveis, não linhas soltas |
+| 7 | Linha de chamada com o texto | seta apontando o círculo e o texto "Furo Ø50" (no DXF, a linha de chamada vai como linhas, seta e texto) |
 
 ### 03-hachuras.dxf
 
@@ -59,14 +60,15 @@ Camadas com cores ACI e RGB, tipos de linha, espessuras, camada que não imprime
 
 | # | O que fazer | Valor esperado |
 |---|---|---|
-| 1 | LAYER: Paredes | cor 1 (vermelho), Continuous, 0.50 mm |
-| 2 | LAYER: Eixos | cor RGB 0,160,255, CENTER, 0.18 mm |
-| 3 | LAYER: Ocultas | cor 3 (verde), HIDDEN, 0.25 mm |
-| 4 | LAYER: NaoImprime | não plotável (ícone da impressora desligado) |
-| 5 | LAYER: Travada e Desligada | Travada com cadeado; Desligada apagada (lâmpada desligada) |
-| 6 | Propriedades da linha laranja tracejada | cor própria RGB 255,128,0 · DASHED · 0.70 mm (não ByLayer) |
-| 7 | Bloco MARCO (INSERT / BEDIT) | definição com 3 objetos; 3 inserções |
-| 8 | Propriedades das inserções | em 40,-40: escala 2, rotação 45° · em 90,-40: espelhado (escala X −1) |
+| 1 | Ao abrir: botão LWT (espessuras na tela) desligado, como no AutoCAD | LWT desligado; ao ligar, as espessuras aparecem |
+| 2 | LAYER: Paredes | cor 1 (vermelho), Continuous, 0.50 mm |
+| 3 | LAYER: Eixos | cor RGB 0,160,255, CENTER, 0.18 mm |
+| 4 | LAYER: Ocultas | cor 3 (verde), HIDDEN, 0.25 mm |
+| 5 | LAYER: NaoImprime | não plotável (ícone da impressora desligado) |
+| 6 | LAYER: Travada e Desligada | Travada com cadeado; Desligada apagada (lâmpada desligada) |
+| 7 | Propriedades da linha laranja tracejada | cor própria RGB 255,128,0 · DASHED · 0.70 mm (não ByLayer) |
+| 8 | Bloco MARCO (INSERT / BEDIT) | definição com 3 objetos; 3 inserções |
+| 9 | Propriedades das inserções | em 40,-40: escala 2, rotação 45° · em 90,-40: espelhado (escala X −1) |
 
 ### 05-layout-escala.dxf
 

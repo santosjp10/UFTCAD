@@ -120,6 +120,7 @@ def esperado(nome,d):
         D=msp.query('DIMENSION'); meas={round(float(x.get_measurement()),4) for x in D}
         chk('Conferir as cotas (clicar e ver Propriedades → Medida)','120 (Standard) · 80 · 144.2221 (alinhada) · R25 · Ø50 · 33.69° (ABNT)',len(D)==6 and {120.0,80.0,round(math.hypot(120,80),4),25.0,50.0,round(math.degrees(math.atan2(80,120)),4)}==meas)
         st=set(x.dxf.dimstyle for x in D); chk('Estilos de cota (DIMSTYLE)','Standard e ABNT existem e são usados',{'Standard','ABNT'}<=st)
+        chk('STYLE (estilos de texto): fonte do estilo Standard','Arial (arial.ttf) — não mais txt.shx',d.styles.get('Standard').dxf.font=='arial.ttf')
         chk('Mover um ponto de definição de uma cota (grip)','o valor da cota acompanha: são cotas associativas/editáveis, não linhas soltas',all(x.dxf.geometry for x in D))
         chk('Linha de chamada com o texto','seta apontando o círculo e o texto "Furo Ø50" (no DXF, a linha de chamada vai como linhas, seta e texto)',any(x.dxf.text.replace('%%c','⌀')=='Furo ⌀50' for x in msp.query('TEXT')) and len(msp.query('SOLID'))>=1)
     if nome=='03-hachuras':
@@ -132,6 +133,7 @@ def esperado(nome,d):
     if nome=='04-camadas-e-blocos':
         Ly={l.dxf.name:l for l in d.layers}
         def lw(n): return Ly[n].dxf.lineweight
+        chk('Ao abrir: botão LWT (espessuras na tela) desligado, como no AutoCAD','LWT desligado; ao ligar, as espessuras aparecem',d.header.get('$LWDISPLAY')==0)
         chk('LAYER: Paredes','cor 1 (vermelho), Continuous, 0.50 mm',Ly['Paredes'].color==1 and lw('Paredes')==50)
         chk('LAYER: Eixos','cor RGB 0,160,255, CENTER, 0.18 mm',Ly['Eixos'].rgb==(0,160,255) and Ly['Eixos'].dxf.linetype=='CENTER' and lw('Eixos')==18)
         chk('LAYER: Ocultas','cor 3 (verde), HIDDEN, 0.25 mm',Ly['Ocultas'].color==3 and Ly['Ocultas'].dxf.linetype=='HIDDEN')

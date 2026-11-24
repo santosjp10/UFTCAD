@@ -45,7 +45,7 @@ function rtKmax(P){ var m=0; P.forEach(function(r){ if(r.t&&r.k>m) m=r.k; }); re
 // ── 2. DIAGRAMAÇÃO DO MTEXT ─────────────────────────────────────────────────
 // linhas: [{runs:[{t,k}], w (largura em unidades), km}]
 function rtLines(e){
-  var h=e.h,paras=rtParse(e.txt,h),out=[],maxW=e.w>0?e.w:Infinity;
+  var h=e.h,paras=rtParse(e.txt,h),out=[],maxW=e.w>0?e.w:Infinity,MT_CW=fontCW(e.font);
   paras.forEach(function(P){
     var ch=[]; P.forEach(function(r){ for(var i=0;i<r.t.length;i++) ch.push({c:r.t[i],k:r.k}); });
     function cw(a){ return a.reduce(function(s,q){ return s+MT_CW*h*q.k; },0); }
@@ -67,7 +67,7 @@ function rtLines(e){
 }
 mtLines=function(e){ return rtLines(e).map(function(l){ return l.runs.map(function(r){return r.t;}).join(''); }); };
 mtLayout=function(e){
-  var L=rtLines(e),h=e.h,n=L.length,bl=[],y=0;
+  var MT_CW=fontCW(e.font),L=rtLines(e),h=e.h,n=L.length,bl=[],y=0;
   L.forEach(function(l,i){ y=i===0?-h*l.km:y-MT_LS*h*l.km; bl.push(y); });
   var H=n?-bl[n-1]:h,W=e.w>0?e.w:Math.max.apply(null,L.map(function(l){return l.w;}).concat([MT_CW*h]));
   var att=e.att||1,col=(att-1)%3,row=Math.floor((att-1)/3),top=row===0?0:row===1?H/2:H;
@@ -75,12 +75,13 @@ mtLayout=function(e){
   return {lines:L.map(function(l,i){ return {txt:l.runs.map(function(r){return r.t;}).join(''),runs:l.runs,w:l.w,lx:0,ly:top+bl[i],align:align}; }),W:W,H:H,left:left,top:top};
 };
 mtPrims=function(e){
-  var Lo=mtLayout(e),o=[],h=e.h,rot=e.rot||0;
+  var Lo=mtLayout(e),o=[],h=e.h,rot=e.rot||0,MT_CW=fontCW(e.font),fk=e.font;
   Lo.lines.forEach(function(l){
     if(!l.txt.trim()&&!l.txt) return;
-    if(l.runs.length===1){ var p=mtLocalToWorld(e,l.lx,l.ly); o.push({k:'text',x:p.x,y:p.y,h:h*l.runs[0].k,rot:rot,txt:l.runs[0].t,align:l.align}); return; }
-    var x=l.align==='left'?0:l.align==='center'?-l.w/2:-l.w;
-    l.runs.forEach(function(r){ if(r.t){ var q=mtLocalToWorld(e,x,l.ly); o.push({k:'text',x:q.x,y:q.y,h:h*r.k,rot:rot,txt:r.t,align:'left'}); } x+=MT_CW*h*r.k*r.t.length; });
+    if(l.runs.length===1){ var p=mtLocalToWorld(e,l.lx,l.ly); o.push({k:'text',x:p.x,y:p.y,h:h*l.runs[0].k,rot:rot,txt:l.runs[0].t,align:l.align,font:fk}); return; }
+    var ws=l.runs.map(function(r){ return fontMeasure(r.t,fk,h*r.k); }),lw=ws.reduce(function(a,b){return a+b;},0); // v8.10: largura real da fonte
+    var x=l.align==='left'?0:l.align==='center'?-lw/2:-lw;
+    l.runs.forEach(function(r,i){ if(r.t){ var q=mtLocalToWorld(e,x,l.ly); o.push({k:'text',x:q.x,y:q.y,h:h*r.k,rot:rot,txt:r.t,align:'left',font:fk}); } x+=ws[i]; });
   });
   return o;
 };

@@ -14,9 +14,9 @@ labels: validação
 | Arquivo | AUDIT (erros) | Conferências ✓ | Resultado | Observações |
 |---|---|---|---|---|
 | 01-geometria.dxf |  | __ de 9 |  |  |
-| 02-texto-e-cotas.dxf |  | __ de 6 |  |  |
+| 02-texto-e-cotas.dxf |  | __ de 7 |  |  |
 | 03-hachuras.dxf |  | __ de 5 |  |  |
-| 04-camadas-e-blocos.dxf |  | __ de 8 |  |  |
+| 04-camadas-e-blocos.dxf |  | __ de 9 |  |  |
 | 05-layout-escala.dxf |  | __ de 6 |  |  |
 | 06-calibracao.pdf (régua) | — | __ de 5 medidas |  |  |
 | Tablet (aplicativo) | — | __ de 6 passos |  |  |

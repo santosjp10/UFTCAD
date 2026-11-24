@@ -28,7 +28,7 @@ var DS_DEFAULT = {
   centerMark:'mark',  // marca de centro: none | mark | line (DIMCEN)
   centerSize:2.5,
   // Texto
-  font:'Consolas,monospace', // estilo do texto (DIMTXSTY)
+  font:'Arial', // estilo do texto (DIMTXSTY) — v8.10: Arial (antes Consolas, que ia para o AutoCAD como txt.shx)
   txtCol:'#f0c040',   // cor do texto (DIMCLRT)
   txtH:2.5,           // altura do texto (DIMTXT)
   txtFill:false,      // fundo do texto (DIMTFILL)
@@ -81,6 +81,7 @@ function normDimStyle(st){
   var o={};
   for(var k in DS_DEFAULT) o[k]=DS_DEFAULT[k];
   if(st) for(var k2 in st) if(st[k2]!==undefined) o[k2]=st[k2];
+  o.font=(o.font==='Consolas,monospace')?'Arial':fontKey(o.font); // v8.10: fonte do catálogo (o antigo padrão Consolas vira Arial)
   if(st){
     if(st.extDimline===undefined && st.extBeyond!==undefined) o.extDimline=st.extBeyond;
     if(st.extOrigin===undefined && st.extOffset!==undefined) o.extOrigin=st.extOffset;
@@ -405,7 +406,7 @@ function renderDimPrims(ctx,prims,st,map,pxmm,opt){
         var tp=map(p.x,p.y),fs=Math.max(opt.minTxt||0,p.h*pxmm);
         if(fs<0.5) break;
         ctx.save();ctx.translate(tp.x,tp.y);ctx.rotate(-p.rot);
-        ctx.font=fs+'px '+(st.font||'Consolas,monospace');ctx.textAlign=p.align||'center';ctx.textBaseline='alphabetic';
+        ctx.font=fs+'px '+fontCss(st.font);ctx.textAlign=p.align||'center';ctx.textBaseline='alphabetic';
         ctx.fillText(p.txt,0,0);ctx.restore();break;}
     }
   }
@@ -448,13 +449,13 @@ var DDIM_TABS=[
   {t:'Linhas',sec:[
     {h:'Linhas de cota',f:[
       {k:'col',l:'Cor',ty:'color',v:'DIMCLRD'},
-      {k:'lw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70'],['1','1,00']],num:1,v:'DIMLWD'},
+      {k:'lw',l:'Espessura (mm)',ty:'sel',o:LW_ACAD.filter(function(v){return v>0;}).map(function(v){return [String(v),lwLabel(v)];}),num:1,v:'DIMLWD'},
       {k:'sd1',l:'Suprimir 1ª metade',ty:'chk',v:'DIMSD1'},
       {k:'sd2',l:'Suprimir 2ª metade',ty:'chk',v:'DIMSD2'},
       {k:'baseInc',l:'Espaçamento da linha de base',ty:'num',min:0,max:100,st:0.25,v:'DIMDLI',hint:'Distância entre as linhas de cota sucessivas do DIMBASELINE (DBA).'}]},
     {h:'Linhas de extensão',f:[
       {k:'extCol',l:'Cor',ty:'color',v:'DIMCLRE'},
-      {k:'extLw',l:'Espessura (mm)',ty:'sel',o:[['0.13','0,13'],['0.18','0,18'],['0.25','0,25'],['0.35','0,35'],['0.5','0,50'],['0.7','0,70']],num:1,v:'DIMLWE'},
+      {k:'extLw',l:'Espessura (mm)',ty:'sel',o:LW_ACAD.filter(function(v){return v>0;}).map(function(v){return [String(v),lwLabel(v)];}),num:1,v:'DIMLWE'},
       {k:'se1',l:'Suprimir extensão 1',ty:'chk',v:'DIMSE1'},
       {k:'se2',l:'Suprimir extensão 2',ty:'chk',v:'DIMSE2'},
       {k:'extDimline',l:'Além da linha de cota',ty:'num',min:0,max:50,st:0.125,v:'DIMEXE'},
@@ -470,7 +471,7 @@ var DDIM_TABS=[
       {k:'centerSize',l:'Tamanho',ty:'num',min:0.1,max:50,st:0.25,v:'DIMCEN'}]}]},
   {t:'Texto',sec:[
     {h:'Aparência',f:[
-      {k:'font',l:'Fonte',ty:'sel',o:[['Consolas,monospace','Consolas'],['Arial,sans-serif','Arial'],["'Courier New',monospace",'Courier New'],["'Times New Roman',serif",'Times New Roman'],['system-ui,sans-serif','Sistema']],v:'DIMTXSTY'},
+      {k:'font',l:'Fonte',ty:'sel',o:fontOptions(),v:'DIMTXSTY'},
       {k:'txtCol',l:'Cor do texto',ty:'color',v:'DIMCLRT'},
       {k:'txtH',l:'Altura do texto',ty:'num',min:0.1,max:100,st:0.25,v:'DIMTXT'},
       {k:'txtFill',l:'Fundo sob o texto',ty:'chk',v:'DIMTFILL'}]},

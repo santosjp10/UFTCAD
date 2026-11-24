@@ -1,6 +1,6 @@
 
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.10 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -8,10 +8,10 @@
 var S = {
   ents: [],
   layers: [
-    {id:0,nm:'0',         col:'#dce4f5',vis:true,lock:false,ld:'solid', lw:.7},
-    {id:1,nm:'Construção',col:'#556688',vis:true,lock:false,ld:'center',lw:.35},
-    {id:2,nm:'Dimensão',  col:'#f0c040',vis:true,lock:false,ld:'solid', lw:.5},
-    {id:3,nm:'Hachura',   col:'#6080a0',vis:true,lock:false,ld:'solid', lw:.35},
+    {id:0,nm:'0',         col:'#dce4f5',vis:true,lock:false,ld:'solid', lw:.35}, // v8.10: espessuras compatíveis com o AutoCAD/NBR 8403 (antes .7/.35/.5/.35)
+    {id:1,nm:'Construção',col:'#556688',vis:true,lock:false,ld:'center',lw:.18},
+    {id:2,nm:'Dimensão',  col:'#f0c040',vis:true,lock:false,ld:'solid', lw:.18},
+    {id:3,nm:'Hachura',   col:'#6080a0',vis:true,lock:false,ld:'solid', lw:.18},
   ],
   curLy: 0,
   style: {col:null, lw:null, ld:null}, // null = ByLayer
@@ -74,7 +74,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.9 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.10 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');

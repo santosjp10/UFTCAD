@@ -1,5 +1,5 @@
 {
- "versao": "v8.9",
+ "versao": "v8.10",
  "data": "24/11/2026",
  "arquivos": {
   "01-geometria": [
@@ -58,6 +58,10 @@
     "esperado": "Standard e ABNT existem e são usados"
    },
    {
+    "o": "STYLE (estilos de texto): fonte do estilo Standard",
+    "esperado": "Arial (arial.ttf) — não mais txt.shx"
+   },
+   {
     "o": "Mover um ponto de definição de uma cota (grip)",
     "esperado": "o valor da cota acompanha: são cotas associativas/editáveis, não linhas soltas"
    },
@@ -89,6 +93,10 @@
    }
   ],
   "04-camadas-e-blocos": [
+   {
+    "o": "Ao abrir: botão LWT (espessuras na tela) desligado, como no AutoCAD",
+    "esperado": "LWT desligado; ao ligar, as espessuras aparecem"
+   },
    {
     "o": "LAYER: Paredes",
     "esperado": "cor 1 (vermelho), Continuous, 0.50 mm"

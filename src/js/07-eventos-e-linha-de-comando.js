@@ -553,6 +553,7 @@ function onCmdKey(e){
     'PO':'point','POINT':'point','PONTO':'point','PONTOS':'pontos','IMPORTARPONTOS':'pontos','COORDENADAS':'pontos','PTS':'pontos',
     'SCRIPT':'script','SCR':'script','GRAVARSCRIPT':'scrrec','ACTRECORD':'scrrec',
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
+    'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
     'PDF':'pdf','EXPORTPDF':'pdf','PLOT':'pagesetup','PLOTAR':'pagesetup','PAGESETUP':'pagesetup','PAGINA':'pagesetup',
@@ -594,6 +595,7 @@ function onCmdKey(e){
     case 'point':setTool('point');break;
     case 'pontos':ptOpen();break;
     case 'script':scrOpen();break;
+    case 'style':styleOpen();break;
     case 'poligonal':poOpen();break;
     case 'scrrec':scrRecToggle();break;
     case 'aula':aulaToggle();break;
@@ -639,12 +641,13 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.9 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.10 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
       log('TOPOGRAFIA: POLIGONAL=Cálculo de poligonal (caderneta, erros, compensação, área)  |  @dist<AZ96d56\'30" (azimute)  @dist<N45d30\'E (rumo)','inf');
       log('TEXTO: T ou MT=Texto múltiplo  DT=Texto de uma linha  ED=Editar texto  LE=Linha de chamada','inf');
+      log('  ST ou ESTILO = fonte padrão dos textos (Arial, Times, ISOCPEUR, romans.shx…); a fonte de cada texto se escolhe no editor ou nas propriedades','inf');
       log('COTAS: DLI=Linear  DAL=Alinhada  DCO=Em série (contínua)  DBA=De base  DRA=Raio  DDI=Diâmetro  DAN=Angular  |  D ou DDIM=Estilos de cota','inf');
       log('  Na cota linear ou alinhada, depois dos 2 pontos: clique a posição ou digite a distância da linha de cota ao 2º ponto (ex.: 10; H ou V fixam o sentido)','inf');
       log('MODIFICAR: E=Apagar  M=Mover  CO=Copiar  RO=Rotacionar  SC=Escalar  MI=Espelhar  O=Offset  AR=Array','inf');

@@ -60,7 +60,7 @@ function mtCorners(e){ var Lo=mtLayout(e); return [[Lo.left,Lo.top],[Lo.left+Lo.
 function mtPrims(e){ var Lo=mtLayout(e); return Lo.lines.filter(function(l){return l.txt;}).map(function(l){ var p=mtLocalToWorld(e,l.lx,l.ly); return {k:'text',x:p.x,y:p.y,h:e.h,rot:e.rot||0,txt:l.txt,align:l.align}; }); }
 function drawTextPrims(ctx,prims,col,map,sc,minPx){
   prims.forEach(function(p){ var q=map(p.x,p.y),fs=Math.max(minPx||0,p.h*sc); if(fs<1) return;
-    ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(-(p.rot||0)); ctx.fillStyle=col; ctx.font=fs+'px Consolas,monospace'; ctx.textAlign=p.align||'left'; ctx.textBaseline='alphabetic'; ctx.fillText(p.txt,0,0); ctx.restore(); });
+    ctx.save(); ctx.translate(q.x,q.y); ctx.rotate(-(p.rot||0)); ctx.fillStyle=col; ctx.font=fs+'px '+fontCss(p.font); ctx.textAlign=p.align||'left'; ctx.textBaseline='alphabetic'; ctx.fillText(p.txt,0,0); ctx.restore(); });
 }
 
 // ── LEADER ─────────────────────────────────────────────────────────────────
@@ -253,7 +253,7 @@ explodeSel=function(){
   snapshot(); var nw=[];
   S.ents=[].concat.apply([],S.ents.map(function(e){
     if(special.indexOf(e)<0) return [e];
-    var parts=e.tp==='insert'?insertExpand(e,0).map(function(c){c.id=uid();return c;}):mtPrims(e).map(function(p){return {id:uid(),tp:'txt',x:p.align==='left'?p.x:p.x-(p.align==='center'?.5:1)*String(p.txt).length*p.h*MT_CW,y:p.y,h:p.h,rot:p.rot,txt:p.txt,ly:e.ly,col:e.col};});
+    var parts=e.tp==='insert'?insertExpand(e,0).map(function(c){c.id=uid();return c;}):mtPrims(e).map(function(p){return {id:uid(),tp:'txt',font:p.font||e.font,x:p.align==='left'?p.x:p.x-(p.align==='center'?.5:1)*String(p.txt).length*p.h*fontCW(p.font||e.font),y:p.y,h:p.h,rot:p.rot,txt:p.txt,ly:e.ly,col:e.col};});
     nw=nw.concat(parts); return parts; }));
   S.sel=nw.map(function(e){return e.id;});
   var rest=ids.filter(function(id){var e=findE(id);return e&&(e.tp==='pl'||e.tp==='rect');});

@@ -186,7 +186,7 @@ function parseDXFText(text){
 }
 function dxfImport(text,merge){
   if(/^AutoCAD Binary DXF/.test(text)) return {err:'DXF binário não é suportado; salve como DXF ASCII.'};
-  var P=parseDXFText(text),i=0,hdr={},layers={},blocks={},ents=[],skipped={},cnt={};
+  var P=parseDXFText(text),i=0,hdr={},layers={},blocks={},ents=[],skipped={},cnt={},styles={};
   function readEnt(){ var t=P[i][1].trim(),c=[]; i++; while(i<P.length&&P[i][0]!==0){ c.push(P[i]); i++; } return {t:t,c:c}; }
   function g(E,code,def){ for(var k=0;k<E.c.length;k++) if(E.c[k][0]===code) return E.c[k][1]; return def; }
   function gn(E,code,def){ var v=g(E,code); var n=parseFloat(v); return isFinite(n)?n:def; }
@@ -195,6 +195,7 @@ function dxfImport(text,merge){
     if(P[i][0]===0&&P[i][1].trim()==='SECTION'){ var name=(P[i+1]||[0,''])[1].trim(); i+=2;
       if(name==='HEADER'){ while(i<P.length&&!(P[i][0]===0&&P[i][1].trim()==='ENDSEC')){ if(P[i][0]===9){ var vn=P[i][1].trim(); i++; if(i<P.length) hdr[vn]=P[i][1].trim(); } i++; } }
       else if(name==='TABLES'){ while(i<P.length&&!(P[i][0]===0&&P[i][1].trim()==='ENDSEC')){
+          if(P[i][0]===0&&P[i][1].trim()==='STYLE'){ var ES=readEnt(),sn=g(ES,2,''); if(sn){ var fam=null; for(var q=0;q<ES.c.length;q++) if(ES.c[q][0]===1000){ fam=ES.c[q][1]; break; } styles[sn.toUpperCase()]=fontFromDxf(g(ES,3,''),fam); } continue; } // v8.10
           if(P[i][0]===0&&P[i][1].trim()==='LAYER'){ var E=readEnt(),nm=g(E,2,'0'),col=parseInt(g(E,62,'7'),10),fl=parseInt(g(E,70,'0'),10),tc=g(E,420);
             layers[nm]={nm:nm,col:tc!==undefined?'#'+('000000'+parseInt(tc,10).toString(16)).slice(-6):aciToHex(col),vis:col>=0&&!(fl&1),lock:!!(fl&4),ld:ltFromDxf(g(E,6,'CONTINUOUS'))||'solid',lw:(function(w){w=parseInt(w,10);return w>0?w/100:.25;})(g(E,370,'-3'))}; continue; }
           i++; } }
@@ -239,11 +240,14 @@ function dxfImport(text,merge){
         var cl2=!!(fl&1); if(cl2&&pts2.length>2) pts2.push({x:pts2[0].x,y:pts2[0].y}); if(pts2.length>=2) o={tp:'pl',closed:cl2,pts:pts2}; break; }
       case 'TEXT': case 'ATTDEF': case 'ATTRIB': { if(t==='ATTDEF'){ return null; } var h=gn(E,40,2.5),tx=dxfTxt(g(E,1,'')),rot=gn(E,50,0)*D,hj=parseInt(g(E,72,'0'),10),vj=parseInt(g(E,73,'0'),10);
         if(!tx) return null;
+        var _fs=styles[String(g(E,7,'STANDARD')).toUpperCase()]; // v8.10: fonte do estilo de texto
         if(hj===0&&vj===0) o={tp:'txt',x:gn(E,10,0),y:gn(E,20,0),h:h,txt:tx,rot:rot};
         else { var att=(vj===3?1:vj===2?4:7)+(hj===1||hj===4?1:hj===2?2:0); o={tp:'mtext',x:gn(E,11,gn(E,10,0)),y:gn(E,21,gn(E,20,0)),h:h,w:0,txt:tx,att:att,rot:rot}; }
+        if(_fs) o.font=_fs;
         break; }
       case 'MTEXT': { var s='';E.c.forEach(function(q){ if(q[0]===3) s+=q[1]; }); s+=g(E,1,''); var rx=gn(E,11,null),ry=gn(E,21,0),r50=gn(E,50,null);
         o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:(typeof mtextRich==='function'?mtextRich(s,gn(E,40,2.5)):mtextPlain(s)),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
+        var _fm=styles[String(g(E,7,'STANDARD')).toUpperCase()]; if(_fm) o.font=_fm;
         if(!o.txt) return null; break; }
       case 'ELLIPSE': { var cx=gn(E,10,0),cy=gn(E,20,0),mx=gn(E,11,1),my=gn(E,21,0),ra=gn(E,40,1),p0=gn(E,41,0),p1=gn(E,42,2*Math.PI),rx2=Math.hypot(mx,my);
         if(Math.abs(Math.abs(p1-p0)-2*Math.PI)<1e-6) o={tp:'ell',cx:cx,cy:cy,rx:rx2,ry:rx2*ra,rot:Math.atan2(my,mx)};

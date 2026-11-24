@@ -38,7 +38,7 @@ function entPrims(e){
       if(P.length>=2) o.push({k:'poly',closed:!!e.closed,pts:P});
     } break;
     case 'spline': var sp=splinePoints(e,10); if(sp.length>=2) o.push({k:'poly',closed:false,pts:sp}); break;
-    case 'txt':  o.push({k:'text',x:e.x,y:e.y,h:e.h||10,rot:e.rot||0,txt:String(e.txt),align:'left'}); break;
+    case 'txt':  o.push({k:'text',x:e.x,y:e.y,h:e.h||10,rot:e.rot||0,txt:String(e.txt),align:'left',font:e.font}); break;
     case 'hatch':{
       var r={x:e.x,y:e.y,w:e.w,h:e.h},ht=e.htype||'lines',spc=e.sp||5;
       o.push({k:'poly',closed:true,pts:[{x:r.x,y:r.y},{x:r.x+r.w,y:r.y},{x:r.x+r.w,y:r.y+r.h},{x:r.x,y:r.y+r.h}]});
@@ -144,7 +144,7 @@ function buildDXF(){
   S.layers.forEach(function(l){var lt=DXF_LT[l.ld];g(0,'LAYER');g(2,lmap[l.id]);g(70,l.lock?4:0);g(62,(l.vis?1:-1)*hex2aci(l.col));g(6,lt?lt.n:'CONTINUOUS');});
   g(0,'ENDTAB');
   g(0,'TABLE');g(2,'STYLE');g(70,1);
-  g(0,'STYLE');g(2,'STANDARD');g(70,0);g(40,0);g(41,1);g(50,0);g(71,0);g(42,2.5);g(3,'txt');g(4,'');
+  g(0,'STYLE');g(2,'STANDARD');g(70,0);g(40,0);g(41,1);g(50,0);g(71,0);g(42,2.5);g(3,fontInfo(S.textFont).file);g(4,'');
   g(0,'ENDTAB');
   g(0,'ENDSEC');
   g(0,'SECTION');g(2,'ENTITIES');
@@ -175,8 +175,8 @@ function buildDXF(){
 }
 // Exportação DXF: ver='2000' (padrão, AutoCAD/ZWCAD) ou '12' (compatibilidade máxima)
 function dxfExportOpts(){
-  var d=document.getElementById('dxf-dims'),h=document.getElementById('dxf-hatch'),bk=document.getElementById('dxf-blocks');
-  return {dims:d&&!d.checked?'exploded':'native',hatch:h&&!h.checked?'exploded':'native',blocks:bk&&!bk.checked?'exploded':'native'};
+  var d=document.getElementById('dxf-dims'),h=document.getElementById('dxf-hatch'),bk=document.getElementById('dxf-blocks'),lt=document.getElementById('dxf-lwt');
+  return {dims:d&&!d.checked?'exploded':'native',hatch:h&&!h.checked?'exploded':'native',blocks:bk&&!bk.checked?'exploded':'native',lwDisplay:!!(lt&&lt.checked)};
 }
 function dxfBaseName(){
   var t=(document.getElementById('ftitle').textContent||'').replace(/\.(json|dxf|dwg)$/i,'').trim();
@@ -278,7 +278,7 @@ function buildDXF2000(opt){
   g(9,'$AUNITS');g(70,0);
   g(9,'$INSUNITS');g(70,dxfInsUnits());
   g(9,'$MEASUREMENT');g(70,1);
-  g(9,'$LWDISPLAY');g(290,1);
+  g(9,'$LWDISPLAY');g(290,opt.lwDisplay?1:0); g(9,'$LWDEFAULT');g(70,25); // v8.10: espessuras gravadas, mas o botão LWT do AutoCAD começa desligado (como no AutoCAD)
   g(9,'$PSTYLEMODE');g(290,1);
   g(9,'$HANDSEED');var seedIdx=out.length;g(5,'FFFF');
   g(0,'ENDSEC');
@@ -322,9 +322,15 @@ function buildDXF2000(opt){
   g(2,'Defpoints');g(70,0);g(62,7);g(6,'Continuous');g(290,0);g(370,-3);g(390,hO.pnormal);
   g(0,'ENDTAB');
   // STYLE
-  tbl('STYLE',hT.style,1);
-  rec('STYLE',hStd,hT.style,'AcDbTextStyleTableRecord');
-  g(2,'Standard');g(70,0);g(40,'0.0');g(41,'1.0');g(50,'0.0');g(71,0);g(42,'2.5');g(3,'txt');g(4,'');
+  // v8.10: estilos de texto com a fonte escolhida (antes: só Standard com txt.shx)
+  var FST=fontDxfStyles();
+  tbl('STYLE',hT.style,1+FST.length);
+  function styleRec(h,name,key){ var F=fontInfo(key); rec('STYLE',h,hT.style,'AcDbTextStyleTableRecord');
+    g(2,name);g(70,0);g(40,'0.0');g(41,'1.0');g(50,'0.0');g(71,0);g(42,'2.5');g(3,F.file);g(4,'');
+    if(F.ttf){ g(1001,'ACAD');g(1000,F.family);g(1071,0); } }
+  styleRec(hStd,'Standard',S.textFont);
+  FST.forEach(function(s){ s.h=H(); styleRec(s.h,s.name,s.key); });
+  function styleHandleOf(key){ var nm=fontStyleName(key); if(nm==='Standard') return hStd; var f=FST.filter(function(s){return s.name===nm;})[0]; return f?f.h:hStd; }
   g(0,'ENDTAB');
   tbl('VIEW',hT.view,0);g(0,'ENDTAB');
   tbl('UCS',hT.ucs,0);g(0,'ENDTAB');
@@ -355,7 +361,7 @@ function buildDXF2000(opt){
     g(275,{deg:0,dms:1,grad:2,rad:3}[st.angFmt]||0);g(276,0);g(277,st.unitFmt==='scientific'?1:2);
     g(278,(st.decSep||'.').charCodeAt(0));g(279,0);g(280,{center:0,ext1:1,ext2:2}[st.txtJust]||0);
     g(281,st.sd1?1:0);g(282,st.sd2?1:0);g(283,1);g(284,zin);g(285,zin);g(286,zin);g(288,0);g(289,st.fit==='inside'?0:3);
-    g(340,hStd);g(371,dxfLw(st.lw));g(372,dxfLw(st.extLw));
+    g(340,styleHandleOf(st.font));g(371,dxfLw(st.lw));g(372,dxfLw(st.extLw));
   });
   g(0,'ENDTAB');
   // BLOCK_RECORD
@@ -392,7 +398,7 @@ function buildDXF2000(opt){
         p.pts.forEach(function(v,vi){g(10,n(v.x));g(20,n(v.y));if(p.b&&Math.abs(p.b[vi]||0)>1e-12)g(42,n(p.b[vi]));});break;
       case 'point': ent('POINT',owner,lay,'AcDbPoint',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');break;
       case 'text': ent('TEXT',owner,lay,'AcDbText',sty);g(10,n(p.x));g(20,n(p.y));g(30,'0.0');g(40,n(p.h));g(1,dxfStrCP(p.txt));
-        if(p.rot)g(50,n(p.rot*180/Math.PI));g(7,'Standard');
+        if(p.rot)g(50,n(p.rot*180/Math.PI));g(7,dxfStrCP(fontStyleName(p.font))); // v8.10: estilo com a fonte do texto
         if(p.align==='center'||p.align==='right'){g(72,p.align==='center'?1:2);g(11,n(p.x));g(21,n(p.y));g(31,'0.0');}
         g(100,'AcDbText');break;
       // 'fillbox' (fundo do texto) não tem equivalente simples em DXF 2000: omitido
@@ -435,7 +441,7 @@ function buildDXF2000(opt){
   dimBlk.forEach(function(d){
     var st=dimStyleOf(d.e);
     blockBegin(d.blk,d.rec,d.name,true);
-    dimPrims(d.e,st).forEach(function(p){primToDxf(p,d.rec,'0',dimPrimStyle(p,st));});
+    dimPrims(d.e,st).forEach(function(p){ if(p.k==='text'&&!p.font) p.font=st.font; primToDxf(p,d.rec,'0',dimPrimStyle(p,st));});
     blockEnd(d.end,d.rec);
   });
   g(0,'ENDSEC');
@@ -530,7 +536,7 @@ function buildDXF2000(opt){
         g(98,0);
       } break;
       case 'mtext':{ ent('MTEXT',OW,lay,'AcDbMText',sty); g(10,n(e.x));g(20,n(e.y));g(30,'0.0');g(40,n(e.h));g(41,n(e.w||0));g(71,e.att||1);g(72,1);
-        var mtx=dxfStrCP(String(e.txt||'').replace(/\n/g,'\\P')); while(mtx.length>250){ g(3,mtx.slice(0,250)); mtx=mtx.slice(250); } g(1,mtx); g(7,'Standard'); if(e.rot) g(50,n(e.rot)); } break;
+        var mtx=dxfStrCP(String(e.txt||'').replace(/\n/g,'\\P')); while(mtx.length>250){ g(3,mtx.slice(0,250)); mtx=mtx.slice(250); } g(1,mtx); g(7,dxfStrCP(fontStyleName(e.font))); if(e.rot) g(50,n(e.rot)); } break;
       case 'leader':{ var lst=dimStyleOf(e); leaderPrims(e,lst).forEach(function(p){ primToDxf(p,OW,lay,dimPrimStyle(p,lst)); }); } break;
       case 'dim':case 'dimr':case 'dimd':case 'dima':{
         var st=dimStyleOf(e);
@@ -628,7 +634,7 @@ function buildSVG(){
       case 'solid': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="'+escHTML(safeCol(it.col))+'" stroke="none"/>');break;
       case 'fillbox': b.push('<polygon points="'+p.pts.map(function(v){return f(v.x)+','+f(-v.y);}).join(' ')+'" fill="#0a0a1a" stroke="none"/>');break;
       case 'point': b.push('<circle cx="'+f(p.x)+'" cy="'+f(-p.y)+'" r="0.3" fill="'+escHTML(safeCol(it.col))+'"/>');break;
-      case 'text': b.push('<text x="0" y="0" transform="translate('+f(p.x)+' '+f(-p.y)+') rotate('+f(-(p.rot||0)*180/Math.PI)+')" fill="'+escHTML(safeCol(it.txtCol))+'" font-size="'+f(p.h)+'" font-family="'+escHTML(it.font||'Consolas, monospace')+'"'+(p.align==='center'?' text-anchor="middle"':'')+'>'+escHTML(p.txt)+'</text>');break;
+      case 'text': b.push('<text x="0" y="0" transform="translate('+f(p.x)+' '+f(-p.y)+') rotate('+f(-(p.rot||0)*180/Math.PI)+')" fill="'+escHTML(safeCol(it.txtCol))+'" font-size="'+f(p.h)+'" font-family="'+escHTML(fontCss(p.font||it.font))+'"'+(p.align==='center'?' text-anchor="middle"':'')+'>'+escHTML(p.txt)+'</text>');break;
     }
   });
   return '<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="'+f(W)+'mm" height="'+f(H)+'mm" viewBox="'+f(X)+' '+f(Y)+' '+f(W)+' '+f(H)+'">\n'+

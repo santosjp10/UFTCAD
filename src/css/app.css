@@ -569,3 +569,7 @@ body.scr-running #cw{cursor:progress!important}
 .sv-note{font-size:9.5px;color:var(--t2);line-height:1.45;margin-top:4px}
 .sv-note .btn{padding:2px 8px;font-size:10px;margin-left:4px}
 .sv-warn{font-size:9.5px;color:#f5c860;line-height:1.45;margin-top:6px}
+
+/* v8.10: estilo de texto */
+.sty-prev{margin-top:8px;padding:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;font-size:20px;color:var(--t0)}
+#sty-font,#mted-font{width:100%}

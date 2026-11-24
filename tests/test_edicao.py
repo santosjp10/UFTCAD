@@ -31,7 +31,7 @@ with sync_playwright() as p:
     ok('Cores diferentes mostram *VARIA*',E("document.getElementById('propColMode').value")=='__varies__' and '2 selecionados' in E("document.getElementById('prop-hdr').textContent"))
     pg.select_option('#propColMode',''); pg.wait_for_timeout(50)
     ok('ByLayer aplicado à seleção',E("S.ents.every(e=>e.col===null)"))
-    E("()=>{var s=document.getElementById('propLW');s.value='.35';s.dispatchEvent(new Event('change'));}")
+    E("()=>{var s=document.getElementById('propLW');s.value='0.35';s.dispatchEvent(new Event('change'));}")
     pg.select_option('#propLy','1'); pg.wait_for_timeout(50)
     ok('Espessura e camada aplicadas à seleção',E("S.ents.every(e=>e.lw===.35&&e.ly===1)"))
     E("undo()")

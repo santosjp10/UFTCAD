@@ -7,7 +7,7 @@ endobj
 << /Type /Pages /Kids [3 0 R] /Count 1 >>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 841.890 595.276] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 841.890 595.276] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R >>
 endobj
 4 0 obj
 << /Length 2515 >>
@@ -24,28 +24,28 @@ q
 85.039 127.559 m 85.039 411.024 l S
 Q
 q
-1.984 w [] 0 d 0 0 0 RG
+0.992 w [] 0 d 0 0 0 RG
 170.079 325.984 m 311.811 325.984 l 311.811 184.252 l 170.079 184.252 l h S
 Q
 q
-1.984 w [] 0 d 0 0 0 RG
+0.992 w [] 0 d 0 0 0 RG
 496.063 255.118 m 496.063 215.98 464.335 184.252 425.197 184.252 c 386.059 184.252 354.331 215.98 354.331 255.118 c 354.331 294.256 386.059 325.984 425.197 325.984 c 464.335 325.984 496.063 294.256 496.063 255.118 c S
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 170.079 136.063 Tm (100 mm) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 170.079 136.063 Tm (100 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 93.543 368.504 Tm (100 mm) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 93.543 368.504 Tm (100 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 175.748 334.488 Tm (50 x 50 mm) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 175.748 334.488 Tm (50 x 50 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 385.512 337.323 Tm (Ø50 mm) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 385.512 337.323 Tm (Ø50 mm) Tj ET
 Q
 q
 0.992 w [] 0 d 0 0 0 RG
@@ -53,7 +53,7 @@ q
 Q
 q
 0 0 0 rg
-BT /F1 425.197 Tf 1 0 0 1 85.039 -7525.984 Tm (5 m) Tj ET
+BT /F2 425.197 Tf 1 0 0 1 85.039 -7525.984 Tm (5 m) Tj ET
 Q
 Q
 q
@@ -67,28 +67,28 @@ q
 524.409 388.346 m 524.409 394.016 l S
 Q
 q
-1.984 w [] 0 d 0 0 0 RG
+0.992 w [] 0 d 0 0 0 RG
 526.11 392.315 m 528.945 392.315 l 528.945 389.48 l 526.11 389.48 l h S
 Q
 q
-1.984 w [] 0 d 0 0 0 RG
+0.992 w [] 0 d 0 0 0 RG
 532.63 390.898 m 532.63 390.115 531.995 389.48 531.213 389.48 c 530.43 389.48 529.795 390.115 529.795 390.898 c 529.795 391.68 530.43 392.315 531.213 392.315 c 531.995 392.315 532.63 391.68 532.63 390.898 c S
 Q
 q
 0 0 0 rg
-BT /F1 0.17 Tf 1 0 0 1 526.11 388.517 Tm (100 mm) Tj ET
+BT /F2 0.17 Tf 1 0 0 1 526.11 388.517 Tm (100 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 0.17 Tf 1 0 0 1 524.58 393.165 Tm (100 mm) Tj ET
+BT /F2 0.17 Tf 1 0 0 1 524.58 393.165 Tm (100 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 0.17 Tf 1 0 0 1 526.224 392.485 Tm (50 x 50 mm) Tj ET
+BT /F2 0.17 Tf 1 0 0 1 526.224 392.485 Tm (50 x 50 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 0.17 Tf 1 0 0 1 530.419 392.542 Tm (Ø50 mm) Tj ET
+BT /F2 0.17 Tf 1 0 0 1 530.419 392.542 Tm (Ø50 mm) Tj ET
 Q
 q
 0.992 w [] 0 d 0 0 0 RG
@@ -96,28 +96,28 @@ q
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 524.409 235.276 Tm (5 m) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 524.409 235.276 Tm (5 m) Tj ET
 Q
 Q
 q
 0 0 0 rg
-BT /F1 14.173 Tf 1 0 0 1 42.52 552.756 Tm (EduCAD - FOLHA DE CALIBRAÇÃO \(A4 paisagem\)) Tj ET
+BT /F2 14.173 Tf 1 0 0 1 42.52 552.756 Tm (EduCAD - FOLHA DE CALIBRAÇÃO \(A4 paisagem\)) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 42.52 527.244 Tm (Imprima em tamanho real \(100%\), sem "ajustar à página". Meça com régua:) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 42.52 527.244 Tm (Imprima em tamanho real \(100%\), sem "ajustar à página". Meça com régua:) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 42.52 510.236 Tm (linhas de 100,0 mm, quadrado de 50 x 50 mm, círculo de 50 mm e, em 1:50, 5 m = 100 mm.) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 42.52 510.236 Tm (linhas de 100,0 mm, quadrado de 50 x 50 mm, círculo de 50 mm e, em 1:50, 5 m = 100 mm.) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 9.921 Tf 1 0 0 1 510.236 297.638 Tm (Escala 1:50 - a linha mede 100 mm) Tj ET
+BT /F2 9.921 Tf 1 0 0 1 510.236 297.638 Tm (Escala 1:50 - a linha mede 100 mm) Tj ET
 Q
 q
 0 0 0 rg
-BT /F1 8.504 Tf 1 0 0 1 42.52 34.016 Tm (Escala 1:1) Tj ET
+BT /F2 8.504 Tf 1 0 0 1 42.52 34.016 Tm (Escala 1:1) Tj ET
 Q
 Q
 endstream
@@ -126,19 +126,27 @@ endobj
 << /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
 endobj
 6 0 obj
-<< /Title (Calibracao) /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.9) >>
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+7 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>
+endobj
+8 0 obj
+<< /Title (Calibracao) /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.10) >>
 endobj
 xref
-0 7
+0 9
 0000000000 65535 f 
 0000000015 00000 n 
 0000000064 00000 n 
 0000000121 00000 n 
-0000000255 00000 n 
-0000002822 00000 n 
-0000002917 00000 n 
+0000000275 00000 n 
+0000002842 00000 n 
+0000002937 00000 n 
+0000003034 00000 n 
+0000003133 00000 n 
 trailer
-<< /Size 7 /Root 1 0 R /Info 6 0 R >>
+<< /Size 9 /Root 1 0 R /Info 8 0 R >>
 startxref
-3006
+3223
 %%EOF

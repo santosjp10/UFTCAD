@@ -13,7 +13,7 @@
 // ── 1. ByLayer ────────────────────────────────────────────────────────────
 function isByLayer(v){ return v===null||v===undefined||v===''||v==='BYLAYER'; }
 function effCol(e){ var ly=getLy(e.ly); return !isByLayer(e.col)?e.col:(ly&&ly.col)||'#dce4f5'; }
-function effLw(e){ var ly=getLy(e.ly); return !isByLayer(e.lw)?e.lw:(ly&&ly.lw)||.7; }
+function effLw(e){ var ly=getLy(e.ly); return !isByLayer(e.lw)?e.lw:(ly&&ly.lw)||.25; }
 function effLd(e){ var ly=getLy(e.ly); return !isByLayer(e.ld)?e.ld:(ly&&ly.ld)||'solid'; }
 
 // ── 2. Painel de propriedades contextual ────────────────────────────────────

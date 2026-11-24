@@ -1,5 +1,44 @@
 # Changelog
 
+## v8.10 — Fontes dos textos e espessuras de linha compatíveis com o AutoCAD
+
+### Diagnóstico (DXF da v8.9 lido com o ezdxf)
+- O estilo de texto `Standard` ia com a fonte **`txt`**, e por isso o AutoCAD mostrava **txt.shx** em todos os textos e cotas.
+- O cabeçalho trazia **`$LWDISPLAY = 1`**, que liga o botão LWT do AutoCAD ao abrir, com as espessuras visíveis na tela.
+- As camadas padrão tinham espessuras altas: **0 com 0,70 mm**, **Dimensão com 0,50 mm**, Construção e Hachura com 0,35 mm.
+
+### Fontes
+- **Catálogo:** Arial, Arial Narrow, Calibri, Verdana, Times New Roman, Courier New e Consolas (TrueType do Windows); ISOCPEUR (letra técnica ISO/ABNT, instalada com o AutoCAD), romans.shx, simplex.shx e txt.shx (fontes SHX do AutoCAD).
+- **Onde se escolhe:**
+  - no **editor de texto** (Texto, Texto M, Editar texto), que já mostra o texto na fonte;
+  - no **painel de propriedades**;
+  - pelo comando **`ST` / `STYLE` / `ESTILO` / `FONTE`**, que define a fonte padrão do desenho (estilo Standard) e aplica a fonte aos textos selecionados ou a todos.
+- **Como no AutoCAD,** o texto só guarda uma fonte própria quando ela é diferente da padrão. Os demais acompanham o estilo Standard.
+- **DXF 2000:**
+  - o estilo **Standard** usa a fonte padrão (Arial, se nada for escolhido);
+  - cada outra fonte usada vira um estilo de texto com o arquivo da fonte (`arial.ttf`, `times.ttf`, `isocpeur.ttf`, `romans.shx`…) e, nas TrueType, o nome da família (como o AutoCAD grava);
+  - cada TEXT e MTEXT aponta para o estilo da sua fonte;
+  - as cotas usam o estilo da fonte do seu estilo de cota (DIMTXSTY), também no texto do bloco da cota.
+  - No **DXF R12**, o estilo STANDARD usa a fonte padrão.
+- **Importação de DXF:** a fonte do estilo de cada texto é reconhecida.
+- **PDF:** Helvetica, Times-Roman ou Courier, conforme a fonte (antes, sempre Courier). **SVG:** a família da fonte vai em cada texto.
+- **Estilos de cota:** a lista de fontes é a mesma do catálogo. O padrão é Arial, e os estilos antigos em Consolas passam para Arial.
+- **Texto com vários tamanhos numa linha:** os trechos são encadeados pela largura real da fonte na tela. Antes, com fontes proporcionais, podiam se sobrepor.
+- Fontes de CAD que não estiverem instaladas no computador aparecem na tela com uma fonte parecida; no AutoCAD, aparecem certas.
+
+### Espessuras de linha
+- **Camadas padrão:** 0 = **0,35 mm** (contorno); Construção, Dimensão e Hachura = **0,18 mm** (linhas finas, NBR 8403). Objeto sem espessura definida usa 0,25 mm, o padrão do AutoCAD.
+- **DXF:** `$LWDISPLAY = 0`, ou seja, o botão LWT começa desligado, como nos desenhos novos do AutoCAD, e `$LWDEFAULT = 25`. As espessuras continuam gravadas por camada e por objeto e valem na impressão. A opção **"Mostrar as espessuras de linha ao abrir no AutoCAD"** na exportação liga o LWT.
+- **Listas de espessura** (propriedades, tipos de linha e estilos de cota) com os valores-padrão do AutoCAD: 0,05 a 2,11 mm.
+- **Desenhos antigos** com as quatro camadas padrão nas espessuras antigas (0,70/0,35/0,50/0,35) passam para as novas ao abrir, com aviso. Camadas alteradas ou criadas pelo usuário mantêm a espessura.
+
+### Kit de validação
+- **2 conferências novas** (36 no total): a fonte do estilo Standard (Arial) e o LWT desligado ao abrir.
+
+### Outros
+- HELP atualizado.
+- Testes: `tests/test_fontes.py` (42). `test_edicao` e `test_texto` foram ajustados à nova lista de espessuras e às larguras da Arial. Total de **942 testes**, todos passando.
+
 ## v8.9 — Janela Salvar/Exportar e cota com distância digitada
 
 ### Salvar e Exportar

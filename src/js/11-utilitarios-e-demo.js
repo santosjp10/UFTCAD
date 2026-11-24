@@ -1,6 +1,6 @@
 // ── TEMPLATE ─────────────────────────────────────────────────
 function showTemplate(){document.getElementById('ov-template').classList.add('show');}
-function doTemplate(){var fs=document.getElementById('tf').value.split(',').map(Number),sc=parseFloat(document.getElementById('ts').value)||1,w=fs[0]*sc,h=fs[1]*sc,lb=25,m=5;snapshot();S.ents.unshift({id:uid(),tp:'rect',x:-w/2,y:-h/2,w:w,h:h,col:'#dce4f5',lw:1,ld:'solid',ly:0},{id:uid(),tp:'rect',x:-w/2+lb,y:-h/2+m,w:w-lb-m,h:h-2*m,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'line',x1:-w/2+lb,y1:-h/2+m+30,x2:w/2-m,y2:-h/2+m+30,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'txt',x:-w/2+lb+5,y:-h/2+m+20,txt:'EduCAD 2D | '+fs[0]+'×'+fs[1]+'mm | ABNT NBR 10068',h:6,col:'#8b97b8',lw:.35,ld:'solid',ly:0});zoomFit();closeOv('ov-template');log('Template '+fs[0]+'×'+fs[1]+'mm inserido.','ok');}
+function doTemplate(){var fs=document.getElementById('tf').value.split(',').map(Number),sc=parseFloat(document.getElementById('ts').value)||1,w=fs[0]*sc,h=fs[1]*sc,lb=20*sc,m=10*sc;/* v8.8: margens NBR 16752:2020 */snapshot();S.ents.unshift({id:uid(),tp:'rect',x:-w/2,y:-h/2,w:w,h:h,col:'#dce4f5',lw:1,ld:'solid',ly:0},{id:uid(),tp:'rect',x:-w/2+lb,y:-h/2+m,w:w-lb-m,h:h-2*m,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'line',x1:-w/2+lb,y1:-h/2+m+30,x2:w/2-m,y2:-h/2+m+30,col:'#4d9ef7',lw:.35,ld:'solid',ly:0},{id:uid(),tp:'txt',x:-w/2+lb+5,y:-h/2+m+20,txt:'EduCAD 2D | '+fs[0]+'×'+fs[1]+'mm | ABNT NBR 16752',h:6,col:'#8b97b8',lw:.35,ld:'solid',ly:0});zoomFit();closeOv('ov-template');log('Template '+fs[0]+'×'+fs[1]+'mm inserido.','ok');}
 
 // ── TEXT CONFIRM ─────────────────────────────────────────────
 function confirmText(){var txt=document.getElementById('tv').value||'Texto',h=parseFloat(document.getElementById('th').value)||10,wp=document.getElementById('twipeout')&&document.getElementById('twipeout').checked;if(S.ds&&S.ds.pts&&S.ds.pts[0]){addE({tp:'txt',x:S.ds.pts[0].x,y:S.ds.pts[0].y,txt:txt,h:h,wipeout:wp});}S.ds=null;closeOv('ov-text');}
@@ -35,7 +35,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.7 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.8 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }

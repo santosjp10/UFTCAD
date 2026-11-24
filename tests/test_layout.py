@@ -24,7 +24,7 @@ with sync_playwright() as p:
     ok('Aba Layout abre o espaço do papel',E("S.space")!='model' and E("document.body.classList.contains('paper')"))
     ok('Layout1 criado com uma viewport',E("S.ents.length")==1 and E("S.ents[0].tp")=='viewport')
     ok('Escala da viewport ajustada a uma escala da NBR 8196',E("ratioLabel(vpRatio(curViewport()))") in ['1:20','1:25','1:50','1:75','1:100'],E("ratioLabel(vpRatio(curViewport()))"))
-    ok('Margens ABNT da A4 (esquerda 25, demais 7)',E("JSON.stringify(curLayout().margins)")=='{"t":7,"r":7,"b":7,"l":25}')
+    ok('Margens ABNT NBR 16752 da A4 (esquerda 20, demais 10)',E("JSON.stringify(curLayout().margins)")=='{"t":10,"r":10,"b":10,"l":20}')
     a=E("w2s(0,curLayout().paper.h)"); c=E("w2s(curLayout().paper.w,0)")
     ok('Folha inteira visível ao abrir',a['x']>=0 and a['y']>=0 and c['x']<=E("S.W") and c['y']<=E("S.H")-40,(a,c))
     v=E("(()=>{var v=curViewport();return vpModelToPaper(v,3000,1750);})()"); vc=E("(()=>{var v=curViewport();return {x:v.x+v.w/2,y:v.y+v.h/2};})()")
@@ -84,7 +84,7 @@ with sync_playwright() as p:
     ok('Botão + cria Layout2',E("S.layouts.length")==2 and E("curLayout().name")=='Layout2')
     PROMPT[0]='Planta – A3'; E("layoutRename(curLayout().id)"); PROMPT[0]=None
     pg.select_option('#lc-paper','A3'); pg.wait_for_timeout(40)
-    ok('Renomear e mudar a folha para A3 (margens NBR)',E("curLayout().name")=='Planta – A3' and E("curLayout().paper.w")==420 and E("curLayout().margins.l")==25)
+    ok('Renomear e mudar a folha para A3 (margens NBR)',E("curLayout().name")=='Planta – A3' and E("curLayout().paper.w")==420 and E("curLayout().margins.l")==20)
     E("()=>{var L=S.layouts[0];layoutNew(L);}")
     ok('Duplicar layout copia o conteúdo',E("S.layouts.length")==3 and E("S.ents.filter(e=>e.tp==='viewport').length")==2)
     E("layoutDelete(curLayout().id)"); ok('Excluir layout',E("S.layouts.length")==2)

@@ -1,5 +1,22 @@
 # Changelog
 
+## v8.8 — Margens da folha conforme a ABNT NBR 16752:2020
+
+- **Margens padrão do layout:** esquerda **20 mm** (encadernação); superior, direita e inferior **10 mm**, em todos os formatos (A0 a A4). Substituem as da NBR 10068 (esquerda 25 mm; demais 7 mm, ou 10 mm em A0 e A1).
+- **Onde valem automaticamente:**
+  - ao abrir o **Layout 1**;
+  - ao criar um layout novo (+);
+  - ao trocar o formato da folha.
+  Não é preciso ajustar nada à mão.
+- **O que segue as margens:** a moldura e o carimbo ABNT, a viewport automática e a plotagem/PDF da "área imprimível".
+- **Painel do layout:**
+  - os campos de margem ficaram mais largos (mostram "10" e "20" inteiros);
+  - o botão **NBR** volta às margens da norma depois de um ajuste manual;
+  - a dica do rótulo informa os valores da norma.
+- **Desenhos antigos:** layouts salvos com as margens padrão antigas (25/7 ou 25/10 mm) passam para a NBR 16752 ao abrir, e a viewport automática acompanha. Margens personalizadas são mantidas. A moldura e o carimbo já inseridos não se movem: para atualizá-los, insira o carimbo de novo. A linha de comando avisa quando isso acontece.
+- **Template** (no Model) usa as mesmas margens e cita a NBR 16752. O exercício 3 da Aula guiada também cita a NBR 16752.
+- Testes: `tests/test_margens.py` (20); `test_layout.py` atualizado para as novas margens. Total de **856 testes**, todos passando.
+
 ## v8.7 — Textos com várias linhas e tamanhos; cotas verticais padronizadas
 
 ### Ferramenta de texto

@@ -7,14 +7,18 @@
      movidas e redimensionadas por grips; duplo clique entra no MSPACE (zoom/pan da vista).
    • Estilos de plotagem (Monocromático / Colorido / Tons de cinza) e espessuras
      reais em mm, na tela e na impressão.
-   • Carimbo ABNT (NBR 10068 / NBR 10582) inserido no papel como bloco + campos editáveis.
+   • Carimbo ABNT (NBR 16752 / NBR 10582) inserido no papel como bloco + campos editáveis.
    • Impressão em alta resolução (até 300 dpi).
    ═══════════════════════════════════════════════════════════════════ */
 var LY={active:'model'}; // compatibilidade com módulos anteriores
 if(!S.space) S.space='model';
 if(!S.layouts) S.layouts=[];
 var NBR_FMT={A0:[1189,841],A1:[841,594],A2:[594,420],A3:[420,297],A4:[297,210]};
-function nbrMargins(fmt){ var big=fmt==='A0'||fmt==='A1'; return {t:big?10:7,r:big?10:7,b:big?10:7,l:25}; }
+// v8.8: margens da folha conforme a ABNT NBR 16752:2020 (substitui a NBR 10068): esquerda 20 mm (encadernação), demais 10 mm
+var NBR_MARGINS={t:10,r:10,b:10,l:20};
+function nbrMargins(fmt){ return {t:NBR_MARGINS.t,r:NBR_MARGINS.r,b:NBR_MARGINS.b,l:NBR_MARGINS.l}; }
+// margens padrão das versões anteriores (NBR 10068): desenhos antigos que nunca mudaram as margens passam para a NBR 16752
+function nbrOldDefault(m){ return !!m&&m.l===25&&((m.t===7&&m.r===7&&m.b===7)||(m.t===10&&m.r===10&&m.b===10)); }
 var VP_SCALES=[['10:1',10],['5:1',5],['2:1',2],['1:1',1],['1:2',1/2],['1:5',1/5],['1:10',1/10],['1:20',1/20],['1:25',1/25],['1:50',1/50],['1:75',1/75],['1:100',1/100],
   ['1:200',1/200],['1:250',1/250],['1:500',1/500],['1:1000',1/1000],['1:2000',1/2000],['1:2500',1/2500],['1:5000',1/5000],['1:10000',1/10000]];
 function unitMm(){ return ({mm:1,cm:10,m:1000,'in':25.4,ft:304.8,km:1e6})[(S.units&&S.units.insertScale)||'mm']||1; }
@@ -314,9 +318,15 @@ function loadLayouts(d){
   S.space='model'; S.modelEnts=null; S.mspace=null; LY.active='model'; document.body.classList.remove('paper');
   S.layouts=Array.isArray(d.layouts)?d.layouts.filter(function(L){return L&&L.paper&&Array.isArray(L.ents);}).map(function(L){
     return {id:String(L.id||('L'+Math.random().toString(36).slice(2,8))),name:String(L.name||'Layout').slice(0,40),fmt:NBR_FMT[L.fmt]?L.fmt:'A4',paper:{w:+L.paper.w||297,h:+L.paper.h||210},
-      margins:L.margins||nbrMargins(L.fmt),plotStyle:['mono','color','gray'].indexOf(L.plotStyle)>=0?L.plotStyle:'mono',ents:L.ents,plot:(L.plot&&typeof L.plot==='object')?L.plot:null,undos:[],redos:[],view:null,_init:true}; }):[];
+      margins:(!L.margins||nbrOldDefault(L.margins))?nbrMargins(L.fmt):L.margins,_migr:nbrOldDefault(L.margins),plotStyle:['mono','color','gray'].indexOf(L.plotStyle)>=0?L.plotStyle:'mono',ents:L.ents,plot:(L.plot&&typeof L.plot==='object')?L.plot:null,undos:[],redos:[],view:null,_init:true}; }):[];
+  // viewports automáticas dos layouts migrados acompanham a nova área útil
+  var mig=S.layouts.filter(function(L){ return L._migr; });
+  mig.forEach(function(L){ var r=printableRect(L); L.ents.forEach(function(e){ if(e.tp==='viewport'&&e.auto){ e.x=r.x; e.y=r.y; e.w=r.w; e.h=r.h; if(typeof vpFit==='function') vpFit(e); } }); delete L._migr; });
+  S.layouts.forEach(function(L){ delete L._migr; });
+  if(mig.length) setTimeout(function(){ log('Margens do(s) layout(s) atualizadas para a ABNT NBR 16752:2020 (esquerda 20 mm, demais 10 mm). A moldura e o carimbo já inseridos não mudam: insira o carimbo de novo, se quiser.','inf'); },0);
   buildLayoutTabs(); syncLayoutPanel();
 }
+function layoutMarginsNBR(){ var L=curLayout(); if(!L) return; L.margins=nbrMargins(L.fmt); ['t','r','b','l'].forEach(function(k){ document.getElementById('lc-m'+k).value=L.margins[k]; }); layoutApply(); log('Margens ABNT NBR 16752:2020: esquerda 20 mm, superior, direita e inferior 10 mm.','ok'); }
 function withModel(fn){ if(S.space==='model') return fn(); var e=S.ents; S._curPaper={id:S.space,ents:e}; S.ents=S.modelEnts||[]; var sp=S.space; S.space='model'; try{ return fn(); } finally { S.ents=e; S.space=sp; S._curPaper=null; } }
 (function(){ var a=buildDXF2000,b=buildDXF,c=buildSVG,d=collectExport,sv=saveDoc;
   buildDXF2000=function(o){ return withModel(function(){ return a(o); }); };
@@ -338,7 +348,7 @@ window.addEventListener('load',function(){
   var lbl=document.querySelector('#layoutControls .lc-grp:nth-child(3) .lc-lbl'); if(lbl) lbl.textContent='ESCALA DA VIEWPORT';
   var leg=Array.prototype.filter.call(document.querySelectorAll('#layoutControls .lc-btn'),function(b){return /Legenda/.test(b.textContent);})[0];
   if(leg){ leg.textContent='📋 Tabela';
-    var cb=document.createElement('button'); cb.className='lc-btn'; cb.textContent='🗂 Carimbo ABNT'; cb.title='Margem + legenda (NBR 10068 / NBR 10582) no papel — CARIMBO'; cb.setAttribute('data-cmd','CARIMBO'); cb.onclick=function(){ titleBlockInsert(); }; leg.parentNode.insertBefore(cb,leg);
+    var cb=document.createElement('button'); cb.className='lc-btn'; cb.textContent='🗂 Carimbo ABNT'; cb.title='Margem + legenda (NBR 16752 / NBR 10582) no papel — CARIMBO'; cb.setAttribute('data-cmd','CARIMBO'); cb.onclick=function(){ titleBlockInsert(); }; leg.parentNode.insertBefore(cb,leg);
     var g=document.createElement('div'); g.className='lc-grp'; g.innerHTML='<span class="lc-lbl">PLOTAGEM</span>';
     var s2=document.createElement('select'); s2.className='lc-sel'; s2.id='lc-plot'; [['mono','Monocromático'],['color','Colorido'],['gray','Tons de cinza']].forEach(function(o){ var op=document.createElement('option'); op.value=o[0]; op.textContent=o[1]; s2.appendChild(op); });
     s2.onchange=layoutApply; g.appendChild(s2); cb.parentNode.insertBefore(g,cb); var sep=document.createElement('div'); sep.className='lc-sep'; cb.parentNode.insertBefore(sep,cb); }

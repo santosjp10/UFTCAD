@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.7</title>
+<title>EduCAD 2D v8.8</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -30,7 +30,7 @@
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.7 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.8 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -254,11 +254,12 @@
     </div>
     <div class="lc-sep"></div>
     <div class="lc-grp">
-      <span class="lc-lbl">MARGENS mm</span>
+      <span class="lc-lbl" title="ABNT NBR 16752:2020: esquerda 20 mm, superior, direita e inferior 10 mm">MARGENS mm</span>
       <input class="lc-inp" id="lc-mt" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Superior">
       <input class="lc-inp" id="lc-mr" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Direita">
       <input class="lc-inp" id="lc-mb" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Inferior">
-      <input class="lc-inp" id="lc-ml" type="number" value="10" min="0" max="50" onchange="layoutApply()" title="Esquerda">
+      <input class="lc-inp" id="lc-ml" type="number" value="20" min="0" max="50" onchange="layoutApply()" title="Esquerda">
+      <button class="lc-btn" id="lc-mnbr" type="button" onclick="layoutMarginsNBR()" title="Voltar às margens da ABNT NBR 16752:2020 (esquerda 20 mm, demais 10 mm)">NBR</button>
     </div>
     <div class="lc-sep"></div>
     <div class="lc-grp">
@@ -378,7 +379,7 @@
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.7 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.8 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -392,7 +393,7 @@
 </div></div>
 
 <div class="ov" id="ov-template"><div class="modal">
-  <h3>Templates ABNT NBR 10068</h3>
+  <h3>Templates ABNT NBR 16752</h3>
   <label>Formato:</label>
   <select id="tf"><option value="210,297">A4 Retrato 210×297</option><option value="297,210">A4 Paisagem 297×210</option><option value="420,297">A3 Paisagem 420×297</option><option value="594,420">A2 Paisagem 594×420</option></select>
   <label>Escala:</label>
@@ -786,7 +787,7 @@
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.7 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.8 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 

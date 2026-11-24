@@ -110,7 +110,7 @@ var EX_LIST=[
   ]},
  {id:'horta',title:'3. Planta de canteiros de uma horta',level:'Intermediário · 40 min',
   goal:'Camadas, cópia com espaçamento, hachura, cotas em série e prancha em escala com carimbo.',
-  norm:'NBR 8196 (escalas) · NBR 10068 (folhas) · NBR 10582 (legenda)',view:{x:-800,y:-1500,w:9600,h:8300},
+  norm:'NBR 8196 (escalas) · NBR 16752 (folhas) · NBR 10582 (legenda)',view:{x:-800,y:-1500,w:9600,h:8300},
   intro:'Terreno de 8 m × 6 m com quatro canteiros de 1,20 m × 5,00 m e corredores de 0,60 m. Desenhe em milímetros, em verdadeira grandeza: 8 m = 8000.',
   steps:[
    {t:'Camada do terreno',i:'Crie a camada <b>Terreno</b> e torne-a atual.',

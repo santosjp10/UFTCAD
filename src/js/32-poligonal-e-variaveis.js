@@ -327,7 +327,7 @@ function poAulaR(){ return poCompute(PO_AULA.rows.map(function(r,i){ return {id:
 function poAulaV(){ var R=poAulaR(),f=1000/unitMm(); return R.pts.map(function(p){ return {id:p.id,x:p.E*f,y:p.N*f}; }); }
 var PO_TOL=10; // mm (1 cm no terreno)
 function poNear(a,b){ return Math.hypot(a.x-b.x,a.y-b.y)<=PO_TOL; }
-function poTxtNums(){ var o=[]; exModel().forEach(function(e){ if((e.tp==='txt'||e.tp==='mtext')&&e.txt){ (String(e.txt).match(/\d[\d.]*(,\d+)?|\d+\.\d+/g)||[]).forEach(function(t){ var v=/,/.test(t)?parseFloat(t.replace(/\./g,'').replace(',','.')):parseFloat(t); if(isFinite(v)) o.push({v:v,txt:e.txt}); }); } }); return o; }
+function poTxtNums(){ var o=[]; exModel().forEach(function(e){ if((e.tp==='txt'||e.tp==='mtext')&&e.txt){ (String(e.tp==='mtext'&&typeof rtPlain==='function'?rtPlain(e.txt):e.txt).match(/\d[\d.]*(,\d+)?|\d+\.\d+/g)||[]).forEach(function(t){ var v=/,/.test(t)?parseFloat(t.replace(/\./g,'').replace(',','.')):parseFloat(t); if(isFinite(v)) o.push({v:v,txt:e.txt}); }); } }); return o; }
 EX_LIST.push(
  {id:'poligonal',title:'4. Poligonal fechada de um talhão (topografia)',level:'Intermediário · 40 min',
   goal:'Caderneta de campo, erro angular e linear, tolerâncias, compensação, coordenadas, área e quadro de coordenadas.',

@@ -239,7 +239,9 @@ function dimTextBlock(out,cx,cy,ang,T,st,ds,vAlign){
   }
   return W;
 }
-function readableAng(a){ while(a>Math.PI/2+1e-9) a-=Math.PI; while(a<-Math.PI/2-1e-9) a+=Math.PI; return a; }
+// v8.7: faixa (−90°, +90°] — texto vertical sempre lido pela direita da folha, à esquerda da linha de cota (ABNT),
+// qualquer que seja o sentido em que a cota foi feita (antes, de cima para baixo dava −90°: texto à direita e de cabeça para baixo)
+function readableAng(a){ while(a>Math.PI/2+1e-9) a-=Math.PI; while(a<=-Math.PI/2+1e-9) a+=Math.PI; return a; }
 function dimCenterMark(out,cx,cy,r,st,ds){
   if(st.centerMark==='none') return;
   var m=st.centerSize*ds;

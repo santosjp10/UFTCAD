@@ -54,8 +54,11 @@ NC.mtext={init:function(ds){ ds.phase='p1'; ds.att=1; },
 // Edição de textos (ED / duplo clique)
 function textEdit(e){
   if(e.tp==='txt'||e.tp==='mtext'||e.tp==='leader'){
-    mtEditorOpen({title:'Editar texto',txt:e.txt,h:e.h||S.mtH,annot:!!e.annot,att:e.att||1,noAtt:e.tp!=='mtext',noH:e.tp==='leader'},function(r){
-      snapshot(); e.txt=e.tp==='txt'?r.txt.split('\n')[0]:r.txt; if(e.tp!=='leader'){ if(!!r.annot!==!!e.annot&&e.w){ var _k=annoK(); e.w=r.annot?e.w*_k:e.w/_k; } e.h=r.h; e.annot=!!r.annot; } if(e.tp==='mtext') e.att=r.att; renderAll(); updSelInfo(); log('Texto atualizado.','ok');
+    mtEditorOpen({title:'Editar texto',txt:e.tp==='mtext'?e.txt:rtEsc(e.txt||''),h:e.h||S.mtH,annot:!!e.annot,att:e.att||1,noAtt:e.tp!=='mtext',noH:e.tp==='leader'},function(r){
+      snapshot();
+      if(e.tp==='txt'&&rtIsRich(r.txt)){ var _p=rtParse(r.txt,r.h); e.tp='mtext'; e.y+=r.h*rtKmax(_p[0]||[]); e.w=0; e.att=1; e.txt=r.txt; log('O texto passou a ter várias linhas/tamanhos (texto múltiplo).','inf'); } // v8.7
+      else e.txt=e.tp==='mtext'?r.txt:rtPlain(r.txt);
+      if(e.tp!=='leader'){ if(!!r.annot!==!!e.annot&&e.w){ var _k=annoK(); e.w=r.annot?e.w*_k:e.w/_k; } e.h=r.h; e.annot=!!r.annot; } if(e.tp==='mtext') e.att=r.att; renderAll(); updSelInfo(); log('Texto atualizado.','ok');
       if(S.tool==='textedit') ncEnd(); });
     return true;
   }
@@ -240,7 +243,7 @@ function dxfImport(text,merge){
         else { var att=(vj===3?1:vj===2?4:7)+(hj===1||hj===4?1:hj===2?2:0); o={tp:'mtext',x:gn(E,11,gn(E,10,0)),y:gn(E,21,gn(E,20,0)),h:h,w:0,txt:tx,att:att,rot:rot}; }
         break; }
       case 'MTEXT': { var s='';E.c.forEach(function(q){ if(q[0]===3) s+=q[1]; }); s+=g(E,1,''); var rx=gn(E,11,null),ry=gn(E,21,0),r50=gn(E,50,null);
-        o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:mtextPlain(s),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
+        o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:(typeof mtextRich==='function'?mtextRich(s,gn(E,40,2.5)):mtextPlain(s)),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
         if(!o.txt) return null; break; }
       case 'ELLIPSE': { var cx=gn(E,10,0),cy=gn(E,20,0),mx=gn(E,11,1),my=gn(E,21,0),ra=gn(E,40,1),p0=gn(E,41,0),p1=gn(E,42,2*Math.PI),rx2=Math.hypot(mx,my);
         if(Math.abs(Math.abs(p1-p0)-2*Math.PI)<1e-6) o={tp:'ell',cx:cx,cy:cy,rx:rx2,ry:rx2*ra,rot:Math.atan2(my,mx)};

@@ -26,8 +26,8 @@ with sync_playwright() as p:
     # 2 texto em diálogo
     reset(); E("addE({tp:'line',x1:0,y1:0,x2:40,y2:0})"); E("()=>{S.sel=[S.ents[0].id];setTool('text');}")
     x,y=scr(20,20); pg.mouse.move(x,y); pg.mouse.click(x,y); pg.wait_for_timeout(80)
-    pg.fill('#tv',''); pg.click('#tv'); pg.keyboard.type('Cota da área 12'); pg.keyboard.press('Backspace'); pg.keyboard.type('5'); pg.keyboard.press('Enter')
-    r=E("()=>({n:S.ents.length,t:S.ents.filter(e=>e.tp==='txt').map(e=>e.txt),tool:S.tool,ov:document.getElementById('ov-text').classList.contains('show')})")
+    pg.click('#mted-txt'); pg.keyboard.press('Control+A'); pg.keyboard.type('Cota da área 12'); pg.keyboard.press('Backspace'); pg.keyboard.type('5'); pg.keyboard.press('Control+Enter')  # v8.7: editor de várias linhas (Ctrl+Enter confirma)
+    r=E("()=>({n:S.ents.length,t:S.ents.filter(e=>e.tp==='txt').map(e=>e.txt),tool:S.tool,ov:document.getElementById('ov-text').classList.contains('show')||document.getElementById('ov-mtext').classList.contains('show')})")
     ok('C2 TEXT digitado no diálogo',r['n']==2 and r['t']==['Cota da área 15'] and r['tool']=='text' and not r['ov'],r)
     # 2b diálogo de camada: Backspace não apaga seleção
     E("()=>{setTool('select');S.sel=[S.ents[0].id];showAddLayer();}"); pg.click('#ml-name'); pg.keyboard.press('Backspace'); pg.keyboard.type('lzx')

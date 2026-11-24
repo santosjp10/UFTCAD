@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.6</title>
+<title>EduCAD 2D v8.7</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -558,6 +558,17 @@ body.scr-running #cw{cursor:progress!important}
 .aula-tab{border-collapse:collapse;margin:6px 0;font:10px Consolas,monospace}
 .aula-tab th,.aula-tab td{border:1px solid var(--bdr);padding:2px 6px;text-align:right}
 .aula-tab th:first-child,.aula-tab td:first-child{text-align:left}
+
+/* v8.7: editor de texto com vários tamanhos */
+#ov-mtext .modal{min-width:min(560px,94vw)!important}
+.rt-bar{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:6px}
+.rt-bar .rt-sz{padding:3px 8px;font-size:10px}
+#rt-t1{font-weight:700;font-size:12px}#rt-t2{font-weight:600;font-size:11px}#rt-t4{font-size:9px}
+.rt-mm{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t1);margin-left:4px}
+.rt-mm input{width:54px;margin:0;padding:2px 4px}
+.rt-ed{min-height:120px;max height:50vh;max-height:50vh;overflow:auto;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font-family:Consolas,monospace;line-height:1.35;padding:6px 8px;border-radius:3px;outline:none;white-space:pre-wrap;word-break:break-word}
+.rt-ed:focus{border-color:var(--acc,#4d9ef7)}
+.rt-info{font-size:9.5px;color:var(--t2);margin-top:3px}
 </style>
 </head>
 <body>
@@ -576,7 +587,7 @@ body.scr-running #cw{cursor:progress!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.6 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.7 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -924,7 +935,7 @@ body.scr-running #cw{cursor:progress!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.6 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.7 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1332,7 +1343,7 @@ body.scr-running #cw{cursor:progress!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.6 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.7 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1473,7 +1484,7 @@ body.scr-running #cw{cursor:progress!important}
 
 <script>
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.6 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.7 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1547,7 +1558,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.6 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.7 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -1833,7 +1844,7 @@ function handleClick(pt) {
         // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
         // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
         // v8.1: ponto digitado (sem pré-visualização pelo cursor) decide a direção pela posição digitada
-        var dir=(ds.dirHover&&ds.dimDir)?ds.dimDir:dimLinearDir(p1,p2,pt);
+        var dir=(ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt); // v8.7: ponto digitado sempre decide pela posição digitada
         // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
         var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
         addE({tp:'dim',subtp:'linear',dimDir:dir,
@@ -3748,7 +3759,7 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.6 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.7 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -4120,7 +4131,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'8.6',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function buildDoc(){return {v:'8.7',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
 function saveDoc(){var d=buildDoc();var b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='educad.json';a.click();document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');}
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
@@ -4860,7 +4871,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.6 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.7 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -6052,7 +6063,9 @@ function dimTextBlock(out,cx,cy,ang,T,st,ds,vAlign){
   }
   return W;
 }
-function readableAng(a){ while(a>Math.PI/2+1e-9) a-=Math.PI; while(a<-Math.PI/2-1e-9) a+=Math.PI; return a; }
+// v8.7: faixa (−90°, +90°] — texto vertical sempre lido pela direita da folha, à esquerda da linha de cota (ABNT),
+// qualquer que seja o sentido em que a cota foi feita (antes, de cima para baixo dava −90°: texto à direita e de cabeça para baixo)
+function readableAng(a){ while(a>Math.PI/2+1e-9) a-=Math.PI; while(a<=-Math.PI/2+1e-9) a+=Math.PI; return a; }
 function dimCenterMark(out,cx,cy,r,st,ds){
   if(st.centerMark==='none') return;
   var m=st.centerSize*ds;
@@ -8949,8 +8962,11 @@ NC.mtext={init:function(ds){ ds.phase='p1'; ds.att=1; },
 // Edição de textos (ED / duplo clique)
 function textEdit(e){
   if(e.tp==='txt'||e.tp==='mtext'||e.tp==='leader'){
-    mtEditorOpen({title:'Editar texto',txt:e.txt,h:e.h||S.mtH,annot:!!e.annot,att:e.att||1,noAtt:e.tp!=='mtext',noH:e.tp==='leader'},function(r){
-      snapshot(); e.txt=e.tp==='txt'?r.txt.split('\n')[0]:r.txt; if(e.tp!=='leader'){ if(!!r.annot!==!!e.annot&&e.w){ var _k=annoK(); e.w=r.annot?e.w*_k:e.w/_k; } e.h=r.h; e.annot=!!r.annot; } if(e.tp==='mtext') e.att=r.att; renderAll(); updSelInfo(); log('Texto atualizado.','ok');
+    mtEditorOpen({title:'Editar texto',txt:e.tp==='mtext'?e.txt:rtEsc(e.txt||''),h:e.h||S.mtH,annot:!!e.annot,att:e.att||1,noAtt:e.tp!=='mtext',noH:e.tp==='leader'},function(r){
+      snapshot();
+      if(e.tp==='txt'&&rtIsRich(r.txt)){ var _p=rtParse(r.txt,r.h); e.tp='mtext'; e.y+=r.h*rtKmax(_p[0]||[]); e.w=0; e.att=1; e.txt=r.txt; log('O texto passou a ter várias linhas/tamanhos (texto múltiplo).','inf'); } // v8.7
+      else e.txt=e.tp==='mtext'?r.txt:rtPlain(r.txt);
+      if(e.tp!=='leader'){ if(!!r.annot!==!!e.annot&&e.w){ var _k=annoK(); e.w=r.annot?e.w*_k:e.w/_k; } e.h=r.h; e.annot=!!r.annot; } if(e.tp==='mtext') e.att=r.att; renderAll(); updSelInfo(); log('Texto atualizado.','ok');
       if(S.tool==='textedit') ncEnd(); });
     return true;
   }
@@ -9135,7 +9151,7 @@ function dxfImport(text,merge){
         else { var att=(vj===3?1:vj===2?4:7)+(hj===1||hj===4?1:hj===2?2:0); o={tp:'mtext',x:gn(E,11,gn(E,10,0)),y:gn(E,21,gn(E,20,0)),h:h,w:0,txt:tx,att:att,rot:rot}; }
         break; }
       case 'MTEXT': { var s='';E.c.forEach(function(q){ if(q[0]===3) s+=q[1]; }); s+=g(E,1,''); var rx=gn(E,11,null),ry=gn(E,21,0),r50=gn(E,50,null);
-        o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:mtextPlain(s),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
+        o={tp:'mtext',x:gn(E,10,0),y:gn(E,20,0),h:gn(E,40,2.5),w:gn(E,41,0),txt:(typeof mtextRich==='function'?mtextRich(s,gn(E,40,2.5)):mtextPlain(s)),att:parseInt(g(E,71,'1'),10)||1,rot:r50!==null?r50:(rx!==null?Math.atan2(ry,rx):0)};
         if(!o.txt) return null; break; }
       case 'ELLIPSE': { var cx=gn(E,10,0),cy=gn(E,20,0),mx=gn(E,11,1),my=gn(E,21,0),ra=gn(E,40,1),p0=gn(E,41,0),p1=gn(E,42,2*Math.PI),rx2=Math.hypot(mx,my);
         if(Math.abs(Math.abs(p1-p0)-2*Math.PI)<1e-6) o={tp:'ell',cx:cx,cy:cy,rx:rx2,ry:rx2*ra,rot:Math.atan2(my,mx)};
@@ -10211,7 +10227,7 @@ function pdfAssemble(pages,title){
     objs[co]='<< /Length '+content.length+' >>\nstream\n'+content+'\nendstream'; });
   objs[fontId]='<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.6) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.7) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -11956,7 +11972,7 @@ function poAulaR(){ return poCompute(PO_AULA.rows.map(function(r,i){ return {id:
 function poAulaV(){ var R=poAulaR(),f=1000/unitMm(); return R.pts.map(function(p){ return {id:p.id,x:p.E*f,y:p.N*f}; }); }
 var PO_TOL=10; // mm (1 cm no terreno)
 function poNear(a,b){ return Math.hypot(a.x-b.x,a.y-b.y)<=PO_TOL; }
-function poTxtNums(){ var o=[]; exModel().forEach(function(e){ if((e.tp==='txt'||e.tp==='mtext')&&e.txt){ (String(e.txt).match(/\d[\d.]*(,\d+)?|\d+\.\d+/g)||[]).forEach(function(t){ var v=/,/.test(t)?parseFloat(t.replace(/\./g,'').replace(',','.')):parseFloat(t); if(isFinite(v)) o.push({v:v,txt:e.txt}); }); } }); return o; }
+function poTxtNums(){ var o=[]; exModel().forEach(function(e){ if((e.tp==='txt'||e.tp==='mtext')&&e.txt){ (String(e.tp==='mtext'&&typeof rtPlain==='function'?rtPlain(e.txt):e.txt).match(/\d[\d.]*(,\d+)?|\d+\.\d+/g)||[]).forEach(function(t){ var v=/,/.test(t)?parseFloat(t.replace(/\./g,'').replace(',','.')):parseFloat(t); if(isFinite(v)) o.push({v:v,txt:e.txt}); }); } }); return o; }
 EX_LIST.push(
  {id:'poligonal',title:'4. Poligonal fechada de um talhão (topografia)',level:'Intermediário · 40 min',
   goal:'Caderneta de campo, erro angular e linear, tolerâncias, compensação, coordenadas, área e quadro de coordenadas.',
@@ -12114,6 +12130,211 @@ window.addEventListener('load',function(){
   collectExport=function(){ var nb=S._nb; S._nb=false; try{ return ce.apply(this,arguments); } finally { S._nb=nb; } };
   buildDXF2000=function(o){ o=o||{}; if(o.blocks==='exploded') return bd(o); var nb=S._nb; S._nb=true; try{ return bd(o); } finally { S._nb=nb; } };
 })();
+/* ═══════════════════════════════════════════════════════════════════
+   v8.7 — TEXTO COM VÁRIAS LINHAS E VÁRIOS TAMANHOS
+   • A ferramenta Texto (DT) e o MTEXT usam o mesmo editor: Enter quebra a
+     linha e a barra de tamanhos (Título, Subtítulo, Normal, Nota ou altura em
+     mm) muda o tamanho do trecho selecionado — ou da linha inteira, se nada
+     estiver selecionado.
+   • Os tamanhos ficam gravados com os códigos do próprio AutoCAD no MTEXT:
+     {\H2x;Título} = duas vezes a altura base. Saem assim no DXF e voltam na
+     importação. Texto de uma linha e um tamanho continua sendo um TEXT comum.
+   ═══════════════════════════════════════════════════════════════════ */
+
+// ── 1. CÓDIGOS ↔ MODELO (parágrafos de trechos {t, k}; k = fator da altura base) ──
+var RT_M0='',RT_M1='',RT_BASE=15;
+function rtParse(txt,h){
+  var s=String(txt==null?'':txt),paras=[[]],stack=[],k=1,buf='';
+  function flush(){ if(!buf) return; var P=paras[paras.length-1],l=P[P.length-1]; if(l&&Math.abs(l.k-k)<1e-9) l.t+=buf; else P.push({t:buf,k:k}); buf=''; }
+  for(var i=0;i<s.length;i++){
+    var c=s[i];
+    if(c==='\n'){ flush(); paras.push([]); continue; }
+    if(c==='{'){ flush(); stack.push(k); continue; }
+    if(c==='}'){ flush(); k=stack.length?stack.pop():1; continue; }
+    if(c==='\\'){
+      var nx=s[i+1],rest=s.slice(i),m;
+      if(nx==='\\'||nx==='{'||nx==='}'){ buf+=nx; i++; continue; }
+      if(nx==='P'){ flush(); paras.push([]); i++; continue; }
+      if(nx==='~'){ buf+=' '; i++; continue; }
+      if((m=/^\\[Hh](\d+(?:\.\d+)?|\.\d+)(x?);/.exec(rest))){ flush(); var v=parseFloat(m[1]); if(v>0) k=m[2]?k*v:v/(h||1); i+=m[0].length-1; continue; }
+      if((m=/^\\S([^;]*);/.exec(rest))){ buf+=m[1].replace(/[\^#]/,'/'); i+=m[0].length-1; continue; }
+      if((m=/^\\[AaCcFfQTtWw][^;]*;/.exec(rest))){ i+=m[0].length-1; continue; }
+      if(/^\\[LlOoKkNX]/.test(rest)){ i++; continue; }
+    }
+    buf+=c;
+  }
+  flush(); return paras;
+}
+function rtNum(k){ var r=Math.round(k*1000)/1000; return String(r); }
+function rtEsc(t){ return String(t).replace(/\\/g,'\\\\').replace(/\{/g,'\\{').replace(/\}/g,'\\}'); }
+function rtSerialize(paras){
+  return paras.map(function(P){ return P.map(function(r){ if(!r.t) return ''; return Math.abs(r.k-1)<1e-6?rtEsc(r.t):'{\\H'+rtNum(r.k)+'x;'+rtEsc(r.t)+'}'; }).join(''); }).join('\n');
+}
+function rtPlain(txt){ return rtParse(txt,1).map(function(P){ return P.map(function(r){return r.t;}).join(''); }).join('\n'); }
+function rtIsRich(txt){ var P=rtParse(txt,1); return P.length>1||P.some(function(p){ return p.some(function(r){ return Math.abs(r.k-1)>1e-6; }); }); }
+function rtKmax(P){ var m=0; P.forEach(function(r){ if(r.t&&r.k>m) m=r.k; }); return m||(P.length?P[P.length-1].k:1)||1; }
+
+// ── 2. DIAGRAMAÇÃO DO MTEXT ─────────────────────────────────────────────────
+// linhas: [{runs:[{t,k}], w (largura em unidades), km}]
+function rtLines(e){
+  var h=e.h,paras=rtParse(e.txt,h),out=[],maxW=e.w>0?e.w:Infinity;
+  paras.forEach(function(P){
+    var ch=[]; P.forEach(function(r){ for(var i=0;i<r.t.length;i++) ch.push({c:r.t[i],k:r.k}); });
+    function cw(a){ return a.reduce(function(s,q){ return s+MT_CW*h*q.k; },0); }
+    function emit(a){ while(a.length&&a[a.length-1].c===' ') a.pop(); var runs=[]; a.forEach(function(q){ var l=runs[runs.length-1]; if(l&&l.k===q.k) l.t+=q.c; else runs.push({t:q.c,k:q.k}); });
+      out.push({runs:runs,w:cw(a),km:runs.length?rtKmax(runs):(P.length?P[0].k:1)}); }
+    if(!isFinite(maxW)||cw(ch)<=maxW){ emit(ch.slice()); return; }
+    // quebra por palavras (e por caracteres, se a palavra não couber)
+    var words=[],cur=[]; ch.forEach(function(q){ cur.push(q); if(q.c===' '){ words.push(cur); cur=[]; } }); if(cur.length) words.push(cur);
+    var line=[];
+    words.forEach(function(w){
+      var trimmed=w.filter(function(q,i){ return !(q.c===' '&&i===w.length-1); });
+      if(line.length&&cw(line)+cw(trimmed)>maxW){ emit(line); line=[]; }
+      while(cw(trimmed)>maxW&&trimmed.length>1){ var n=0,acc=0; while(n<trimmed.length&&acc+MT_CW*h*trimmed[n].k<=maxW){ acc+=MT_CW*h*trimmed[n].k; n++; } n=Math.max(1,n);
+        if(line.length){ emit(line); line=[]; } emit(trimmed.slice(0,n)); trimmed=trimmed.slice(n); w=trimmed; }
+      line=line.concat(w); });
+    if(line.length) emit(line);
+  });
+  return out;
+}
+mtLines=function(e){ return rtLines(e).map(function(l){ return l.runs.map(function(r){return r.t;}).join(''); }); };
+mtLayout=function(e){
+  var L=rtLines(e),h=e.h,n=L.length,bl=[],y=0;
+  L.forEach(function(l,i){ y=i===0?-h*l.km:y-MT_LS*h*l.km; bl.push(y); });
+  var H=n?-bl[n-1]:h,W=e.w>0?e.w:Math.max.apply(null,L.map(function(l){return l.w;}).concat([MT_CW*h]));
+  var att=e.att||1,col=(att-1)%3,row=Math.floor((att-1)/3),top=row===0?0:row===1?H/2:H;
+  var align=['left','center','right'][col],left=col===0?0:col===1?-W/2:-W;
+  return {lines:L.map(function(l,i){ return {txt:l.runs.map(function(r){return r.t;}).join(''),runs:l.runs,w:l.w,lx:0,ly:top+bl[i],align:align}; }),W:W,H:H,left:left,top:top};
+};
+mtPrims=function(e){
+  var Lo=mtLayout(e),o=[],h=e.h,rot=e.rot||0;
+  Lo.lines.forEach(function(l){
+    if(!l.txt.trim()&&!l.txt) return;
+    if(l.runs.length===1){ var p=mtLocalToWorld(e,l.lx,l.ly); o.push({k:'text',x:p.x,y:p.y,h:h*l.runs[0].k,rot:rot,txt:l.runs[0].t,align:l.align}); return; }
+    var x=l.align==='left'?0:l.align==='center'?-l.w/2:-l.w;
+    l.runs.forEach(function(r){ if(r.t){ var q=mtLocalToWorld(e,x,l.ly); o.push({k:'text',x:q.x,y:q.y,h:h*r.k,rot:rot,txt:r.t,align:'left'}); } x+=MT_CW*h*r.k*r.t.length; });
+  });
+  return o;
+};
+(function(){ var lp=leaderPrims; leaderPrims=function(e,st){ if(e&&e.txt&&/[\\{}]/.test(e.txt)){ var c=Object.assign({},e); c.txt=rtPlain(e.txt); return lp(c,st); } return lp.apply(this,arguments); }; })();
+// importação de DXF: mantém quebras de linha e tamanhos (\H) do MTEXT
+function mtextRich(s,h){ var t=String(s).replace(/%%[dD]/g,'°').replace(/%%[cC]/g,'⌀').replace(/%%[pP]/g,'±').replace(/%%[uUoO]/g,''); t=(typeof dxfTxt==='function')?dxfTxt(t):t; return rtSerialize(rtParse(t,h)).replace(/\n+$/,''); }
+
+// ── 3. EDITOR VISUAL ────────────────────────────────────────────────────────
+var RTE={root:null,range:null};
+function rtRender(root,paras){
+  root.textContent='';
+  (paras.length?paras:[[]]).forEach(function(P){ var d=document.createElement('div');
+    var has=P.some(function(r){return r.t;});
+    if(!has){ d.appendChild(document.createElement('br')); if(P.length) d.style.fontSize=(RT_BASE*P[0].k)+'px'; }
+    P.forEach(function(r){ if(!r.t) return; var sp=document.createElement('span'); sp.style.fontSize=(RT_BASE*r.k)+'px'; sp.setAttribute('data-k',rtNum(r.k)); sp.textContent=r.t; d.appendChild(sp); });
+    root.appendChild(d); });
+}
+function rtRead(root){
+  var paras=[],cur=null;
+  function kOf(el){ var fs=parseFloat(getComputedStyle(el).fontSize)||RT_BASE; return Math.round(fs/RT_BASE*1000)/1000; }
+  function push(t,k){ if(!cur){ cur=[]; paras.push(cur); } var l=cur[cur.length-1]; if(l&&Math.abs(l.k-k)<1e-3) l.t+=t; else cur.push({t:t,k:k}); }
+  function block(n){ return /^(DIV|P|LI|H[1-6]|UL|OL|BLOCKQUOTE)$/.test(n.nodeName); }
+  (function walk(n){
+    Array.prototype.forEach.call(n.childNodes,function(c){
+      if(c.nodeType===3){ var t=c.nodeValue.replace(/ /g,' ').replace(/[\r\n]/g,''); if(t) push(t,kOf(c.parentElement)); }
+      else if(c.nodeName==='BR'){ if(!cur){ cur=[{t:'',k:kOf(n)}]; paras.push(cur); } if(c.nextSibling||n===root) cur=null; }
+      else if(c.nodeType===1&&block(c)){ cur=[]; paras.push(cur); walk(c); if(!cur.length) cur.push({t:'',k:kOf(c)}); cur=null; }
+      else if(c.nodeType===1) walk(c);
+    });
+  })(root);
+  if(!paras.length) paras=[[]];
+  return paras.map(function(P){ return P.filter(function(r,i){ return r.t||P.length===1; }); });
+}
+function rtSaveRange(){ var r=RTE.root,s=window.getSelection(); if(r&&s.rangeCount&&r.contains(s.getRangeAt(0).commonAncestorContainer)) RTE.range=s.getRangeAt(0).cloneRange(); }
+// aplica o fator k ao trecho selecionado (ou à linha do cursor, se nada estiver selecionado)
+function rtApply(k){
+  var root=RTE.root; if(!root||!(k>0)) return;
+  var r=RTE.range;
+  if(!r||!root.contains(r.commonAncestorContainer)){ r=document.createRange(); r.selectNodeContents(root); }
+  var collapsed=r.collapsed;
+  var m1=document.createTextNode(RT_M1),m0=document.createTextNode(RT_M0);
+  if(!collapsed){ var re=r.cloneRange(); re.collapse(false); re.insertNode(m1); }
+  r.collapse(true); r.insertNode(m0);
+  var paras=rtRead(root),pos={};
+  // localiza os marcadores e retira do texto
+  paras.forEach(function(P,pi){ var off=0; P.forEach(function(run){ var t=run.t,j;
+      while((j=t.search(/[]/))>=0){ pos[t[j]]={p:pi,c:off+j}; t=t.slice(0,j)+t.slice(j+1); } run.t=t; off+=t.length; }); });
+  var a=pos[RT_M0]||{p:0,c:0},b=pos[RT_M1]||a;
+  paras=paras.map(function(P,pi){
+    var ch=[]; P.forEach(function(run){ for(var i=0;i<run.t.length;i++) ch.push({c:run.t[i],k:run.k}); });
+    if(collapsed){ if(pi===a.p){ ch.forEach(function(q){ q.k=k; }); if(!ch.length) return [{t:'',k:k}]; } }
+    else ch.forEach(function(q,i){ var after=pi>a.p||(pi===a.p&&i>=a.c),before=pi<b.p||(pi===b.p&&i<b.c); if(after&&before) q.k=k; });
+    var runs=[]; ch.forEach(function(q){ var l=runs[runs.length-1]; if(l&&Math.abs(l.k-q.k)<1e-9) l.t+=q.c; else runs.push({t:q.c,k:q.k}); });
+    return runs.length?runs:(P.length?[{t:'',k:P[0].k}]:[]);
+  });
+  rtRender(root,paras);
+  // seleção restaurada sobre o mesmo trecho
+  try{ var divs=root.children,sel=window.getSelection(),nr=document.createRange();
+    function place(pt,setter){ var d=divs[pt.p]; if(!d) return; var off=pt.c,spans=d.querySelectorAll('span');
+      for(var i=0;i<spans.length;i++){ var tn=spans[i].firstChild,L=tn.nodeValue.length; if(off<=L){ nr[setter](tn,off); return; } off-=L; } nr[setter](d,d.childNodes.length); }
+    if(collapsed){ place({p:a.p,c:a.c},'setStart'); nr.collapse(true); } else { place(a,'setStart'); place(b,'setEnd'); }
+    sel.removeAllRanges(); sel.addRange(nr); RTE.range=nr.cloneRange(); }catch(err){}
+  root.focus(); rtHint();
+}
+function rtBaseH(){ var v=parseFloat(String(document.getElementById('mted-h').value).replace(',','.')); return v>0?v:2.5; }
+function rtHint(){ var hs=document.getElementById('rt-info'); if(!hs||!RTE.root) return; var P=rtRead(RTE.root),ks={}; P.forEach(function(p){ p.forEach(function(r){ if(r.t) ks[rtNum(r.k)]=1; }); });
+  var b=rtBaseH(),L=Object.keys(ks).map(Number).sort(function(x,y){return y-x;}).map(function(k){ return gNum(Math.round(b*k*100)/100)+' mm'; });
+  hs.textContent=P.length+' linha(s)'+(L.length>1?' · tamanhos: '+L.join(', '):''); }
+window.addEventListener('load',function(){
+  var old=document.getElementById('mted-txt'); if(!old) return;
+  var bar=document.createElement('div'); bar.className='rt-bar'; bar.id='rt-bar';
+  [['Título',2,'rt-t1'],['Subtítulo',1.5,'rt-t2'],['Normal',1,'rt-t3'],['Nota',0.75,'rt-t4']].forEach(function(b){
+    var bt=document.createElement('button'); bt.type='button'; bt.className='btn s rt-sz'; bt.id=b[2]; bt.textContent=b[0]+' ×'+String(b[1]).replace('.',','); bt.title='Tamanho do trecho selecionado (ou da linha do cursor): '+String(b[1]).replace('.',',')+' × a altura base';
+    bt.addEventListener('mousedown',function(ev){ ev.preventDefault(); rtSaveRange(); }); bt.addEventListener('click',function(){ rtApply(b[1]); }); bar.appendChild(bt); });
+  var lb=document.createElement('label'); lb.className='rt-mm'; lb.textContent='ou altura '; var inp=document.createElement('input'); inp.id='rt-mm'; inp.placeholder='mm'; lb.appendChild(inp);
+  var ap=document.createElement('button'); ap.type='button'; ap.className='btn s'; ap.id='rt-ap'; ap.textContent='Aplicar'; ap.addEventListener('mousedown',function(ev){ ev.preventDefault(); });
+  ap.addEventListener('click',function(){ var v=parseFloat(String(inp.value).replace(',','.')); if(v>0) rtApply(v/rtBaseH()); });
+  inp.addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); ap.click(); } });
+  lb.appendChild(ap); bar.appendChild(lb);
+  var ed=document.createElement('div'); ed.id='mted-txt'; ed.className='rt-ed'; ed.contentEditable='true'; ed.spellcheck=false; ed.setAttribute('role','textbox'); ed.setAttribute('aria-multiline','true');
+  ed.style.fontSize=RT_BASE+'px';
+  var info=document.createElement('div'); info.id='rt-info'; info.className='rt-info';
+  old.parentNode.insertBefore(bar,old); old.parentNode.insertBefore(ed,old); old.parentNode.insertBefore(info,old); old.remove();
+  RTE.root=ed;
+  Object.defineProperty(ed,'value',{get:function(){ return rtSerialize(rtRead(ed)).replace(/\n+$/,''); },set:function(v){ rtRender(ed,rtParse(v,rtBaseH())); rtHint(); }});
+  ed.select=function(){ var r=document.createRange(); r.selectNodeContents(ed); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); RTE.range=r.cloneRange(); };
+  ed.addEventListener('keydown',function(ev){ if(ev.key==='Enter'&&(ev.ctrlKey||ev.metaKey)){ ev.preventDefault(); mtEditorOK(); } else if(ev.key==='Escape'){ ev.preventDefault(); mtEditorCancel(); } });
+  ed.addEventListener('paste',function(ev){ ev.preventDefault(); var t=(ev.clipboardData||window.clipboardData).getData('text/plain'); document.execCommand('insertText',false,t); });
+  ed.addEventListener('input',rtHint); ed.addEventListener('keyup',rtSaveRange); ed.addEventListener('mouseup',rtSaveRange);
+  document.addEventListener('selectionchange',rtSaveRange);
+  document.getElementById('mted-h').addEventListener('input',rtHint);
+  var tip=document.querySelector('#ov-mtext .modal > div[style*="font-size:9px"]'); if(tip) tip.textContent='Enter quebra a linha · selecione um trecho (ou ponha o cursor na linha) e escolha o tamanho · Ctrl+Enter confirma';
+});
+(function(){ var op=mtEditorOpen,cn=mtEditorCancel;
+  mtEditorOpen=function(opts,cb){ var r=op.apply(this,arguments); var ed=document.getElementById('mted-txt'); ed.value=opts.txt||''; // altura base já preenchida
+    var bar=document.getElementById('rt-bar'); if(bar) bar.style.display=opts.noH?'none':''; RTE.range=null; rtHint(); return r; };
+  mtEditorCancel=function(){ if(S.tool==='text'&&S.ds) S.ds=null; return cn.apply(this,arguments); };
+})();
+
+// ── 4. FERRAMENTA TEXTO (DT): o mesmo editor, com várias linhas e tamanhos ──
+(function(){ var hc=handleClick;
+  handleClick=function(pt){
+    if(S.tool==='text'&&!S.ds){
+      var r=hc.apply(this,arguments); closeOv('ov-text'); var p0=S.ds&&S.ds.pts?S.ds.pts[0]:{x:pt.x,y:pt.y};
+      var h0=parseFloat(document.getElementById('th').value)||10;
+      mtEditorOpen({title:'Texto — Enter quebra a linha; os botões mudam o tamanho',h:h0,att:1},function(res){
+        var paras=rtParse(res.txt,res.h),plain=rtPlain(res.txt);
+        if(!plain.trim()){ S.ds=null; log('Texto vazio: nada criado.','inf'); return; }
+        document.getElementById('th').value=res.h;
+        if(!rtIsRich(res.txt)&&res.att===1&&!res.annot){ S.ds={pts:[p0]}; document.getElementById('tv').value=plain; confirmText(); log('Texto criado.','ok'); return; }
+        var k0=rtKmax(paras[0]||[]),y=res.att===1?p0.y+res.h*k0:p0.y;
+        snapshot(); addE({tp:'mtext',x:p0.x,y:y,w:0,h:res.h,txt:res.txt,att:res.att,rot:0,annot:!!res.annot},true); S.ds=null;
+        log('Texto criado: '+paras.length+' linha(s)'+(rtIsRich(res.txt)&&paras.length===1?' com tamanhos diferentes':'')+'.','ok'); renderAll();
+      });
+      return r;
+    }
+    return hc.apply(this,arguments);
+  };
+})();
+
+// ── v8.7: ponto digitado na linha de comando é marcado (a cota linear usa a posição digitada, não a do mouse) ──
+(function(){ var ok0=onCmdKey; onCmdKey=function(e){ if(e&&e.key==='Enter'){ var was=S._typedPt; S._typedPt=true; try{ return ok0.apply(this,arguments); } finally { S._typedPt=was; } } return ok0.apply(this,arguments); }; })();
 </script>
 </body>
 </html>

@@ -204,7 +204,7 @@ function handleClick(pt) {
         // Usar a direção já fixada pelo preview (ds.dimDir), não recalcular aqui.
         // Isso garante que o clique confirma exatamente o que o usuário viu no preview.
         // v8.1: ponto digitado (sem pré-visualização pelo cursor) decide a direção pela posição digitada
-        var dir=(ds.dirHover&&ds.dimDir)?ds.dimDir:dimLinearDir(p1,p2,pt);
+        var dir=(ds.dirHover&&ds.dimDir&&!S._typedPt)?ds.dimDir:dimLinearDir(p1,p2,pt); // v8.7: ponto digitado sempre decide pela posição digitada
         // Valor medido: horizontal mede |Δx|, vertical mede |Δy|
         var measuredVal=dir==='h'?Math.abs(p2.x-p1.x):Math.abs(p2.y-p1.y);
         addE({tp:'dim',subtp:'linear',dimDir:dir,

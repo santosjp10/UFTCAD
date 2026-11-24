@@ -1,6 +1,6 @@
-# Pré-validação automática — EduCAD 2D v8.6
+# Pré-validação automática — EduCAD 2D v8.7
 
-Feita em 23/11/2026 com leitores de DXF independentes do EduCAD, antes da conferência no AutoCAD e no ZWCAD (que só pode ser feita por uma pessoa, com as licenças da instituição).
+Feita em 24/11/2026 com leitores de DXF independentes do EduCAD, antes da conferência no AutoCAD e no ZWCAD (que só pode ser feita por uma pessoa, com as licenças da instituição).
 
 Leitores: **ezdxf** 1.4.5 (auditoria completa, igual em espírito ao AUDIT do AutoCAD), **dxfgrabber** 1.0.0, **dxf-parser** e **dxf** (Node.js, usados por visualizadores web; o segundo também desenha o arquivo).
 

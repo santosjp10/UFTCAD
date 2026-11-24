@@ -544,3 +544,14 @@ body.scr-running #cw{cursor:progress!important}
 .aula-tab{border-collapse:collapse;margin:6px 0;font:10px Consolas,monospace}
 .aula-tab th,.aula-tab td{border:1px solid var(--bdr);padding:2px 6px;text-align:right}
 .aula-tab th:first-child,.aula-tab td:first-child{text-align:left}
+
+/* v8.7: editor de texto com vários tamanhos */
+#ov-mtext .modal{min-width:min(560px,94vw)!important}
+.rt-bar{display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-bottom:6px}
+.rt-bar .rt-sz{padding:3px 8px;font-size:10px}
+#rt-t1{font-weight:700;font-size:12px}#rt-t2{font-weight:600;font-size:11px}#rt-t4{font-size:9px}
+.rt-mm{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t1);margin-left:4px}
+.rt-mm input{width:54px;margin:0;padding:2px 4px}
+.rt-ed{min-height:120px;max height:50vh;max-height:50vh;overflow:auto;background:var(--bg3);border:1px solid var(--bdr);color:var(--t0);font-family:Consolas,monospace;line-height:1.35;padding:6px 8px;border-radius:3px;outline:none;white-space:pre-wrap;word-break:break-word}
+.rt-ed:focus{border-color:var(--acc,#4d9ef7)}
+.rt-info{font-size:9.5px;color:var(--t2);margin-top:3px}

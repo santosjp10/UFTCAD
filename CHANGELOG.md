@@ -1,5 +1,32 @@
 # Changelog
 
+## v8.7 — Textos com várias linhas e tamanhos; cotas verticais padronizadas
+
+### Ferramenta de texto
+- A ferramenta **Texto** (botão Texto, `DT`) passou a abrir o editor de várias linhas, o mesmo do **Texto M** (`T`/`MT`) e do **Editar texto** (`ED`).
+  - Enter quebra a linha; Ctrl+Enter confirma.
+  - A primeira linha fica no ponto clicado, como antes.
+- **Vários tamanhos na mesma caixa de texto.** A barra do editor tem **Título ×2**, **Subtítulo ×1,5**, **Normal ×1**, **Nota ×0,75** e um campo para a altura em mm.
+  - Com um trecho selecionado, o tamanho vale para o trecho; sem seleção, para a linha do cursor.
+  - O editor mostra os tamanhos como vão ficar, e o rodapé lista as alturas usadas.
+  - O espaçamento de cada linha segue o maior texto da linha.
+- **Texto de uma linha e um tamanho** continua sendo um TEXT comum. Com várias linhas ou tamanhos, vira uma caixa de texto (MTEXT). Ao editar um TEXT e acrescentar linhas ou tamanhos, ele vira MTEXT na mesma posição.
+- **Formato:** os tamanhos são guardados com os códigos do MTEXT do AutoCAD (`{\H2x;Título}`, relativo à altura base). Por isso:
+  - aparecem iguais no AutoCAD e no ZWCAD pelo DXF 2000;
+  - voltam ao importar o DXF. Alturas absolutas do AutoCAD (`\H5;`) são convertidas; fonte, cor e outros códigos são ignorados com segurança;
+  - no DXF R12, no PDF, no SVG e ao explodir, cada trecho vira um texto com a sua altura;
+  - mudar a altura base ou a escala de anotação mantém as proporções.
+- Colar no editor cola apenas o texto, sem formatação de outros programas. Chaves e barras digitadas aparecem como digitadas.
+
+### Cotas verticais
+- **O texto da cota vertical fica sempre à esquerda da linha de cota, lido de baixo para cima**, como pede a ABNT, qualquer que seja o sentido em que a cota foi feita. Antes, uma cota feita de cima para baixo ficava com o texto à direita e de cabeça para baixo.
+- A correção vale para cotas lineares, alinhadas na vertical, de raio e de diâmetro. Também vale na tela, no PDF, no SVG e no DXF.
+- **Ponto digitado:** na cota linear (DLI), um terceiro ponto digitado na linha de comando decide se a cota é horizontal ou vertical pela posição digitada. Antes, a última posição do mouse podia virar a cota para horizontal, com valor 0.
+
+### Outros
+- Testes: `tests/test_texto.py` (33). O teste do texto em `test_navegador` usa o editor novo. Total de **836 testes**, todos passando.
+- Kit de validação gerado de novo para a v8.7.
+
 ## v8.6 — ZOOM com opções (R5) e kit de validação externa (R9)
 
 ### ZOOM como no AutoCAD (R5)

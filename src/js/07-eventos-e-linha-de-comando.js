@@ -554,6 +554,7 @@ function onCmdKey(e){
     'SCRIPT':'script','SCR':'script','GRAVARSCRIPT':'scrrec','ACTRECORD':'scrrec',
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
     'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
+    'BIBLIOTECA':'bib','BIB':'bib','BLOCKSPALETTE':'bib','TOOLPALETTES':'bib','ADCENTER':'bib',
     'MODELOS':'tpl','TEMPLATES':'tpl','NOVOMODELO':'tpl','MOLDURA':'moldura',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
@@ -597,6 +598,7 @@ function onCmdKey(e){
     case 'pontos':ptOpen();break;
     case 'script':scrOpen();break;
     case 'tpl':tplOpen();break;
+    case 'bib':bibOpen();break;
     case 'moldura':showTemplate();break;
     case 'style':styleOpen();break;
     case 'poligonal':poOpen();break;
@@ -644,7 +646,7 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.12 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.13 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -661,6 +663,7 @@ function onCmdKey(e){
       log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
       log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
       log('  NEW/Ctrl+N = Novo com modelo: Padrão, Mecânico, Arquitetônico ou Topográfico (e Meus modelos)','inf');
+      log('  BIBLIOTECA/Ctrl+3 = Biblioteca de blocos (portas, janelas, louças, móveis, marcos, postes, drenagem, vegetação…)','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');

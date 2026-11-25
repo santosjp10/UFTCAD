@@ -27,9 +27,6 @@ var UNITS_DEFAULT={lenType:'decimal',lenPrec:4,angType:'decimal_deg',angPrec:0,c
 // ── biblioteca ──────────────────────────────────────────────────────────────
 function tplLy(id,nm,col,ld,lw,plot){ return {id:id,nm:nm,col:col,vis:true,lock:false,ld:ld||'solid',lw:lw,plot:plot!==false}; }
 function tplDim(base,over){ var s=JSON.parse(JSON.stringify(DS_DEFAULT)); if(base==='ABNT'){ s.decSep=','; s.zTrail=true; s.txtAlign='aligned'; s.txtPos='above'; s.baseInc=7; } Object.keys(over).forEach(function(k){ s[k]=over[k]; }); return s; }
-function tplArc(cx,cy,r,a0,a1){ return {tp:'arc',cx:cx,cy:cy,r:r,sa:a0*Math.PI/180,ea:a1*Math.PI/180,ly:0}; }
-function tplLn(a,b,c,d){ return {tp:'line',x1:a,y1:b,x2:c,y2:d,ly:0}; }
-var NORTE_BLK={base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:6,ly:0},{tp:'pl',closed:true,pts:[{x:0,y:9},{x:3,y:-4},{x:0,y:-1.5},{x:-3,y:-4},{x:0,y:9}],ly:0},{tp:'txt',x:-1.6,y:10.5,h:3.5,txt:'N',rot:0,ly:0}]}; // mm de papel
 var TEMPLATES=[
  {id:'padrao',nome:'Padrão',icone:'□',desc:'O desenho inicial de sempre do EduCAD: milímetros, camadas 0, Construção, Dimensão e Hachura, folha A4 paisagem.',padrao:true},
  {id:'mecanico',nome:'Desenho Mecânico',icone:'⚙',norma:'NBR 8403 (linhas) · NBR 10067 (vistas) · NBR 10126 (cotagem) · NBR 12298 (hachuras)',
@@ -39,10 +36,9 @@ var TEMPLATES=[
    tplLy(13,'CORTE-PLANO','#ff00ff','dashdot',.35),tplLy(14,'HACHURA','#00c8c8','solid',.18),tplLy(15,'COTAS','#40ff40','solid',.18),tplLy(16,'TEXTO','#ffffff','solid',.25),
    tplLy(17,'RUPTURA','#c0c0c0','solid',.18),tplLy(18,'FANTASMA','#8080ff','phantom',.18),tplLy(19,'AUXILIAR','#606878','solid',.13,false)],
   cur:10,dim:{name:'MECÂNICO ABNT',o:{base:'ABNT',font:'ISOCPEUR',txtH:3.5,arrowSize:3,arrowType:'filled',prec:2,unit:'mm',col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',extOrigin:1,extDimline:2,baseInc:7,desc:'Cotagem mecânica ABNT: setas cheias, texto 3,5 mm, vírgula decimal.'}},
-  blocks:{'CORTE_SETA':{base:{x:0,y:0},ents:[tplLn(0,0,0,8),{tp:'pl',closed:true,pts:[{x:-1.5,y:5},{x:0,y:8},{x:1.5,y:5},{x:-1.5,y:5}],ly:0},tplLn(-3,0,3,0)]},
-          'RUGOSIDADE':{base:{x:0,y:0},ents:[tplLn(-3,3,0,0),tplLn(0,0,6,10),tplLn(6,10,14,10)]}},
+  blocks:['RUGOSIDADE','CORTE_SETA'],
   campos:{titulo:'PEÇA — VISTAS ORTOGRÁFICAS',disc:'Desenho Técnico Mecânico'},
-  dicas:'Desenhe as arestas visíveis na camada CONTORNO, as ocultas em OCULTA e os eixos em CENTRO; cortes: plano em CORTE-PLANO e hachura ANSI31 na camada HACHURA. Blocos: CORTE_SETA e RUGOSIDADE (comando I).'},
+  dicas:'Desenhe as arestas visíveis na camada CONTORNO, as ocultas em OCULTA e os eixos em CENTRO; cortes: plano em CORTE-PLANO e hachura ANSI31 na camada HACHURA. Símbolos (rugosidade, seta de corte, marca de centro, solda): Biblioteca de blocos (Ctrl+3).'},
  {id:'arquitetonico',nome:'Desenho Arquitetônico',icone:'⌂',norma:'NBR 6492 (representação de projetos de arquitetura) · NBR 8403',
   desc:'Plantas baixas, cortes e fachadas em metros (cotas 3,50), escala 1:50, cotas com traço oblíquo.',
   units:{insertScale:'m',lenPrec:2,angType:'decimal_deg',angPrec:0},fmt:'A3',land:true,vp:1/50,anno:1/50,font:'Arial',grid:[1,0.05],ltscale:null,txtPaper:2.5,hatch:'ANSI31',offset:0.15,
@@ -51,12 +47,9 @@ var TEMPLATES=[
    tplLy(17,'ARQ-COTA','#40ff40','solid',.18),tplLy(18,'ARQ-EIXO','#ff4040','center',.13),tplLy(19,'ARQ-TEXTO','#ffffff','solid',.25),tplLy(20,'ARQ-NIVEL','#ffc040','solid',.18),
    tplLy(21,'ARQ-PROJECAO','#ff8000','hidden',.18),tplLy(22,'ARQ-CORTE','#ff00ff','dashdot',.35),tplLy(23,'ARQ-AUXILIAR','#606878','solid',.13,false)],
   cur:10,dim:{name:'ARQ 1:50',o:{font:'Arial',annot:true,txtH:2,arrowType:'tick',arrowSize:1.5,txtGap:0.8,extOrigin:1.5,extDimline:1.5,baseInc:6,unit:'m',prec:2,decSep:',',zTrail:false,col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',lw:.18,extLw:.18,desc:'Cotas de arquitetura em metros (3,50), traço oblíquo, texto 2 mm no papel (anotativo).'}},
-  blocks:{'PORTA_80':{base:{x:0,y:0},ents:[tplLn(0,0,0,0.8),tplArc(0,0,0.8,0,90),tplLn(0,0,0.8,0)]},
-          'PORTA_70':{base:{x:0,y:0},ents:[tplLn(0,0,0,0.7),tplArc(0,0,0.7,0,90),tplLn(0,0,0.7,0)]},
-          'JANELA_120':{base:{x:0,y:0},ents:[tplLn(0,0,1.2,0),tplLn(0,0.15,1.2,0.15),tplLn(0,0.065,1.2,0.065),tplLn(0,0.085,1.2,0.085),tplLn(0,0,0,0.15),tplLn(1.2,0,1.2,0.15)]},
-          'NORTE':NORTE_BLK},
+  blocks:['NORTE'],
   campos:{titulo:'PLANTA BAIXA',disc:'Desenho Arquitetônico'},norte:true,
-  dicas:'Paredes: OFFSET 0.15 já configurado (desenhe uma face e faça o offset). Portas e janelas: blocos PORTA_80, PORTA_70 e JANELA_120 (comando I), em metros. Cotas no estilo ARQ 1:50.'},
+  dicas:'Paredes: OFFSET 0.15 já configurado (desenhe uma face e faça o offset). Portas, janelas, louças, móveis, escadas e vegetação: Biblioteca de blocos (Ctrl+3), em tamanho real. Cotas no estilo ARQ 1:50.'},
  {id:'topografico',nome:'Desenho Topográfico',icone:'▲',norma:'NBR 13133 (levantamento topográfico) · convenções cartográficas',
   desc:'Levantamentos planialtimétricos em metros (UTM ou local), escala 1:1000, ângulos em graus, minutos e segundos.',
   units:{insertScale:'m',lenPrec:3,angType:'deg_min_sec',angPrec:4},fmt:'A3',land:true,vp:1/1000,anno:1/1000,font:'Arial',grid:[10,1],ltscale:null,txtPaper:2,hatch:'GRASS',offset:1,
@@ -67,11 +60,9 @@ var TEMPLATES=[
    tplLy(24,'TOP-MALHA-COORD','#5a6478','solid',.13),tplLy(25,'TOP-COORDENADAS','#8a94a8','solid',.13),tplLy(26,'TOP-COTA','#40ff40','solid',.18),tplLy(27,'TOP-TEXTO','#ffffff','solid',.25),
    tplLy(28,'TOP-AUXILIAR','#606878','solid',.13,false)],
   cur:10,dim:{name:'TOPO 1:1000',o:{font:'Arial',annot:true,txtH:2,arrowType:'filled',arrowSize:2,unit:'m',prec:2,decSep:',',zTrail:false,col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',lw:.18,extLw:.18,desc:'Distâncias em metros (2 casas), texto 2 mm no papel (anotativo).'}},
-  blocks:{'NORTE':NORTE_BLK,'MARCO':{base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:1,ly:0},tplLn(-1.6,0,1.6,0),tplLn(0,-1.6,0,1.6)]},
-          'RN':{base:{x:0,y:0},ents:[{tp:'pl',closed:true,pts:[{x:-1.5,y:-0.9},{x:1.5,y:-0.9},{x:0,y:1.7},{x:-1.5,y:-0.9}],ly:0},{tp:'point',x:0,y:0,ly:0}]},
-          'ARVORE':{base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:2,ly:0},{tp:'circ',cx:0,cy:0,r:0.3,ly:0}]}},
+  blocks:['NORTE'],
   campos:{titulo:'LEVANTAMENTO PLANIALTIMÉTRICO',disc:'Topografia'},norte:true,pontosM:true,
-  dicas:'Pontos: PONTOS (tabela em metros, com deslocamento UTM) ou POLIGONAL. Curvas mestras e intermediárias nas camadas TOP-CURVA-*. Blocos em metros: MARCO, RN e ARVORE; NORTE no layout.'}
+  dicas:'Pontos: PONTOS (tabela em metros, com deslocamento UTM) ou POLIGONAL. Curvas mestras e intermediárias nas camadas TOP-CURVA-*. Marcos, vértices, RN, postes, drenagem e vegetação: Biblioteca de blocos (Ctrl+3), na escala de anotação.'}
 ];
 function tplGet(id){ return TEMPLATES.filter(function(t){return t.id===id;})[0]; }
 // cria um desenho novo a partir do template
@@ -91,7 +82,7 @@ function tplApply(id,opt){
   var th=Math.round(T.txtPaper/k*10000)/10000; var thi=document.getElementById('th'); if(thi) thi.value=th; S.mtH=th; S.textSize=th;
   if(T.offset) S.offDist=T.offset;
   var P=HPAT_BY[T.hatch]; if(P) S.hatchPat={name:P.name,type:'pat',pname:P.id,ang:0,sp:Math.round(P.size/k*10000)/10000};
-  S.blocks=JSON.parse(JSON.stringify(T.blocks||{}));
+  S.blocks={}; (T.blocks||[]).forEach(function(b){ bibDefine(b); }); // v8.13: definições vindas da biblioteca de blocos
   if(T.pontosM){ var pu=document.getElementById('pt-unit'); if(pu) pu.value='m'; }
   // folha, viewport e carimbo
   ensureLayouts(); var L=S.layouts[0],f=NBR_FMT[T.fmt]||NBR_FMT.A4; L.fmt=T.fmt; L.paper={w:T.land?Math.max(f[0],f[1]):Math.min(f[0],f[1]),h:T.land?Math.min(f[0],f[1]):Math.max(f[0],f[1])}; L.margins=nbrMargins(T.fmt);

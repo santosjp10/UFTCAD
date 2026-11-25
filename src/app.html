@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.12</title>
+<title>EduCAD 2D v8.13</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -30,7 +30,7 @@
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.12 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.13 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -133,6 +133,7 @@
       <div class="rgbtns">
         <div class="rb" id="rb-block" onclick="setTool('block')" title="Criar bloco — B (nome, ponto base, objetos)" data-cmd="B"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1"/><path d="M8 12h8M12 8v8"/></svg>Criar bloco</div>
         <div class="rb" id="rb-insert" onclick="setTool('insert')" title="Inserir bloco — I (? lista os blocos)" data-cmd="I"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M3 3l8 8M11 5v6H5"/></svg>Inserir</div>
+        <div class="rb" id="rb-bib" onclick="bibToggle()" title="Biblioteca de blocos — BIBLIOTECA (Ctrl+3): portas, janelas, louças, móveis, marcos, postes, drenagem, vegetação" data-cmd="BIBLIOTECA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><circle cx="17" cy="17" r="4"/></svg>Biblioteca</div>
       </div><div class="rglbl">Blocos</div>
     </div>
     <div class="rg">
@@ -379,7 +380,7 @@
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.12 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.13 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -787,7 +788,7 @@
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.12 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.13 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 

@@ -52,17 +52,17 @@ with sync_playwright() as p:
     E("()=>{addE({tp:'dim',subtp:'linear',dimDir:'h',x1:0,y1:0,x2:3.5,y2:0,px:1.75,py:-0.6,dimStyle:S.dimCurrent});}")
     ok('Arquitetônico: parede de 3,50 m cotada como "3,50"',E("dimLinearText(3.5,dimStyleOf(S.ents[0])).main")=='3,50')
     ok('Arquitetônico: texto padrão 2,5 mm no papel (0,125 m) e offset de parede 0,15',near(i['th'],0.125) and near(E("S.offDist"),0.15))
-    ok('Arquitetônico: blocos de portas, janela e norte; norte no layout',{'PORTA_80','PORTA_70','JANELA_120','NORTE'}<=set(i['blocks']) and i['norte'] and i['campos'].get('titulo')=='PLANTA BAIXA' and i['campos'].get('escala')=='1:50')
+    ok('Arquitetônico: norte no layout (bloco da biblioteca) e carimbo',{'NORTE'}<=set(i['blocks']) and i['norte'] and i['campos'].get('titulo')=='PLANTA BAIXA' and i['campos'].get('escala')=='1:50')
     hp=E("S.hatchPat"); ok('Arquitetônico: hachura ajustada à escala (ANSI31 ~3 mm no papel)',hp['pname']=='ANSI31' and near(hp['sp']*20,3.175,0.01),hp)
     # DXF do arquitetônico
-    E("()=>{addE({tp:'insert',name:'PORTA_80',x:1,y:0,s:1,rot:0,m:false});}")
+    E("()=>{var n=bibDefine('PORTA_ABRIR',0.8);addE({tp:'insert',name:n,x:1,y:0,s:1,rot:0,m:false});}")
     f=TMP('a.dxf'); open(f,'wb').write(bytes(E("Array.from(cp1252Encode(buildDXF2000({})))"))); d=ezdxf.readfile(f); os.remove(f)
     ok('DXF: unidades em metros ($INSUNITS=6) e escala de tipos de linha 0,025',d.header['$INSUNITS']==6 and near(d.header['$LTSCALE'],0.025),(d.header['$INSUNITS'],d.header['$LTSCALE']))
     ly={l.dxf.name:l for l in d.layers}
     ok('DXF: camadas com cor, tipo e espessura (ARQ-EIXO CENTER 0,13; ARQ-PAREDE 0,50; ARQ-AUXILIAR não imprime)',ly['ARQ-EIXO'].dxf.linetype=='CENTER' and ly['ARQ-EIXO'].dxf.lineweight==13 and ly['ARQ-PAREDE'].dxf.lineweight==50 and ly['ARQ-AUXILIAR'].dxf.plot==0)
     lay=d.layouts.get([n for n in d.layouts.names() if n!='Model'][0]); vps=[v for v in lay.query('VIEWPORT') if v.dxf.id!=1]
     ok('DXF: viewport em 1:50 (1 m = 20 mm no papel)',vps and near(vps[0].dxf.height/vps[0].dxf.view_height,20,1e-6))
-    ok('DXF: bloco PORTA_80 com o arco da porta',any(e.dxftype()=='ARC' for e in d.blocks.get('PORTA_80')) and len(d.modelspace().query('INSERT'))==1)
+    ok('DXF: bloco PORTA_ABRIR_80 (biblioteca) com o arco da porta',any(e.dxftype()=='ARC' for e in d.blocks.get('PORTA_ABRIR_80')) and len(d.modelspace().query('INSERT'))==1)
     # salvar e reabrir mantém as configurações
     doc=E("JSON.stringify(buildDoc())"); f=TMP('a.json'); open(f,'w').write(doc)
     E("()=>{var c=window.confirm;window.confirm=()=>true;newDoc();window.confirm=c;}")
@@ -74,7 +74,7 @@ with sync_playwright() as p:
     ok('Topográfico: metro, ângulos em GMS, A3 paisagem, 1:1000',i['u']=='m' and i['ang']=='deg_min_sec' and i['fmt']=='A3' and near(i['vp'],1/1000),i)
     ok('Topográfico: camadas de pontos, curvas de nível, limites, edificações, vias, hidrografia, coordenadas, cotas altimétricas…',{'TOP-PONTOS','TOP-CURVA-MESTRA','TOP-CURVA-INTERMEDIARIA','TOP-LIMITE','TOP-EDIFICACAO','TOP-VIA','TOP-HIDROGRAFIA','TOP-COORDENADAS','TOP-COTA-ALTIMETRICA','TOP-VEGETACAO','TOP-MALHA-COORD','TOP-TEXTO'}<=set(i['lys']) and i['cur']=='TOP-PONTOS',i['lys'])
     L=E("Object.fromEntries(S.layers.map(l=>[l.nm,[l.ld,l.lw]]))"); ok('Topográfico: curva mestra 0,35 e intermediária 0,13; limite em linha fantasma 0,50',L['TOP-CURVA-MESTRA'][1]==0.35 and L['TOP-CURVA-INTERMEDIARIA'][1]==0.13 and L['TOP-LIMITE']==['phantom',0.5])
-    ok('Topográfico: blocos MARCO, RN, ÁRVORE e NORTE; carimbo do levantamento',{'MARCO','RN','ARVORE','NORTE'}<=set(i['blocks']) and i['campos'].get('titulo')=='LEVANTAMENTO PLANIALTIMÉTRICO' and i['campos'].get('escala')=='1:1000')
+    ok('Topográfico: norte (biblioteca) e carimbo do levantamento',{'NORTE'}<=set(i['blocks']) and i['campos'].get('titulo')=='LEVANTAMENTO PLANIALTIMÉTRICO' and i['campos'].get('escala')=='1:1000')
     ok('Topográfico: texto 2 mm no papel = 2 m; grade 10 m; tabela de PONTOS em metros',near(i['th'],2) and i['grid']==[10,1] and E("document.getElementById('pt-unit').value")=='m')
     ok('Topográfico: POLIGONAL desenha em metros (85,24 m = 85,24 unidades)',E("(()=>{var R=poAulaR();return Math.abs(R.pts[1].E-R.pts[0].E-84.6258557751676)<1e-6&&1000/unitMm()===1;})()"))
     # ── Padrão

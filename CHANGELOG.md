@@ -1,5 +1,70 @@
 # Changelog
 
+## v8.13 — Biblioteca de blocos
+
+### Paleta visual (como as Tool Palettes do AutoCAD)
+- Botão **Biblioteca** (grupo Blocos), **Ctrl+3** ou o comando `BIBLIOTECA` (também `BIB`, `TOOLPALETTES`, `BLOCKSPALETTE`, `ADCENTER`).
+- É uma janela flutuante: fica aberta enquanto você desenha e pode ser arrastada pela barra de título.
+- **Abas:**
+  - **Arquitetura**, **Topografia** e **Mecânico**: a aba inicial acompanha o modelo do desenho;
+  - **Do desenho**: os blocos deste desenho, inclusive os criados com `B`;
+  - **Meus blocos**: os blocos guardados no navegador.
+- Miniatura de cada item, agrupada por categoria, e **busca** sem acento (ex.: "agua" acha a caixa d'água).
+- Ao escolher um item, o rodapé mostra:
+  - descrição, tamanho real e fator de escala;
+  - parâmetro (largura, degraus…), rotação, escala, espelhar e camada automática.
+
+### Inserção
+- Clique no bloco e clique no desenho, com pré-visualização.
+- Para itens orientáveis (portas, janelas, móveis), **arraste para girar**, digite o ângulo ou tecle Enter para manter o último.
+- A inserção **repete** até Enter ou Esc. Árvores, pontos e postes entram com um clique só.
+- Opções na linha de comando:
+  - `R`: rotação;
+  - `E`: escala;
+  - `M`: espelhar, por exemplo para a porta abrir para o outro lado.
+- **Escala automática:**
+  - objetos reais (portas, móveis, louças) são desenhados em metros e convertidos para a unidade do desenho. Em metro o fator é 1; em milímetro, 1000;
+  - símbolos (norte, marcos, postes, RN) têm tamanho fixo **impresso**, em mm, e seguem a escala de anotação. Exemplos: 3 mm impressos = 3 m em 1:1000; no layout, fator 1.
+- **Camada automática:** cada item vai para a sua camada (ARQ-PORTA, ARQ-LOUCAS, TOP-PONTOS, TOP-HIDROGRAFIA…) quando ela existe; senão, para a camada atual.
+- **Itens paramétricos:** a largura da porta ou da janela, o número de degraus e outros valores geram um bloco por valor (`PORTA_ABRIR_80`, `PORTA_ABRIR_90`, `ESCADA_RETA_16`…). É uma alternativa simples aos blocos dinâmicos do AutoCAD, que abre em qualquer CAD.
+
+### Conteúdo (78 itens)
+- **Arquitetura** (tamanho real, em metros):
+  - portas de abrir, dupla, de correr e portão;
+  - janelas de correr, basculante e de abrir;
+  - vaso sanitário, lavatório, box, banheira, bancada com cuba, tanque e máquina de lavar;
+  - fogão, geladeira e mesas;
+  - sofá, poltrona, cadeira, mesa de centro, rack e escrivaninha;
+  - camas (solteiro, casal, queen e king), berço, guarda-roupa e criado-mudo;
+  - escadas reta e em L;
+  - árvore, arbusto, palmeira e vaso;
+  - automóvel.
+- **Símbolos de projeto**, em mm impressos: norte (rosa e seta), nível em planta, indicação de corte, bolha de eixo e indicação de vista.
+- **Topografia** (símbolos em mm impressos):
+  - **Marcos e pontos:** marco geodésico, marco de concreto, vértice do imóvel, ponto levantado, ponto cotado, RN, estaca e estação.
+  - **Infraestrutura:** poste de energia, poste de iluminação, torre, boca de lobo, poço de visita, caixa de passagem, bueiro, hidrante, poço e reservatório.
+  - **Hidrografia:** sentido do escoamento, nascente e área alagadiça.
+  - **Vegetação:** árvore isolada, copa, frutífera, palmeira e cultura/pomar.
+  - **Edificações e cercas:** casa, templo, escola, porteira e mata-burro.
+- **Mecânico:** rugosidade, seta de corte, marca de centro e solda de filete.
+
+### Blocos de verdade
+- Cada item vira um **bloco** (BLOCK/INSERT), o mesmo do comando `I`:
+  - é definido no desenho só quando é usado;
+  - pode ser selecionado, movido, explodido e editado nas propriedades;
+  - sai no DXF 2000 como BLOCK + INSERT, com hachuras cheias, elipses e textos. A auditoria do ezdxf não encontrou erros.
+
+### Meus blocos
+- Na aba **Do desenho**, escolha um bloco e use **Guardar em Meus blocos**.
+  - O bloco fica neste navegador, com a unidade de origem.
+  - Em outro desenho, ele entra já convertido: um bloco feito em mm entra com fator 0,001 num desenho em metros.
+
+### Outros
+- Os modelos de desenho (v8.12) agora tiram os seus blocos da biblioteca:
+  - os blocos fixos `PORTA_80`, `PORTA_70`, `JANELA_120`, `MARCO`, `RN` e `ARVORE` foram substituídos pelos itens da biblioteca;
+  - desenhos antigos continuam abrindo, porque os blocos ficam gravados no arquivo.
+- Testes: `tests/test_biblioteca.py` (52). Total de **1054 testes**, todos passando.
+
 ## v8.12 — Modelos de desenho (templates)
 
 ### Novo desenho com modelo

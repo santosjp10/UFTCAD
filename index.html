@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.11</title>
+<title>EduCAD 2D v8.12</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -587,6 +587,27 @@ body.scr-running #cw{cursor:progress!important}
 /* v8.10: estilo de texto */
 .sty-prev{margin-top:8px;padding:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;font-size:20px;color:var(--t0)}
 #sty-font,#mted-font{width:100%}
+
+/* v8.12: biblioteca de modelos */
+.tpl-modal{min-width:min(760px,96vw);max-width:96vw;max-height:94vh;overflow:auto}
+.tpl-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:720px){ .tpl-grid{grid-template-columns:1fr} }
+.tpl-card{display:flex;gap:10px;border:1px solid var(--bdr);border-radius:6px;padding:10px;background:var(--bg3);cursor:default}
+.tpl-card:hover{border-color:var(--acc,#4d9ef7)}
+.tpl-ico{font-size:30px;line-height:1;width:40px;text-align:center;color:var(--acc,#4d9ef7)}
+.tpl-body{flex:1;display:flex;flex-direction:column;gap:3px}
+.tpl-nome{font-weight:700;font-size:12.5px;color:var(--t0)}
+.tpl-desc{font-size:10.5px;color:var(--t1);line-height:1.4}
+.tpl-info{font-size:10px;color:#8ff0b0}
+.tpl-norma{font-size:9px;color:var(--t2)}
+.tpl-body .btn{align-self:flex-start;margin-top:4px;padding:3px 14px}
+.tpl-sec{margin:12px 0 6px;font-size:11px;font-weight:700;color:var(--t1)}
+.tpl-none{font-size:10px;color:var(--t2)}
+.tpl-urow{display:flex;gap:6px;align-items:center;font-size:10.5px;color:var(--t0);padding:3px 0}
+.tpl-urow span{flex:1}
+.tpl-urow .btn{padding:2px 10px}
+.tpl-save{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)}
+.tpl-save input#tpl-name{flex:1;min-width:200px;margin:0}
 </style>
 </head>
 <body>
@@ -605,7 +626,7 @@ body.scr-running #cw{cursor:progress!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.11 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.12 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -621,7 +642,7 @@ body.scr-running #cw{cursor:progress!important}
   <div class="rpanel" id="tab0">
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="newDoc()" title="Novo — NEW (Ctrl+N)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
+        <div class="rb" onclick="tplOpen()" title="Novo — NEW (Ctrl+N): escolher o modelo (Padrão, Mecânico, Arquitetônico, Topográfico)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
         <div class="rb" onclick="saveCmd()" title="Salvar — SAVE: nome, formato e pasta (Ctrl+S regrava o mesmo arquivo)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
         <div class="rb" onclick="openDoc()" title="Abrir (.json ou .dxf) — OPEN (Ctrl+O)" data-cmd="OPEN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
         <div class="rb" onclick="showLineType()" title="Tipos de linha — LT" data-cmd="LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
@@ -712,7 +733,7 @@ body.scr-running #cw{cursor:progress!important}
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="showTemplate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="18" height="20" rx="1"/><line x1="7" y1="7" x2="17" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="13" y2="15"/></svg>Template</div>
+        <div class="rb" onclick="showTemplate()" title="Moldura ABNT desenhada no Model — MOLDURA (para modelos de desenho completos, use Novo)" data-cmd="MOLDURA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="18" height="20" rx="1"/><line x1="7" y1="7" x2="17" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="13" y2="15"/></svg>Moldura</div>
       </div><div class="rglbl">ABNT</div>
     </div>
   </div>
@@ -954,7 +975,7 @@ body.scr-running #cw{cursor:progress!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.11 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.12 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -968,7 +989,7 @@ body.scr-running #cw{cursor:progress!important}
 </div></div>
 
 <div class="ov" id="ov-template"><div class="modal">
-  <h3>Templates ABNT NBR 16752</h3>
+  <h3>Moldura ABNT NBR 16752 (no Model)</h3>
   <label>Formato:</label>
   <select id="tf"><option value="210,297">A4 Retrato 210×297</option><option value="297,210">A4 Paisagem 297×210</option><option value="420,297">A3 Paisagem 420×297</option><option value="594,420">A2 Paisagem 594×420</option></select>
   <label>Escala:</label>
@@ -1362,7 +1383,7 @@ body.scr-running #cw{cursor:progress!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.11 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.12 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1555,7 +1576,7 @@ function fontMeasure(t,key,h){ t=String(t); if(!t) return 0; var k=fontKey(key),
 if(typeof document!=='undefined'&&document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',function(){ FONT_MW={}; });
 
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.11 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.12 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1629,7 +1650,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.11 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.12 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -3467,7 +3488,7 @@ function onKey(e){
   if(e.ctrlKey&&(k==='y'||k==='Y')){e.preventDefault();redo();return;}
   if(e.ctrlKey&&k==='a'){e.preventDefault();selAll();return;}
   if(e.ctrlKey&&k==='s'){e.preventDefault();if(e.shiftKey)saveCmd();else qsaveCmd();return;} // v8.9: Ctrl+S regrava; Ctrl+Shift+S = Salvar como
-  if(e.ctrlKey&&k==='n'){e.preventDefault();newDoc();return;}
+  if(e.ctrlKey&&k==='n'){e.preventDefault();tplOpen();return;} // v8.12: biblioteca de modelos
   if(k==='F3'){e.preventDefault();toggleMode('osnap');return;}
   if(e.ctrlKey&&(k==='0'||e.code==='Digit0'||e.code==='Numpad0')){e.preventDefault();toggleCleanScreen();return;}
   if(k==='F7'){toggleMode('grid');return;}
@@ -3746,6 +3767,7 @@ function onCmdKey(e){
     'SCRIPT':'script','SCR':'script','GRAVARSCRIPT':'scrrec','ACTRECORD':'scrrec',
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
     'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
+    'MODELOS':'tpl','TEMPLATES':'tpl','NOVOMODELO':'tpl','MOLDURA':'moldura',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
     'PDF':'pdf','EXPORTPDF':'pdf','PLOT':'pagesetup','PLOTAR':'pagesetup','PAGESETUP':'pagesetup','PAGINA':'pagesetup',
@@ -3787,6 +3809,8 @@ function onCmdKey(e){
     case 'point':setTool('point');break;
     case 'pontos':ptOpen();break;
     case 'script':scrOpen();break;
+    case 'tpl':tplOpen();break;
+    case 'moldura':showTemplate();break;
     case 'style':styleOpen();break;
     case 'poligonal':poOpen();break;
     case 'scrrec':scrRecToggle();break;
@@ -3827,13 +3851,13 @@ function onCmdKey(e){
     case 'ortho':toggleMode('ortho');break;
     case 'grid':toggleMode('grid');break;
     case 'snap':toggleMode('snap');break;
-    case 'new':newDoc();break;
+    case 'new':tplOpen();break;
     case 'save':saveCmd();break;
     case 'qsave':qsaveCmd();break;
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.11 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.12 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -3849,6 +3873,7 @@ function onCmdKey(e){
       log('ZOOM: Z=Zoom [Tudo/Centro/Extensão/Anterior/Escala/Janela/Objeto, nX, 1/50XP]  ZE=Extensão  ZJ=Janela  ZP=Anterior  ZA=Tudo  ZO=Objeto  |  duplo clique no botão do meio = Extensão','inf');
       log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
       log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
+      log('  NEW/Ctrl+N = Novo com modelo: Padrão, Mecânico, Arquitetônico ou Topográfico (e Meus modelos)','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');
@@ -4207,7 +4232,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'8.11',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function buildDoc(){return {v:'8.12',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
 function saveDoc(){var d=buildDoc();downloadBlob(JSON.stringify(d,null,2),'application/json','educad.json');document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');} // v8.9: passa por downloadBlob (janela Salvar como)
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
@@ -4528,7 +4553,7 @@ function buildDXF2000(opt){
   g(9,'$EXTMAX');g(10,n(bb.x+bb.w));g(20,n(bb.y+bb.h));g(30,'0.0');
   g(9,'$LIMMIN');g(10,'0.0');g(20,'0.0');
   g(9,'$LIMMAX');g(10,'420.0');g(20,'297.0');
-  g(9,'$LTSCALE');g(40,'1.0');
+  g(9,'$LTSCALE');g(40,n(S.ltscale||1)); g(9,'$PSLTSCALE');g(70,S.ltscale?0:1); // v8.12: escala de tipos de linha do template
   g(9,'$CELTSCALE');g(40,'1.0');
   g(9,'$TEXTSTYLE');g(7,'Standard');
   g(9,'$CLAYER');g(8,'0');
@@ -4953,7 +4978,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.11 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.12 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -6026,6 +6051,7 @@ function dimFmtNum(v,prec,sep,zLead,zTrail,round){
   return s.replace('.',sep||'.');
 }
 function dimUnitConv(v,st){
+  v=v*((typeof unitMm==='function')?unitMm():1); // v8.12: medida na unidade do desenho → mm (desenhos em metro/cm)
   if(st.unit==='cm') return v/10;
   if(st.unit==='m') return v/1000;
   if(st.unit==='in') return v/25.4;
@@ -10329,7 +10355,7 @@ function pdfAssemble(pages,title){
   objs[fontId+1]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
   objs[fontId+2]='<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.11) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.12) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -12804,6 +12830,168 @@ function cbRefit(msg){ if(S.space==='model') return false; var L=curLayout(); if
   layoutApply=function(){ var r=la.apply(this,arguments); cbRefit(false); return r; };
   switchSpace=function(t){ var r=sw.apply(this,arguments); if(S.space!=='model') setTimeout(function(){ cbRefit(true); },0); return r; };
 })();
+/* ═══════════════════════════════════════════════════════════════════
+   v8.12 — TEMPLATES (MODELOS DE DESENHO)
+   Novo (NEW, Ctrl+N) abre a biblioteca: Padrão (o desenho inicial de sempre),
+   Mecânico, Arquitetônico e Topográfico — cada um com unidade, folha e
+   orientação, escala da viewport e de anotação, camadas (cor, tipo e
+   espessura de linha), estilo de cota, fonte, alturas de texto, hachura,
+   grade/snap, blocos e carimbo preenchido. Tudo pode ser mudado depois.
+   "Meus modelos": salvar o desenho atual como modelo (no navegador) ou usar
+   qualquer arquivo .json do EduCAD como modelo.
+   ═══════════════════════════════════════════════════════════════════ */
+var UNITS_DEFAULT={lenType:'decimal',lenPrec:4,angType:'decimal_deg',angPrec:0,clockwise:false,insertScale:'mm'};
+// ── unidades, escala de tipos de linha e template gravados no arquivo ──
+(function(){ var bd=buildDoc,ad=applyDoc,nd=newDoc;
+  buildDoc=function(){ var d=bd.apply(this,arguments); d.units=JSON.parse(JSON.stringify(S.units||UNITS_DEFAULT)); if(S.ltscale) d.ltscale=S.ltscale; if(S.template) d.template=S.template; d.grid={g:S.modes.gridSz,s:S.modes.snapSz}; return d; };
+  applyDoc=function(d,name){ var u=d&&d.units,ok=u&&typeof u==='object'&&({mm:1,cm:1,m:1,'in':1,ft:1,km:1})[u.insertScale];
+    S.units=JSON.parse(JSON.stringify(ok?Object.assign({},UNITS_DEFAULT,u):UNITS_DEFAULT));
+    S.ltscale=(d&&d.ltscale>0)?d.ltscale:undefined; S.template=(d&&typeof d.template==='string')?d.template.slice(0,30):undefined;
+    if(d&&d.grid&&d.grid.g>0){ S.modes.gridSz=d.grid.g; if(d.grid.s>0) S.modes.snapSz=d.grid.s; }
+    return ad.apply(this,arguments); };
+  var BASE=null; function base(){ var th=document.getElementById('th'),pu=document.getElementById('pt-unit');
+    return {layers:JSON.parse(JSON.stringify(S.layers)),cur:S.curLy,font:S.textFont,th:th?th.value:null,mtH:S.mtH,ts:S.textSize,off:S.offDist,hp:S.hatchPat?JSON.parse(JSON.stringify(S.hatchPat)):S.hatchPat,pu:pu?pu.value:null}; }
+  window.addEventListener('load',function(){ BASE=base(); });
+  window.tplBaseRestore=function(){ if(!BASE) return; var B=JSON.parse(JSON.stringify(BASE)); S.layers=B.layers; S.curLy=B.cur; S.textFont=B.font; S.mtH=B.mtH; S.textSize=B.ts; S.offDist=B.off; S.hatchPat=B.hp;
+    var th=document.getElementById('th'),pu=document.getElementById('pt-unit'); if(th&&B.th!==null) th.value=B.th; if(pu&&B.pu!==null) pu.value=B.pu; };
+  newDoc=function(){ var n0=S.ents.length,wasT=!!S.template,r=nd.apply(this,arguments); if(!(n0&&S.ents.length)){ if(wasT) tplBaseRestore(); S.units=JSON.parse(JSON.stringify(UNITS_DEFAULT)); S.ltscale=undefined; S.template=undefined; S.annoScale=1; S.modes.gridSz=10; S.modes.snapSz=5; var s=document.getElementById('annoSel'); if(s) s.value='1'; } return r; };
+})();
+// ── biblioteca ──────────────────────────────────────────────────────────────
+function tplLy(id,nm,col,ld,lw,plot){ return {id:id,nm:nm,col:col,vis:true,lock:false,ld:ld||'solid',lw:lw,plot:plot!==false}; }
+function tplDim(base,over){ var s=JSON.parse(JSON.stringify(DS_DEFAULT)); if(base==='ABNT'){ s.decSep=','; s.zTrail=true; s.txtAlign='aligned'; s.txtPos='above'; s.baseInc=7; } Object.keys(over).forEach(function(k){ s[k]=over[k]; }); return s; }
+function tplArc(cx,cy,r,a0,a1){ return {tp:'arc',cx:cx,cy:cy,r:r,sa:a0*Math.PI/180,ea:a1*Math.PI/180,ly:0}; }
+function tplLn(a,b,c,d){ return {tp:'line',x1:a,y1:b,x2:c,y2:d,ly:0}; }
+var NORTE_BLK={base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:6,ly:0},{tp:'pl',closed:true,pts:[{x:0,y:9},{x:3,y:-4},{x:0,y:-1.5},{x:-3,y:-4},{x:0,y:9}],ly:0},{tp:'txt',x:-1.6,y:10.5,h:3.5,txt:'N',rot:0,ly:0}]}; // mm de papel
+var TEMPLATES=[
+ {id:'padrao',nome:'Padrão',icone:'□',desc:'O desenho inicial de sempre do EduCAD: milímetros, camadas 0, Construção, Dimensão e Hachura, folha A4 paisagem.',padrao:true},
+ {id:'mecanico',nome:'Desenho Mecânico',icone:'⚙',norma:'NBR 8403 (linhas) · NBR 10067 (vistas) · NBR 10126 (cotagem) · NBR 12298 (hachuras)',
+  desc:'Peças e componentes: vistas ortográficas, cortes, cotagem ABNT e escalas de ampliação ou redução.',
+  units:{insertScale:'mm',lenPrec:2,angType:'decimal_deg',angPrec:1},fmt:'A4',land:true,vp:1,anno:1,font:'ISOCPEUR',grid:[10,1],ltscale:0.5,txtPaper:3.5,hatch:'ANSI31',
+  layers:[tplLy(0,'0','#ffffff','solid',.25),tplLy(10,'CONTORNO','#ffffff','solid',.5),tplLy(11,'OCULTA','#ffff00','hidden',.35),tplLy(12,'CENTRO','#ff4040','center',.18),
+   tplLy(13,'CORTE-PLANO','#ff00ff','dashdot',.35),tplLy(14,'HACHURA','#00c8c8','solid',.18),tplLy(15,'COTAS','#40ff40','solid',.18),tplLy(16,'TEXTO','#ffffff','solid',.25),
+   tplLy(17,'RUPTURA','#c0c0c0','solid',.18),tplLy(18,'FANTASMA','#8080ff','phantom',.18),tplLy(19,'AUXILIAR','#606878','solid',.13,false)],
+  cur:10,dim:{name:'MECÂNICO ABNT',o:{base:'ABNT',font:'ISOCPEUR',txtH:3.5,arrowSize:3,arrowType:'filled',prec:2,unit:'mm',col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',extOrigin:1,extDimline:2,baseInc:7,desc:'Cotagem mecânica ABNT: setas cheias, texto 3,5 mm, vírgula decimal.'}},
+  blocks:{'CORTE_SETA':{base:{x:0,y:0},ents:[tplLn(0,0,0,8),{tp:'pl',closed:true,pts:[{x:-1.5,y:5},{x:0,y:8},{x:1.5,y:5},{x:-1.5,y:5}],ly:0},tplLn(-3,0,3,0)]},
+          'RUGOSIDADE':{base:{x:0,y:0},ents:[tplLn(-3,3,0,0),tplLn(0,0,6,10),tplLn(6,10,14,10)]}},
+  campos:{titulo:'PEÇA — VISTAS ORTOGRÁFICAS',disc:'Desenho Técnico Mecânico'},
+  dicas:'Desenhe as arestas visíveis na camada CONTORNO, as ocultas em OCULTA e os eixos em CENTRO; cortes: plano em CORTE-PLANO e hachura ANSI31 na camada HACHURA. Blocos: CORTE_SETA e RUGOSIDADE (comando I).'},
+ {id:'arquitetonico',nome:'Desenho Arquitetônico',icone:'⌂',norma:'NBR 6492 (representação de projetos de arquitetura) · NBR 8403',
+  desc:'Plantas baixas, cortes e fachadas em metros (cotas 3,50), escala 1:50, cotas com traço oblíquo.',
+  units:{insertScale:'m',lenPrec:2,angType:'decimal_deg',angPrec:0},fmt:'A3',land:true,vp:1/50,anno:1/50,font:'Arial',grid:[1,0.05],ltscale:null,txtPaper:2.5,hatch:'ANSI31',offset:0.15,
+  layers:[tplLy(0,'0','#ffffff','solid',.25),tplLy(10,'ARQ-PAREDE','#ffffff','solid',.5),tplLy(11,'ARQ-PAREDE-HACH','#808080','solid',.09),tplLy(12,'ARQ-PORTA','#ffff00','solid',.25),
+   tplLy(13,'ARQ-JANELA','#00ffff','solid',.25),tplLy(14,'ARQ-MOBILIARIO','#8080ff','solid',.18),tplLy(15,'ARQ-LOUCAS','#80c0ff','solid',.18),tplLy(16,'ARQ-PISO','#606060','solid',.09),
+   tplLy(17,'ARQ-COTA','#40ff40','solid',.18),tplLy(18,'ARQ-EIXO','#ff4040','center',.13),tplLy(19,'ARQ-TEXTO','#ffffff','solid',.25),tplLy(20,'ARQ-NIVEL','#ffc040','solid',.18),
+   tplLy(21,'ARQ-PROJECAO','#ff8000','hidden',.18),tplLy(22,'ARQ-CORTE','#ff00ff','dashdot',.35),tplLy(23,'ARQ-AUXILIAR','#606878','solid',.13,false)],
+  cur:10,dim:{name:'ARQ 1:50',o:{font:'Arial',annot:true,txtH:2,arrowType:'tick',arrowSize:1.5,txtGap:0.8,extOrigin:1.5,extDimline:1.5,baseInc:6,unit:'m',prec:2,decSep:',',zTrail:false,col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',lw:.18,extLw:.18,desc:'Cotas de arquitetura em metros (3,50), traço oblíquo, texto 2 mm no papel (anotativo).'}},
+  blocks:{'PORTA_80':{base:{x:0,y:0},ents:[tplLn(0,0,0,0.8),tplArc(0,0,0.8,0,90),tplLn(0,0,0.8,0)]},
+          'PORTA_70':{base:{x:0,y:0},ents:[tplLn(0,0,0,0.7),tplArc(0,0,0.7,0,90),tplLn(0,0,0.7,0)]},
+          'JANELA_120':{base:{x:0,y:0},ents:[tplLn(0,0,1.2,0),tplLn(0,0.15,1.2,0.15),tplLn(0,0.065,1.2,0.065),tplLn(0,0.085,1.2,0.085),tplLn(0,0,0,0.15),tplLn(1.2,0,1.2,0.15)]},
+          'NORTE':NORTE_BLK},
+  campos:{titulo:'PLANTA BAIXA',disc:'Desenho Arquitetônico'},norte:true,
+  dicas:'Paredes: OFFSET 0.15 já configurado (desenhe uma face e faça o offset). Portas e janelas: blocos PORTA_80, PORTA_70 e JANELA_120 (comando I), em metros. Cotas no estilo ARQ 1:50.'},
+ {id:'topografico',nome:'Desenho Topográfico',icone:'▲',norma:'NBR 13133 (levantamento topográfico) · convenções cartográficas',
+  desc:'Levantamentos planialtimétricos em metros (UTM ou local), escala 1:1000, ângulos em graus, minutos e segundos.',
+  units:{insertScale:'m',lenPrec:3,angType:'deg_min_sec',angPrec:4},fmt:'A3',land:true,vp:1/1000,anno:1/1000,font:'Arial',grid:[10,1],ltscale:null,txtPaper:2,hatch:'GRASS',offset:1,
+  layers:[tplLy(0,'0','#ffffff','solid',.25),tplLy(10,'TOP-PONTOS','#ffff00','solid',.18),tplLy(11,'TOP-PONTOS-TEXTO','#e0e080','solid',.13),tplLy(12,'TOP-COTA-ALTIMETRICA','#00ffff','solid',.13),
+   tplLy(13,'TOP-CURVA-MESTRA','#c87830','solid',.35),tplLy(14,'TOP-CURVA-INTERMEDIARIA','#d8b080','solid',.13),tplLy(15,'TOP-CURVA-TEXTO','#c87830','solid',.13),
+   tplLy(16,'TOP-LIMITE','#ff2020','phantom',.5),tplLy(17,'TOP-CONFRONTANTE','#ff8080','solid',.18),tplLy(18,'TOP-EDIFICACAO','#ff00ff','solid',.35),tplLy(19,'TOP-VIA','#c0c0c0','solid',.25),
+   tplLy(20,'TOP-HIDROGRAFIA','#2080ff','solid',.25),tplLy(21,'TOP-VEGETACAO','#40c040','solid',.18),tplLy(22,'TOP-CERCA','#b0b0b0','divide',.18),tplLy(23,'TOP-POLIGONAL','#00c0c0','dashed',.18),
+   tplLy(24,'TOP-MALHA-COORD','#5a6478','solid',.13),tplLy(25,'TOP-COORDENADAS','#8a94a8','solid',.13),tplLy(26,'TOP-COTA','#40ff40','solid',.18),tplLy(27,'TOP-TEXTO','#ffffff','solid',.25),
+   tplLy(28,'TOP-AUXILIAR','#606878','solid',.13,false)],
+  cur:10,dim:{name:'TOPO 1:1000',o:{font:'Arial',annot:true,txtH:2,arrowType:'filled',arrowSize:2,unit:'m',prec:2,decSep:',',zTrail:false,col:'#40ff40',extCol:'#40ff40',txtCol:'#40ff40',lw:.18,extLw:.18,desc:'Distâncias em metros (2 casas), texto 2 mm no papel (anotativo).'}},
+  blocks:{'NORTE':NORTE_BLK,'MARCO':{base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:1,ly:0},tplLn(-1.6,0,1.6,0),tplLn(0,-1.6,0,1.6)]},
+          'RN':{base:{x:0,y:0},ents:[{tp:'pl',closed:true,pts:[{x:-1.5,y:-0.9},{x:1.5,y:-0.9},{x:0,y:1.7},{x:-1.5,y:-0.9}],ly:0},{tp:'point',x:0,y:0,ly:0}]},
+          'ARVORE':{base:{x:0,y:0},ents:[{tp:'circ',cx:0,cy:0,r:2,ly:0},{tp:'circ',cx:0,cy:0,r:0.3,ly:0}]}},
+  campos:{titulo:'LEVANTAMENTO PLANIALTIMÉTRICO',disc:'Topografia'},norte:true,pontosM:true,
+  dicas:'Pontos: PONTOS (tabela em metros, com deslocamento UTM) ou POLIGONAL. Curvas mestras e intermediárias nas camadas TOP-CURVA-*. Blocos em metros: MARCO, RN e ARVORE; NORTE no layout.'}
+];
+function tplGet(id){ return TEMPLATES.filter(function(t){return t.id===id;})[0]; }
+// cria um desenho novo a partir do template
+function tplApply(id,opt){
+  opt=opt||{}; var T=tplGet(id); if(!T) return false;
+  var n0=S.ents.length; newDoc(); if(n0&&S.ents.length) return false; // o usuário desistiu (desenho não salvo)
+  tplBaseRestore(); if(T.padrao){ if(typeof updLayerUI==='function'){ updLayerUI(); updLayerSel(); } renderAll(); log('Novo desenho (Padrão).','ok'); return true; }
+  S.template=T.id;
+  S.units=Object.assign(JSON.parse(JSON.stringify(UNITS_DEFAULT)),T.units);
+  S.layers=JSON.parse(JSON.stringify(T.layers)); S.curLy=T.cur;
+  S.textFont=T.font;
+  S.modes.gridSz=T.grid[0]; S.modes.snapSz=T.grid[1];
+  S.annoScale=T.anno; var as=document.getElementById('annoSel'); if(as) as.value=String(T.anno);
+  var k=annoK(); // mm de papel por unidade do desenho
+  S.ltscale=T.ltscale||Math.round(0.5/k*1e6)/1e6; // traços de ~6 mm no papel
+  var st=tplDim(T.dim.o.base||'',T.dim.o); delete st.base; st.name=T.dim.name; S.dimStyles=dimDefaultStyles().concat([st]).map(normDimStyle); S.dimCurrent=st.name; if(typeof updDimStyleSel==='function') updDimStyleSel();
+  var th=Math.round(T.txtPaper/k*10000)/10000; var thi=document.getElementById('th'); if(thi) thi.value=th; S.mtH=th; S.textSize=th;
+  if(T.offset) S.offDist=T.offset;
+  var P=HPAT_BY[T.hatch]; if(P) S.hatchPat={name:P.name,type:'pat',pname:P.id,ang:0,sp:Math.round(P.size/k*10000)/10000};
+  S.blocks=JSON.parse(JSON.stringify(T.blocks||{}));
+  if(T.pontosM){ var pu=document.getElementById('pt-unit'); if(pu) pu.value='m'; }
+  // folha, viewport e carimbo
+  ensureLayouts(); var L=S.layouts[0],f=NBR_FMT[T.fmt]||NBR_FMT.A4; L.fmt=T.fmt; L.paper={w:T.land?Math.max(f[0],f[1]):Math.min(f[0],f[1]),h:T.land?Math.min(f[0],f[1]):Math.max(f[0],f[1])}; L.margins=nbrMargins(T.fmt);
+  switchSpace(L.id);
+  titleBlockInsert({quiet:true,noSnap:true});
+  var v=curViewport(); if(v){ v.k=unitMm()*T.vp; v.auto=false; v.cx=(v.w/2-20)/v.k; v.cy=(v.h/2-20)/v.k; } // origem do Model 20 mm (no papel) para dentro da viewport: espaço para cotas
+  var C=cbFind(); if(C){ Object.keys(T.campos||{}).forEach(function(kf){ if(C.fields[kf]) C.fields[kf].txt=T.campos[kf]; }); if(C.fields.escala) C.fields.escala.txt=ratioLabel(T.vp); }
+  if(T.norte){ var r=printableRect(L); S.ents.push({id:uid(),tp:'insert',name:'NORTE',x:r.x+r.w-14,y:r.y+r.h-16,s:1,rot:0,m:false,ly:0}); }
+  syncLayoutPanel(); switchSpace('model');
+  // vista do Model: a área da folha na escala do template
+  if(v){ var w=v.w/v.k,h=v.h/v.k,W=cvW(),H=cvH(),x0=v.cx-w/2,y0=v.cy-h/2; S.vp.sc=Math.min(W/w,H/h)*0.9; S.vp.x=W/2-(x0+w/2)*S.vp.sc; S.vp.y=H/2+(y0+h/2)*S.vp.sc; }
+  resetHistory(); S.dirty=false; updLayerUI(); updLayerSel(); updStatus(); renderAll();
+  document.getElementById('ftitle').textContent='Sem título — '+T.nome;
+  log('Template '+T.nome+': unidade '+({mm:'milímetro',cm:'centímetro',m:'metro'})[T.units.insertScale]+', '+T.fmt+(T.land?' paisagem':' retrato')+', escala '+ratioLabel(T.vp)+', '+T.layers.length+' camadas (atual: '+getLy(T.cur).nm+'), estilo de cota '+T.dim.name+', fonte '+fontLabel(T.font).split(' —')[0]+'.','ok');
+  if(T.dicas) log(T.dicas,'inf');
+  return true;
+}
+// ── modelos do usuário (no navegador) ──────────────────────────────────────
+function tplUserList(){ try{ return JSON.parse(localStorage.getItem('educad-modelos')||'[]')||[]; }catch(e){ return []; } }
+function tplUserSave(list){ try{ localStorage.setItem('educad-modelos',JSON.stringify(list)); return true; }catch(e){ log('Não foi possível guardar o modelo neste navegador (espaço cheio?).','er'); return false; } }
+function tplUserAdd(){
+  var nm=(document.getElementById('tpl-name').value||'').trim().slice(0,40); if(!nm){ log('Dê um nome ao modelo.','er'); document.getElementById('tpl-name').focus(); return; }
+  if(typeof spaceSave==='function'&&S.space!=='model') spaceSave();
+  var d=JSON.parse(JSON.stringify(buildDoc())); if(!document.getElementById('tpl-geo').checked){ d.ents=[]; }
+  var L=tplUserList().filter(function(m){ return m.nome!==nm; }); L.unshift({nome:nm,data:new Date().toLocaleDateString('pt-BR'),doc:d}); if(L.length>20) L.length=20;
+  if(tplUserSave(L)){ log('Modelo "'+nm+'" guardado neste navegador. Ele aparece em Novo → Meus modelos.','ok'); tplRender(); }
+}
+function tplUserApply(i){ var m=tplUserList()[i]; if(!m) return; tplDocApply(m.doc,m.nome); }
+function tplDocApply(d,nome){
+  var n0=S.ents.length; newDoc(); if(n0&&S.ents.length) return;
+  var err=applyDoc(JSON.parse(JSON.stringify(d)),'Sem título'); if(err){ log('Modelo inválido: '+err,'er'); return; }
+  closeOv('ov-novo'); resetHistory(); S.dirty=false; if(typeof FILEIO==='object') FILEIO.docHandle=null;
+  document.getElementById('ftitle').textContent='Sem título — '+nome; log('Novo desenho a partir do modelo "'+nome+'".','ok');
+}
+function tplUserDel(i){ var L=tplUserList(),m=L[i]; if(!m||!confirm('Excluir o modelo "'+m.nome+'" deste navegador?')) return; L.splice(i,1); tplUserSave(L); tplRender(); }
+function tplFile(ev){ var f=ev.target.files[0]; if(!f) return; var r=new FileReader();
+  r.onload=function(e){ try{ var d=JSON.parse(e.target.result); tplDocApply(d,f.name.replace(/\.json$/i,'')); }catch(err){ log('Arquivo de modelo inválido: '+err.message,'er'); } ev.target.value=''; }; r.readAsText(f); }
+// ── janela ──────────────────────────────────────────────────────────────────
+function tplOpen(){ tplRender(); document.getElementById('ov-novo').classList.add('show'); }
+function tplRender(){
+  var g=document.getElementById('tpl-grid'); g.textContent='';
+  TEMPLATES.forEach(function(T){ var c=document.createElement('div'); c.className='tpl-card'+(T.padrao?' tpl-std':''); c.id='tpl-'+T.id;
+    var info=T.padrao?['Milímetro · A4 paisagem · 1:1','4 camadas · estilos Standard e ABNT · Arial']:[({mm:'Milímetro',m:'Metro',cm:'Centímetro'})[T.units.insertScale]+' · '+T.fmt+(T.land?' paisagem':' retrato')+' · '+ratioLabel(T.vp),T.layers.length+' camadas · cota '+T.dim.name+' · '+fontLabel(T.font).split(' —')[0]];
+    c.innerHTML='<div class="tpl-ico">'+T.icone+'</div><div class="tpl-body"><div class="tpl-nome"></div><div class="tpl-desc"></div><div class="tpl-info"></div><div class="tpl-norma"></div></div>';
+    c.querySelector('.tpl-nome').textContent=T.nome; c.querySelector('.tpl-desc').textContent=T.desc; c.querySelector('.tpl-info').textContent=info.join(' · '); c.querySelector('.tpl-norma').textContent=T.norma||'';
+    var b=document.createElement('button'); b.className='btn p'; b.type='button'; b.textContent='Criar'; b.addEventListener('click',function(){ closeOv('ov-novo'); tplApply(T.id); }); c.querySelector('.tpl-body').appendChild(b);
+    c.addEventListener('dblclick',function(){ closeOv('ov-novo'); tplApply(T.id); });
+    g.appendChild(c); });
+  var u=document.getElementById('tpl-user'); u.textContent=''; var L=tplUserList();
+  if(!L.length){ var p=document.createElement('div'); p.className='tpl-none'; p.textContent='Nenhum modelo próprio ainda. Configure um desenho (camadas, estilos, layout…) e guarde-o como modelo abaixo.'; u.appendChild(p); }
+  L.forEach(function(m,i){ var r=document.createElement('div'); r.className='tpl-urow'; var s=document.createElement('span'); s.textContent=m.nome+' · '+m.data+' · '+((m.doc.layers||[]).length)+' camadas'; r.appendChild(s);
+    var a=document.createElement('button'); a.className='btn p'; a.type='button'; a.textContent='Criar'; a.addEventListener('click',function(){ tplUserApply(i); }); r.appendChild(a);
+    var d=document.createElement('button'); d.className='btn s'; d.type='button'; d.textContent='Excluir'; d.addEventListener('click',function(){ tplUserDel(i); }); r.appendChild(d); u.appendChild(r); });
+}
+window.addEventListener('load',function(){
+  var ov=document.createElement('div'); ov.className='ov'; ov.id='ov-novo';
+  ov.innerHTML='<div class="modal tpl-modal"><h3>Novo desenho — escolha um modelo</h3><div id="tpl-grid" class="tpl-grid"></div>'+
+   '<div class="tpl-sec">Meus modelos</div><div id="tpl-user"></div>'+
+   '<div class="tpl-save"><input id="tpl-name" placeholder="Nome do modelo (ex.: Planta 1:100 da turma)"><label class="ef-chk"><input type="checkbox" id="tpl-geo"> incluir os objetos do Model</label>'+
+   '<button class="btn s" type="button" id="tpl-add">Guardar o desenho atual como modelo</button><button class="btn s" type="button" id="tpl-open">Usar um arquivo .json como modelo…</button></div>'+
+   '<input type="file" id="tpl-file" accept=".json" style="display:none">'+
+   '<div class="mact"><button class="btn s" type="button" onclick="closeOv(\'ov-novo\')">Cancelar</button></div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('tpl-add').addEventListener('click',tplUserAdd);
+  document.getElementById('tpl-open').addEventListener('click',function(){ document.getElementById('tpl-file').click(); });
+  document.getElementById('tpl-file').addEventListener('change',tplFile);
+  ['keydown','keyup','keypress'].forEach(function(k){ ov.addEventListener(k,function(ev){ if(ev.key!=='Escape') ev.stopPropagation(); }); });
+});
 </script>
 </body>
 </html>

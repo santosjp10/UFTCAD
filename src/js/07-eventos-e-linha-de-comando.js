@@ -275,7 +275,7 @@ function onKey(e){
   if(e.ctrlKey&&(k==='y'||k==='Y')){e.preventDefault();redo();return;}
   if(e.ctrlKey&&k==='a'){e.preventDefault();selAll();return;}
   if(e.ctrlKey&&k==='s'){e.preventDefault();if(e.shiftKey)saveCmd();else qsaveCmd();return;} // v8.9: Ctrl+S regrava; Ctrl+Shift+S = Salvar como
-  if(e.ctrlKey&&k==='n'){e.preventDefault();newDoc();return;}
+  if(e.ctrlKey&&k==='n'){e.preventDefault();tplOpen();return;} // v8.12: biblioteca de modelos
   if(k==='F3'){e.preventDefault();toggleMode('osnap');return;}
   if(e.ctrlKey&&(k==='0'||e.code==='Digit0'||e.code==='Numpad0')){e.preventDefault();toggleCleanScreen();return;}
   if(k==='F7'){toggleMode('grid');return;}
@@ -554,6 +554,7 @@ function onCmdKey(e){
     'SCRIPT':'script','SCR':'script','GRAVARSCRIPT':'scrrec','ACTRECORD':'scrrec',
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
     'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
+    'MODELOS':'tpl','TEMPLATES':'tpl','NOVOMODELO':'tpl','MOLDURA':'moldura',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
     'RECUPERAR':'recover','RECOVER':'recover','DRAWINGRECOVERY':'recover','SAVETIME':'savetime','LIMPARRECUPERACAO':'asclear',
     'PDF':'pdf','EXPORTPDF':'pdf','PLOT':'pagesetup','PLOTAR':'pagesetup','PAGESETUP':'pagesetup','PAGINA':'pagesetup',
@@ -595,6 +596,8 @@ function onCmdKey(e){
     case 'point':setTool('point');break;
     case 'pontos':ptOpen();break;
     case 'script':scrOpen();break;
+    case 'tpl':tplOpen();break;
+    case 'moldura':showTemplate();break;
     case 'style':styleOpen();break;
     case 'poligonal':poOpen();break;
     case 'scrrec':scrRecToggle();break;
@@ -635,13 +638,13 @@ function onCmdKey(e){
     case 'ortho':toggleMode('ortho');break;
     case 'grid':toggleMode('grid');break;
     case 'snap':toggleMode('snap');break;
-    case 'new':newDoc();break;
+    case 'new':tplOpen();break;
     case 'save':saveCmd();break;
     case 'qsave':qsaveCmd();break;
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.11 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.12 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -657,6 +660,7 @@ function onCmdKey(e){
       log('ZOOM: Z=Zoom [Tudo/Centro/Extensão/Anterior/Escala/Janela/Objeto, nX, 1/50XP]  ZE=Extensão  ZJ=Janela  ZP=Anterior  ZA=Tudo  ZO=Objeto  |  duplo clique no botão do meio = Extensão','inf');
       log('LAYOUT: MV=Viewports  MS/PS=Entrar/sair da viewport  CARIMBO  LAYOUT=Novo layout  PAGESETUP ou PLOT  PDF','inf');
       log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
+      log('  NEW/Ctrl+N = Novo com modelo: Padrão, Mecânico, Arquitetônico ou Topográfico (e Meus modelos)','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');

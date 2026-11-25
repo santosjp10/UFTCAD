@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.11</title>
+<title>EduCAD 2D v8.12</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -30,7 +30,7 @@
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.11 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.12 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -46,7 +46,7 @@
   <div class="rpanel" id="tab0">
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="newDoc()" title="Novo — NEW (Ctrl+N)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
+        <div class="rb" onclick="tplOpen()" title="Novo — NEW (Ctrl+N): escolher o modelo (Padrão, Mecânico, Arquitetônico, Topográfico)" data-cmd="NEW"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>Novo</div>
         <div class="rb" onclick="saveCmd()" title="Salvar — SAVE: nome, formato e pasta (Ctrl+S regrava o mesmo arquivo)" data-cmd="SAVE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>Salvar</div>
         <div class="rb" onclick="openDoc()" title="Abrir (.json ou .dxf) — OPEN (Ctrl+O)" data-cmd="OPEN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Abrir</div>
         <div class="rb" onclick="showLineType()" title="Tipos de linha — LT" data-cmd="LT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 2"/><line x1="3" y1="17" x2="21" y2="17" stroke-dasharray="1 3"/><circle cx="18" cy="7" r="2.5" fill="currentColor" stroke="none"/></svg>Linhas</div>
@@ -137,7 +137,7 @@
     </div>
     <div class="rg">
       <div class="rgbtns">
-        <div class="rb" onclick="showTemplate()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="18" height="20" rx="1"/><line x1="7" y1="7" x2="17" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="13" y2="15"/></svg>Template</div>
+        <div class="rb" onclick="showTemplate()" title="Moldura ABNT desenhada no Model — MOLDURA (para modelos de desenho completos, use Novo)" data-cmd="MOLDURA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="2" width="18" height="20" rx="1"/><line x1="7" y1="7" x2="17" y2="7"/><line x1="7" y1="11" x2="17" y2="11"/><line x1="7" y1="15" x2="13" y2="15"/></svg>Moldura</div>
       </div><div class="rglbl">ABNT</div>
     </div>
   </div>
@@ -379,7 +379,7 @@
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.11 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.12 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -393,7 +393,7 @@
 </div></div>
 
 <div class="ov" id="ov-template"><div class="modal">
-  <h3>Templates ABNT NBR 16752</h3>
+  <h3>Moldura ABNT NBR 16752 (no Model)</h3>
   <label>Formato:</label>
   <select id="tf"><option value="210,297">A4 Retrato 210×297</option><option value="297,210">A4 Paisagem 297×210</option><option value="420,297">A3 Paisagem 420×297</option><option value="594,420">A2 Paisagem 594×420</option></select>
   <label>Escala:</label>
@@ -787,7 +787,7 @@
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.11 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.12 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -966,5 +966,6 @@
 <script src="js/36-cota-distancia.js"></script>
 <script src="js/37-fontes-e-espessuras.js"></script>
 <script src="js/38-carimbo.js"></script>
+<script src="js/39-templates.js"></script>
 </body>
 </html>

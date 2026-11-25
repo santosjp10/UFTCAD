@@ -1,5 +1,45 @@
 # Changelog
 
+## v8.12 — Modelos de desenho (templates)
+
+### Novo desenho com modelo
+- **Novo** (botão, `Ctrl+N` ou comando `NEW`) abre a biblioteca de modelos. Também pelos comandos `MODELOS` ou `TEMPLATES`.
+- Quatro modelos: **Padrão** (o desenho inicial de sempre), **Desenho Mecânico**, **Desenho Arquitetônico** e **Desenho Topográfico**.
+- O desenho abre configurado, com o carimbo preenchido. Tudo pode ser mudado depois (camadas, estilos, unidades, layout).
+
+| | Mecânico | Arquitetônico | Topográfico |
+|---|---|---|---|
+| Unidade do desenho | milímetro (2 casas) | metro (2 casas) | metro (3 casas), ângulos em GMS |
+| Folha | A4 paisagem | A3 paisagem | A3 paisagem |
+| Escala da viewport e de anotação | 1:1 | 1:50 | 1:1000 |
+| Camadas | 11 (NBR 8403) | 15 (prefixo ARQ-) | 20 (prefixo TOP-) |
+| Estilo de cota | MECÂNICO ABNT: setas cheias, 3,5 mm | ARQ 1:50: traço oblíquo, metros (3,50), anotativo | TOPO 1:1000: metros, anotativo |
+| Fonte | ISOCPEUR | Arial | Arial |
+| Texto padrão (no papel) | 3,5 mm | 2,5 mm (0,125 m) | 2 mm (2 m) |
+| Grade / snap | 10 / 1 mm | 1 / 0,05 m | 10 / 1 m |
+| Blocos | CORTE_SETA, RUGOSIDADE | PORTA_80, PORTA_70, JANELA_120, NORTE | MARCO, RN, ARVORE, NORTE |
+| Outros | hachura ANSI31 | OFFSET de parede 0,15 m; norte no layout | tabela de PONTOS em metros; norte no layout |
+
+- **Camadas com cor, tipo e espessura de linha:**
+  - Mecânico: CONTORNO 0,50; OCULTA tracejada 0,35; CENTRO traço-ponto 0,18; CORTE-PLANO; HACHURA; COTAS; TEXTO; RUPTURA; FANTASMA; AUXILIAR (não imprime).
+  - Arquitetônico: paredes, hachura de parede, portas, janelas, mobiliário, louças, piso, cotas, eixos, textos, níveis, projeção, corte e auxiliar.
+  - Topográfico: pontos e seus textos, cotas altimétricas, curvas de nível mestras (0,35) e intermediárias (0,13) e seus textos, limite (linha fantasma 0,50), confrontantes, edificações, vias, hidrografia, vegetação, cercas, poligonal, malha e textos de coordenadas, cotas e textos.
+- **Viewport do Layout1 na escala do modelo:** a origem (0,0) do Model fica no canto inferior esquerdo da área útil da folha. O Model abre enquadrado nessa área.
+
+### Meus modelos
+- **Guardar o desenho atual como modelo** neste navegador, com ou sem os objetos do Model. Ele aparece em Novo → Meus modelos e pode ser excluído.
+- **Usar um arquivo .json como modelo:** o desenho novo nasce dele, sem nome, sem sobrescrever o arquivo.
+
+### Unidades no arquivo e no DXF
+- O arquivo `.json` passa a guardar unidades, escala de tipos de linha, grade/snap e o modelo de origem.
+- O DXF leva `$INSUNITS` (6 = metro), `$LTSCALE` do modelo e `$PSLTSCALE`. As cotas em desenhos em metro saem em metros.
+- Cotas: a conversão de unidade (mm, cm, m) parte da unidade do desenho. Desenhos em milímetro não mudam.
+- Um **Novo** comum, ou o modelo Padrão, volta para milímetro e 1:1. A Aula guiada continua em milímetro.
+
+### Outros
+- O antigo botão **Template** da faixa ABNT, que desenha a moldura no Model, passou a se chamar **Moldura** (comando `MOLDURA`).
+- Testes: `tests/test_templates.py` (41). Total de **1002 testes**, todos passando.
+
 ## v8.11 — Carimbo ajustado à largura útil da folha
 
 ### Correção

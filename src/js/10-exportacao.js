@@ -267,7 +267,7 @@ function buildDXF2000(opt){
   g(9,'$EXTMAX');g(10,n(bb.x+bb.w));g(20,n(bb.y+bb.h));g(30,'0.0');
   g(9,'$LIMMIN');g(10,'0.0');g(20,'0.0');
   g(9,'$LIMMAX');g(10,'420.0');g(20,'297.0');
-  g(9,'$LTSCALE');g(40,'1.0');
+  g(9,'$LTSCALE');g(40,n(S.ltscale||1)); g(9,'$PSLTSCALE');g(70,S.ltscale?0:1); // v8.12: escala de tipos de linha do template
   g(9,'$CELTSCALE');g(40,'1.0');
   g(9,'$TEXTSTYLE');g(7,'Standard');
   g(9,'$CLAYER');g(8,'0');

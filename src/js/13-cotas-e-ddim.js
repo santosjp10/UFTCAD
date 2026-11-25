@@ -120,6 +120,7 @@ function dimFmtNum(v,prec,sep,zLead,zTrail,round){
   return s.replace('.',sep||'.');
 }
 function dimUnitConv(v,st){
+  v=v*((typeof unitMm==='function')?unitMm():1); // v8.12: medida na unidade do desenho → mm (desenhos em metro/cm)
   if(st.unit==='cm') return v/10;
   if(st.unit==='m') return v/1000;
   if(st.unit==='in') return v/25.4;

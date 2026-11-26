@@ -1,5 +1,69 @@
 # Changelog
 
+## v8.15 — Mapa base e georreferenciamento
+
+### Arquitetura
+- **Não é um programa à parte.** O desenho ganha um **sistema de referência (SRC)** e o Model passa a trabalhar em coordenadas reais E/N (UTM).
+- O **mapa base** é pintado no fundo do Model, por baixo dos objetos, na mesma camada de tela da grade:
+  - todas as ferramentas do EduCAD desenham sobre a imagem;
+  - o que se desenha já é CAD editável, em coordenadas UTM;
+  - desligado, o mapa não pesa em nada.
+- Os ladrilhos da web (Web Mercator) são **reprojetados para UTM na hora**, por quadros afins subdivididos nos zooms baixos (convergência meridiana correta).
+  - Há um cache em memória e cada ladrilho usa o "pai" já carregado enquanto o seu chega.
+  - Nada é baixado em lote.
+
+### Sistema de referência
+- **SIRGAS 2000 / UTM:**
+  - zonas 18S–25S: EPSG 31978–31985;
+  - zonas do norte, até 22N: EPSG 31976.
+- **WGS 84 / UTM:** qualquer zona.
+- **Origem local:** E0/N0, para desenhos com coordenadas reduzidas.
+- Os desenhos em mm ou cm são convertidos automaticamente.
+- **Projeção** pela série de Krüger: conferida com o PROJ (pyproj), com diferença menor que 1 µm.
+- **Ir para:**
+  - aceita latitude/longitude decimal (`-11.7286, -49.0681`), em GMS (`11°43'43"S 49°04'05"W`) ou E N em UTM;
+  - define o SRC sozinho (SIRGAS 2000 no Brasil, WGS 84 fora) e ajusta o desenho vazio para metros.
+- **Minha localização:** usa o GPS do tablet ou celular.
+- **Coordenadas do cursor:** E/N e latitude/longitude em GMS, abaixo de X/Y.
+
+### Mapas base
+- **Satélite — Esri World Imagery:** imagens de até cerca de 30 cm. A Esri **permite traçar feições** sobre ela em uso não comercial, com atribuição.
+- **Satélite — Sentinel-2 sem nuvens 2024 (EOX):** 10 m, bom para áreas rurais grandes.
+- **Ruas:** OpenStreetMap.
+- **Topográficos:** OpenTopoMap (curvas SRTM) e Esri World Topo.
+- **Vias e rótulos** sobre a imagem.
+- **Fontes do usuário:**
+  - **XYZ**, por exemplo um ortomosaico de drone;
+  - **WMS**: INDE, IBGE, órgãos estaduais, GeoServer. O pedido é feito em EPSG:3857, por ladrilho.
+- Opacidade, tons de cinza e **atribuição** sempre visível, como exigem as licenças.
+- **Google Maps/Earth não foi incluído:**
+  - os termos do Google não permitem usar o conteúdo para criar ou ampliar dados de mapeamento;
+  - a API de ladrilhos exige chave paga e proíbe extrair dados;
+  - para ver o desenho sobre as imagens do Google, use a exportação **KML** e abra no Google Earth.
+
+### Exportar e importar
+- **GeoJSON** (RFC 7946, lon/lat):
+  - linhas, polilinhas, polígonos (com furos de hachura), círculos, elipses, pontos, blocos e textos;
+  - propriedades: camada, cor, tipo, **área (m² e ha)**, perímetro e comprimento.
+  - Exporta a seleção ou, sem seleção, o Model inteiro. Cotas não vão.
+- **KML** para o Google Earth, com a cor de cada camada.
+- **PNG georreferenciado + world file (.pgw):** abre no QGIS já posicionado (defina o SRC pelo EPSG mostrado).
+- **Importar GeoJSON e KML** (limites do CAR/SIGEF, talhões, pontos de GPS):
+  - pontos (com o nome como rótulo), linhas e polígonos viram entidades editáveis em UTM;
+  - camadas pelo arquivo, pela propriedade `camada`/`layer` ou pela pasta do KML;
+  - é desfeito com um Ctrl+Z.
+- **DXF:** as coordenadas já saem em UTM. No QGIS ou no Civil 3D, basta atribuir o SRC.
+
+### Interface
+- Botão **Mapa** (grupo Navegar) ou comandos `MAPA`, `GEOMAP` e `GEOGRAPHICLOCATION`: painel flutuante com Ir para, SRC, mapa base e exportações.
+- O SRC e o mapa base ficam gravados no arquivo e são de cada aba.
+
+### Limites
+- O mapa base aparece no **Model**. No layout e no PDF, ainda não.
+- É preciso estar conectado à internet. Sem conexão, o desenho e o SRC continuam funcionando, sem a imagem.
+- SIRGAS 2000 e WGS 84 são tratados como coincidentes para o mapa base (diferença de centímetros).
+- Testes: `tests/test_mapa.py` (52), com servidor de ladrilhos simulado. Total de **1154 testes**, todos passando.
+
 ## v8.14 — Vários desenhos abertos em abas
 
 ### Abas de desenhos (como no AutoCAD)

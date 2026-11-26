@@ -555,6 +555,7 @@ function onCmdKey(e){
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
     'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
     'CLOSE':'docclose','FECHAR':'docclose','CLOSEALL':'docclall','FECHARTODOS':'docclall','COPYCLIP':'copyclip','COPYBASE':'copybase','PASTECLIP':'pasteclip',
+    'MAPA':'geo','GEO':'geo','GEOMAP':'geo','GEOGRAPHICLOCATION':'geo',
     'BIBLIOTECA':'bib','BIB':'bib','BLOCKSPALETTE':'bib','TOOLPALETTES':'bib','ADCENTER':'bib',
     'MODELOS':'tpl','TEMPLATES':'tpl','NOVOMODELO':'tpl','MOLDURA':'moldura',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
@@ -600,6 +601,7 @@ function onCmdKey(e){
     case 'script':scrOpen();break;
     case 'tpl':tplOpen();break;
     case 'bib':bibOpen();break;
+    case 'geo':geoOpen();break;
     case 'docclose':docClose();break;
     case 'docclall':docCloseAll();break;
     case 'copyclip':case 'copybase':case 'pasteclip':setTool(act);break;
@@ -650,7 +652,7 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.14 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.15 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -668,6 +670,7 @@ function onCmdKey(e){
       log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
       log('  NEW/Ctrl+N = Novo com modelo: Padrão, Mecânico, Arquitetônico ou Topográfico (e Meus modelos)','inf');
       log('  BIBLIOTECA/Ctrl+3 = Biblioteca de blocos (portas, janelas, louças, móveis, marcos, postes, drenagem, vegetação…)','inf');
+      log('  MAPA = mapa base (satélite, ruas, topográfico, WMS) e georreferenciamento SIRGAS 2000/UTM · GeoJSON, KML, PNG+.pgw','inf');
       log('  ABAS: cada Novo/Abrir abre uma aba · Alt+PageDown/PageUp alternam · CLOSE fecha · CLOSEALL fecha todas','inf');
       log('  Ctrl+C = COPYCLIP · Ctrl+Shift+C = COPYBASE (ponto base) · Ctrl+V = PASTECLIP (cola em qualquer aba)','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');

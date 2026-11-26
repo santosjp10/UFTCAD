@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.14</title>
+<title>EduCAD 2D v8.15</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -30,7 +30,7 @@
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.14 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.15 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -70,6 +70,7 @@
         <div class="rb" onclick="zoomFit()" title="Zoom extensão — ZE" data-cmd="ZE"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>Zoom Fit</div>
         <div class="rb" id="rb-zoomwin" onclick="zoomCmd('J')" title="Zoom janela — ZJ: clique dois cantos" data-cmd="ZJ"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><line x1="15" y1="15" x2="21" y2="21"/><rect x="7" y="7.5" width="6" height="5" stroke-dasharray="2,1.2"/></svg>Janela</div>
         <div class="rb" id="rb-zoomprev" onclick="zoomCmd('P')" title="Zoom anterior — ZP: volta à vista anterior" data-cmd="ZP"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="6.5"/><line x1="15" y1="15" x2="21" y2="21"/><path d="M12.5 8.5H8.5l1.8-1.8M8.5 8.5l1.8 1.8"/><path d="M8.5 8.5h3.5a1.8 1.8 0 010 3.6H9.5"/></svg>Anterior</div>
+        <div class="rb" id="rb-geo" onclick="geoToggle()" title="Mapa base e georreferenciamento — MAPA: imagem de satélite, ruas, topográfico; SIRGAS 2000/UTM; GeoJSON e KML" data-cmd="MAPA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Mapa</div>
         <div class="rb" onclick="selAll()" title="Selecionar tudo (Ctrl+A)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="3,2"/></svg>Sel. Tudo</div>
         <div class="rb" onclick="setTool('dist')" title="Distância — DI" data-cmd="DI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="9" x2="3" y2="15"/><line x1="21" y1="9" x2="21" y2="15"/></svg>Dist</div>
         <div class="rb" onclick="setTool('area')" title="Área — AA" data-cmd="AA"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12,3 21,9 18,20 6,20 3,9"/></svg>Área</div>
@@ -380,7 +381,7 @@
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.14 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.15 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -788,7 +789,7 @@
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.14 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.15 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 

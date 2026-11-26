@@ -643,3 +643,24 @@ body.scr-running #cw{cursor:progress!important}
 .dt-menu button{background:none;border:none;color:var(--t0);text-align:left;padding:5px 10px;font-size:11px;border-radius:3px;cursor:pointer}
 .dt-menu button:hover{background:rgba(77,158,247,.18)}
 body.clean #doctabs{display:none}
+
+/* v8.15: mapa base e georreferenciamento */
+.geo-pal{left:12px;right:auto;width:350px;height:auto;max-height:calc(100vh - 210px)}
+.geo-body{overflow:auto;padding:4px 10px 10px;display:flex;flex-direction:column;gap:5px}
+.geo-sec{font-size:10.5px;font-weight:700;color:var(--acc,#4d9ef7);margin-top:6px;padding-bottom:2px;border-bottom:1px solid var(--bdr)}
+.geo-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.geo-col{flex-direction:column;align-items:stretch}
+.geo-row input:not([type=checkbox]):not([type=radio]):not([type=range]){flex:1;min-width:60px;padding:3px 6px;font-size:10.5px;margin:0}
+.geo-row select{font-size:10.5px;padding:2px 4px}
+.geo-row label{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--t1)}
+.geo-row .btn{padding:3px 10px;font-size:10.5px}
+.geo-row input#geo-e0,.geo-row input#geo-n0{width:80px;flex:none}
+.geo-crs{font-size:10.5px;color:#f0a030;line-height:1.4}
+.geo-crs.ok{color:#8ff0b0}
+.geo-warn{font-size:9.5px;color:#f0a030}
+.geo-src{display:flex;flex-direction:column;gap:2px}
+.geo-src label{font-size:10.5px;color:var(--t0);display:flex;gap:5px;align-items:center;cursor:pointer}
+.geo-note{font-size:9.5px;color:var(--t2);line-height:1.4}
+.geo-attr{position:absolute;right:4px;bottom:4px;max-width:70%;font:10px/1.3 Arial,sans-serif;color:#222;background:rgba(255,255,255,.72);padding:1px 6px;border-radius:3px;pointer-events:none;display:none;z-index:3}
+.geobox{font:10px/1.35 Consolas,monospace;color:#8ff0b0;white-space:pre;padding:0 10px 4px}
+.geobox:empty{display:none}

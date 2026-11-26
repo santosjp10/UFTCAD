@@ -50,7 +50,7 @@ with sync_playwright() as p:
     ok('Ir para define SIRGAS 2000 / UTM 22S (EPSG:31982) sozinho',E("geoCrsName()")=='SIRGAS 2000 / UTM zona 22S (EPSG:31982)')
     c=E("(()=>{var d=s2w(cvW()/2,cvH()/2);return d2ll(d.x,d.y);})()")
     ok('A vista fica centrada no ponto (< 1 m)',near(c['lat'],-11.7286,1e-5) and near(c['lon'],-49.0681,1e-5),c)
-    ok('Mapa de satélite (Esri) ligado e ladrilhos pedidos',E("geoMapCfg().src")=='esri' and len(seen)>n0 and all('World_Imagery/MapServer/tile/' in u for u in seen[n0:]))
+    ok('Mapa de satélite (Esri) ligado e ladrilhos pedidos',E("geoMapCfg().src")=='esri' and len(seen)>n0 and all(('World_Imagery/MapServer/tile/' in u or 'World_Imagery/MapServer/tilemap/' in u) for u in seen[n0:]) and any('World_Imagery/MapServer/tile/' in u for u in seen[n0:]))
     z=E("GEO.last.z"); tx=E(f"Math.floor(lon2tx(-49.0681,{z}))"); ty=E(f"Math.floor(lat2ty(-11.7286,{z}))")
     ok('Pediu o ladrilho que contém o ponto (z/y/x da Esri)',any(u.endswith(f'/tile/{z}/{ty}/{tx}') for u in seen),(z,tx,ty))
     ok('Zoom do ladrilho adequado à escala da tela (z ≥ 17 para 600 m de largura)',z>=17,z)

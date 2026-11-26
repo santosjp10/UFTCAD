@@ -1,5 +1,37 @@
 # Changelog
 
+## v8.16 — Mais detalhe nas imagens e serviços de terceiros
+
+### Zoom profundo na Esri
+- A Esri World Imagery passa a ir até o **nível 22** (antes, 19).
+  - O EduCAD consulta o **mapa de disponibilidade** da Esri (`tilemap`) e usa, em cada lugar, o nível mais detalhado que realmente existe ali.
+  - Onde um nível não existe, usa o anterior ampliado, sem as telas "Map data not yet available".
+  - Sem acesso ao mapa de disponibilidade, mantém o comportamento da v8.15 (até o nível 19).
+- **Nova fonte: Esri World Imagery (Clarity).** É o arquivo de imagens nítidas e ortogonais da Esri, nem sempre as mais recentes. É útil quando a imagem atual tem nuvens ou foi tomada muito inclinada.
+
+### Data, resolução e precisão da imagem
+- O painel Mapa mostra a imagem do centro da vista, por exemplo: `Imagem no centro: Maxar Vivid · 14/05/2023 · resolução 0,5 m · precisão de posição ±5 m`.
+- Os dados vêm dos metadados da Esri: da versão Wayback mais recente para a World Imagery e do serviço próprio para a Clarity.
+- O valor didático: mostra ao aluno que **mais zoom não é mais precisão**.
+
+### Serviços de terceiros (como no QuickMapServices do QGIS)
+- **Google — Satélite**, **Google — Híbrido** e **Google — Terreno**, acessados diretamente, como no plugin QuickMapServices.
+- Ficam numa seção própria do painel, com o aviso permanente: **respeitar os direitos autorais e os termos de uso de cada provedor é responsabilidade do usuário**.
+- **Na primeira escolha**, uma janela explica:
+  - os termos do Google não autorizam esse acesso fora do Google Maps Platform nem o uso do conteúdo para criar dados de mapeamento;
+  - o acesso pode ser bloqueado;
+  - mais zoom não é mais precisão.
+  - O usuário marca **"Li o aviso e assumo a responsabilidade"** para liberar. O aceite fica guardado no navegador.
+- **Enquanto em uso:**
+  - a atribuição "© Google — serviço de terceiro usado por conta e responsabilidade do usuário" fica na tela;
+  - o painel mantém o aviso em destaque;
+  - o **PNG exportado não grava** esse fundo.
+- Um desenho salvo com fonte de terceiro, aberto num navegador sem o aceite, não carrega essa fonte até o aceite.
+- As fontes licenciadas (Esri, Sentinel-2, OpenStreetMap…) continuam sendo o padrão.
+
+### Outros
+- Testes: `tests/test_mapa2.py` (28), com servidores simulados de ladrilhos, disponibilidade, metadados e Google. Total de **1182 testes**, todos passando.
+
 ## v8.15 — Mapa base e georreferenciamento
 
 ### Arquitetura

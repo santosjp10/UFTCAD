@@ -664,3 +664,14 @@ body.clean #doctabs{display:none}
 .geo-attr{position:absolute;right:4px;bottom:4px;max-width:70%;font:10px/1.3 Arial,sans-serif;color:#222;background:rgba(255,255,255,.72);padding:1px 6px;border-radius:3px;pointer-events:none;display:none;z-index:3}
 .geobox{font:10px/1.35 Consolas,monospace;color:#8ff0b0;white-space:pre;padding:0 10px 4px}
 .geobox:empty{display:none}
+
+/* v8.16: serviços de terceiros e metadados da imagem */
+.geo-terc-h{margin-top:6px;font-size:10px;font-weight:700;color:#f0a030}
+.geo-terc-n{font-size:9px;color:#f0a030;line-height:1.35;opacity:.9}
+.geo-note.geo-terc-on{color:#f0a030}
+.geo-meta{font-size:9.5px;color:#8ff0b0;line-height:1.4}
+.geo-meta:empty{display:none}
+#ov-terc .terc-txt{font-size:11.5px;line-height:1.5}
+#ov-terc .terc-txt p{margin:0 0 8px}
+#ov-terc .terc-chk{display:flex!important;gap:6px;align-items:flex-start;font-size:11.5px;margin:6px 0 4px}
+#ov-terc .btn.p:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.6)}

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.15</title>
+<title>EduCAD 2D v8.16</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -678,6 +678,17 @@ body.clean #doctabs{display:none}
 .geo-attr{position:absolute;right:4px;bottom:4px;max-width:70%;font:10px/1.3 Arial,sans-serif;color:#222;background:rgba(255,255,255,.72);padding:1px 6px;border-radius:3px;pointer-events:none;display:none;z-index:3}
 .geobox{font:10px/1.35 Consolas,monospace;color:#8ff0b0;white-space:pre;padding:0 10px 4px}
 .geobox:empty{display:none}
+
+/* v8.16: serviços de terceiros e metadados da imagem */
+.geo-terc-h{margin-top:6px;font-size:10px;font-weight:700;color:#f0a030}
+.geo-terc-n{font-size:9px;color:#f0a030;line-height:1.35;opacity:.9}
+.geo-note.geo-terc-on{color:#f0a030}
+.geo-meta{font-size:9.5px;color:#8ff0b0;line-height:1.4}
+.geo-meta:empty{display:none}
+#ov-terc .terc-txt{font-size:11.5px;line-height:1.5}
+#ov-terc .terc-txt p{margin:0 0 8px}
+#ov-terc .terc-chk{display:flex!important;gap:6px;align-items:flex-start;font-size:11.5px;margin:6px 0 4px}
+#ov-terc .btn.p:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.6)}
 </style>
 </head>
 <body>
@@ -696,7 +707,7 @@ body.clean #doctabs{display:none}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.15 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.16 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -1047,7 +1058,7 @@ body.clean #doctabs{display:none}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.15 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.16 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1455,7 +1466,7 @@ body.clean #doctabs{display:none}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.15 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.16 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1648,7 +1659,7 @@ function fontMeasure(t,key,h){ t=String(t); if(!t) return 0; var k=fontKey(key),
 if(typeof document!=='undefined'&&document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',function(){ FONT_MW={}; });
 
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.15 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.16 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1722,7 +1733,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.15 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.16 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -3937,7 +3948,7 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.15 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.16 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -4316,7 +4327,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'8.15',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function buildDoc(){return {v:'8.16',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
 function saveDoc(){var d=buildDoc();downloadBlob(JSON.stringify(d,null,2),'application/json','educad.json');document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');} // v8.9: passa por downloadBlob (janela Salvar como)
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
@@ -5062,7 +5073,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.15 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.16 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -10439,7 +10450,7 @@ function pdfAssemble(pages,title){
   objs[fontId+1]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
   objs[fontId+2]='<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.15) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.16) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -13677,9 +13688,9 @@ window.addEventListener('load',function(){
    • Fontes: Esri World Imagery (permite traçar feições, uso não comercial),
      Sentinel-2 sem nuvens (EOX), OpenStreetMap, OpenTopoMap, Esri Topo,
      camada de vias/rótulos, e fontes do usuário (XYZ ou WMS: INDE, IBGE,
-     ortomosaico de drone…). Google Maps/Earth: os termos do Google não
-     permitem usar o conteúdo para criar dados de mapeamento — use a
-     exportação KML para ver o desenho no Google Earth.
+     ortomosaico de drone…). v8.16: zoom profundo da Esri pelo tilemap,
+     Esri Clarity, metadados da imagem e serviços de terceiros (Google) como
+     no QuickMapServices, com aviso de responsabilidade do usuário.
    • Ir para (lat/lon, GMS ou UTM) e "Minha localização"; coordenadas
      geográficas e UTM do cursor; GeoJSON e KML (exportar e importar);
      PNG georreferenciado com world file (.pgw) para o QGIS.
@@ -13721,8 +13732,11 @@ function tx2lon(x,z){ return x/Math.pow(2,z)*360-180; }
 function ty2lat(y,z){ var n=Math.PI*(1-2*y/Math.pow(2,z)); return Math.atan(Math.sinh(n))*180/Math.PI; }
 // ── fontes ─────────────────────────────────────────────────────────────────
 var GEO_SRC={
- esri:{nome:'Satélite — Esri World Imagery',tipo:'Imagem de satélite e aérea (até ~30 cm em cidades)',url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',max:19,
-   attr:'Imagens: Esri, Maxar, Earthstar Geographics e comunidade de usuários GIS',nota:'A Esri permite usar a imagem para traçar feições e criar dados vetoriais (uso não comercial, com atribuição).'},
+ esri:{nome:'Satélite — Esri World Imagery',tipo:'Imagem de satélite e aérea; o EduCAD usa o nível mais detalhado disponível em cada lugar (até ~7 cm onde houver)',url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',max:22,
+   tm:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer',meta:'wayback',   attr:'Imagens: Esri, Maxar, Earthstar Geographics e comunidade de usuários GIS',nota:'A Esri permite usar a imagem para traçar feições e criar dados vetoriais (uso não comercial, com atribuição).'},
+ clarity:{nome:'Satélite — Esri World Imagery (Clarity)',tipo:'Arquivo de imagens nítidas e ortogonais da Esri (nem sempre as mais recentes) — útil quando a imagem atual tem nuvens ou é inclinada',url:'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',max:22,
+   tm:'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer',meta:'https://metadata.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Clarity_Metadata/MapServer',
+   attr:'Imagens: Esri, Maxar, Earthstar Geographics e comunidade de usuários GIS (Clarity)',nota:'A Esri permite usar a imagem para traçar feições (uso não comercial, com atribuição).'},
  s2:{nome:'Satélite — Sentinel-2 sem nuvens 2024 (EOX)',tipo:'Mosaico Sentinel-2, 10 m (bom para áreas rurais grandes)',url:'https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/g/{z}/{y}/{x}.jpg',max:15,
    attr:'Sentinel-2 cloudless 2024 — s2maps.eu, EOX IT Services GmbH (contém dados Copernicus Sentinel modificados) · CC BY-NC-SA 4.0',nota:'Uso não comercial com atribuição.'},
  osm:{nome:'Ruas — OpenStreetMap',tipo:'Mapa de ruas colaborativo',url:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',max:19,
@@ -13731,19 +13745,27 @@ var GEO_SRC={
    attr:'Dados: © OpenStreetMap, SRTM · Estilo: © OpenTopoMap (CC-BY-SA)',nota:'Uso leve, com atribuição.'},
  esritopo:{nome:'Topográfico — Esri World Topo',tipo:'Base topográfica e de ruas',url:'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',max:19,
    attr:'Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap e comunidade de usuários GIS',nota:'Uso não comercial, com atribuição.'}
+,
+ // ── serviços de terceiros: acesso direto, como no QuickMapServices do QGIS — responsabilidade do usuário ──
+ gsat:{nome:'Google — Satélite',terceiro:true,tipo:'Serviço de terceiro (acesso direto, sem API oficial)',url:'https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',sub:'0123',max:21,attr:'Imagens © Google — serviço de terceiro usado por conta e responsabilidade do usuário'},
+ ghyb:{nome:'Google — Híbrido (satélite + ruas)',terceiro:true,tipo:'Serviço de terceiro (acesso direto, sem API oficial)',url:'https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',sub:'0123',max:21,attr:'Imagens e mapa © Google — serviço de terceiro usado por conta e responsabilidade do usuário'},
+ gter:{nome:'Google — Terreno',terceiro:true,tipo:'Serviço de terceiro (acesso direto, sem API oficial)',url:'https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',sub:'0123',max:20,attr:'Mapa © Google — serviço de terceiro usado por conta e responsabilidade do usuário'}
 };
 var GEO_OVL={url:'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}',url2:'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',max:19,attr:'Vias e rótulos: Esri'};
 function geoMapCfg(){ if(!S.geoMap) S.geoMap={src:'',op:1,gray:false,ovl:false,custom:'',cattr:'',wms:'',wlay:''}; return S.geoMap; }
-function geoSrc(){ var M=geoMapCfg(); if(!M.src) return null;
+var GEO_TERC_KEY='educad-terceiros-aceito';
+function geoTercOk(){ try{ return !!localStorage.getItem(GEO_TERC_KEY); }catch(e){ return !!GEO.tercSess; } }
+function geoTercAccept(){ GEO.tercSess=true; try{ localStorage.setItem(GEO_TERC_KEY,new Date().toISOString()); }catch(e){} }
+function geoSrc(){ var M=geoMapCfg(); if(!M.src) return null; var T=GEO_SRC[M.src]; if(T&&T.terceiro&&!geoTercOk()) return null;
   if(M.src==='custom'){ if(!M.custom) return null; return {nome:'Fonte do usuário (XYZ)',url:M.custom,max:22,attr:M.cattr||'Fonte definida pelo usuário'}; }
   if(M.src==='wms'){ if(!M.wms||!M.wlay) return null; return {nome:'WMS do usuário',wms:M.wms,lay:M.wlay,max:21,attr:M.cattr||'Serviço WMS definido pelo usuário'}; }
   return GEO_SRC[M.src]||null; }
 function geoTileUrl(src,z,x,y){
   if(src.wms){ var n=Math.pow(2,z),R=20037508.342789244,w=2*R/n,x0=-R+x*w,y1=R-y*w,sep=src.wms.indexOf('?')>=0?'&':'?';
     return src.wms+sep+'SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&FORMAT=image/png&TRANSPARENT=TRUE&STYLES=&SRS=EPSG:3857&WIDTH=256&HEIGHT=256&LAYERS='+encodeURIComponent(src.lay)+'&BBOX='+[x0,y1-w,x0+w,y1].map(function(v){return v.toFixed(3);}).join(','); }
-  return src.url.replace('{z}',z).replace('{x}',x).replace('{y}',y).replace('{s}','abc'.charAt((x+y)%3)); }
+  return src.url.replace('{z}',z).replace('{x}',x).replace('{y}',y).replace('{s}',(src.sub||'abc').charAt((x+y)%(src.sub||'abc').length)); }
 // ── cache de ladrilhos ─────────────────────────────────────────────────────
-var GEO={cache:new Map(),pend:0,MAX:500,raf:0,req:0,last:null};
+var GEO={cache:new Map(),pend:0,MAX:500,raf:0,req:0,last:null,tm:new Map(),tmReq:0,meta:null,metaKey:'',metaT:0};
 function geoTile(url){
   var t=GEO.cache.get(url); if(t){ GEO.cache.delete(url); GEO.cache.set(url,t); return t; }
   if(GEO.pend>=24) return null;
@@ -13756,6 +13778,23 @@ function geoTile(url){
   return t;
 }
 function geoKick(){ if(GEO.raf) return; GEO.raf=requestAnimationFrame(function(){ GEO.raf=0; if(S.space==='model') drawGrid(); }); }
+// ── disponibilidade de níveis (tilemap da Esri): usa o nível mais detalhado que existe em cada lugar ──
+var GEO_TMB=32;
+function geoAvail(src,z,x,y){
+  if(!src.tm||z<=16) return true;
+  var r0=Math.floor(y/GEO_TMB)*GEO_TMB,c0=Math.floor(x/GEO_TMB)*GEO_TMB,key=src.tm+'|'+z+'|'+r0+'|'+c0,b=GEO.tm.get(key);
+  if(!b){ b={st:'pend'}; GEO.tm.set(key,b); GEO.tmReq++;
+    var done=function(){ geoKick(); };
+    try{ fetch(src.tm+'/tilemap/'+z+'/'+r0+'/'+c0+'/'+GEO_TMB+'/'+GEO_TMB+'?f=json').then(function(r){ return r.json(); }).then(function(j){
+        if(j&&j.error){ b.st='none'; } else if(j&&j.data&&j.location){ b.st='ok'; b.loc=j.location; b.data=j.data; } else b.st='err'; done(); })
+      .catch(function(){ b.st='err'; done(); }); }catch(e){ b.st='err'; }
+    return undefined; }
+  if(b.st==='pend') return undefined;
+  if(b.st==='none') return false;
+  if(b.st==='err') return z<=19; // sem o mapa de disponibilidade: comportamento da v8.15
+  var L=b.loc,cx=x-L.left,cy=y-L.top; if(cx<0||cy<0||cx>=L.width||cy>=L.height) return z<=19;
+  return !!b.data[cy*L.width+cx];
+}
 // ── desenho do mapa base ───────────────────────────────────────────────────
 function geoActive(){ return S.space==='model'&&!!S.geo&&!!geoSrc(); }
 // desenha os ladrilhos em ctx (pixels CSS; transformação w2s); devolve {z,n,clean}
@@ -13773,9 +13812,11 @@ function geoDrawBase(ctx,W,H,w2sf,opt){
   ctx.save(); if(M.gray) try{ ctx.filter='grayscale(1)'; }catch(e){}
   layers.forEach(function(Lr,li){ ctx.globalAlpha=Lr.alpha; if(li>0) try{ ctx.filter='none'; }catch(e){}
     for(var ty=Math.max(0,r.y0);ty<=Math.min(N-1,r.y1);ty++) for(var tx=r.x0;tx<=r.x1;tx++){
-      var xx=((tx%N)+N)%N,t=opt.noFetch?GEO.cache.get(geoTileUrl(Lr.src,z,xx,ty)):geoTile(geoTileUrl(Lr.src,z,xx,ty)),img=null,sx=0,sy=0,ss=256;
+      var xx=((tx%N)+N)%N,av=li===0?geoAvail(Lr.src,z,xx,ty):true,img=null,sx=0,sy=0,ss=256,t=null;
+      if(av===true) t=opt.noFetch?GEO.cache.get(geoTileUrl(Lr.src,z,xx,ty)):geoTile(geoTileUrl(Lr.src,z,xx,ty));
+      else if(av===false&&!opt.noFetch){ for(var kk=1;kk<=8&&z-kk>=0;kk++){ if(geoAvail(Lr.src,z-kk,xx>>kk,ty>>kk)===true){ geoTile(geoTileUrl(Lr.src,z-kk,xx>>kk,ty>>kk)); break; } } }
       if(t&&t.ok){ img=t.img; if(!t.cors) clean=false; }
-      else if(li===0){ for(var k=1;k<=6&&z-k>=0;k++){ var a=GEO.cache.get(geoTileUrl(Lr.src,z-k,xx>>k,ty>>k)); if(a&&a.ok){ img=a.img; if(!a.cors) clean=false; ss=256/Math.pow(2,k); sx=(xx-((xx>>k)<<k))*ss; sy=(ty-((ty>>k)<<k))*ss; break; } } }
+      else if(li===0){ for(var k=1;k<=8&&z-k>=0;k++){ var a=GEO.cache.get(geoTileUrl(Lr.src,z-k,xx>>k,ty>>k)); if(a&&a.ok){ img=a.img; if(!a.cors) clean=false; ss=256/Math.pow(2,k); sx=(xx-((xx>>k)<<k))*ss; sy=(ty-((ty>>k)<<k))*ss; break; } } }
       if(!img){ if(t&&!t.err) clean=clean&&!opt.needAll; continue; }
       count++; geoQuad(ctx,img,sx,sy,ss,tx,ty,z,sw);
     } });
@@ -13791,8 +13832,35 @@ function geoQuad(ctx,img,sx,sy,ss,tx,ty,z,sw){
     try{ ctx.drawImage(img,sx+i*cs,sy+j*cs,cs,cs,-0.02*cs,-0.02*cs,cs*1.04,cs*1.04); }catch(e){} ctx.restore(); }
 }
 (function(){ var dg=drawGrid; drawGrid=function(){ dg.apply(this,arguments); var on=geoActive(),A=document.getElementById('geo-attr');
-  if(on){ var W=cvW(),H=cvH(),r=geoDrawBase(S.gG,W,H); GEO.last=r; }
+  if(on){ var W=cvW(),H=cvH(),r=geoDrawBase(S.gG,W,H); GEO.last=r; geoMetaSchedule(); }
   if(A){ var s=on?geoSrc():null; A.style.display=on?'block':'none'; if(on){ var t=s.attr+(geoMapCfg().ovl&&!s.wms?' · '+GEO_OVL.attr:''); if(A.textContent!==t) A.textContent=t; } } }; })();
+// ── data, resolução e precisão da imagem no centro da vista (metadados da Esri) ──
+function geoMetaUrl(src,cb){
+  if(!src||!src.meta) return cb(null); if(src.meta!=='wayback') return cb(src.meta);
+  if(GEO.wb!==undefined) return cb(GEO.wb);
+  try{ fetch('https://s3-us-west-2.amazonaws.com/config.maptiles.arcgis.com/waybackconfig.json').then(function(r){ return r.json(); }).then(function(c){
+      var best=null,bd=''; Object.keys(c).forEach(function(k){ var it=c[k],m=/(\d{4}-\d{2}-\d{2})/.exec(it.itemTitle||''); if(m&&it.metadataLayerUrl&&m[1]>bd){ bd=m[1]; best=it.metadataLayerUrl; } });
+      GEO.wb=best||'https://metadata.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Metadata_2026_r02/MapServer'; GEO.wbDate=bd; cb(GEO.wb); })
+    .catch(function(){ GEO.wb='https://metadata.maptiles.arcgis.com/arcgis/rest/services/World_Imagery_Metadata_2026_r02/MapServer'; cb(GEO.wb); }); }catch(e){ cb(null); }
+}
+function geoMerc(lat,lon){ var R=6378137; return {x:R*lon*Math.PI/180,y:R*Math.log(Math.tan(Math.PI/4+Math.max(-85.05,Math.min(85.05,lat))*Math.PI/360))}; }
+function geoMetaSchedule(){ clearTimeout(GEO.metaT); GEO.metaT=setTimeout(geoMetaQuery,700); }
+function geoMetaQuery(){
+  var el=document.getElementById('geo-meta'); if(!el) return; var src=geoActive()?geoSrc():null;
+  if(!src||!src.meta){ el.textContent=''; GEO.metaKey=''; return; }
+  var W=cvW(),H=cvH(),c=s2w(W/2,H/2),g=d2ll(c.x,c.y),a=s2w(0,H),b=s2w(W,0),ga=d2ll(a.x,a.y),gb=d2ll(b.x,b.y),pa=geoMerc(ga.lat,ga.lon),pb=geoMerc(gb.lat,gb.lon),pc=geoMerc(g.lat,g.lon);
+  var key=src.url+'|'+pc.x.toFixed(0)+'|'+pc.y.toFixed(0)+'|'+(pb.x-pa.x).toFixed(0); if(key===GEO.metaKey) return; GEO.metaKey=key;
+  geoMetaUrl(src,function(u){ if(!u){ el.textContent=''; return; }
+    var q=u+'/identify?f=json&geometryType=esriGeometryPoint&sr=3857&layers=visible&tolerance=0&returnGeometry=false&geometry='+pc.x.toFixed(2)+','+pc.y.toFixed(2)+
+      '&mapExtent='+[pa.x,pa.y,pb.x,pb.y].map(function(v){return v.toFixed(2);}).join(',')+'&imageDisplay='+Math.round(W)+','+Math.round(H)+',96';
+    fetch(q).then(function(r){ return r.json(); }).then(function(j){ if(GEO.metaKey!==key) return; var A=j&&j.results&&j.results[0]&&j.results[0].attributes; el.textContent=A?geoMetaText(A):'Sem metadados para este ponto.'; GEO.meta=A||null; })
+      .catch(function(){ if(GEO.metaKey===key) el.textContent='Metadados da imagem indisponíveis (sem conexão com o serviço da Esri).'; }); });
+}
+function geoMetaText(A){
+  var d=A.SRC_DATE2?new Date(+A.SRC_DATE2):null,s=String(A.SRC_DATE||''),dt=d&&!isNaN(d)?d.toLocaleDateString('pt-BR',{timeZone:'UTC'}):(s.length===8?s.slice(6,8)+'/'+s.slice(4,6)+'/'+s.slice(0,4):'—');
+  var f=function(v){ return v>0?String(+(+v).toFixed(2)).replace('.',',')+' m':'—'; };
+  return 'Imagem no centro: '+(A.NICE_NAME||A.SRC_DESC||'—')+' · '+dt+' · resolução '+f(A.SRC_RES)+' · precisão de posição ±'+f(A.SRC_ACC);
+}
 // ── formatação ─────────────────────────────────────────────────────────────
 function fmtDMS(v,pos,neg){ var s=v<0?neg:pos; v=Math.abs(v); var d=Math.floor(v),m=Math.floor((v-d)*60),sec=((v-d)*60-m)*60; if(sec>=59.995){ sec=0; m++; } if(m>=60){ m=0; d++; } return d+'°'+(m<10?'0':'')+m+"'"+(sec<10?'0':'')+sec.toFixed(2).replace('.',',')+'"'+s; }
 function fmtMil(v,p){ var s=v.toFixed(p),i=s.split('.'),a=i[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return a+(i[1]?','+i[1]:''); }
@@ -13931,10 +13999,11 @@ function geoImport(text,fname){
 // PNG georreferenciado + world file
 function geoExportPNG(){
   if(!geoNeed()) return; var W=cvW(),H=cvH(),k=2,cv=document.createElement('canvas'); cv.width=W*k; cv.height=H*k; var ctx=cv.getContext('2d'); ctx.scale(k,k);
-  ctx.fillStyle='#0a0a1a'; ctx.fillRect(0,0,W,H); var r=geoActive()?geoDrawBase(ctx,W,H,null,{noFetch:true,dpr:k}):{clean:true};
+  var terc=geoActive()&&geoSrc().terceiro; if(terc) log('O fundo de serviços de terceiros (Google) não é gravado no PNG; exportando o desenho sobre fundo escuro.','inf');
+  ctx.fillStyle='#0a0a1a'; ctx.fillRect(0,0,W,H); var r=geoActive()&&!terc?geoDrawBase(ctx,W,H,null,{noFetch:true,dpr:k}):{clean:true};
   var saved={gD:S.gD,ds:S.ds,sel:S.sel,hov:S.hoverId,did:S.modes.didactic,sc:S.modes.showcoords}; S.gD=ctx; S.ds=null; S.sel=[]; S.hoverId=null; S.modes.didactic=false; S.modes.showcoords=false;
   try{ drawScene(); } finally { S.gD=saved.gD; S.ds=saved.ds; S.sel=saved.sel; S.hoverId=saved.hov; S.modes.didactic=saved.did; S.modes.showcoords=saved.sc; }
-  if(geoActive()){ var s=geoSrc(),t=s.attr; ctx.font='10px Arial'; var tw=ctx.measureText(t).width; ctx.fillStyle='rgba(255,255,255,.75)'; ctx.fillRect(W-tw-10,H-16,tw+10,16); ctx.fillStyle='#222'; ctx.fillText(t,W-tw-5,H-5); }
+  if(geoActive()&&!terc){ var s=geoSrc(),t=s.attr; ctx.font='10px Arial'; var tw=ctx.measureText(t).width; ctx.fillStyle='rgba(255,255,255,.75)'; ctx.fillRect(W-tw-10,H-16,tw+10,16); ctx.fillStyle='#222'; ctx.fillText(t,W-tw-5,H-5); }
   var nm=geoName(),px=geoF()/S.vp.sc/k,ul=s2w(0,0),u=d2utm(ul.x,ul.y),wld=[px,0,0,-px,u.E+px/2,u.N-px/2].map(function(v){ return v.toFixed(6); }).join('\n')+'\n';
   var done=function(){ downloadBlob(wld,'text/plain',nm+'.pgw'); log('PNG georreferenciado exportado ('+nm+'.png + '+nm+'.pgw, '+geoCrsName()+', '+px.toFixed(3)+' m/pixel). No QGIS: arraste o PNG e defina o SRC EPSG:'+(S.geo.epsg||'?')+'.','ok'); };
   try{ var du=cv.toDataURL('image/png'),bin=atob(du.split(',')[1]),u8=new Uint8Array(bin.length); for(var i=0;i<bin.length;i++) u8[i]=bin.charCodeAt(i); downloadBlob(u8,'image/png',nm+'.png'); done(); }
@@ -13966,7 +14035,10 @@ function geoPanelSync(){
   document.getElementById('geo-custom').value=M.custom||''; document.getElementById('geo-wms').value=M.wms||''; document.getElementById('geo-wlay').value=M.wlay||''; document.getElementById('geo-cattr').value=M.cattr||'';
   document.getElementById('geo-cbox').style.display=M.src==='custom'||M.src==='wms'?'flex':'none';
   document.getElementById('geo-xyzrow').style.display=M.src==='custom'?'flex':'none'; document.getElementById('geo-wmsrow').style.display=M.src==='wms'?'flex':'none';
-  var s=geoSrc(); document.getElementById('geo-note').textContent=s?(s.tipo?s.tipo+'. ':'')+(s.nota||''):'Sem mapa base.';
+  var s=geoSrc(),T0=GEO_SRC[M.src],nt=document.getElementById('geo-note');
+  nt.textContent=s?(s.tipo?s.tipo+'. ':'')+(s.nota||''):(T0&&T0.terceiro?'Este serviço de terceiro precisa do aceite do aviso de responsabilidade neste navegador (escolha-o de novo na lista).':'Sem mapa base.');
+  nt.className='geo-note'+(s&&s.terceiro?' geo-terc-on':''); if(s&&s.terceiro) nt.textContent='⚠ '+s.tipo+'. Os termos do provedor podem não permitir este uso; a responsabilidade é do usuário. Fundo não vai para o PNG.';
+  var me=document.getElementById('geo-meta'); if(me&&!(s&&s.meta)) me.textContent='';
   var u=document.getElementById('geo-unit'); if(u) u.textContent=S.units&&S.units.insertScale!=='m'?'Atenção: o desenho está em '+S.units.insertScale+' — cada unidade vale '+geoF()+' m em E/N.':'';
 }
 function geoApplyCrs(){ var G=geoMake(document.getElementById('geo-datum').value,+document.getElementById('geo-zone').value,document.getElementById('geo-hem').value==='S',+String(document.getElementById('geo-e0').value).replace(',','.'),+String(document.getElementById('geo-n0').value).replace(',','.'));
@@ -13976,7 +14048,9 @@ window.addEventListener('load',function(){
   var gb=document.createElement('div'); gb.id='geobox'; gb.className='geobox'; var cb=document.getElementById('coordbox'); cb.parentNode.insertBefore(gb,cb.nextSibling);
   document.getElementById('cw').addEventListener('mousemove',function(){ if(!S.geo||S.space!=='model'||!S.hover){ if(gb.textContent) gb.textContent=''; return; } gb.textContent=geoCursorText(S.hover.x,S.hover.y); });
   var zo=''; for(var z=1;z<=60;z++) zo+='<option value="'+z+'">'+z+'</option>';
-  var so=[['','Nenhum']].concat(Object.keys(GEO_SRC).map(function(k){ return [k,GEO_SRC[k].nome]; })).concat([['custom','Personalizado (XYZ)'],['wms','Serviço WMS (INDE, IBGE, órgão estadual…)']]);
+  var lic=Object.keys(GEO_SRC).filter(function(k){ return !GEO_SRC[k].terceiro; }),ter=Object.keys(GEO_SRC).filter(function(k){ return GEO_SRC[k].terceiro; });
+  var so=[['','Nenhum']].concat(lic.map(function(k){ return [k,GEO_SRC[k].nome]; })).concat([['custom','Personalizado (XYZ)'],['wms','Serviço WMS (INDE, IBGE, órgão estadual…)']]);
+  var radio=function(o){ return '<label><input type="radio" name="geo-src" value="'+o[0]+'"> '+o[1]+'</label>'; };
   var P=document.createElement('div'); P.id='geo-pal'; P.className='bib-pal geo-pal';
   P.innerHTML='<div class="bib-head" id="geo-head"><span>🛰 Mapa e georreferenciamento</span><button type="button" class="bib-x" id="geo-close" title="Fechar (MAPA)">×</button></div><div class="geo-body">'+
    '<div class="geo-sec">Ir para</div><div class="geo-row"><input id="geo-go" placeholder="-11.7286, -49.0681 · 11°43\'43&quot;S 49°04\'05&quot;W · E N" autocomplete="off"><button class="btn p" type="button" id="geo-gobtn">Ir</button></div>'+
@@ -13985,13 +14059,15 @@ window.addEventListener('load',function(){
    '<div class="geo-row"><select id="geo-datum"><option>SIRGAS 2000</option><option>WGS 84</option></select><label>Zona <select id="geo-zone">'+zo+'</select></label><select id="geo-hem"><option value="S">Sul</option><option value="N">Norte</option></select></div>'+
    '<div class="geo-row"><label title="Some quando as coordenadas do desenho foram reduzidas (E = E0 + X)">E0 <input id="geo-e0" value="0"></label><label>N0 <input id="geo-n0" value="0"></label><button class="btn s" type="button" id="geo-apply">Aplicar</button></div>'+
    '<div id="geo-unit" class="geo-warn"></div>'+
-   '<div class="geo-sec">Mapa base</div><div id="geo-src" class="geo-src">'+so.map(function(o){ return '<label><input type="radio" name="geo-src" value="'+o[0]+'"> '+o[1]+'</label>'; }).join('')+'</div>'+
+   '<div class="geo-sec">Mapa base</div><div id="geo-src" class="geo-src">'+so.map(radio).join('')+
+   '<div class="geo-terc-h">⚠ Serviços de terceiros (como no QuickMapServices do QGIS)</div>'+ter.map(function(k){ return radio([k,GEO_SRC[k].nome]); }).join('')+
+   '<div class="geo-terc-n">Acesso direto, sem licença do EduCAD. Respeitar os direitos autorais e os termos de uso de cada provedor é responsabilidade do usuário.</div></div>'+
    '<div id="geo-cbox" class="geo-row geo-col"><div class="geo-row" id="geo-xyzrow"><input id="geo-custom" placeholder="https://…/{z}/{x}/{y}.png"></div><div class="geo-row" id="geo-wmsrow"><input id="geo-wms" placeholder="URL do WMS (https://…/wms)"><input id="geo-wlay" placeholder="camada(s)" style="max-width:110px"></div><input id="geo-cattr" placeholder="Atribuição (fonte e licença)"></div>'+
    '<div class="geo-row"><label>Opacidade <input type="range" id="geo-op" min="10" max="100" step="5"></label><span id="geo-opv"></span><label><input type="checkbox" id="geo-gray"> Cinza</label><label title="Ruas, limites e nomes da Esri sobre a imagem"><input type="checkbox" id="geo-ovl"> Vias e rótulos</label></div>'+
-   '<div id="geo-note" class="geo-note"></div>'+
+   '<div id="geo-note" class="geo-note"></div><div id="geo-meta" class="geo-meta"></div>'+
    '<div class="geo-sec">Exportar e importar</div><div class="geo-row"><button class="btn s" type="button" id="geo-xgj">GeoJSON</button><button class="btn s" type="button" id="geo-xkml">KML (Google Earth)</button><button class="btn s" type="button" id="geo-xpng">PNG + .pgw</button></div>'+
    '<div class="geo-row"><button class="btn s" type="button" id="geo-imp">Importar GeoJSON / KML…</button><input type="file" id="geo-file" accept=".geojson,.json,.kml" style="display:none"></div>'+
-   '<div class="geo-note">Exporta a seleção ou, sem seleção, todo o Model. DXF: as coordenadas já saem em UTM. Google Maps/Earth não podem ser usados como fundo para traçar (termos do Google); veja o resultado no Google Earth pelo KML.</div></div>';
+   '<div class="geo-note">Exporta a seleção ou, sem seleção, todo o Model. DXF: as coordenadas já saem em UTM. Para ver o desenho no Google Earth, exporte em KML.</div></div>';
   document.body.appendChild(P);
   var $=function(i){ return document.getElementById(i); };
   $('geo-close').addEventListener('click',geoClose);
@@ -13999,7 +14075,7 @@ window.addEventListener('load',function(){
   $('geo-go').addEventListener('keydown',function(ev){ if(ev.key==='Enter'){ ev.preventDefault(); geoGoTo($('geo-go').value); } });
   $('geo-here').addEventListener('click',geoHere); $('geo-ze').addEventListener('click',function(){ zoomFit(); renderAll(); });
   $('geo-apply').addEventListener('click',geoApplyCrs);
-  P.querySelectorAll('input[name=geo-src]').forEach(function(r){ r.addEventListener('change',function(){ geoMapCfg().src=r.value; S.dirty=true; geoPanelSync(); renderAll(); if(r.value&&!S.geo) log('Defina onde fica o desenho: "Ir para" (lat/lon) ou zona UTM.','inf'); }); });
+  P.querySelectorAll('input[name=geo-src]').forEach(function(r){ r.addEventListener('change',function(){ var T=GEO_SRC[r.value]; if(T&&T.terceiro&&!geoTercOk()){ geoTercAsk(r.value); return; } geoMapCfg().src=r.value; S.dirty=true; geoPanelSync(); renderAll(); if(r.value&&!S.geo) log('Defina onde fica o desenho: "Ir para" (lat/lon) ou zona UTM.','inf'); }); });
   $('geo-op').addEventListener('input',function(ev){ geoMapCfg().op=(+ev.target.value)/100; $('geo-opv').textContent=ev.target.value+'%'; renderAll(); });
   $('geo-gray').addEventListener('change',function(ev){ geoMapCfg().gray=ev.target.checked; renderAll(); });
   $('geo-ovl').addEventListener('change',function(ev){ geoMapCfg().ovl=ev.target.checked; renderAll(); });
@@ -14013,6 +14089,31 @@ window.addEventListener('load',function(){
   H.addEventListener('pointermove',function(ev){ if(!drag) return; P.style.left=Math.max(0,Math.min(window.innerWidth-80,ev.clientX-drag.dx))+'px'; P.style.top=Math.max(0,Math.min(window.innerHeight-40,ev.clientY-drag.dy))+'px'; P.style.right='auto'; });
   H.addEventListener('pointerup',function(){ drag=null; });
   geoPanelSync();
+});
+
+// ── aviso de responsabilidade (serviços de terceiros) ──────────────────────
+function geoTercAsk(id){
+  var T=GEO_SRC[id],ov=document.getElementById('ov-terc'); GEO.tercPend=id;
+  document.getElementById('terc-nome').textContent=T.nome; document.getElementById('terc-chk').checked=false; document.getElementById('terc-ok').disabled=true; ov.classList.add('show');
+}
+function geoTercAnswer(ok){
+  var id=GEO.tercPend; closeOv('ov-terc'); GEO.tercPend=null;
+  if(ok&&id){ geoTercAccept(); geoMapCfg().src=id; S.dirty=true; log('Serviço de terceiro ativado: '+GEO_SRC[id].nome+'. O uso é de responsabilidade do usuário.','inf'); }
+  geoPanelSync(); renderAll();
+}
+window.addEventListener('load',function(){
+  var ov=document.createElement('div'); ov.className='ov'; ov.id='ov-terc';
+  ov.innerHTML='<div class="modal" style="max-width:520px"><h3>⚠ Serviço de terceiro: <span id="terc-nome"></span></h3>'+
+   '<div class="terc-txt"><p>Este mapa é acessado <b>diretamente nos servidores do provedor, sem API oficial e sem licença do EduCAD</b> — do mesmo modo que o plugin QuickMapServices do QGIS.</p>'+
+   '<p><b>Respeitar os direitos autorais e os termos de uso de cada provedor é responsabilidade do usuário.</b> Os termos do Google, por exemplo, não autorizam o acesso aos ladrilhos fora do Google Maps Platform nem o uso do conteúdo para criar ou ampliar dados de mapeamento, e o acesso pode ser bloqueado a qualquer momento.</p>'+
+   '<p>O EduCAD não grava essas imagens em arquivo (o PNG sai sem o fundo) e mostra a atribuição na tela. Para trabalhos publicados, prefira as fontes licenciadas (Esri, Sentinel-2, OpenStreetMap) ou imagens próprias (drone, WMS oficial).</p>'+
+   '<p>Mais zoom não é mais precisão: o erro de posição das imagens em mosaico costuma ser de alguns metros. Levantamentos com valor legal (SIGEF) exigem GNSS.</p></div>'+
+   '<label class="ef-chk terc-chk"><input type="checkbox" id="terc-chk"> Li o aviso e assumo a responsabilidade pelo uso deste serviço</label>'+
+   '<div class="mact"><button class="btn s" type="button" id="terc-no">Cancelar</button><button class="btn p" type="button" id="terc-ok" disabled>Usar este serviço</button></div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('terc-chk').addEventListener('change',function(ev){ document.getElementById('terc-ok').disabled=!ev.target.checked; });
+  document.getElementById('terc-ok').addEventListener('click',function(){ geoTercAnswer(true); });
+  document.getElementById('terc-no').addEventListener('click',function(){ geoTercAnswer(false); });
 });
 </script>
 </body>

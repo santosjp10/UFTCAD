@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>EduCAD 2D v8.13</title>
+<title>EduCAD 2D v8.14</title>
 <!-- v6.5: aplicativo instalável (PWA). Ignorado ao abrir o arquivo direto do disco. -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0a0a1a">
@@ -637,6 +637,26 @@ body.scr-running #cw{cursor:progress!important}
 .bib-row .btn{padding:3px 12px}
 .bib-chk input{margin:0}
 @media (max-width:900px){ .bib-pal{right:8px;top:auto;bottom:70px;height:min(440px,60vh)} }
+
+/* v8.14: abas de desenhos */
+#doctabs{display:flex;align-items:flex-end;gap:2px;background:#070d1a;border-bottom:1px solid var(--bdr);padding:3px 6px 0;flex-shrink:0;min-height:27px;user-select:none}
+.dt-list{display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;max-width:calc(100% - 34px)}
+.dt-tab{display:flex;align-items:center;gap:5px;padding:4px 6px 4px 9px;font-size:11px;color:var(--t1);background:#0f1729;border:1px solid var(--bdr);border-bottom:none;border-radius:5px 5px 0 0;cursor:pointer;white-space:nowrap;max-width:240px}
+.dt-tab:hover{background:#16213a;color:var(--t0)}
+.dt-tab.on{background:#0a0a1a;color:#fff;border-color:var(--acc,#4d9ef7);box-shadow:inset 0 2px 0 var(--acc,#4d9ef7)}
+.dt-ico{color:var(--acc,#4d9ef7);font-size:10px}
+.dt-nm{overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.dt-dot{color:#f0a030;font-size:9px;display:none}
+.dt-tab.dirty .dt-dot{display:inline}
+.dt-x{background:none;border:none;color:var(--t2);font-size:14px;line-height:1;padding:0 3px;border-radius:3px;cursor:pointer}
+.dt-x:hover{background:#c0392b;color:#fff}
+.dt-new{background:none;border:1px solid transparent;color:var(--t1);font-size:16px;line-height:1;padding:2px 8px 4px;border-radius:4px;cursor:pointer;margin-bottom:2px}
+.dt-new:hover{border-color:var(--bdr);color:#fff}
+.dt-menu{position:fixed;display:none;flex-direction:column;background:var(--bg2,#141b2d);border:1px solid var(--bdr);border-radius:5px;padding:3px;z-index:500;min-width:160px;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.dt-menu.show{display:flex}
+.dt-menu button{background:none;border:none;color:var(--t0);text-align:left;padding:5px 10px;font-size:11px;border-radius:3px;cursor:pointer}
+.dt-menu button:hover{background:rgba(77,158,247,.18)}
+body.clean #doctabs{display:none}
 </style>
 </head>
 <body>
@@ -655,7 +675,7 @@ body.scr-running #cw{cursor:progress!important}
 <div id="titlebar">
   <div class="logo">Edu<b>CAD</b> 2D</div>
   <div class="ftitle" id="ftitle">Sem título — EduCAD 2D v6</div>
-  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.13 · Uso Educacional</span>
+  <span style="font-size:9px;color:var(--t2);margin-right:4px;">v8.14 · Uso Educacional</span>
   <button class="tb-btn" id="btn-install" onclick="appInstall()" title="Instalar o EduCAD como aplicativo (janela própria, sem abas nem barra de endereços) — INSTALAR" data-cmd="INSTALAR" style="display:none">⬇ Instalar</button>
   <button class="tb-btn" id="btn-clean" onclick="toggleCleanScreen()" title="Tela limpa: oculta faixa de opções e painéis — LIMPA (Ctrl+0)" data-cmd="LIMPA">▭ Tela limpa</button>
   <button class="tb-btn" id="btn-fs" onclick="toggleFullscreen()" title="Tela cheia — TELACHEIA" data-cmd="TELACHEIA">⛶ Tela cheia</button>
@@ -1005,7 +1025,7 @@ body.scr-running #cw{cursor:progress!important}
   <span>Camada: <span class="sv" id="slayer">0</span></span>
   <span class="ssep"></span>
   <span id="sortho" style="color:var(--t2)">ORTHO OFF</span>
-  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.13 · Software Educacional Livre · HELP = comandos</span>
+  <span style="margin-left:auto;color:var(--t2)">EduCAD 2D v8.14 · Software Educacional Livre · HELP = comandos</span>
 </div>
 
 <!-- MODALS -->
@@ -1413,7 +1433,7 @@ body.scr-running #cw{cursor:progress!important}
 <div class="ov" id="ov-about"><div class="modal" style="min-width:480px;max-width:600px;">
   <h3 style="display:flex;align-items:center;gap:8px;">
     <span style="font-size:18px;color:var(--acc)">Edu<b style="color:var(--acc)">CAD</b> 2D</span>
-    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.13 — Software Educacional</span>
+    <span style="font-size:10px;color:var(--t2);font-weight:normal;">v8.14 — Software Educacional</span>
   </h3>
   <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:10px;font-size:11px;line-height:1.6;">
 
@@ -1606,7 +1626,7 @@ function fontMeasure(t,key,h){ t=String(t); if(!t) return 0; var k=fontKey(key),
 if(typeof document!=='undefined'&&document.fonts&&document.fonts.addEventListener) document.fonts.addEventListener('loadingdone',function(){ FONT_MW={}; });
 
 /* ═══════════════════════════════════════════════════════════
-   EduCAD 2D v8.13 — Software Educacional Livre (Licença MIT)
+   EduCAD 2D v8.14 — Software Educacional Livre (Licença MIT)
    Estado 100% global em objeto S (state)
    ═══════════════════════════════════════════════════════════ */
 
@@ -1680,7 +1700,7 @@ window.addEventListener('load', function() {
   }
   updLTSel();
   updDimStyleSel();
-  log('EduCAD 2D v8.13 — Software Educacional Livre (Licença MIT)','inf');
+  log('EduCAD 2D v8.14 — Software Educacional Livre (Licença MIT)','inf');
   log('Uso educacional | Não afiliado ao AutoCAD® ou qualquer software comercial','inf');
   log('Modo SELECT ativo. Clique para selecionar. HELP = lista de comandos.','inf');
   log('Novo desenho em branco. DDIM = estilos de cota  |  DEMO = desenho de exemplo','inf');
@@ -3797,6 +3817,7 @@ function onCmdKey(e){
     'SCRIPT':'script','SCR':'script','GRAVARSCRIPT':'scrrec','ACTRECORD':'scrrec',
     'POLIGONAL':'poligonal','POLIG':'poligonal','TRAVERSE':'poligonal',
     'ST':'style','STYLE':'style','ESTILO':'style','FONTE':'style',
+    'CLOSE':'docclose','FECHAR':'docclose','CLOSEALL':'docclall','FECHARTODOS':'docclall','COPYCLIP':'copyclip','COPYBASE':'copybase','PASTECLIP':'pasteclip',
     'BIBLIOTECA':'bib','BIB':'bib','BLOCKSPALETTE':'bib','TOOLPALETTES':'bib','ADCENTER':'bib',
     'MODELOS':'tpl','TEMPLATES':'tpl','NOVOMODELO':'tpl','MOLDURA':'moldura',
     'X':'explode','EXPLODE':'explode','EXPLODIR':'explode',
@@ -3842,6 +3863,9 @@ function onCmdKey(e){
     case 'script':scrOpen();break;
     case 'tpl':tplOpen();break;
     case 'bib':bibOpen();break;
+    case 'docclose':docClose();break;
+    case 'docclall':docCloseAll();break;
+    case 'copyclip':case 'copybase':case 'pasteclip':setTool(act);break;
     case 'moldura':showTemplate();break;
     case 'style':styleOpen();break;
     case 'poligonal':poOpen();break;
@@ -3889,7 +3913,7 @@ function onCmdKey(e){
     case 'open':openDoc();break;
     case 'ly':showAddLayer();break;
     case 'help':
-      log('═══ COMANDOS EduCAD v8.13 — digite e confirme com Enter ou Espaço ═══','inf');
+      log('═══ COMANDOS EduCAD v8.14 — digite e confirme com Enter ou Espaço ═══','inf');
       log('DESENHO: L=Linha  PL=Polilinha  REC=Retângulo  C=Círculo  A=Arco  EL=Elipse  POL=Polígono  SPL=Spline  H=Hachura','inf');
       log('PONTOS: PO=Ponto  PONTOS=Importar tabela de coordenadas (Excel/CSV)  |  durante PL/L/SPL, cole uma lista de coordenadas na linha de comando','inf');
       log('SCRIPTS: SCRIPT=Executar/editar .scr  GRAVARSCRIPT=Gravar  #SET #FOR #REPEAT #IF #END {expressão}  |  sem janela: -LAYER  -TEXT  -POLYGON  ZOOM E  |  variáveis: OSMODE ORTHOMODE CLAYER TEXTSIZE HPNAME HPSCALE HPANG','inf');
@@ -3907,6 +3931,8 @@ function onCmdKey(e){
       log('ARQUIVO: NEW  OPEN  SAVE (nome, formato e pasta)  QSAVE/Ctrl+S (regrava)  EXPORT  DXFIN  IMPORTDXF  RECUPERAR  SAVETIME  LIMPARRECUPERACAO','inf');
       log('  NEW/Ctrl+N = Novo com modelo: Padrão, Mecânico, Arquitetônico ou Topográfico (e Meus modelos)','inf');
       log('  BIBLIOTECA/Ctrl+3 = Biblioteca de blocos (portas, janelas, louças, móveis, marcos, postes, drenagem, vegetação…)','inf');
+      log('  ABAS: cada Novo/Abrir abre uma aba · Alt+PageDown/PageUp alternam · CLOSE fecha · CLOSEALL fecha todas','inf');
+      log('  Ctrl+C = COPYCLIP · Ctrl+Shift+C = COPYBASE (ponto base) · Ctrl+V = PASTECLIP (cola em qualquer aba)','inf');
       log('CONFIG: UN=Unidades  LT=Tipos de linha  LA=Camadas  TELACHEIA  LIMPA (Ctrl+0)  INSTALAR  DEMO=Exemplo','inf');
       log('ENSINO: AULA = exercícios guiados com verificação automática (aba Educacional)','inf');
       log('PRECISÃO: F3=OSNAP  F7=Grade  F8=Ortho  F9=Snap  |  durante um comando: END MID CEN INT QUA PER TAN NEA NON','inf');
@@ -4265,7 +4291,7 @@ function delLayer(){if(S.curLy===0){log('Não é possível remover a camada 0.',
 function updStatus(){document.getElementById('scount').textContent=S.ents.length;var l=getLy(S.curLy);document.getElementById('slayer').textContent=l?l.nm:S.curLy;}
 
 // ── SAVE / LOAD / EXPORT ─────────────────────────────────────
-function buildDoc(){return {v:'8.13',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
+function buildDoc(){return {v:'8.14',annoScale:S.annoScale,layouts:layoutsForSave(),blocks:S.blocks,offDist:S.offDist,chamD1:S.chamD1,chamD2:S.chamD2,teMode:S.teMode,ts:new Date().toISOString(),ents:S.ents,layers:S.layers,vp:S.vp,dimStyles:S.dimStyles,dimCurrent:S.dimCurrent,filletR:S.filletR,filletTrim:S.filletTrim};}
 function saveDoc(){var d=buildDoc();downloadBlob(JSON.stringify(d,null,2),'application/json','educad.json');document.getElementById('ftitle').textContent='educad.json';S.dirty=false;log('Salvo.','ok');} // v8.9: passa por downloadBlob (janela Salvar como)
 // v6.1: validação mínima do JSON carregado
 var ENT_TYPES=['line','circ','arc','rect','ell','pl','spline','txt','hatch','dim','dimr','dimd','dima','mtext','insert','leader'];
@@ -5011,7 +5037,7 @@ function loadDemo(){
     {id:'d5',tp:'line',  x1:0,y1:-55,x2:0,y2:55,  col:'#556688',lw:.35,ld:'center',ly:1},
     {id:'d6',tp:'dim',   x1:-60,y1:-40,x2:60,y2:-40,off:-58,val:'120.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
     {id:'d7',tp:'dimr',  cx:0,cy:0,ex:28,ey:0,val:'28.00',unit:'mm',col:'#f0c040',lw:.5,ld:'solid',ly:2},
-    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.13 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
+    {id:'d8',tp:'txt',   x:-55,y:-68,txt:'EduCAD 2D v8.14 — HELP = comandos. Enter=fim e clique na área de desenho',h:7,col:'#556688',lw:.35,ld:'solid',ly:0},
   ];
   resetHistory();S.dirty=false;syncIdCounter();zoomFit();updStatus();
 }
@@ -10388,7 +10414,7 @@ function pdfAssemble(pages,title){
   objs[fontId+1]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
   objs[fontId+2]='<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>';
   function pstr(s){ return '('+String(s).replace(/[\\()]/g,'\\$&').replace(/[^\x20-\x7e]/g,function(c){var b=cp1252Byte(c.charCodeAt(0));return b===undefined?'?':String.fromCharCode(b);})+')'; }
-  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.13) >>';
+  objs[infoId]='<< /Title '+pstr(title||'EduCAD')+' /Creator (EduCAD 2D) /Producer (EduCAD 2D v8.14) >>';
   var s='%PDF-1.4\n%\xe2\xe3\xcf\xd3\n',off=[];
   for(var i=1;i<objs.length;i++){ off[i]=s.length; s+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
   var xref=s.length; s+='xref\n0 '+objs.length+'\n0000000000 65535 f \n';
@@ -12993,8 +13019,8 @@ function tplRender(){
     var info=T.padrao?['Milímetro · A4 paisagem · 1:1','4 camadas · estilos Standard e ABNT · Arial']:[({mm:'Milímetro',m:'Metro',cm:'Centímetro'})[T.units.insertScale]+' · '+T.fmt+(T.land?' paisagem':' retrato')+' · '+ratioLabel(T.vp),T.layers.length+' camadas · cota '+T.dim.name+' · '+fontLabel(T.font).split(' —')[0]];
     c.innerHTML='<div class="tpl-ico">'+T.icone+'</div><div class="tpl-body"><div class="tpl-nome"></div><div class="tpl-desc"></div><div class="tpl-info"></div><div class="tpl-norma"></div></div>';
     c.querySelector('.tpl-nome').textContent=T.nome; c.querySelector('.tpl-desc').textContent=T.desc; c.querySelector('.tpl-info').textContent=info.join(' · '); c.querySelector('.tpl-norma').textContent=T.norma||'';
-    var b=document.createElement('button'); b.className='btn p'; b.type='button'; b.textContent='Criar'; b.addEventListener('click',function(){ closeOv('ov-novo'); tplApply(T.id); }); c.querySelector('.tpl-body').appendChild(b);
-    c.addEventListener('dblclick',function(){ closeOv('ov-novo'); tplApply(T.id); });
+    var b=document.createElement('button'); b.className='btn p'; b.type='button'; b.textContent='Criar'; b.addEventListener('click',function(){ closeOv('ov-novo'); tplCreate(T.id); }); c.querySelector('.tpl-body').appendChild(b);
+    c.addEventListener('dblclick',function(){ closeOv('ov-novo'); tplCreate(T.id); });
     g.appendChild(c); });
   var u=document.getElementById('tpl-user'); u.textContent=''; var L=tplUserList();
   if(!L.length){ var p=document.createElement('div'); p.className='tpl-none'; p.textContent='Nenhum modelo próprio ainda. Configure um desenho (camadas, estilos, layout…) e guarde-o como modelo abaixo.'; u.appendChild(p); }
@@ -13374,6 +13400,244 @@ window.addEventListener('load',function(){
   H.addEventListener('pointermove',function(ev){ if(!drag) return; P.style.left=Math.max(0,Math.min(window.innerWidth-80,ev.clientX-drag.dx))+'px'; P.style.top=Math.max(0,Math.min(window.innerHeight-40,ev.clientY-drag.dy))+'px'; P.style.right='auto'; });
   H.addEventListener('pointerup',function(){ drag=null; });
   document.addEventListener('keydown',function(ev){ if(ev.ctrlKey&&!ev.shiftKey&&!ev.altKey&&ev.key==='3'){ ev.preventDefault(); bibToggle(); } });
+});
+/* ═══════════════════════════════════════════════════════════════════
+   v8.14 — ABAS DE DESENHOS (vários desenhos abertos, como no AutoCAD)
+   • Barra de abas acima da área de desenho: uma aba por desenho, com o nome,
+     o indicador de alterações não salvas (●) e o botão fechar (×).
+   • Novo (modelo) e Abrir criam uma aba nova; a aba vazia do início é
+     reaproveitada. Cada aba guarda o seu desenho inteiro: objetos, camadas,
+     estilos, layouts e espaço ativo, desfazer/refazer, vista, unidades,
+     escala de anotação, grade/snap, arquivo associado (Ctrl+S), cópia de
+     segurança e histórico de zoom.
+   • Fechar (×, botão do meio, CLOSE/FECHAR): pergunta Salvar / Não salvar /
+     Cancelar quando há alterações. CLOSEALL/FECHARTODOS fecha todas.
+   • Alt+PageDown / Alt+PageUp alternam as abas (Ctrl+Tab é do navegador).
+   • Copiar e colar entre desenhos: Ctrl+C (COPYCLIP), Ctrl+Shift+C (COPYBASE,
+     com ponto base) e Ctrl+V (PASTECLIP). Camadas, blocos e estilos de cota
+     usados vão junto; a unidade é convertida (mm ↔ m).
+   ═══════════════════════════════════════════════════════════════════ */
+// chaves de S que são da interface/execução (não mudam com a aba)
+var DOC_SKIP={ds:1,tool:1,hover:1,isPan:1,panFrom:1,isWin:1,winFrom:1,hoverId:1,grip:1,gripHover:1,gripDragFrom:1,snapOverride:1,
+  cG:1,cD:1,cO:1,gG:1,gD:1,gO:1,wrap:1,W:1,H:1,dpr:1,printing:1,shiftDown:1,modes:1,lastTool:1,_typedPt:1};
+var DOCS={list:[],cur:0,seq:0,fresh:null,closeAll:false};
+function docTitleEl(){ return document.getElementById('ftitle'); }
+function docCapture(){
+  var st={S:{}},th=document.getElementById('th'),pu=document.getElementById('pt-unit');
+  Object.keys(S).forEach(function(k){ if(!DOC_SKIP[k]) st.S[k]=S[k]; });
+  st.gsz=S.modes.gridSz; st.ssz=S.modes.snapSz; st.title=docTitleEl().textContent; st.th=th?th.value:null; st.pu=pu?pu.value:null;
+  st.handle=(typeof FILEIO==='object')?FILEIO.docHandle:null;
+  st.as={sid:AS.sid,lastJson:AS.lastJson,lastDirty:AS.lastDirty,lastTs:AS.lastTs};
+  st.zh={st:ZH.st,seen:ZH.seen,t:ZH.t};
+  return st;
+}
+function docRestore(st){
+  Object.keys(S).forEach(function(k){ if(!DOC_SKIP[k]) delete S[k]; });
+  Object.keys(st.S).forEach(function(k){ S[k]=st.S[k]; });
+  S.modes.gridSz=st.gsz; S.modes.snapSz=st.ssz; S.sel=[]; S.ds=null; S.grip=null; S.hover=null;
+  docTitleEl().textContent=st.title; var th=document.getElementById('th'),pu=document.getElementById('pt-unit'); if(th&&st.th!==null) th.value=st.th; if(pu&&st.pu!==null) pu.value=st.pu;
+  if(typeof FILEIO==='object') FILEIO.docHandle=st.handle||null;
+  AS.sid=st.as.sid; AS.lastJson=st.as.lastJson; AS.lastDirty=st.as.lastDirty; AS.lastTs=st.as.lastTs;
+  ZH.st=st.zh.st; ZH.seen=st.zh.seen; ZH.t=st.zh.t;
+  if(typeof TE_CACHE==='object'){ TE_CACHE.key=null; TE_CACHE.res=null; }
+  LY.active=S.space==='model'?'model':'layout'; document.body.classList.toggle('paper',S.space!=='model');
+  var as=document.getElementById('annoSel'); if(as) as.value=String(S.annoScale||1);
+  [updLayerUI,updLayerSel,updDimStyleSel,buildLayoutTabs,syncLayoutPanel,updPropsPanel,updStatus,updSelInfo].forEach(function(f){ try{ if(typeof f==='function') f(); }catch(e){} });
+  renderAll(); if(document.getElementById('bib-pal')&&document.getElementById('bib-pal').classList.contains('show')&&typeof bibRender==='function') bibRender();
+}
+function docFreshState(){
+  var st=JSON.parse(JSON.stringify(DOCS.fresh)); st.S.vp={x:cvW()/2,y:cvH()/2,sc:2}; st.handle=null;
+  st.as={sid:'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),lastJson:null,lastDirty:null,lastTs:0};
+  st.zh={st:{},seen:{},t:{}}; return st;
+}
+function docModelEmpty(){ var m=S.space==='model'?S.ents:(S.modelEnts||[]); return !m.length; }
+// desenho vazio e intocado (pode ser reaproveitado por Novo/Abrir)
+function docPristine(){ return !S.dirty&&docModelEmpty()&&!S.template&&!(S.undos&&S.undos.length)&&!FILEIO.docHandle&&/^Sem título$/.test(docTitleEl().textContent.trim()); }
+function docLeave(){ if(S.ds||S.tool!=='select') setTool('select'); if(typeof asFlush==='function') try{ asFlush(); }catch(e){} }
+function docNew(){
+  docLeave(); DOCS.list[DOCS.cur].st=docCapture();
+  var T={id:++DOCS.seq,st:null}; DOCS.list.splice(DOCS.cur+1,0,T); DOCS.cur=DOCS.cur+1; docRestore(docFreshState()); docTabsRender(); return T;
+}
+function docNewIfNeeded(){ if(!docPristine()) docNew(); }
+function docSwitch(i){
+  if(i<0||i>=DOCS.list.length||i===DOCS.cur) return;
+  docLeave(); DOCS.list[DOCS.cur].st=docCapture(); DOCS.cur=i; var st=DOCS.list[i].st; DOCS.list[i].st=null; docRestore(st); docTabsRender();
+  log('Desenho: '+docTitleEl().textContent+'.','inf');
+}
+function docNext(d){ if(DOCS.list.length>1) docSwitch((DOCS.cur+d+DOCS.list.length)%DOCS.list.length); }
+function docDirtyAt(i){ return i===DOCS.cur?!!S.dirty:!!(DOCS.list[i].st&&DOCS.list[i].st.S.dirty); }
+function docTitleAt(i){ return i===DOCS.cur?docTitleEl().textContent:(DOCS.list[i].st?DOCS.list[i].st.title:''); }
+function docLabel(i){ var t=(docTitleAt(i)||'Sem título').trim(),m=/^Sem título(?: — (?:Desenho )?(.+))?$/.exec(t);
+  if(m){ var n=DOCS.list[i]?DOCS.list[i].id:1; return 'Sem título'+(n>1?' '+n:'')+(m[1]?' · '+m[1]:''); }
+  return t.replace(/\.(json|dxf)$/i,''); }
+// remove a aba ativa (sem perguntar)
+function docDrop(){
+  var i=DOCS.cur; if(DOCS.list.length===1){ DOCS.seq=0; DOCS.list[0]={id:++DOCS.seq,st:null}; docRestore(docFreshState()); docTabsRender(); return; }
+  DOCS.list.splice(i,1); var j=Math.min(i,DOCS.list.length-1); DOCS.cur=j; var st=DOCS.list[j].st; DOCS.list[j].st=null; docRestore(st); docTabsRender();
+}
+function docClose(i){
+  if(i===undefined) i=DOCS.cur; if(i!==DOCS.cur) docSwitch(i);
+  docLeave();
+  if(!S.dirty){ var nm=docTitleEl().textContent; docDrop(); log('Desenho "'+nm+'" fechado.','ok'); docCloseAllStep(); return; }
+  document.getElementById('dt-close-msg').textContent='Salvar as alterações em "'+docTitleEl().textContent+'" antes de fechar?';
+  document.getElementById('ov-fechar').classList.add('show');
+}
+function docCloseAnswer(a){
+  closeOv('ov-fechar');
+  if(a==='cancel'){ DOCS.closeAll=false; log('Fechamento cancelado.','inf'); return; }
+  if(a==='discard'){ var nm=docTitleEl().textContent; docDrop(); log('Desenho "'+nm+'" fechado sem salvar.','ok'); docCloseAllStep(); return; }
+  // salvar: fecha quando a gravação terminar (Ctrl+S no mesmo arquivo ou janela Salvar)
+  var T=DOCS.list[DOCS.cur]; T.closeAfterSave=Date.now(); qsaveCmd();
+}
+function docCloseAllStep(){ if(!DOCS.closeAll) return; if(DOCS.list.length===1&&docPristine()){ DOCS.closeAll=false; return; } setTimeout(function(){ if(DOCS.closeAll) docCloseAll(true); },0); }
+function docCloseAll(cont){
+  if(!cont){ DOCS.closeAll=true; }
+  // primeiro os que não têm alterações
+  for(var i=DOCS.list.length-1;i>=0;i--){ if(!docDirtyAt(i)&&!(DOCS.list.length===1&&docPristine())){ if(i!==DOCS.cur) docSwitch(i); docLeave(); docDrop(); } }
+  var d=-1; for(var k=0;k<DOCS.list.length;k++) if(docDirtyAt(k)){ d=k; break; }
+  if(d<0){ DOCS.closeAll=false; log('Todos os desenhos foram fechados.','ok'); return; }
+  docClose(d);
+}
+// vigia: atualiza as abas e conclui "Salvar e fechar"
+function docTick(){
+  AS.keep=Math.max(5,DOCS.list.length+2);
+  if(DOCS.closeAll&&!document.getElementById('ov-fechar').classList.contains('show')&&!(DOCS.list[DOCS.cur]&&DOCS.list[DOCS.cur].closeAfterSave)) DOCS.closeAll=false;
+  var T=DOCS.list[DOCS.cur];
+  if(T&&T.closeAfterSave){ var ovs=document.getElementById('ov-export'),open=ovs&&ovs.classList.contains('show');
+    if(!S.dirty){ T.closeAfterSave=0; var nm=docTitleEl().textContent; docDrop(); log('Desenho "'+nm+'" salvo e fechado.','ok'); docCloseAllStep(); }
+    else if(!open&&Date.now()-T.closeAfterSave>1500){ T.closeAfterSave=0; DOCS.closeAll=false; log('O desenho não foi salvo; a aba continua aberta.','inf'); } }
+  docTabsRender(true);
+}
+// ── barra de abas ──────────────────────────────────────────────────────────
+var DT_LAST='';
+function docTabsRender(lazy){
+  var bar=document.getElementById('dt-list'); if(!bar) return;
+  var sig=DOCS.list.map(function(t,i){ return t.id+'|'+docLabel(i)+'|'+docDirtyAt(i)+'|'+(i===DOCS.cur); }).join('/');
+  if(lazy&&sig===DT_LAST) return; DT_LAST=sig; bar.textContent='';
+  DOCS.list.forEach(function(t,i){
+    var el=document.createElement('div'); el.className='dt-tab'+(i===DOCS.cur?' on':'')+(docDirtyAt(i)?' dirty':''); el.setAttribute('data-i',i); el.setAttribute('role','tab');
+    var lab=docLabel(i); el.title=lab+(docDirtyAt(i)?' — alterações não salvas':'')+'\nClique: ativar · botão do meio ou ×: fechar · botão direito: menu';
+    var ic=document.createElement('span'); ic.className='dt-ico'; ic.textContent='▱'; el.appendChild(ic);
+    var nm=document.createElement('span'); nm.className='dt-nm'; nm.textContent=lab; el.appendChild(nm);
+    var dt=document.createElement('span'); dt.className='dt-dot'; dt.textContent='●'; el.appendChild(dt);
+    var x=document.createElement('button'); x.type='button'; x.className='dt-x'; x.textContent='×'; x.title='Fechar — CLOSE'; x.addEventListener('click',function(ev){ ev.stopPropagation(); docClose(i); }); el.appendChild(x);
+    el.addEventListener('mousedown',function(ev){ if(ev.button===1){ ev.preventDefault(); docClose(i); } });
+    el.addEventListener('click',function(){ docSwitch(i); });
+    el.addEventListener('contextmenu',function(ev){ ev.preventDefault(); docMenu(i,ev.clientX,ev.clientY); });
+    bar.appendChild(el); });
+  var on=bar.querySelector('.dt-tab.on'); if(on&&on.scrollIntoView) try{ on.scrollIntoView({block:'nearest',inline:'nearest'}); }catch(e){}
+}
+function docMenu(i,x,y){
+  var m=document.getElementById('dt-menu'); m.textContent='';
+  [['Fechar',function(){ docClose(i); }],['Fechar os outros',function(){ docCloseOthers(i); }],['Fechar todos',function(){ docCloseAll(); }],['Salvar',function(){ docSwitch(i); qsaveCmd(); }],['Novo desenho…',function(){ tplOpen(); }]].forEach(function(o){
+    var b=document.createElement('button'); b.type='button'; b.textContent=o[0]; b.addEventListener('click',function(){ m.classList.remove('show'); o[1](); }); m.appendChild(b); });
+  m.style.left=Math.min(x,window.innerWidth-180)+'px'; m.style.top=y+'px'; m.classList.add('show');
+}
+function docCloseOthers(i){ var keep=DOCS.list[i]; if(DOCS.cur!==i) docSwitch(i);
+  // fecha os sem alterações; os com alterações ficam (avisados)
+  var n=0,d=0; for(var k=DOCS.list.length-1;k>=0;k--){ if(DOCS.list[k]===keep) continue; if(docDirtyAt(k)){ d++; continue; } DOCS.list.splice(k,1); n++; }
+  DOCS.cur=DOCS.list.indexOf(keep); docTabsRender(); log(n+' desenho(s) fechado(s)'+(d?'; '+d+' com alterações não salvas continuam abertos (feche-os pelo × para salvar).':'.'),'ok'); }
+// ── pontos de entrada: Novo (modelo) e Abrir criam aba ─────────────────────
+// o Abrir com seletor do sistema grava o arquivo escolhido em FILEIO.docHandle antes da leitura terminar:
+// ele pertence ao desenho que vai abrir, não à aba de onde se abriu
+function docOpenTab(){ var h=FILEIO.docHandle; FILEIO.docHandle=DOCS.prevHandle||null; var made=!docPristine(); if(made) docNew(); FILEIO.docHandle=h; DOCS.prevHandle=null; return made; }
+function tplCreate(id){ docNewIfNeeded(); return tplApply(id); }
+(function(){
+  // Abrir: a aba nova só é criada quando o arquivo é válido
+  var lf=loadFile; loadFile=function(ev){ var f=ev&&ev.target&&ev.target.files&&ev.target.files[0]; if(f&&!S.dxfMerge){ DOCS.opening=true; DOCS.prevHandle=FILEIO.docHandle; } return lf.apply(this,arguments); };
+  var ad=applyDoc; applyDoc=function(d){ if(DOCS.opening){ DOCS.opening=false; if(!validateDoc(d)) docOpenTab(); } return ad.apply(this,arguments); };
+  var ib=importDxfBuffer; importDxfBuffer=function(buf,name,merge){ if(merge||!DOCS.opening) return ib.apply(this,arguments); DOCS.opening=false;
+    var prev=DOCS.cur,made=docOpenTab(); var ok=ib.apply(this,arguments);
+    if(!ok&&made){ DOCS.list.splice(DOCS.cur,1); DOCS.cur=prev; var st=DOCS.list[prev].st; DOCS.list[prev].st=null; docRestore(st); docTabsRender(); } return ok; };
+  var td=tplDocApply; tplDocApply=function(){ docNewIfNeeded(); return td.apply(this,arguments); };
+  var ar=asRecover; asRecover=function(){ docNewIfNeeded(); return ar.apply(this,arguments); };
+})();
+// ── copiar e colar entre desenhos ──────────────────────────────────────────
+var DOCCLIP=null;
+function clipMm(){ return S.space==='model'?unitMm():1; }
+function clipBlocksUsed(ents,acc){ acc=acc||{}; ents.forEach(function(e){ if(e.tp==='insert'&&S.blocks[e.name]&&!acc[e.name]){ acc[e.name]=JSON.parse(JSON.stringify(S.blocks[e.name])); clipBlocksUsed(S.blocks[e.name].ents,acc); } }); return acc; }
+function clipCopy(ids,base){
+  var ents=ids.map(findE).filter(function(e){ return e&&e.tp!=='viewport'; }); if(!ents.length){ log('Nada para copiar.','er'); return false; }
+  if(!base){ var bs=ents.map(bbox).filter(Boolean),x=Infinity,y=Infinity; bs.forEach(function(b){ x=Math.min(x,b.x); y=Math.min(y,b.y); }); base={x:isFinite(x)?x:0,y:isFinite(y)?y:0}; }
+  var lys={}; ents.forEach(function(e){ var L=getLy(e.ly); if(L) lys[e.ly]=JSON.parse(JSON.stringify(L)); });
+  var blk=clipBlocksUsed(ents); Object.keys(blk).forEach(function(k){ blk[k].ents.forEach(function(c){ if(c.ly!==0&&c.ly!==undefined){ var L=getLy(c.ly); if(L) lys[c.ly]=JSON.parse(JSON.stringify(L)); } }); });
+  var dsn={}; ents.forEach(function(e){ if(e.dimStyle&&!dsn[e.dimStyle]){ var st=(S.dimStyles||[]).filter(function(s){return s.name===e.dimStyle;})[0]; if(st) dsn[e.dimStyle]=JSON.parse(JSON.stringify(st)); } });
+  DOCCLIP={id:'clip'+Date.now().toString(36),ents:JSON.parse(JSON.stringify(ents)),base:base,mm:clipMm(),layers:lys,blocks:blk,dim:dsn,from:docTitleEl().textContent,n:ents.length};
+  log(ents.length+' objeto(s) copiado(s) para a área de transferência do EduCAD. Ctrl+V cola neste ou em outro desenho (aba).','ok');
+  return true;
+}
+function clipMarker(){ return DOCCLIP?'[EduCAD] '+DOCCLIP.n+' objeto(s) de "'+DOCCLIP.from+'" — cole com Ctrl+V num desenho do EduCAD #'+DOCCLIP.id:''; }
+function clipBuild(p){ // devolve as entidades prontas para o desenho atual (ainda sem camadas criadas)
+  var C=DOCCLIP,f=C.mm/clipMm(); return C.ents.map(function(e){ var c=JSON.parse(JSON.stringify(e)); if(f!==1) scalE(c,C.base,f); transl(c,p.x-C.base.x,p.y-C.base.y); return c; });
+}
+function clipPaste(p){
+  var C=DOCCLIP; if(!C) return; snapshot();
+  // camadas: pelo nome; as que faltam são criadas com as mesmas propriedades
+  var map={},novas=[]; Object.keys(C.layers).forEach(function(id){ var L=C.layers[id],t=S.layers.filter(function(x){return x.nm===L.nm;})[0];
+    if(!t){ t=JSON.parse(JSON.stringify(L)); t.id=nextLayerId(); t.lock=false; S.layers.push(t); novas.push(t.nm); } map[id]=t.id; });
+  var nb=[]; Object.keys(C.blocks).forEach(function(k){ if(!S.blocks[k]){ var B=JSON.parse(JSON.stringify(C.blocks[k])); B.ents.forEach(function(c){ if(map[c.ly]!==undefined) c.ly=map[c.ly]; }); S.blocks[k]=B; nb.push(k); } });
+  Object.keys(C.dim).forEach(function(k){ if(!(S.dimStyles||[]).some(function(s){return s.name===k;})) S.dimStyles.push(normDimStyle(JSON.parse(JSON.stringify(C.dim[k])))); });
+  var ids=[]; clipBuild(p).forEach(function(c){ c.id=uid(); if(map[c.ly]!==undefined) c.ly=map[c.ly]; S.ents.push(c); ids.push(c.id); });
+  S.sel=ids; S.dirty=true; updLayerUI(); updLayerSel(); if(typeof updDimStyleSel==='function') updDimStyleSel(); renderAll(); updStatus(); updSelInfo();
+  var f=C.mm/clipMm();
+  log('Colado(s) '+ids.length+' objeto(s)'+(f!==1?' (unidades convertidas, fator '+gNum(f)+')':'')+(novas.length?'; camadas criadas: '+novas.join(', '):'')+(nb.length?'; blocos: '+nb.join(', '):'')+'.','ok');
+}
+NC.copyclip={needSel:true,prompt:function(){return '';},click:function(){},input:function(){return true;},
+  afterSel:function(ds){ clipCopy(ds.ids); S.sel=ds.ids.slice(); ncEnd(false); renderAll(); }};
+NC.copybase={
+  init:function(ds){ ds.phase='base'; ds.pre=S.sel.slice(); },
+  prompt:function(ds){ return 'COPYBASE Especifique o ponto base:'; },
+  click:function(ds,pt){ if(ds.phase==='base'){ ds.base={x:pt.x,y:pt.y}; if(ds.pre.length){ ds.ids=ds.pre; this.afterSel(ds); } else { ds.phase='sel'; ds.ids=[]; S.sel=[]; } } },
+  afterSel:function(ds){ clipCopy(ds.ids,ds.base); S.sel=ds.ids.slice(); ncEnd(false); renderAll(); },
+  input:function(ds,u,raw){ if(ds.phase==='base'){ var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; } return false; }
+};
+NC.pasteclip={
+  init:function(ds){ ds.phase='pt'; if(!DOCCLIP){ log('A área de transferência do EduCAD está vazia. Selecione objetos e use Ctrl+C.','er'); setTimeout(function(){ if(S.ds===ds) ncEnd(); },0); } },
+  prompt:function(){ return 'PASTECLIP Especifique o ponto de inserção ('+(DOCCLIP?DOCCLIP.n:0)+' objeto(s) de "'+(DOCCLIP?DOCCLIP.from:'')+'"):'; },
+  click:function(ds,pt){ clipPaste(pt); ncEnd(false); },
+  input:function(ds,u,raw){ if(u===''){ ncEnd(); return true; } var p=parseCoord(raw); if(!p) return false; this.click(ds,p); return true; },
+  preview:function(ctx,ds,hp){ if(!DOCCLIP||!hp) return; ctx.save(); ctx.globalAlpha=.7; clipBuild(hp).forEach(function(c){ try{ drawE(ctx,c,true); }catch(e){} }); ctx.restore(); }
+};
+// atalhos: os eventos copy/paste do navegador (Ctrl+C / Ctrl+V)
+function clipCanUse(){ var a=document.activeElement,ci=document.getElementById('cmdinput');
+  if(document.querySelector('.ov.show')) return false;
+  if(a===ci) return ci.selectionStart===ci.selectionEnd; // sem texto selecionado no campo de comando
+  return !(a&&isTypingTarget(a)); }
+// ── janela "fechar" e barra ────────────────────────────────────────────────
+window.addEventListener('load',function(){
+  var bar=document.createElement('div'); bar.id='doctabs'; bar.setAttribute('role','tablist');
+  bar.innerHTML='<div id="dt-list" class="dt-list"></div><button type="button" class="dt-new" id="dt-new" title="Novo desenho — NEW (Ctrl+N): abre numa nova aba">+</button>';
+  var ws=document.getElementById('ws'); ws.parentNode.insertBefore(bar,ws);
+  document.getElementById('dt-new').addEventListener('click',function(){ tplOpen(); });
+  var menu=document.createElement('div'); menu.id='dt-menu'; menu.className='dt-menu'; document.body.appendChild(menu);
+  document.addEventListener('mousedown',function(ev){ if(!menu.contains(ev.target)) menu.classList.remove('show'); },true);
+  var ov=document.createElement('div'); ov.className='ov'; ov.id='ov-fechar';
+  ov.innerHTML='<div class="modal" style="max-width:440px"><h3>Fechar desenho</h3><p id="dt-close-msg" style="font-size:12px;line-height:1.5;margin:8px 0 14px"></p>'+
+    '<div class="mact"><button class="btn s" type="button" id="dt-cancel">Cancelar</button><button class="btn s" type="button" id="dt-discard">Não salvar</button><button class="btn p" type="button" id="dt-save">Salvar</button></div></div>';
+  document.body.appendChild(ov);
+  document.getElementById('dt-save').addEventListener('click',function(){ docCloseAnswer('save'); });
+  document.getElementById('dt-discard').addEventListener('click',function(){ docCloseAnswer('discard'); });
+  document.getElementById('dt-cancel').addEventListener('click',function(){ docCloseAnswer('cancel'); });
+  // teclas
+  document.addEventListener('keydown',function(ev){
+    if(ev.altKey&&!ev.ctrlKey&&(ev.key==='PageDown'||ev.key==='PageUp')){ if(document.querySelector('.ov.show')) return; ev.preventDefault(); docNext(ev.key==='PageDown'?1:-1); return; }
+    if(ev.ctrlKey&&ev.shiftKey&&!ev.altKey&&(ev.key==='C'||ev.key==='c')&&clipCanUse()){ ev.preventDefault(); setTool('copybase'); }
+  });
+  document.addEventListener('copy',function(ev){
+    if(!clipCanUse()) return;
+    if(!S.sel.length){ if(S.tool==='select'&&!S.ds){ setTool('copyclip'); ev.preventDefault(); } return; }
+    if(clipCopy(S.sel.slice())){ try{ ev.clipboardData.setData('text/plain',clipMarker()); }catch(e){} ev.preventDefault(); }
+  },true);
+  document.addEventListener('paste',function(ev){
+    var t=ev.clipboardData,txt=''; try{ txt=t?t.getData('text/plain'):''; }catch(e){}
+    if(!DOCCLIP||!clipCanUse()) return;
+    var m=/#(clip[a-z0-9]+)\s*$/.exec(txt||''); if(txt&&!(m&&m[1]===DOCCLIP.id)) return; // texto de outro programa: segue o fluxo normal (coordenadas, comandos)
+    ev.preventDefault(); ev.stopImmediatePropagation(); setTool('pasteclip');
+  },true);
+  window.addEventListener('beforeunload',function(ev){ for(var i=0;i<DOCS.list.length;i++) if(i!==DOCS.cur&&docDirtyAt(i)){ ev.preventDefault(); ev.returnValue=''; return; } });
+  setTimeout(function(){ DOCS.fresh=docCapture(); DOCS.fresh.S=JSON.parse(JSON.stringify(DOCS.fresh.S)); DOCS.fresh.title='Sem título'; DOCS.fresh.handle=null; DOCS.fresh.zh={st:{},seen:{},t:{}};
+    DOCS.fresh.S.ents=[]; DOCS.fresh.S.undos=[]; DOCS.fresh.S.redos=[]; DOCS.fresh.S.dirty=false; DOCS.fresh.S.sel=[];
+    DOCS.list=[{id:++DOCS.seq,st:null}]; DOCS.cur=0; docTabsRender(); if(typeof resize==='function') resize(); renderAll(); setInterval(docTick,400); },0);
 });
 </script>
 </body>

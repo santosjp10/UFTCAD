@@ -128,8 +128,8 @@ function tplRender(){
     var info=T.padrao?['Milímetro · A4 paisagem · 1:1','4 camadas · estilos Standard e ABNT · Arial']:[({mm:'Milímetro',m:'Metro',cm:'Centímetro'})[T.units.insertScale]+' · '+T.fmt+(T.land?' paisagem':' retrato')+' · '+ratioLabel(T.vp),T.layers.length+' camadas · cota '+T.dim.name+' · '+fontLabel(T.font).split(' —')[0]];
     c.innerHTML='<div class="tpl-ico">'+T.icone+'</div><div class="tpl-body"><div class="tpl-nome"></div><div class="tpl-desc"></div><div class="tpl-info"></div><div class="tpl-norma"></div></div>';
     c.querySelector('.tpl-nome').textContent=T.nome; c.querySelector('.tpl-desc').textContent=T.desc; c.querySelector('.tpl-info').textContent=info.join(' · '); c.querySelector('.tpl-norma').textContent=T.norma||'';
-    var b=document.createElement('button'); b.className='btn p'; b.type='button'; b.textContent='Criar'; b.addEventListener('click',function(){ closeOv('ov-novo'); tplApply(T.id); }); c.querySelector('.tpl-body').appendChild(b);
-    c.addEventListener('dblclick',function(){ closeOv('ov-novo'); tplApply(T.id); });
+    var b=document.createElement('button'); b.className='btn p'; b.type='button'; b.textContent='Criar'; b.addEventListener('click',function(){ closeOv('ov-novo'); tplCreate(T.id); }); c.querySelector('.tpl-body').appendChild(b);
+    c.addEventListener('dblclick',function(){ closeOv('ov-novo'); tplCreate(T.id); });
     g.appendChild(c); });
   var u=document.getElementById('tpl-user'); u.textContent=''; var L=tplUserList();
   if(!L.length){ var p=document.createElement('div'); p.className='tpl-none'; p.textContent='Nenhum modelo próprio ainda. Configure um desenho (camadas, estilos, layout…) e guarde-o como modelo abaixo.'; u.appendChild(p); }

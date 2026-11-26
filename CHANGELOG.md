@@ -1,5 +1,47 @@
 # Changelog
 
+## v8.14 — Vários desenhos abertos em abas
+
+### Abas de desenhos (como no AutoCAD)
+- A **barra de abas** fica entre a faixa de opções e a área de desenho: uma aba por desenho aberto.
+- Cada aba mostra:
+  - o **nome** do arquivo (`levantamento-fazenda`) ou `Sem título 2 · Topográfico` nos desenhos novos;
+  - um **●** laranja quando há alterações não salvas;
+  - o **×** para fechar.
+- **Novo** (botão, `+` da barra, `Ctrl+N`) e **Abrir** (JSON ou DXF) abrem o desenho numa **aba nova**.
+  - O desenho vazio do início é reaproveitado.
+  - Um arquivo inválido não cria aba.
+  - "Anexar DXF" continua no desenho atual.
+- **Alternar:**
+  - clique na aba;
+  - **Alt+PageDown** / **Alt+PageUp** (o Ctrl+Tab é reservado pelo navegador).
+  - Um comando em andamento é encerrado ao trocar de aba.
+- **Cada desenho é independente:**
+  - objetos, camadas e camada atual, estilos de cota, blocos e layouts;
+  - espaço ativo (Model ou Layout), **desfazer/refazer**, vista e histórico de zoom;
+  - unidades, escala de anotação, grade/snap e altura de texto;
+  - modelo de origem, **arquivo associado ao Ctrl+S** e a **cópia de segurança** automática (uma por aba, todas recuperáveis).
+- **Fechar:**
+  - pelo ×, pelo **botão do meio** do mouse, pelo menu da aba (botão direito) ou pelo comando `CLOSE`/`FECHAR`;
+  - se houver alterações, pergunta **Salvar / Não salvar / Cancelar**. Salvar grava (no mesmo arquivo ou pela janela Salvar) e só então fecha;
+  - menu da aba: Fechar, **Fechar os outros**, Fechar todos, Salvar e Novo desenho;
+  - `CLOSEALL`/`FECHARTODOS` fecha todos, perguntando apenas nos que têm alterações;
+  - ao fechar o último, fica um desenho novo.
+- Sair do EduCAD com alterações não salvas em **qualquer** aba pede confirmação.
+
+### Copiar e colar entre desenhos
+- **Ctrl+C** (`COPYCLIP`): copia os objetos selecionados. Sem seleção, o comando pede para selecionar.
+- **Ctrl+Shift+C** (`COPYBASE`): copia escolhendo o ponto base.
+- **Ctrl+V** (`PASTECLIP`): cola no desenho ativo, com pré-visualização, no ponto indicado.
+- O que acompanha a colagem:
+  - as **camadas** usadas são criadas no destino quando faltam, com cor, tipo e espessura, ou reaproveitadas pelo nome;
+  - os **blocos** e os **estilos de cota** usados também vão junto;
+  - a **unidade é convertida**: de um desenho em metros para um em milímetros o fator é 1000, e da folha (mm) para o Model também.
+- Colar texto vindo de outro programa (coordenadas do Excel, lista de comandos) continua funcionando como antes.
+
+### Outros
+- Testes: `tests/test_abas.py` (48). Total de **1102 testes**, todos passando.
+
 ## v8.13 — Biblioteca de blocos
 
 ### Paleta visual (como as Tool Palettes do AutoCAD)

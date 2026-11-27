@@ -1,5 +1,45 @@
 # Changelog
 
+## v8.17 — Comando Arco como no AutoCAD; modo Didático desligado ao abrir
+
+### Arco (`A`, `ARC`)
+- A sequência e as opções agora são as do AutoCAD, em português ou em inglês:
+
+| Primeira pergunta | Depois | Combinação |
+| --- | --- | --- |
+| ponto inicial | segundo ponto → ponto final | 3 pontos (início, passagem, fim) |
+| ponto inicial | **Centro** → centro → ponto final, **Ângulo** ou comprimento da **Corda** | Início-Centro-Fim / Ângulo / Corda |
+| ponto inicial | **Fim** → ponto final → centro, **Ângulo**, **Direção** ou **Raio** | Início-Fim-Centro / Ângulo / Direção / Raio |
+| **Centro** | centro → ponto inicial → ponto final, **Ângulo** ou **Corda** | Centro-Início-Fim / Ângulo / Corda |
+| **Enter** | ponto final | Continua tangente à última linha ou ao último arco |
+
+- **Atalhos das opções:**
+  - Centro: `C`/`CE`;
+  - Fim: `F`/`E`/`EN`;
+  - Ângulo: `A`;
+  - Corda: `L`/`C`;
+  - Direção: `D`;
+  - Raio: `R`.
+- **Convenções do AutoCAD:**
+  - o arco é traçado no sentido anti-horário a partir do ponto inicial;
+  - ângulo incluído negativo traça no sentido horário;
+  - corda ou raio negativos geram o arco maior.
+- **Entrada de valores:**
+  - ângulos em graus decimais ou em graus, minutos e segundos (`45d30'`);
+  - a direção da tangente pode ser um ângulo ou um ponto.
+- **Pré-visualização** do arco em todas as etapas, com o raio junto ao cursor.
+- **Ao terminar,** a linha de comando informa o raio, o ângulo e o comprimento do arco.
+- **Erros explicados**, como pontos alinhados, raio menor que a metade da corda ou corda maior que o diâmetro. O comando continua esperando um valor válido.
+- **Mudança de ordem:** antes, o arco de 3 pontos pedia início, **fim** e passagem. Agora segue o AutoCAD: início, **segundo ponto (passagem)** e fim.
+- O arco também funciona em scripts (`.scr`) e sai normalmente no DXF.
+
+### Modo Didático
+- O EduCAD agora **abre com o modo Didático desligado**, sem rótulos de medidas sobre os objetos.
+- O botão **Didático** (aba Educacional) liga e desliga o modo e fica aceso quando ele está ativo. O mesmo vale para **Coords** e **Ângulos**.
+
+### Outros
+- Testes: `tests/test_arco.py` (41). Total de **1223 testes**, todos passando.
+
 ## v8.16 — Mais detalhe nas imagens e serviços de terceiros
 
 ### Zoom profundo na Esri

@@ -1,4 +1,4 @@
-# Roteiro de validação externa — EduCAD 2D v8.16
+# Roteiro de validação externa — EduCAD 2D v8.17
 
 Este roteiro confere, em programas de CAD de mercado, os arquivos que o EduCAD gera (R9 do parecer técnico). Leva cerca de 40 minutos por programa.
 
@@ -105,4 +105,4 @@ Versões R12 (`-R12.dxf`): basta abrir, rodar `AUDIT` e conferir se o desenho ap
 
 Preencha `RESULTADOS.md` (uma linha por arquivo e programa) e envie pelo GitHub: edite o arquivo e faça um commit, ou abra uma *issue* com o modelo **Resultado de validação**. Informe a versão do programa (ex.: AutoCAD 2024, ZWCAD 2025) e anexe uma captura de tela quando algo não conferir.
 
-*Gerado automaticamente por `validacao/gerar_kit.py` em 26/11/2026. Os valores esperados foram conferidos no próprio arquivo antes de entrar neste roteiro.*
+*Gerado automaticamente por `validacao/gerar_kit.py` em 27/11/2026. Os valores esperados foram conferidos no próprio arquivo antes de entrar neste roteiro.*

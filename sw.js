@@ -1,6 +1,6 @@
 // EduCAD 2D — service worker (v6.5)
 // Rede primeiro (sempre a versão mais nova publicada); sem internet, usa a cópia guardada.
-const CACHE = 'educad-v8.16';
+const CACHE = 'educad-v8.17';
 const ARQUIVOS = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png'];
 
